@@ -1,11 +1,11 @@
 <?php
 namespace App\Console;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tk\Console\Console;
-use Tk\Traits\SystemTrait;
 
 
 /**
@@ -20,7 +20,7 @@ use Tk\Traits\SystemTrait;
 class Cron extends Console
 {
     use LockableTrait;
-    use SystemTrait;
+
 
     /**
      *
@@ -30,25 +30,27 @@ class Cron extends Console
         $path = getcwd();
         $this->setName('cron')
             ->setDescription('The site cron script. crontab line: */1 *  * * *   ' . $path . '/bin/cmd cron > /dev/null 2>&1');
-        $this->lock('cron', true);
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Exception
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->getConfig()->get('site.maintenance.enabled')) {
-            return Console::FAILURE;
+        if (!$this->lock()) {
+            $output->writeln('The command is already running in another process.');
+            return Command::SUCCESS;
         }
-        for($i = 0; $i < 599999999; $i++) {
-            echo '';
-        }
+
+
+//        for($i = 0; $i < 599999999; $i++) {
+//            echo '';
+//        }
         $this->writeComment('Completed!!!');
-        return Console::SUCCESS;
+
+
+        $this->release();
+        return Command::SUCCESS;
     }
 
 }

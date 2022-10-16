@@ -5,16 +5,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @author Michael Mifsud <info@tropotek.com>
- * @see http://www.tropotek.com/
- * @license Copyright 2017 Michael Mifsud
+ * @author Tropotek <info@tropotek.com>
  */
-class TestData extends \Bs\Console\TestData
+class TestData extends \Tk\Console\Command\TestData
 {
 
-    /**
-     *
-     */
     protected function configure()
     {
         $this->setName('testData')
@@ -22,24 +17,14 @@ class TestData extends \Bs\Console\TestData
             ->setDescription('Fill the database with test data');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        parent::execute($input, $output);
-
-        // required vars
-        $config = \App\Config::getInstance();
-        if (!$config->isDebug()) {
+        if (!$this->getConfig()->isDebug()) {
             $this->writeError('Error: Only run this command in a debug environment.');
             return;
         }
 
-        $db = $this->getConfig()->getDb();
+        $db = $this->getFactory()->getDb();
 //        $db->exec('DELETE FROM `user_role` WHERE `description` = \'***\' ');
 //        $db->exec('TRUNCATE `user_role_institution`');
 //        for($i = 0; $i < 20; $i++) {
@@ -72,7 +57,5 @@ class TestData extends \Bs\Console\TestData
 //        }
 
     }
-
-
 
 }
