@@ -1,21 +1,50 @@
+# tk7base
+
+__Project:__ tkbase    
+__Web:__ <http://www.tropotek.com/>  
+__Authors:__ Michael Mifsud <http://www.tropotek.com/>
+
+A base site using the Tk framework, use this as a starting point for your own site.
+
+## Contents
+
+- [Installation](#installation)
+- [Introduction](#introduction)
+
+## Installation
+
+1. First setup a database for the site and keep the login details handy.
+2. Make sure you have the latest version of composer [https://getcomposer.org/download/] installed.
+3. Use the following commands:
+~~~bash
+# git clone https://github.com/tropotek/tk7base.git
+# cd tk7base
+# composer install
+~~~
+4. Edit the `/src/App/config/config.php` file to your required settings.
+5. You may have to change the permissions of the `/data/` folder so apache can read and write to it.
+6. To enable debug mode and logging edit the `/src/config/config.php` file to suit your server.
+   tail the log for more info on any errors.
 
 
-## Basic Framework Example
+## Upgrading
 
-This is a base framework example taken from symfony's pages at 
-https://symfony.com/doc/current/create_framework/
+~~~bash
+# git reset --hard
+# git checkout master
+# git pull
+# composer update
+~~~
 
-
-To run the unit tester use:
-```
-# ./vendor/bin/phpunit
-```
-
-Here is some [Documentation](docs/introduction.md) about this project.
-
+__Warning:__ This could potentially break the site. Be sure to back up any DB and
+site files before running these commands
 
 
+## Introduction
 
+### Editing The HTML
+
+In the folder `/html` you will find all the content templates for the site.
 
 
 
