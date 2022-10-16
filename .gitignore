@@ -1,0 +1,24 @@
+# System Files
+[Tt]humbs.db
+*.DS_Store
+/.idea
+/.vscode
+.directory
+.phpunit.result.cache
+
+# Project directories
+/assets
+/vendor
+/plugin
+/html/theme-*
+/_notes
+/data
+/data_*
+/docs/api
+node_modules
+
+# Project Files
+/src/config/config.php
+/.htaccess
+/*.bak
+

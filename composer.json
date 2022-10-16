@@ -1,0 +1,31 @@
+{
+  "name": "ttek/tk7base",
+  "type": "project",
+  "description": "A base example site using the tropotek tk v7 libs.",
+  "keywords": ["tropotek"],
+  "time": "2022-09-27",
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Michael Mifsud",
+      "homepage": "http://www.tropotek.com/"
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.4||^8.0",
+    "ttek/tk-framework": "^7.0",
+    "ttek/tk-auth": "^7.0",
+    "ttek/tk-domtemplate": "^7.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "ttek/tk-installers": true
+    }
+  }
+}
