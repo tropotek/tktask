@@ -20,3 +20,8 @@ $routes->add('user-logout', new Routing\Route('/logout', ['_controller' => '\App
 $routes->add('user-dashboard', new Routing\Route('/dashboard', ['_controller' => '\App\Controller\Dashboard::doDefault']));
 
 $routes->add('dom-test',  new Routing\Route('/domTest',     ['_controller' => '\App\Controller\DomTest::doDefault']));
+
+
+
+$routes->add('system-mirror',  new Routing\Route('/util/mirror',     ['_controller' => '\Tk\Db\Util\Mirror::doDefault']));
+
