@@ -4,6 +4,7 @@ namespace App;
 use App\Ui\AlertRenderer;
 use Dom\Mvc\Loader;
 use Dom\Mvc\Modifier;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
@@ -38,11 +39,13 @@ class Factory extends \Tk\Factory
         return $page;
     }
 
-    public function initEventDispatcher()
+
+    public function initEventDispatcher(): ?EventDispatcher
     {
         if ($this->getEventDispatcher()) {
             new Dispatch($this->getEventDispatcher());
         }
+        return $this->getEventDispatcher();
     }
 
     public function getTemplateLoader(): ?Loader

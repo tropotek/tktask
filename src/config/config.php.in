@@ -22,12 +22,10 @@ $config['db.default.pass']      = '';
  */
 //$config['session.db_enable']    = true;
 
-
 /**
  * Set the site timezone for PHP and MySQL
  */
 //$config['php.date.timezone']    = 'Australia/Melbourne';
-
 
 
 // Setup dev environment

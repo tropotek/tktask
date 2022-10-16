@@ -13,7 +13,6 @@ class Page extends \Dom\Mvc\Page
     {
         $template = $this->getTemplate();
 
-
         $isDebug = $this->getConfig()->isDebug() ? 'true' : 'false';
         $js = <<<JS
 let config = {
@@ -28,6 +27,7 @@ let config = {
     datepicker:  'dd/mm/yyyy'
   }
 }
+
 JS;
         $template->appendJs($js, array('data-jsl-priority' => -1000));
 
