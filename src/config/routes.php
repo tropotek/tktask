@@ -22,6 +22,6 @@ $routes->add('user-dashboard', new Routing\Route('/dashboard', ['_controller' =>
 $routes->add('dom-test',  new Routing\Route('/domTest',     ['_controller' => '\App\Controller\DomTest::doDefault']));
 
 
-
+// TODO: See if we can put controllers in the \Tk\Mvc somewhere
 $routes->add('system-mirror',  new Routing\Route('/util/mirror',     ['_controller' => '\Tk\Db\Util\Mirror::doDefault']));
 

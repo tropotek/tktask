@@ -19,6 +19,7 @@
   },
   "require": {
     "php": "^7.4||^8.0",
+    "ext-curl": "*",
     "ttek/tk-framework": "^7.0",
     "ttek/tk-auth": "^7.0",
     "ttek/tk-domtemplate": "^7.0"
