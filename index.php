@@ -4,6 +4,7 @@
  */
 
 try {
+
     require_once __DIR__ . '/_prepend.php';
 
     $factory  = \Tk\System::instance()->getFactory();

@@ -9,7 +9,6 @@
  */
 
 $composer = include __DIR__ . '/vendor/autoload.php';
-
 // Init Tk System Objects
 // Update these calls here if you want to override them...
 //$config  = \App\Config::instance();
@@ -18,6 +17,7 @@ $factory->set('composerClassLoader', $composer);
 //$system  = \App\System::instance();
 //$registry  = \App\Registry::instance();
 
+echo "TEST";
 // Define App Constants/Settings
 include_once(__DIR__ . '/src/config/config.php');
 
