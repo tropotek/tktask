@@ -1,9 +1,9 @@
 {
-  "name": "ttek/tk7base",
+  "name": "ttek/tk8base",
   "type": "project",
-  "description": "A base example site using the tropotek tk v7 libs.",
+  "description": "A base example site using the tropotek tk v8 libs.",
   "keywords": ["tropotek"],
-  "time": "2022-09-27",
+  "time": "2022-10-17",
   "license": "MIT",
   "minimum-stability": "dev",
   "authors": [
@@ -18,11 +18,11 @@
     }
   },
   "require": {
-    "php": "^7.4||^8.0",
+    "php": "^8.0",
     "ext-curl": "*",
-    "ttek/tk-framework": "^7.0",
-    "ttek/tk-auth": "^7.0",
-    "ttek/tk-domtemplate": "^7.0"
+    "ttek/tk-framework": "^8.0",
+    "ttek/tk-auth": "^8.0",
+    "ttek/tk-domtemplate": "^8.0"
   },
   "config": {
     "allow-plugins": {

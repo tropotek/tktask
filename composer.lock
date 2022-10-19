@@ -1050,12 +1050,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "984ea2c0f45f42dfed01d2f3987b187467c4b16d"
+                "reference": "ae0727b4b524bebd61096c967d130bd12d6c0f22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/984ea2c0f45f42dfed01d2f3987b187467c4b16d",
-                "reference": "984ea2c0f45f42dfed01d2f3987b187467c4b16d",
+                "url": "https://api.github.com/repos/symfony/console/zipball/ae0727b4b524bebd61096c967d130bd12d6c0f22",
+                "reference": "ae0727b4b524bebd61096c967d130bd12d6c0f22",
                 "shasum": ""
             },
             "require": {
@@ -1141,7 +1141,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-07T08:01:20+00:00"
+            "time": "2022-10-18T13:11:10+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1530,12 +1530,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "28fbba690fc2be08c966715b9e04fdc83ab67e4a"
+                "reference": "e6ecb8152442ab4321a37e0bcb887eaaef781c4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/28fbba690fc2be08c966715b9e04fdc83ab67e4a",
-                "reference": "28fbba690fc2be08c966715b9e04fdc83ab67e4a",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/e6ecb8152442ab4321a37e0bcb887eaaef781c4c",
+                "reference": "e6ecb8152442ab4321a37e0bcb887eaaef781c4c",
                 "shasum": ""
             },
             "require": {
@@ -1634,7 +1634,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-12T07:43:05+00:00"
+            "time": "2022-10-18T13:11:10+00:00"
         },
         {
             "name": "symfony/lock",
@@ -2677,12 +2677,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "113c979c5acd6cf9c910c2b241c4c90598fc65a7"
+                "reference": "d07b538c6a9297ddf70de6ade412c71958687954"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/113c979c5acd6cf9c910c2b241c4c90598fc65a7",
-                "reference": "113c979c5acd6cf9c910c2b241c4c90598fc65a7",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/d07b538c6a9297ddf70de6ade412c71958687954",
+                "reference": "d07b538c6a9297ddf70de6ade412c71958687954",
                 "shasum": ""
             },
             "require": {
@@ -2713,6 +2713,9 @@
                 }
             },
             "autoload": {
+                "files": [
+                    "Tk/Exception.php"
+                ],
                 "psr-0": {
                     "Tk\\": ""
                 },
