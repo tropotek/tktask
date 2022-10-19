@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f69d449b602d611dceefb3f248f1732f",
+    "content-hash": "a4b3324f4a23cccec9f822bf7154d504",
     "packages": [
         {
             "name": "guzzlehttp/psr7",
@@ -2587,12 +2587,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "d3ff0ede87478c04e3009139f9611cd64a2f0db7"
+                "reference": "904e06f33e71b39f3e3a3db24581823d6f350b32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/d3ff0ede87478c04e3009139f9611cd64a2f0db7",
-                "reference": "d3ff0ede87478c04e3009139f9611cd64a2f0db7",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/904e06f33e71b39f3e3a3db24581823d6f350b32",
+                "reference": "904e06f33e71b39f3e3a3db24581823d6f350b32",
                 "shasum": ""
             },
             "require": {
@@ -2667,12 +2667,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "9209388c54cf0ecc8036094f79a5ab1eb3204cc9"
+                "reference": "1c688008394d51f5b3e29e1c8939746db0ee75bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/9209388c54cf0ecc8036094f79a5ab1eb3204cc9",
-                "reference": "9209388c54cf0ecc8036094f79a5ab1eb3204cc9",
+                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/1c688008394d51f5b3e29e1c8939746db0ee75bb",
+                "reference": "1c688008394d51f5b3e29e1c8939746db0ee75bb",
                 "shasum": ""
             },
             "require": {
@@ -2729,7 +2729,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^8.0",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-pdo": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
