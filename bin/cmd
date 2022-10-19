@@ -4,6 +4,13 @@ include(dirname(__DIR__) . '/_prepend.php');
 
 try {
     set_time_limit(0);
+
+    $input = new ArgvInput();
+    $output = new ConsoleOutput();
+    //Determine Environment
+    $env = $input->getParameterOption(array('--env', '-e'), getenv('MYAPP_ENV') ?: 'prod');
+    $app->environment = $env;
+
     $app = $factory->getConsole();
 
     // Setup Local Console Commands
@@ -13,7 +20,7 @@ try {
         //$app->add(new \App\Console\Test());
     }
 
-    $app->run();
+    $app->run($input, $output);
 } catch (Exception $e) {
     echo $e->__toString();
 }

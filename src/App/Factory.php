@@ -5,11 +5,14 @@ use App\Ui\AlertRenderer;
 use Dom\Mvc\Loader;
 use Dom\Mvc\Modifier;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Tk\Auth\Adapter\AdapterInterface;
+use Tk\Auth\Auth;
+use Tk\Auth\FactoryInterface;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Factory extends \Tk\Factory
+class Factory extends \Tk\Factory implements FactoryInterface
 {
 
     public function getPublicPage(): Page
@@ -38,7 +41,6 @@ class Factory extends \Tk\Factory
         $page->addRenderer(new AlertRenderer(), 'alert');
         return $page;
     }
-
 
     public function initEventDispatcher(): ?EventDispatcher
     {
@@ -86,5 +88,43 @@ class Factory extends \Tk\Factory
             $this->set('templateModifier', $dm);
         }
         return $this->get('templateModifier');
+    }
+
+    public function getAuthController(): Auth
+    {
+        if (!$this->has('authController')) {
+            $auth = new Auth(new \Tk\Auth\Storage\SessionStorage($this->getSession()));
+            $this->set('authController', $auth);
+        }
+        return $this->get('authController');
+    }
+
+    /**
+     * This is the default Authentication adapter
+     * Override this method in your own site's Factory object
+     */
+    public function getAuthAdapter(): AdapterInterface
+    {
+        if (!$this->has('authAdapter')) {
+            $adapter = new \Tk\Auth\Adapter\Config('admin', hash('md5', 'password'));
+            $this->set('authAdapter', $adapter);
+        }
+        return $this->get('authAdapter');
+    }
+
+    /**
+     * Return a User object or record that is located from the Auth's getIdentity() method
+     * Override this method in your own site's Factory object
+     * @return null|mixed Null if no user logged in
+     */
+    public function getAuthUser()
+    {
+        if (!$this->has('authUser')) {
+            if ($this->getAuthController()->hasIdentity()) {
+                $user = $this->getAuthController()->getIdentity();
+                $this->set('authUser', $user);
+            }
+        }
+        return $this->get('authUser');
     }
 }
