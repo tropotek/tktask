@@ -20,6 +20,14 @@
       "/tests/"
     ]
   },
+  "scripts": {
+    "post-install-cmd": [
+      "Tk\\Composer\\Installer::postInstall"
+    ],
+    "post-update-cmd": [
+      "Tk\\Composer\\Installer::postUpdate"
+    ]
+  },
   "require": {
     "php": "^8.0",
     "ext-curl": "*",
