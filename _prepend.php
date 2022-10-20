@@ -14,7 +14,7 @@ $composer = include __DIR__ . '/vendor/autoload.php';
 // Update these calls here if you want to override them...
 //$config  = \App\Config::instance();
 $factory = \App\Factory::instance();
-$factory->set('composerClassLoader', $composer);
+$factory->set('classLoader', $composer);
 //$system  = \App\System::instance();
 //$registry  = \App\Registry::instance();
 
