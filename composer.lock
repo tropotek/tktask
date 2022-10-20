@@ -2025,12 +2025,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "281e2ec0170fcd2424e3b531ebbcd95b16b1b964"
+                "reference": "1f45df294d4b9e4a92ee94c6d3fedf07447d7d6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/281e2ec0170fcd2424e3b531ebbcd95b16b1b964",
-                "reference": "281e2ec0170fcd2424e3b531ebbcd95b16b1b964",
+                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/1f45df294d4b9e4a92ee94c6d3fedf07447d7d6c",
+                "reference": "1f45df294d4b9e4a92ee94c6d3fedf07447d7d6c",
                 "shasum": ""
             },
             "require": {
@@ -2044,9 +2044,9 @@
             "extra": {
                 "plugin-modifies-install-path": true,
                 "class": [
-                    "Tk\\Installer\\AssetPlugin",
-                    "Tk\\Installer\\ThemePlugin",
-                    "Tk\\Installer\\PluginPlugin"
+                    "Tk\\Composer\\AssetPlugin",
+                    "Tk\\Composer\\ThemePlugin",
+                    "Tk\\Composer\\PluginPlugin"
                 ],
                 "branch-alias": {
                     "dev-master": "8.0.x-dev"
