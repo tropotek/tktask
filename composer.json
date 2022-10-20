@@ -25,6 +25,9 @@
     "ttek/tk-auth": "^8.0",
     "ttek/tk-domtemplate": "^8.0"
   },
+  "require-dev": {
+    "phpunit/phpunit": "9.5.x-dev"
+  },
   "config": {
     "allow-plugins": {
       "ttek/tk-installers": true
