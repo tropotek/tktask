@@ -2,16 +2,19 @@
 <?php
 include(dirname(__DIR__) . '/_prepend.php');
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
 try {
     set_time_limit(0);
 
     $input = new ArgvInput();
     $output = new ConsoleOutput();
+
+    $app = $factory->getConsole();
     //Determine Environment
     $env = $input->getParameterOption(array('--env', '-e'), getenv('MYAPP_ENV') ?: 'prod');
     $app->environment = $env;
-
-    $app = $factory->getConsole();
 
     // Setup Local Console Commands
     $app->add(new \App\Console\Cron());

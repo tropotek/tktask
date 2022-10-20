@@ -1,7 +1,6 @@
 <?php
 namespace App\Db;
 
-
 use Tk\Date;
 use Tk\Db\Mapper\Model;
 
