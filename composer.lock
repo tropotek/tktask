@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd395d43967c643275b37716775d17b6",
+    "content-hash": "238ab2f3d0c3a547951f5bd951722bb9",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -1949,12 +1949,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "73922523192a47e63f33b8dc7e8a83039439caf9"
+                "reference": "7a9b6412b7ca94ee0983609b7406b975d133d426"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/73922523192a47e63f33b8dc7e8a83039439caf9",
-                "reference": "73922523192a47e63f33b8dc7e8a83039439caf9",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/7a9b6412b7ca94ee0983609b7406b975d133d426",
+                "reference": "7a9b6412b7ca94ee0983609b7406b975d133d426",
                 "shasum": ""
             },
             "require": {
@@ -1971,7 +1971,8 @@
                 "symfony/http-foundation": "^5.4",
                 "symfony/http-kernel": "^6.1",
                 "symfony/lock": "^6.1",
-                "symfony/routing": "^6.1"
+                "symfony/routing": "^6.1",
+                "ttek/tk-installers": "~8.0"
             },
             "type": "library",
             "extra": {
