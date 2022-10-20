@@ -24,7 +24,6 @@
     "php": "^8.0",
     "ext-curl": "*",
     "ext-pdo": "*",
-    "ttek/tk-installers": "~8.0",
     "ttek/tk-framework": "^8.0",
     "ttek/tk-auth": "^8.0",
     "ttek/tk-domtemplate": "^8.0"

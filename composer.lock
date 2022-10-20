@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "238ab2f3d0c3a547951f5bd951722bb9",
+    "content-hash": "cd395d43967c643275b37716775d17b6",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -1949,12 +1949,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "5828811aa401bdc28d36061433bf6bfe428203f0"
+                "reference": "73922523192a47e63f33b8dc7e8a83039439caf9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/5828811aa401bdc28d36061433bf6bfe428203f0",
-                "reference": "5828811aa401bdc28d36061433bf6bfe428203f0",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/73922523192a47e63f33b8dc7e8a83039439caf9",
+                "reference": "73922523192a47e63f33b8dc7e8a83039439caf9",
                 "shasum": ""
             },
             "require": {
@@ -1971,8 +1971,7 @@
                 "symfony/http-foundation": "^5.4",
                 "symfony/http-kernel": "^6.1",
                 "symfony/lock": "^6.1",
-                "symfony/routing": "^6.1",
-                "ttek/tk-installers": "~8.0"
+                "symfony/routing": "^6.1"
             },
             "type": "library",
             "extra": {
@@ -2025,12 +2024,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "1c688008394d51f5b3e29e1c8939746db0ee75bb"
+                "reference": "281e2ec0170fcd2424e3b531ebbcd95b16b1b964"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/1c688008394d51f5b3e29e1c8939746db0ee75bb",
-                "reference": "1c688008394d51f5b3e29e1c8939746db0ee75bb",
+                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/281e2ec0170fcd2424e3b531ebbcd95b16b1b964",
+                "reference": "281e2ec0170fcd2424e3b531ebbcd95b16b1b964",
                 "shasum": ""
             },
             "require": {
