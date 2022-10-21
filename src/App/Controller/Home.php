@@ -57,6 +57,7 @@ class Home extends PageController
       <li><a href="#?e" var="eurl">Test Exception</a></li>
       <li><a href="domTest">Template Test</a></li>
       <li><a href="info">phpinfo</a></li>
+      <li><a href="install">Install</a></li>
       <li><a href="dashboard">My Dashboard</a></li>
     </ul>
     

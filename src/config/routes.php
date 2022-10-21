@@ -10,6 +10,7 @@ $routes = \Tk\Factory::instance()->getRouteCollection();
 
 $routes->add('home',      new Routing\Route('/',     ['_controller' => '\App\Controller\Home::doDefault']));
 $routes->add('home-path', new Routing\Route('/home', ['_controller' => '\App\Controller\Home::doDefault']));
+$routes->add('install',   new Routing\Route('/install',     ['_controller' => '\App\Controller\Install::doDefault']));
 
 $routes->add('phpinfo',   new Routing\Route('/info', ['_controller' => '\App\Controller\Info::doDefault']));
 $routes->add('dom-test',  new Routing\Route('/domTest',     ['_controller' => '\App\Controller\DomTest::doDefault']));
