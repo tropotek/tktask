@@ -21,5 +21,11 @@ $factory->set('classLoader', $composer);
 
 // Define App Constants/Settings
 include_once(__DIR__ . '/src/config/config.php');
+// TODO: We could use a priority number in libs to
+//       run an auto config App config always runs last.
+//          eg: `{priority}-config.php`
+//      ie: tk-base/config/40-config.php, tk-framework/config/50-config.php, tk-base/config/80-config.php, ui-lib/config/100-config.php
+//      Also we could do the same with the routes or a package/bundle system
+
 
 \Tk\Factory::instance()->getBootstrap()->init();
