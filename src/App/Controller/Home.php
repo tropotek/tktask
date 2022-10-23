@@ -3,12 +3,8 @@ namespace App\Controller;
 
 use Dom\Mvc\PageController;
 use Dom\Template;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Loader\PhpFileLoader;
-use Tk\ConfigLoader;
 use Tk\Exception;
-use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
 /**
@@ -28,12 +24,6 @@ class Home extends PageController
         if ($request->query->has('e')) {
             throw new Exception('This is a test exception...', 500);
         }
-
-
-//        $loader = new PhpFileLoader(new FileLocator([__DIR__.'/../Fixtures/alias']));
-//        $routes = $loader->load('alias.php');
-
-
 
         return $this->getPage();
     }
@@ -66,6 +56,7 @@ class Home extends PageController
       <li><a href="domTest">Template Test</a></li>
       <li><a href="info">phpinfo</a></li>
       <li><a href="install">Install</a></li>
+      <li choice="user"><a href="userManager">User Manager</a></li>
       <li><a href="dashboard">My Dashboard</a></li>
     </ul>
     

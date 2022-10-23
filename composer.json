@@ -32,9 +32,10 @@
     "php": "^8.0",
     "ext-curl": "*",
     "ext-pdo": "*",
-    "ttek/tk-framework": "^8.0",
-    "ttek/tk-auth": "^8.0",
-    "ttek/tk-domtemplate": "^8.0"
+    "ttek/tk-framework": "~8.0.0",
+    "ttek/tk-auth": "~8.0.0",
+    "ttek/tk-domtemplate": "~8.0.0",
+    "ttek/tk-table": "~3.2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.x-dev",

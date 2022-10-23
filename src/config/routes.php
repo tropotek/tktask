@@ -24,8 +24,8 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
-//    $routes->add('user-manager', '/userManager')
-//        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
+    $routes->add('user-manager', '/userManager')
+        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
 //    $routes->add('user-manager', '/userEdit')
 //        ->controller([\App\Controller\User\Edit::class, 'doDefault']);
 
