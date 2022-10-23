@@ -41,7 +41,7 @@ class Install extends PageController
     <p>TODO: Write a script to install the site. After the `composer install` command has been called.</p>
 </div>
 HTML;
-        return $this->getFactory()->getTemplateLoader()->load($html);
+        return $this->loadTemplate($html);
     }
 
 }

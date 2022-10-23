@@ -68,7 +68,7 @@ class Home extends PageController
 
 </div>
 HTML;
-        return $this->getFactory()->getTemplateLoader()->load($html);
+        return $this->loadTemplate($html);
     }
 
 }

@@ -2,46 +2,46 @@
 /**
  * Setup system configuration parameters
  *
- *
  * @author Tropotek <http://www.tropotek.com/>
  */
-use App\Config;
+use Tk\Config;
 
-$config = Config::instance();
+return function (Config $config) {
 
-// Default System DB
-$config['db.default.type']      = 'mysql';
-$config['db.default.host']      = 'localhost';
-$config['db.default.port']      = '3306';
-$config['db.default.name']      = '';
-$config['db.default.user']      = '';
-$config['db.default.pass']      = '';
+    // Default System DB
+    $config['db.default.type'] = 'mysql';
+    $config['db.default.host'] = 'localhost';
+    $config['db.default.port'] = '3306';
+    $config['db.default.name'] = '';
+    $config['db.default.user'] = '';
+    $config['db.default.pass'] = '';
 
-/*
- * DB secret API key
- * Use this  key for the mirror command in a dev environment.
- * Keep this key secret. Access to the sites DB can be gained with it.
- */
-//$config['db.mirror.secret'] = '';
+    /*
+     * DB secret API key
+     * Use this  key for the mirror command in a dev environment.
+     * Keep this key secret. Access to the sites DB can be gained with it.
+     */
+    //$config['db.mirror.secret'] = '';
 
-/**
- * Enable DB sessions
- */
-//$config['session.db_enable']    = true;
+    /**
+     * Enable DB sessions
+     */
+    //$config['session.db_enable']    = true;
 
-/**
- * Set the site timezone for PHP and MySQL
- */
-//$config['php.date.timezone']    = 'Australia/Melbourne';
+    /**
+     * Set the site timezone for PHP and MySQL
+     */
+    //$config['php.date.timezone']    = 'Australia/Melbourne';
 
+    // Setup dev environment
+    $config['debug'] = true;
+    if ($config->isDebug()) {
+        error_reporting(-1);
+        $config['php.display_errors'] = 'On';
+        $config['php.error_log']      = '/home/user/log/error.log';
+        $config['log.logLevel']       = \Psr\Log\LogLevel::DEBUG;
+        // Used for the Mirror command
+        //$config['db.mirror.url']    = 'https://example.com/util/mirror';
+    }
 
-// Setup dev environment
-$config['debug'] = false;
-if ($config->isDebug()) {
-    error_reporting(-1);
-    $config['php.display_errors'] = 'On';
-    $config['php.error_log']      = '/home/user/log/error.log';
-    $config['log.logLevel']       = \Psr\Log\LogLevel::DEBUG;
-    // Used for the Mirror command
-    //$config['db.mirror.url']        = 'https://example.com/util/mirror';
-}
+};

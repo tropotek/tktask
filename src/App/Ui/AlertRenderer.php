@@ -41,7 +41,7 @@ class AlertRenderer extends Renderer
     </div>
 </div>
 HTML;
-        return $this->getFactory()->getTemplateLoader()->load($html);
+        return $this->loadTemplate($html);
     }
 
 

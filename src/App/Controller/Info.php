@@ -40,7 +40,7 @@ class Info extends PageController
         $html = <<<HTML
 <div var="content"></div>
 HTML;
-        return $this->getFactory()->getTemplateLoader()->load($html);
+        return $this->loadTemplate($html);
     }
 
 }

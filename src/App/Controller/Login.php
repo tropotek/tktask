@@ -86,7 +86,7 @@ class Login extends PageController
   </form>
 </div>
 HTML;
-        return $this->getFactory()->getTemplateLoader()->load($html);
+        return $this->loadTemplate($html);
     }
 
 }

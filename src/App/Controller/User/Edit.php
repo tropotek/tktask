@@ -40,7 +40,7 @@ class Edit extends PageController
   <div var="content"></div>
 </div>
 HTML;
-        return $this->getFactory()->getTemplateLoader()->load($html);
+        return $this->loadTemplate($html);
     }
 
 
