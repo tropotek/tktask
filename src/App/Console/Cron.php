@@ -15,7 +15,7 @@ use Tk\Console\Console;
  *   * /5  *  *   *   *      php /home/user/public_html/bin/cmd cron > /dev/null 2>&1
  *
  *
- * @author tropotek <info@tropotek.com>
+ * @author tropotek <https://www.tropotek.com/>
  */
 class Cron extends Console
 {

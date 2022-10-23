@@ -4,7 +4,7 @@
 -- This file should contain all the required data
 --  for a fresh install of the site
 --
--- @author: Tropotek <info@tropotek.com>
+-- @author: Tropotek <https://tropotek.com/>
 -- --------------------------------------------
 
 

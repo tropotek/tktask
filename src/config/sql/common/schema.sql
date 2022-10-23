@@ -6,7 +6,7 @@
 --
 -- data, views, functions, procedures, etc
 --
--- @author: Tropotek <info@tropotek.com>
+-- @author: Tropotek <https://tropotek.com/>
 -- --------------------------------------------
 
 
