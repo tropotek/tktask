@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use Dom\Mvc\PageController;
 use Dom\Template;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Loader\PhpFileLoader;
 use Tk\ConfigLoader;
@@ -29,8 +30,8 @@ class Home extends PageController
         }
 
 
-        $loader = new PhpFileLoader(new FileLocator([__DIR__.'/../Fixtures/alias']));
-        $routes = $loader->load('alias.php');
+//        $loader = new PhpFileLoader(new FileLocator([__DIR__.'/../Fixtures/alias']));
+//        $routes = $loader->load('alias.php');
 
 
 

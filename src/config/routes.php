@@ -4,25 +4,34 @@
  *
  * Reload the page with <Ctrl>+<Shift>+R
  */
-use Symfony\Component\Routing;
+use Symfony\Component\Routing\Loader\Configurator\CollectionConfigurator;
 
-return function (Routing\RouteCollection $routes) {
+// @see https://symfony.com/doc/current/routing.html
+return function (CollectionConfigurator $routes) {
 
-    $routes->add('home', new Routing\Route('/', ['_controller' => '\App\Controller\Home::doDefault']));
-    $routes->add('home-path', new Routing\Route('/home', ['_controller' => '\App\Controller\Home::doDefault']));
-    $routes->add('install', new Routing\Route('/install', ['_controller' => '\App\Controller\Install::doDefault']));
+    $routes->add('index', '/')
+        ->controller([\App\Controller\Home::class, 'doDefault']);
+    $routes->add('home', '/home')
+        ->controller([\App\Controller\Home::class, 'doDefault']);
+    $routes->add('install', '/install')
+        ->controller([\App\Controller\Install::class, 'doDefault']);
 
-    // Authentication pages
-    $routes->add('login', new Routing\Route('/login', ['_controller' => '\App\Controller\Login::doDefault']));
-    $routes->add('logout', new Routing\Route('/logout', ['_controller' => '\App\Controller\Login::doLogout']));
+    $routes->add('login', '/login')
+        ->controller([\App\Controller\Login::class, 'doDefault']);
+    $routes->add('logout', '/logout')
+        ->controller([\App\Controller\Login::class, 'doLogout']);
 
-    // Site user Pages
-    $routes->add('user-dashboard', new Routing\Route('/dashboard', ['_controller' => '\App\Controller\Dashboard::doDefault']));
-    $routes->add('user-manager', new Routing\Route('/userManager', ['_controller' => '\App\Controller\User\Manager::doLogout']));
-    $routes->add('user-edit', new Routing\Route('/userEdit/{id}', ['_controller' => '\App\Controller\UserEdit::doLogout']));
 
-    // Test pages
-    $routes->add('phpinfo', new Routing\Route('/info', ['_controller' => '\App\Controller\Info::doDefault']));
-    $routes->add('dom-test', new Routing\Route('/domTest', ['_controller' => '\App\Controller\DomTest::doDefault']));
+    $routes->add('user-dashboard', '/dashboard')
+        ->controller([\App\Controller\Dashboard::class, 'doDefault']);
+//    $routes->add('user-manager', '/userManager')
+//        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
+//    $routes->add('user-manager', '/userEdit')
+//        ->controller([\App\Controller\User\Edit::class, 'doDefault']);
 
+
+    $routes->add('phpinfo', '/info')
+        ->controller([\App\Controller\Info::class, 'doDefault']);
+    $routes->add('dom-test', '/domTest')
+        ->controller([\App\Controller\DomTest::class, 'doDefault']);
 };

@@ -18,11 +18,6 @@ class Dispatch extends \Tk\Mvc\Dispatch
     {
         parent::commonInit();
 
-        $this->getDispatcher()->addSubscriber(new ViewHandler($this->getFactory()->getTemplateModifier()));
-        $this->getDispatcher()->addSubscriber(new PageBytesHandler(
-            $this->getFactory()->getLogger(),
-            $this->getFactory()->getTemplateModifier()->getFilter('pageBytes')
-        ));
 
     }
 
@@ -33,6 +28,11 @@ class Dispatch extends \Tk\Mvc\Dispatch
     {
         parent::httpInit();
 
+        $this->getDispatcher()->addSubscriber(new ViewHandler($this->getFactory()->getTemplateModifier()));
+        $this->getDispatcher()->addSubscriber(new PageBytesHandler(
+            $this->getFactory()->getLogger(),
+            $this->getFactory()->getTemplateModifier()->getFilter('pageBytes')
+        ));
 
     }
 
