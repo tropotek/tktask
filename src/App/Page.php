@@ -31,6 +31,7 @@ let config = {
 JS;
         $template->appendJs($js, array('data-jsl-priority' => -1000));
 
+        $template->setTitleText($this->getTitle());
         if ($this->getConfig()->isDebug()) {
             $template->setTitleText('DEBUG: ' . $template->getTitleText());
         }

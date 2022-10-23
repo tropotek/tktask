@@ -6,13 +6,15 @@ use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-
+/**
+ * @author Tropotek <http://www.tropotek.com/>
+ */
 class Manager extends PageController
 {
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->getTemplate()->setTitleText('Home');
+        $this->getPage()->setTitle('User Manager');
     }
 
     public function doDefault(Request $request)
@@ -35,6 +37,7 @@ class Manager extends PageController
     {
         $html = <<<HTML
 <div>
+  <h2>User Manager</h2>
   <div var="content"></div>
 </div>
 HTML;

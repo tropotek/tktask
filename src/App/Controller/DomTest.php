@@ -14,7 +14,7 @@ class DomTest extends PageController
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->getTemplate()->setTitleText('Dom Test');
+        $this->getPage()->setTitle('Dom Test');
     }
 
     public function doDefault(Request $request)
@@ -41,7 +41,7 @@ class DomTest extends PageController
     <p var="content">
       This is a DomTemplate test controller
     </p>
-    
+
     <ul>
       <li><a href="#" var="link1">Link 1</a></li>
       <li choice="link2"><a href="#" var="link2">Link 2</a></li>
@@ -49,11 +49,11 @@ class DomTest extends PageController
       <li><a href="#" var="link4">Link 4</a></li>
       <li><a href="#" var="link5">Link 5</a></li>
     </ul>
-    
+
     <ul repeat="link">
       <li var="item"><a href="#" var="link"></a></li>
     </ul>
-    
+
 </div>
 HTML;
         return $this->getFactory()->getTemplateLoader()->load($html);

@@ -14,7 +14,7 @@ class Info extends PageController
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->getTemplate()->setTitleText('Dom Test');
+        $this->getPage()->setTitle('PHP Info');
     }
 
     public function doDefault(Request $request)

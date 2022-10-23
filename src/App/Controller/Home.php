@@ -16,7 +16,7 @@ class Home extends PageController
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->getTemplate()->setTitleText('Home');
+        $this->getPage()->setTitle('Home');
     }
 
     public function doDefault(Request $request)
@@ -49,21 +49,23 @@ class Home extends PageController
 <div>
     <h3 var="title">Welcome Home</h3>
     <p var="content"></p>
-    
+
     <p var="user"></p>
     <ul>
       <li><a href="#?e" var="eurl">Test Exception</a></li>
       <li><a href="domTest">Template Test</a></li>
       <li><a href="info">phpinfo</a></li>
       <li><a href="install">Install</a></li>
+      <hr />
       <li choice="user"><a href="userManager">User Manager</a></li>
+      <li choice="user"><a href="userEdit/1234">User Edit</a></li>
       <li><a href="dashboard">My Dashboard</a></li>
     </ul>
-    
+
     <ul repeat="link">
       <li var="item"><a href="#" var="link"></a></li>
     </ul>
-    
+
 </div>
 HTML;
         return $this->getFactory()->getTemplateLoader()->load($html);

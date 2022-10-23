@@ -15,7 +15,7 @@ class Install extends PageController
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->getTemplate()->setTitleText('Login');
+        $this->getPage()->setTitle('Install');
     }
 
     public function doDefault(Request $request)

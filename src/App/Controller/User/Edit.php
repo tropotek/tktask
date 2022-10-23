@@ -1,27 +1,24 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\User;
 
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Tk\Uri;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Dashboard extends PageController
+class Edit extends PageController
 {
-
-
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getUserPage());
-        $this->getPage()->setTitle('Dashboard');
+        parent::__construct($this->getFactory()->getPublicPage());
+        $this->getPage()->setTitle('User Edit');
     }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request, $id)
     {
-
+        vd($id);
 
         return $this->getPage();
     }
@@ -30,7 +27,7 @@ class Dashboard extends PageController
     {
         $template = $this->getTemplate();
 
-        $template->appendHtml('content', "<p>My Username: <b>{$this->getFactory()->getAuthUser()}</b></p>");
+
 
         return $template;
     }
@@ -39,15 +36,12 @@ class Dashboard extends PageController
     {
         $html = <<<HTML
 <div>
-    <h3 var="title">Dashboard</h3>
-
-    <div var="content"></div>
-
+  <h2>User Edit</h2>
+  <div var="content"></div>
 </div>
 HTML;
         return $this->getFactory()->getTemplateLoader()->load($html);
     }
 
+
 }
-
-
