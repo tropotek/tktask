@@ -25,6 +25,9 @@ class Home extends PageController
             throw new Exception('This is a test exception...', 500);
         }
 
+
+
+
         return $this->getPage();
     }
 
