@@ -21,10 +21,13 @@ class FormEg extends PageController
     public function doDefault(Request $request)
     {
 
-        $form = Form::create('test');
-        $form->appendField(new Form\Field\Input('email'));
 
-        vd($form->getField('email')->getId());
+        //$form = \Tk\Form::create('test');
+        //$form = new Form('test');
+
+//        $form->appendField(new Form\Field\Input('email'));
+
+        //vd($form->getField('email')->getId());
 
         return $this->getPage();
     }
