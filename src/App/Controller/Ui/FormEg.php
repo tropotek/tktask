@@ -21,7 +21,8 @@ class FormEg extends PageController
     public function doDefault(Request $request)
     {
 
-
+        $cl = $this->getFactory()->getClassLoader()->getPrefixes();
+        vd($cl);
         //$form = \Tk\Form::create('test');
         //$form = new Form('test');
 
