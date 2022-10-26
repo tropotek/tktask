@@ -89,10 +89,13 @@ class FormEg extends PageController
 
         $fr = new Form\Renderer($this->form);
 
+        $fmt = $fr->getFieldTemplate('form');
+
         $ft = $fr->getFieldTemplate('input');
         $ft->setText('label', 'Field Test');
         $ft->setText('notes', 'This is some test help text...');
-        $template->appendTemplate('content', $ft);
+        //$ft->addCss('col', 'col');
+        $fmt->appendTemplate('fields', $ft);
 
         $ft = $fr->getFieldTemplate('input');
         $ft->setText('label', 'Error Test');
@@ -100,11 +103,12 @@ class FormEg extends PageController
         $ft->setVisible('error');
         $ft->setText('error', 'Invalid for field value.');
         $ft->addCss('element', 'is-invalid');
-        $template->appendTemplate('content', $ft);
+        //$ft->addCss('col', 'col');
+        $fmt->appendTemplate('fields', $ft);
 
         $ft = $fr->getFieldTemplate('switch');
         vd(array_keys($ft->getVarList()));
-        $ft->setText('label', 'Switch');
+        //$ft->setText('label', 'Switch');
         $error = 'This is a test error';
         for($i = 0; $i < 5; $i++) {
             $r = $ft->getRepeat('option');
@@ -113,6 +117,8 @@ class FormEg extends PageController
             $r->setAttr('label', 'for', $id);
             $r->setAttr('element', 'id', $id);
             $r->setAttr('option', 'data-var', $id);
+            //$r->addCss('option', 'form-check-inline');
+            $r->addCss('option', 'me-5');
             if ($error) {
                 $r->addCss('element', 'is-invalid');
             }
@@ -122,7 +128,11 @@ class FormEg extends PageController
             $ft->setVisible('error', true);
             $ft->setText('error', $error);
         }
-        $template->appendTemplate('content', $ft);
+        //$ft->addCss('col', 'col');
+        $ft->setText('notes', 'This is some test help text...');
+        $fmt->appendTemplate('fields', $ft);
+
+        $template->appendTemplate('content', $fmt);
 
 
 

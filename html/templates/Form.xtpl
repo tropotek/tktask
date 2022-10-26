@@ -9,7 +9,7 @@ Boostrap 5 Form templates
     <div class="tab-content" var="tab-content"></div>
   </div>
 
-  <div class="tk-form-fields clearfix" var="fields" choice="fields"></div>
+  <div class="tk-form-fields clearfix" var="fields"></div>
 
   <div class="tk-actions col-12" var="actions"></div>
 
@@ -18,9 +18,9 @@ Boostrap 5 Form templates
 
 <div class="row g-3">
 
-<input type="hidden" class="form-control" id="tpl-hidden"/>
+<input type="hidden" class="form-control" var="element" id="tpl-hidden"/>
 
-<div class="col-12 mb-3" id="tpl-none">
+<div var="col" id="tpl-none">
   <label class="form-label" var="label"></label>
   <span class="form-control" var="element"></span>
   <div class="form-text" var="notes"></div>
@@ -29,7 +29,7 @@ Boostrap 5 Form templates
 </div>
 
 
-<div class="col-12 mb-3" id="tpl-input">
+<div var="col" id="tpl-input">
   <label class="form-label" var="label"></label>
   <input type="text" class="form-control" var="element"/>
   <div class="form-text" var="notes"></div>
@@ -37,7 +37,7 @@ Boostrap 5 Form templates
   <div class="invalid-feedback" choice="error"></div>
 </div>
 
-<div class="col-12 mb-3" id="tpl-textarea">
+<div var="col" id="tpl-textarea">
   <label class="form-label" var="label"></label>
   <textarea class="form-control" var="element"></textarea>
   <div class="form-text" var="notes"></div>
@@ -45,7 +45,7 @@ Boostrap 5 Form templates
   <div class="invalid-feedback" choice="error"></div>
 </div>
 
-<div class="col-12 mb-3" id="tpl-select">
+<div var="col" id="tpl-select">
   <label class="form-label" var="label"></label>
   <select class="form-select" var="element"></select>
   <div class="form-text" var="notes"></div>
@@ -53,7 +53,7 @@ Boostrap 5 Form templates
   <div class="invalid-feedback" choice="error"></div>
 </div>
 
-<div class="col-12 mb-3" id="tpl-checkbox">
+<div var="col" id="tpl-checkbox">
   <div class="form-check" repeat="option">
     <input type="checkbox" class="form-check-input" var="element"/>
     <label class="form-check-label" var="label"></label>
@@ -63,7 +63,7 @@ Boostrap 5 Form templates
   <div class="invalid-feedback" choice="error"></div>
 </div>
 
-<div class="col-12 mb-3" id="tpl-radio">
+<div var="col" id="tpl-radio">
   <div class="form-check" repeat="option">
     <input type="radio" class="form-check-input" var="element"/>
     <label class="form-check-label" var="label"></label>
@@ -73,7 +73,7 @@ Boostrap 5 Form templates
   <div class="invalid-feedback" style="display: block;" choice="error"></div>
 </div>
 
-<div class="col-12 mb-3" id="tpl-switch">
+<div var="col" id="tpl-switch">
   <label class="form-label" var="label"></label>
   <div class="form-check form-switch" repeat="option">
     <input type="checkbox" role="switch" class="form-check-input" var="element"/>
@@ -84,7 +84,7 @@ Boostrap 5 Form templates
   <div class="invalid-feedback show" style="display: block;" choice="error"></div>
 </div>
 
-<div class="col-12 mb-3" id="tpl-file">
+<div var="col" id="tpl-file">
   <label class="form-label" var="label"></label>
   <input type="file" class="form-control"/>
   <div class="form-text" var="notes"></div>
@@ -92,14 +92,15 @@ Boostrap 5 Form templates
   <div class="invalid-feedback" style="display: block;" choice="error"></div>
 </div>
 
-<div class="col-12 mb-3" id="tpl-null">
+<div id="tpl-null">
   <!-- Just here to allow us to view repeats above - ignore -->
   <div repeat="option"></div>
-  <button type="button" class="btn btn-secondary" id="tpl-button">Button</button>
 
-  <button type="submit" class="btn btn-primary" id="tpl-submit">Submit</button>
+  <button type="button" class="btn btn-secondary" var="element" id="tpl-button">Button</button>
 
-  <a href="#" id="tpl-link"><i var="iconL" choice="iconL"></i> <span var="text">Link</span> <i var="iconR" choice="iconR"></i></a>
+  <button type="submit" class="btn btn-primary" var="element" id="tpl-submit">Submit</button>
+
+  <a href="#" var="element" id="tpl-link"><i var="iconL" choice="iconL"></i> <span var="text">Link</span> <i var="iconR" choice="iconR"></i></a>
 </div>
 
 </div>
