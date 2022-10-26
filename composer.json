@@ -33,6 +33,7 @@
     "ext-curl": "*",
     "ext-pdo": "*",
     "ext-dom": "*",
+    "ext-libxml": "*",
     "ttek/tk-framework": "~8.0.0",
     "ttek/tk-auth": "~8.0.0",
     "ttek/tk-domtemplate": "~8.0.0",

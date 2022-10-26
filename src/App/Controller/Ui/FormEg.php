@@ -23,6 +23,7 @@ class FormEg extends PageController
 
     public function doDefault(Request $request)
     {
+        Template::$ENABLE_TRACER = true;
 
         $this->form = Form::create('test');
         $this->form->appendField(new Form\Field\Input('email'))->setType('email')->setAttr('data-foo', 'Foo is good!!');
@@ -55,38 +56,7 @@ class FormEg extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
 
-//        $t = $this->loadTemplateFile($this->getSystem()->makePath('/html/templates/Form.xtpl'));
-//        $template->prependTemplate('content', $t);
-
-
-        $doc = new \DOMDocument();
-        $doc->loadHTMLFile($this->getSystem()->makePath('/html/templates/Form.xtpl'));
-
-        //$tplVars = array_filter(array_keys($t->getVarList()), fn($r) => str_starts_with($r, 'tpl-'));
-        //vd($tplVars);
-
-        $tplNames = [
-            'tpl-form',
-            'tpl-hidden',
-            'tpl-none',
-            'tpl-input',
-            'tpl-textarea',
-            'tpl-select',
-            'tpl-checkbox',
-            'tpl-radio',
-            'tpl-switch',
-            'tpl-file',
-            'tpl-button',
-            'tpl-submit',
-            'tpl-link',
-        ];
-        foreach ($tplNames as  $name) {
-            $tpl = $doc->getElementById($name);
-            $tpl->removeAttribute('id');
-            //vd($name, $doc->saveHTML($tpl));
-        }
-
-
+        $error = false;
         $fr = new Form\Renderer($this->form);
 
         $fmt = $fr->getFieldTemplate('form');
@@ -94,30 +64,30 @@ class FormEg extends PageController
         $ft = $fr->getFieldTemplate('input');
         $ft->setText('label', 'Field Test');
         $ft->setText('notes', 'This is some test help text...');
-        //$ft->addCss('col', 'col');
-        $fmt->appendTemplate('fields', $ft);
+        $ft->setAttr('element', 'name', 'test');
 
-        $ft = $fr->getFieldTemplate('input');
-        $ft->setText('label', 'Error Test');
-        $ft->setText('notes', 'This is some test help text...');
-        $ft->setVisible('error');
-        $ft->setText('error', 'Invalid for field value.');
-        $ft->addCss('element', 'is-invalid');
-        //$ft->addCss('col', 'col');
-        $fmt->appendTemplate('fields', $ft);
+        $ft1 = $fr->getFieldTemplate('input');
+        $ft1->setText('label', 'Email Test');
+        $ft1->setText('notes', 'This is some test help text...');
+        $ft1->setAttr('element', 'type', 'email');
+        $ft1->setAttr('element', 'required');
+        $ft1->setAttr('element', 'name', 'email');
+        $ft1->setText('error', 'Invalid email value');
+        if ($error){
+            $ft->addCss('element', 'is-invalid');
+        }
 
-        $ft = $fr->getFieldTemplate('switch');
-        vd(array_keys($ft->getVarList()));
-        //$ft->setText('label', 'Switch');
-        $error = 'This is a test error';
+        $ft2 = $fr->getFieldTemplate('switch');
+        //$ft2->setText('label', 'Switch');
         for($i = 0; $i < 5; $i++) {
-            $r = $ft->getRepeat('option');
+            $r = $ft2->getRepeat('option');
             $id = 'switch' . $i;
             $r->setText('label', 'Switch No ' . $i);
             $r->setAttr('label', 'for', $id);
             $r->setAttr('element', 'id', $id);
             $r->setAttr('option', 'data-var', $id);
-            //$r->addCss('option', 'form-check-inline');
+            $r->setAttr('element', 'value', $id);
+            $r->setAttr('element', 'name', 'switch[]');
             $r->addCss('option', 'me-5');
             if ($error) {
                 $r->addCss('element', 'is-invalid');
@@ -125,28 +95,60 @@ class FormEg extends PageController
             $r->appendRepeat();
         }
         if ($error) {
-            $ft->setVisible('error', true);
-            $ft->setText('error', $error);
+            $ft2->setText('error', 'Invalid switch combination');
         }
-        //$ft->addCss('col', 'col');
-        $ft->setText('notes', 'This is some test help text...');
+        $ft2->setText('notes', 'This is some test help text...');
+
+        $ft3 = $fr->getFieldTemplate('checkbox');
+        //$ft2->setText('label', 'Switch');
+        for($i = 0; $i < 5; $i++) {
+            $r = $ft3->getRepeat('option');
+            $id = 'cb-' . $i;
+            $r->setText('label', 'Checkbox No ' . $i);
+            $r->setAttr('label', 'for', $id);
+            $r->setAttr('element', 'id', $id);
+            $r->setAttr('option', 'data-var', $id);
+            $r->setAttr('element', 'value', $id);
+            $r->setAttr('element', 'name', 'checkbox[]');
+            $r->addCss('option', 'me-5');
+            if ($error) {
+                $r->addCss('element', 'is-invalid');
+            }
+            $r->appendRepeat();
+        }
+        if ($error) {
+            $ft3->setText('error', 'Invalid checkbox combination');
+        }
+        $ft3->setText('notes', 'This is some test help text...');
+
+
+        
+        if ($this->getRequest()->request->has('send')) {
+            vd($this->getRequest()->request->all());
+
+            $email = $this->getRequest()->request->get('email', '');
+            $ft1->setAttr('element', 'value', $email);
+            vd($email);
+            if (str_ends_with($email, '.com')) {
+                $ft1->addCss('element', 'is-invalid');
+            }
+
+        }
+
+
         $fmt->appendTemplate('fields', $ft);
+        $fmt->appendTemplate('fields', $ft1);
+        $fmt->appendTemplate('fields', $ft2);
+        $fmt->appendTemplate('fields', $ft3);
+
+
+        $ftb = $fr->getFieldTemplate('submit');
+        $ftb->setattr('element', 'name', 'send');
+        $ftb->setText('element', 'Send');
+        $fmt->appendTemplate('actions', $ftb);
+
 
         $template->appendTemplate('content', $fmt);
-
-
-
-
-//        // Form renderer
-//        $fr = new \Tk\Form\BsRenderer($this->form);
-//
-//        // Some rendering operations
-//        $fr->setColCss('email', 'col-md-6');
-//        $fr->setColCss('password', 'col-md-6');
-//        $fr->setColCss('address', 'col-md-12');
-//        // The event column is a special case and should hold all Action elements
-//        $fr->setColCss(\Tk\Form\BsRenderer::EventCol, 'col-md-12');
-//        $template->prependTemplate('content', $fr->show());
 
         return $template;
     }

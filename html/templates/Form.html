@@ -1,0 +1,135 @@
+<div>
+<!--
+Boostrap 5 Form templates
+-->
+
+
+
+
+<!-- Main Form container -->
+<form method="post" class="row g-3 needs-validation" novalidate="novalidate" id="tpl-form">
+
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    // https://getbootstrap.com/docs/5.2/forms/validation/
+    (() => {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })();
+  </script>
+
+
+  <div class="formTabs row g-3" var="tabs" choice="tabs">
+    <div class="tab-content" var="tab-content"></div>
+  </div>
+
+  <div class="tk-form-fields row g-3" var="fields"></div>
+
+  <div class="tk-actions" var="actions"></div>
+
+</form>
+
+<!--
+  Element template fragments.
+  Edit these to match the design framework you are using.
+  Make sure the var,choice,repeat attributes are set in the new templates
+
+-->
+<div class="row g-3">
+
+<input type="hidden" class="form-control" var="element" id="tpl-hidden">
+
+<div var="col" id="tpl-none">
+  <label class="form-label" var="label"></label>
+  <span class="form-control" var="element"></span>
+  <div class="form-text" var="notes"></div>
+  <div class="invalid-feedback" var="error"></div>
+</div>
+
+
+<div var="col" id="tpl-input">
+  <label class="form-label" var="label"></label>
+  <input type="text" class="form-control" var="element" >
+  <div class="form-text" var="notes"></div>
+  <div class="invalid-feedback" var="error"></div>
+</div>
+
+<div var="col" id="tpl-textarea">
+  <label class="form-label" var="label"></label>
+  <textarea class="form-control" var="element"></textarea>
+  <div class="form-text" var="notes"></div>
+  <div class="invalid-feedback" var="error"></div>
+</div>
+
+<div var="col" id="tpl-select">
+  <label class="form-label" var="label"></label>
+  <select class="form-select" var="element"></select>
+  <div class="form-text" var="notes"></div>
+  <div class="invalid-feedback" choice="error"></div>
+</div>
+
+<div var="col" id="tpl-checkbox">
+  <label class="form-check-label" choice="label"></label>
+  <div class="form-check" repeat="option">
+    <input type="checkbox" class="form-check-input" var="element" >
+    <label class="form-check-label" var="label"></label>
+  </div>
+  <div class="form-text" var="notes"></div>
+  <div class="form-text text-danger" var="error"></div>
+</div>
+
+<div var="col" id="tpl-radio">
+  <label class="form-check-label" choice="label"></label>
+  <div class="form-check" repeat="option">
+    <input type="radio" class="form-check-input" var="element" >
+    <label class="form-check-label" var="label"></label>
+  </div>
+  <div class="form-text" var="notes"></div>
+  <div class="valid-feedback" choice="valid"></div>
+  <div class="invalid-feedback" style="display: block;" choice="error"></div>
+</div>
+
+<div var="col" id="tpl-switch">
+  <label class="form-check-label" choice="label"></label>
+  <div class="form-check form-switch" repeat="option">
+    <input type="checkbox" role="switch" class="form-check-input" var="element" >
+    <label class="form-check-label" var="label"></label>
+  </div>
+  <div class="form-text" var="notes"></div>
+  <div class="form-text text-danger" var="error"></div>
+</div>
+
+<div var="col" id="tpl-file">
+  <label class="form-label" var="label"></label>
+  <input type="file" class="form-control" >
+  <div class="form-text" var="notes"></div>
+  <div class="invalid-feedback" style="display: block;" choice="error"></div>
+</div>
+
+<div id="tpl-null">
+  <!-- Just here to allow us to view repeats above - ignore -->
+  <div repeat="option"></div>
+
+  <button type="button" class="btn btn-secondary" var="element" id="tpl-button">Button</button>
+
+  <button type="submit" class="btn btn-primary" var="element" id="tpl-submit">Submit</button>
+
+  <a href="#" var="element" id="tpl-link"><i var="iconL" choice="iconL"></i> <span var="text">Link</span> <i var="iconR" choice="iconR"></i></a>
+</div>
+
+</div>
+</div>
