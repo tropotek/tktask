@@ -5,12 +5,15 @@ use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Form;
+use Tk\Uri;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
 class FormEg extends PageController
 {
+
+    protected Form $form;
 
     public function __construct()
     {
@@ -21,14 +24,27 @@ class FormEg extends PageController
     public function doDefault(Request $request)
     {
 
-        $cl = $this->getFactory()->getClassLoader()->getPrefixes();
-        vd($cl);
-        //$form = \Tk\Form::create('test');
-        //$form = new Form('test');
+        $this->form = Form::create('test');
+        $this->form->appendField(new Form\Field\Input('email'))->setType('email')->setAttr('data-foo', 'Foo is good!!');
+        $this->form->appendField(new Form\Field\Input('password'));
+        $this->form->appendField(new Form\Field\Input('address'));
+        $list = ['-- Select --' => '', 'VIC' => 'vic', 'NSW' => 'nsw'];
+        $this->form->appendField(new Form\Field\Select('state', $list));
 
-//        $form->appendField(new Form\Field\Input('email'));
+        $load = [
+            'email' => 'test@example.com',
+            'password' => 'shh-secret',
+            'address' => 'homeless'
+        ];
+        $this->form->loadValues($load);
 
-        //vd($form->getField('email')->getId());
+        $submit = $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) {
+            vd($this->form->getValues());
+            $action->setRedirect(Uri::create());
+        }));
+
+        $this->form->execute($request->request->all());
+
 
         return $this->getPage();
     }
@@ -39,6 +55,21 @@ class FormEg extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
 
+        $t = $this->loadTemplateFile($this->getSystem()->makePath('/html/templates/Tk/Form/DomRenderer.xtpl'));
+        $template->prependTemplate('content', $t);
+
+
+//        // Form renderer
+//        $fr = new \Tk\Form\BsRenderer($this->form);
+//
+//        // Some rendering operations
+//        $fr->setColCss('email', 'col-md-6');
+//        $fr->setColCss('password', 'col-md-6');
+//        $fr->setColCss('address', 'col-md-12');
+//        // The event column is a special case and should hold all Action elements
+//        $fr->setColCss(\Tk\Form\BsRenderer::EventCol, 'col-md-12');
+//        $template->prependTemplate('content', $fr->show());
+
         return $template;
     }
 
@@ -48,53 +79,6 @@ class FormEg extends PageController
 <div>
   <h3 var="title"></h3>
   <div var="content">
-
-    <form id="TestForm" name="TestFrom_name" method="post" class="row g-3">
-      <div class="col-md-6">
-        <label for="inputEmail4" class="form-label">Email</label>
-        <input type="email" class="form-control" id="inputEmail4" />
-      </div>
-      <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Password</label>
-        <input type="password" class="form-control" id="inputPassword4" />
-      </div>
-      <div class="col-12">
-        <label for="inputAddress" class="form-label">Address</label>
-        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" />
-      </div>
-      <div class="col-12">
-        <label for="inputAddress2" class="form-label">Address 2</label>
-        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" />
-      </div>
-      <div class="col-6">
-        <label for="inputCity" class="form-label">City</label>
-        <input type="text" class="form-control" id="inputCity" />
-      </div>
-      <div class="col-6">
-        <label for="inputState" class="form-label">State</label>
-        <select id="inputState" class="form-select">
-          <option selected="selected">Choose...</option>
-          <option>...</option>
-        </select>
-      </div>
-      <div class="col-md-12">
-        <label for="inputZip" class="form-label">Zip</label>
-        <input type="text" class="form-control" id="inputZip" />
-      </div>
-      <div class="col-12">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="gridCheck" />
-          <label class="form-check-label" for="gridCheck">
-            Check me out
-          </label>
-        </div>
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-secondary" name="cancel">Cancel</button>
-        <button type="submit" class="btn btn-primary" name="save">Submit</button>
-      </div>
-    </form>
-
 
   </div>
 </div>

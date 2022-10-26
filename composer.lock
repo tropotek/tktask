@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5ea6b1b03a8fa97d16cb5d1247694ae",
+    "content-hash": "3cf312e87e52f8a417cf3c5426fec10f",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -1860,6 +1860,59 @@
                 }
             ],
             "time": "2022-10-15T00:00:00+00:00"
+        },
+        {
+            "name": "ttek/tk-form",
+            "version": "8.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tropotek/tk-form.git",
+                "reference": "e075a3114392d7ad571a083726b929bca7ae279d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/e075a3114392d7ad571a083726b929bca7ae279d",
+                "reference": "e075a3114392d7ad571a083726b929bca7ae279d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "ttek/tk-framework": "~8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Tk\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Mifsud",
+                    "homepage": "http://www.tropotek.com/"
+                }
+            ],
+            "description": "Create dynamic forms easily with the Tk framework",
+            "keywords": [
+                "form",
+                "tropotek"
+            ],
+            "support": {
+                "issues": "https://github.com/tropotek/tk-form/issues",
+                "source": "https://github.com/tropotek/tk-form/tree/8.0"
+            },
+            "time": "2022-10-23T00:00:00+00:00"
         },
         {
             "name": "ttek/tk-framework",

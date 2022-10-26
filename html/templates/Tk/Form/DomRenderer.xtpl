@@ -1,0 +1,74 @@
+<div>
+
+  <form class="row g-3" var="form">
+    <input type="hidden" class="form-control" var="hidden" />
+
+    <div class="col-12" var="none">
+      <label class="form-label" var="label">None</label>
+      <span class="form-control" var="element">Element Text</span>
+    </div>
+
+    <div class="col-12" var="input">
+      <label class="form-label" var="label">Input</label>
+      <input type="text" class="form-control" var="element" />
+    </div>
+
+    <div class="col-12" var="textarea">
+      <label class="form-label" var="label">Textarea</label>
+      <textarea class="form-control" var="element">...</textarea>
+    </div>
+
+    <div class="col-12" var="select">
+      <label class="form-label" var="label">Select</label>
+      <select class="form-select" var="element">
+        <option value="">-- Select --</option>
+      </select>
+    </div>
+
+    <div class="col-12" var="checkbox">
+      <div class="form-check" repeat1="option">
+        <input type="checkbox" class="form-check-input" var="element" />
+        <label class="form-check-label" var="label">Checkbox</label>
+      </div>
+    </div>
+
+    <div class="col-12" var="radio">
+      <div class="form-check" repeat1="option">
+        <input type="radio" class="form-check-input" var="element" />
+        <label class="form-check-label" var="label">Radio</label>
+      </div>
+    </div>
+
+    <div class="col-12" var="switch">
+      <div class="form-check form-switch" repeat1="option">
+        <input type="checkbox" role="switch" class="form-check-input" var="element" />
+        <label class="form-check-label" var="label">Switch</label>
+      </div>
+    </div>
+
+    <div class="col-12" var="file">
+      <label class="form-label" var="label">File</label>
+      <input type="file" class="form-control" />
+    </div>
+
+    <div class="col-12">
+      <button type="button" class="btn btn-secondary" var="button">Button</button>
+
+      <button type="submit" class="btn btn-primary" var="submit">Submit</button>
+
+      <a href="#" var="link"><i var="iconL" choice="iconL"></i> <span var="text">Link</span> <i var="iconR" choice="iconR"></i></a>
+    </div>
+
+
+    <div class="formTabs" var="tabs" choice="tabs">
+      <div class="tab-content" var="tab-content"></div>
+    </div>
+
+    <div class="tk-form-fields clearfix" var="fields" choice="fields"></div>
+
+    <div class="tk-actions col-12" var="actions"></div>
+
+  </form>
+
+
+</div>
