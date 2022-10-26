@@ -29,6 +29,7 @@ class Dashboard extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
+        $template->setText('title', $this->getPage()->getTitle());
 
         $template->appendHtml('content', "<p>My Username: <b>{$this->getFactory()->getAuthUser()}</b></p>");
 
@@ -39,7 +40,7 @@ class Dashboard extends PageController
     {
         $html = <<<HTML
 <div>
-    <h3 var="title">Dashboard</h3>
+    <h3 var="title"></h3>
 
     <div var="content"></div>
 

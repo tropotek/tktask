@@ -22,6 +22,9 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Login::class, 'doLogout']);
 
 
+    $routes->add('ui-form', '/ui/form')
+        ->controller([\App\Controller\Ui\FormEg::class, 'doDefault']);
+
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
 

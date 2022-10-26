@@ -27,7 +27,7 @@ class Manager extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-
+        $template->setText('title', $this->getPage()->getTitle());
 
 
         return $template;
@@ -37,7 +37,7 @@ class Manager extends PageController
     {
         $html = <<<HTML
 <div>
-  <h2>User Manager</h2>
+  <h2 var="title"></h2>
   <div var="content"></div>
 </div>
 HTML;

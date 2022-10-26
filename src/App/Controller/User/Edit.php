@@ -18,7 +18,7 @@ class Edit extends PageController
 
     public function doDefault(Request $request, $id)
     {
-        vd($id);
+
 
         return $this->getPage();
     }
@@ -26,6 +26,7 @@ class Edit extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
+        $template->setText('title', $this->getPage()->getTitle());
 
 
 
@@ -36,7 +37,7 @@ class Edit extends PageController
     {
         $html = <<<HTML
 <div>
-  <h2>User Edit</h2>
+  <h2 var="title"></h2>
   <div var="content"></div>
 </div>
 HTML;
