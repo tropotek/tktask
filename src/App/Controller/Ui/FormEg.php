@@ -1,12 +1,10 @@
 <?php
 namespace App\Controller\Ui;
 
-use Dom\Form\Input;
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Form;
-use Tk\Uri;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
