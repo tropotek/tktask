@@ -55,8 +55,76 @@ class FormEg extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
 
-        $t = $this->loadTemplateFile($this->getSystem()->makePath('/html/templates/Tk/Form/DomRenderer.xtpl'));
-        $template->prependTemplate('content', $t);
+//        $t = $this->loadTemplateFile($this->getSystem()->makePath('/html/templates/Form.xtpl'));
+//        $template->prependTemplate('content', $t);
+
+
+        $doc = new \DOMDocument();
+        $doc->loadHTMLFile($this->getSystem()->makePath('/html/templates/Form.xtpl'));
+
+        //$tplVars = array_filter(array_keys($t->getVarList()), fn($r) => str_starts_with($r, 'tpl-'));
+        //vd($tplVars);
+
+        $tplNames = [
+            'tpl-form',
+            'tpl-hidden',
+            'tpl-none',
+            'tpl-input',
+            'tpl-textarea',
+            'tpl-select',
+            'tpl-checkbox',
+            'tpl-radio',
+            'tpl-switch',
+            'tpl-file',
+            'tpl-button',
+            'tpl-submit',
+            'tpl-link',
+        ];
+        foreach ($tplNames as  $name) {
+            $tpl = $doc->getElementById($name);
+            $tpl->removeAttribute('id');
+            //vd($name, $doc->saveHTML($tpl));
+        }
+
+
+        $fr = new Form\Renderer($this->form);
+
+        $ft = $fr->getFieldTemplate('input');
+        $ft->setText('label', 'Field Test');
+        $ft->setText('notes', 'This is some test help text...');
+        $template->appendTemplate('content', $ft);
+
+        $ft = $fr->getFieldTemplate('input');
+        $ft->setText('label', 'Error Test');
+        $ft->setText('notes', 'This is some test help text...');
+        $ft->setVisible('error');
+        $ft->setText('error', 'Invalid for field value.');
+        $ft->addCss('element', 'is-invalid');
+        $template->appendTemplate('content', $ft);
+
+        $ft = $fr->getFieldTemplate('switch');
+        vd(array_keys($ft->getVarList()));
+        $ft->setText('label', 'Switch');
+        $error = 'This is a test error';
+        for($i = 0; $i < 5; $i++) {
+            $r = $ft->getRepeat('option');
+            $id = 'switch' . $i;
+            $r->setText('label', 'Switch No ' . $i);
+            $r->setAttr('label', 'for', $id);
+            $r->setAttr('element', 'id', $id);
+            $r->setAttr('option', 'data-var', $id);
+            if ($error) {
+                $r->addCss('element', 'is-invalid');
+            }
+            $r->appendRepeat();
+        }
+        if ($error) {
+            $ft->setVisible('error', true);
+            $ft->setText('error', $error);
+        }
+        $template->appendTemplate('content', $ft);
+
+
 
 
 //        // Form renderer

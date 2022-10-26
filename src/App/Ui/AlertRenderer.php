@@ -19,7 +19,7 @@ class AlertRenderer extends Renderer
                 $r = $template->getRepeat('panel');
                 $css = strtolower($type);
                 if ($css == 'error') $css = 'danger';
-                $r->addClass('panel', 'alert-' . $css);
+                $r->addCss('panel', 'alert-' . $css);
                 $r->setText('title', ucfirst(strtolower($type)));
                 $r->insertHtml('message', $msg);
                 $r->appendRepeat();
