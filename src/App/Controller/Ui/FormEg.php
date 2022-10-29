@@ -26,8 +26,9 @@ class FormEg extends PageController
 
         $this->form = Form::create('test');
         $this->form->appendField(new Form\Field\Hidden('hidden'))->setLabel('Hide Me!');
+
         $this->form->appendField(new Form\Field\Input('email'))->setType('email')->setAttr('data-foo', 'Foo is good!!');
-        $this->form->appendField(new Form\Field\Input('password'))->setLabel('');
+        $this->form->appendField(new Form\Field\Input('password'));
         $this->form->appendField(new Form\Field\Input('address'))->setNotes('Only upload valid addresses');
         $list = ['-- Select --' => '', 'VIC' => 'Victoria', 'NSW' => 'New South Wales', 'WA' => 'Western Australia'];
         $this->form->appendField(new Form\Field\Select('state', $list))
@@ -42,7 +43,6 @@ class FormEg extends PageController
         }));
         $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
 
-
         $load = [
             'email' => 'test@example.com',
             'password' => 'shh-secret',
@@ -53,7 +53,6 @@ class FormEg extends PageController
 
         $this->form->execute($request->request->all());
 
-
         return $this->getPage();
     }
 
@@ -62,9 +61,13 @@ class FormEg extends PageController
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-        $formRenderer = new Form\Renderer($this->form);
+        // Setup field group widths with bootstrap classes
+        $this->form->getField('email')->setGroupAttr('class', 'col-6');
+        $this->form->getField('password')->setGroupAttr('class', 'col-6');
+        $this->form->getField('address')->setGroupAttr('class', 'col-8');
+        $this->form->getField('state')->setGroupAttr('class', 'col-4');
 
-
+        $formRenderer = new Form\Renderer($this->form, $this->makePath($this->getConfig()->get('form.template.path')));
         $template->appendTemplate('content', $formRenderer->show());
 
         return $template;
