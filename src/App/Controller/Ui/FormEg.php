@@ -23,27 +23,30 @@ class FormEg extends PageController
 
     public function doDefault(Request $request)
     {
-        Template::$ENABLE_TRACER = true;
 
         $this->form = Form::create('test');
+        $this->form->appendField(new Form\Field\Hidden('hidden'))->setLabel('Hide Me!');
         $this->form->appendField(new Form\Field\Input('email'))->setType('email')->setAttr('data-foo', 'Foo is good!!');
         $this->form->appendField(new Form\Field\Input('password'));
         $this->form->appendField(new Form\Field\Input('address'));
-        $list = ['-- Select --' => '', 'VIC' => 'vic', 'NSW' => 'nsw'];
+        $list = ['-- Select --' => '', 'VIC' => 'Victoria', 'NSW' => 'New South Wales', 'WA' => 'Western Australia'];
         $this->form->appendField(new Form\Field\Select('state', $list));
+
+        $submit = $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) {
+            vd($this->form->getFieldValues());
+            $action->setRedirect(Uri::create());
+        }));
+
+
+
 
         $load = [
             'email' => 'test@example.com',
             'password' => 'shh-secret',
-            'address' => 'homeless'
+            'address' => 'homeless',
+            'hidden' => 123
         ];
-        $this->form->loadValues($load);
-
-        $submit = $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) {
-            vd($this->form->getValues());
-            $action->setRedirect(Uri::create());
-        }));
-
+        $this->form->setFieldValues($load); // Use form data mapper if loading objects\
         $this->form->execute($request->request->all());
 
 
@@ -55,100 +58,10 @@ class FormEg extends PageController
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-
-        $error = false;
-        $fr = new Form\Renderer($this->form);
-
-        $fmt = $fr->getFieldTemplate('form');
-
-        $ft = $fr->getFieldTemplate('input');
-        $ft->setText('label', 'Field Test');
-        $ft->setText('notes', 'This is some test help text...');
-        $ft->setAttr('element', 'name', 'test');
-
-        $ft1 = $fr->getFieldTemplate('input');
-        $ft1->setText('label', 'Email Test');
-        $ft1->setText('notes', 'This is some test help text...');
-        $ft1->setAttr('element', 'type', 'email');
-        $ft1->setAttr('element', 'required');
-        $ft1->setAttr('element', 'name', 'email');
-        $ft1->setText('error', 'Invalid email value');
-        if ($error){
-            $ft->addCss('element', 'is-invalid');
-        }
-
-        $ft2 = $fr->getFieldTemplate('switch');
-        //$ft2->setText('label', 'Switch');
-        for($i = 0; $i < 5; $i++) {
-            $r = $ft2->getRepeat('option');
-            $id = 'switch' . $i;
-            $r->setText('label', 'Switch No ' . $i);
-            $r->setAttr('label', 'for', $id);
-            $r->setAttr('element', 'id', $id);
-            $r->setAttr('option', 'data-var', $id);
-            $r->setAttr('element', 'value', $id);
-            $r->setAttr('element', 'name', 'switch[]');
-            $r->addCss('option', 'me-5');
-            if ($error) {
-                $r->addCss('element', 'is-invalid');
-            }
-            $r->appendRepeat();
-        }
-        if ($error) {
-            $ft2->setText('error', 'Invalid switch combination');
-        }
-        $ft2->setText('notes', 'This is some test help text...');
-
-        $ft3 = $fr->getFieldTemplate('checkbox');
-        //$ft2->setText('label', 'Switch');
-        for($i = 0; $i < 5; $i++) {
-            $r = $ft3->getRepeat('option');
-            $id = 'cb-' . $i;
-            $r->setText('label', 'Checkbox No ' . $i);
-            $r->setAttr('label', 'for', $id);
-            $r->setAttr('element', 'id', $id);
-            $r->setAttr('option', 'data-var', $id);
-            $r->setAttr('element', 'value', $id);
-            $r->setAttr('element', 'name', 'checkbox[]');
-            $r->addCss('option', 'me-5');
-            if ($error) {
-                $r->addCss('element', 'is-invalid');
-            }
-            $r->appendRepeat();
-        }
-        if ($error) {
-            $ft3->setText('error', 'Invalid checkbox combination');
-        }
-        $ft3->setText('notes', 'This is some test help text...');
+        $formRenderer = new Form\Renderer($this->form);
 
 
-        
-        if ($this->getRequest()->request->has('send')) {
-            vd($this->getRequest()->request->all());
-
-            $email = $this->getRequest()->request->get('email', '');
-            $ft1->setAttr('element', 'value', $email);
-            vd($email);
-            if (str_ends_with($email, '.com')) {
-                $ft1->addCss('element', 'is-invalid');
-            }
-
-        }
-
-
-        $fmt->appendTemplate('fields', $ft);
-        $fmt->appendTemplate('fields', $ft1);
-        $fmt->appendTemplate('fields', $ft2);
-        $fmt->appendTemplate('fields', $ft3);
-
-
-        $ftb = $fr->getFieldTemplate('submit');
-        $ftb->setattr('element', 'name', 'send');
-        $ftb->setText('element', 'Send');
-        $fmt->appendTemplate('actions', $ftb);
-
-
-        $template->appendTemplate('content', $fmt);
+        $template->appendTemplate('content', $formRenderer->show());
 
         return $template;
     }
