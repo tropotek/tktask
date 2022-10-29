@@ -104,7 +104,7 @@
       <label class="form-check-label" choice="label"></label>
       <div class="form-check" repeat="option">
         <input type="checkbox" class="form-check-input" var="element">
-        <label class="form-check-label" choice="label"></label>
+        <label class="form-check-label" var="label"></label>
       </div>
       <div class="form-text" var="notes"></div>
       <div class="form-text text-danger" var="error"></div>
@@ -114,18 +114,17 @@
       <label class="form-check-label" choice="label"></label>
       <div class="form-check" repeat="option">
         <input type="radio" class="form-check-input" var="element">
-        <label class="form-check-label" choice="label"></label>
+        <label class="form-check-label" var="label"></label>
       </div>
       <div class="form-text" var="notes"></div>
-      <div class="valid-feedback" choice="valid"></div>
-      <div class="invalid-feedback" style="display: block;" choice="error"></div>
+      <div class="form-text text-danger" var="error"></div>
     </div>
 
     <div var="field" id="tpl-switch">
       <label class="form-check-label" choice="label"></label>
       <div class="form-check form-switch" repeat="option">
         <input type="checkbox" role="switch" class="form-check-input" var="element">
-        <label class="form-check-label" choice="label"></label>
+        <label class="form-check-label" var="label"></label>
       </div>
       <div class="form-text" var="notes"></div>
       <div class="form-text text-danger" var="error"></div>

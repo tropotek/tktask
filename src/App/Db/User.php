@@ -234,4 +234,34 @@ class User extends Model
         return $this->created;
     }
 
+    /**
+     * Validate this object's current state and return an array
+     * with error messages. This will be useful for validating
+     * objects for use within forms.
+     */
+    public function validate(): array
+    {
+        $errors = [];
+        $usermap = $this->getMapper();
+
+        if (!$this->getNameFirst()) {
+            $errors['nameFirst'] = 'Invalid field value';
+        }
+        if (!$this->getNameLast()) {
+            $errors['nameLast'] = 'Invalid field value';
+        }
+
+        if (!$this->getUsername()) {
+            $errors['username'] = 'Invalid field username value';
+        } else {
+            $dup = $usermap->findByUsername($this->getUsername());
+            if ($dup && $dup->getId() != $this->getId()) {
+                $errors['username'] = 'This username is already in use';
+            }
+        }
+        if (!filter_var($this->getEmail(), FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Please enter a valid email address';
+        }
+        return $errors;
+    }
 }

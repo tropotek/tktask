@@ -39,8 +39,9 @@ class Home extends PageController
         $template->setAttr('eurl', 'href', Uri::create()->set('e', true));
 
         if ($this->getFactory()->getAuthUser()) {
-            $template->appendHtml('user', "<p>My Username: <b>{$this->getFactory()->getAuthUser()}</b></p>");
+            $template->appendHtml('username', "<p>My Username: <b>{$this->getFactory()->getAuthUser()}</b></p>");
             $template->setVisible('user');
+            $template->setAttr('userEdit', 'href', Uri::create('/userEdit/2'));
         }
 
         return $template;
@@ -53,7 +54,7 @@ class Home extends PageController
     <h3 var="title">Welcome Home</h3>
     <p var="content"></p>
 
-    <p var="user"></p>
+    <p var="username"></p>
     <ul>
       <li><a href="#?e" var="eurl">Test Exception</a></li>
       <li><a href="domTest">Template Test</a></li>
@@ -61,7 +62,7 @@ class Home extends PageController
       <li><a href="install">Install</a></li>
       <hr />
       <li choice="user"><a href="userManager">User Manager</a></li>
-      <li choice="user"><a href="userEdit/1234">User Edit</a></li>
+      <li choice="user"><a href="userEdit/0" var="userEdit">User Edit</a></li>
       <li><a href="dashboard">My Dashboard</a></li>
     </ul>
 
