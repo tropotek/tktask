@@ -27,17 +27,20 @@ class FormEg extends PageController
         $this->form = Form::create('test');
         $this->form->appendField(new Form\Field\Hidden('hidden'))->setLabel('Hide Me!');
         $this->form->appendField(new Form\Field\Input('email'))->setType('email')->setAttr('data-foo', 'Foo is good!!');
-        $this->form->appendField(new Form\Field\Input('password'));
-        $this->form->appendField(new Form\Field\Input('address'));
+        $this->form->appendField(new Form\Field\Input('password'))->setLabel('');
+        $this->form->appendField(new Form\Field\Input('address'))->setNotes('Only upload valid addresses');
         $list = ['-- Select --' => '', 'VIC' => 'Victoria', 'NSW' => 'New South Wales', 'WA' => 'Western Australia'];
-        $this->form->appendField(new Form\Field\Select('state', $list));
+        $this->form->appendField(new Form\Field\Select('state', $list))
+            ->setNotes('This is a select box');
+        $files = $this->form->appendField(new Form\Field\File('attach'))->setNotes('Only upload valid files'); //->setMultiple(true);
+        $this->form->appendField(new Form\Field\Textarea('notes'));
 
-        $submit = $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) {
+        $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($files) {
             vd($this->form->getFieldValues());
+            vd($files->getValue());
             $action->setRedirect(Uri::create());
         }));
-
-
+        $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
 
 
         $load = [
@@ -46,7 +49,8 @@ class FormEg extends PageController
             'address' => 'homeless',
             'hidden' => 123
         ];
-        $this->form->setFieldValues($load); // Use form data mapper if loading objects\
+        $this->form->setFieldValues($load); // Use form data mapper if loading objects
+
         $this->form->execute($request->request->all());
 
 

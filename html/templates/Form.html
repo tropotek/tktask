@@ -28,9 +28,9 @@
   <!--
   Main Form container
   -->
-  <form method="post" class="row g-3 needs-validation" novalidate="novalidate" id="tpl-form">
+  <form method="post" class="row g-3 needs-validation" novalidate="novalidate" id="tpl-form" var="form">
 
-    <script>
+    <script data-trace="/html/templates/Form.html">
       // Example starter JavaScript for disabling form submissions if there are invalid fields
       // https://getbootstrap.com/docs/5.2/forms/validation/
       (() => {
@@ -55,7 +55,7 @@ s
 
     <div class="tk-form-fields row g-3" var="fields"></div>
 
-    <div class="tk-actions row g-3" var="actions"></div>
+    <div class="tk-actions d-grid gap-2 d-md-flex" var="actions"></div>
 
   </form>
 
@@ -72,6 +72,14 @@ s
     <div var="field" id="tpl-input">
       <label class="form-label" var="label"></label>
       <input type="text" class="form-control" var="element">
+      <div class="form-text" var="notes"></div>
+      <div class="invalid-feedback" var="error"></div>
+    </div>
+
+    <div var="field" id="tpl-file">
+      <label class="form-label" var="label"></label>
+      <input type="file" class="form-control" var="element">
+      <div class="form-text" choice="file-notes"></div>
       <div class="form-text" var="notes"></div>
       <div class="invalid-feedback" var="error"></div>
     </div>
@@ -123,18 +131,11 @@ s
       <div class="form-text text-danger" var="error"></div>
     </div>
 
-    <div var="field" id="tpl-file">
-      <label class="form-label" var="label"></label>
-      <input type="file" class="form-control">
-      <div class="form-text" var="notes"></div>
-      <div class="invalid-feedback" style="display: block;" choice="error"></div>
-    </div>
-
     <div id="tpl-null">
       <!-- Just here to allow us to view repeats above - ignore -->
       <div repeat="option"></div>
 
-      <a href="#" var="element" id="tpl-link"><i choice="icon-l"></i><span var="text">Link</span><i choice="iconR"></i></a>
+      <a href="#" class="btn btn-secondary" var="element" id="tpl-link"><i choice="icon-l"></i><span var="text">Link</span><i choice="iconR"></i></a>
       <button type="button" class="btn btn-secondary" var="element" id="tpl-button"><i choice="icon-l"></i><span var="text">Button</span><i choice="iconR"></i></button>
       <button type="submit" class="btn btn-primary" var="element" id="tpl-submit"><i choice="icon-l"></i><span var="text">Submit</span><i choice="iconR"></i></button>
 
