@@ -54,29 +54,17 @@ class UserMap extends Mapper
         return $this->formMap;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function findByUsername(string $username): User
+    public function findByUsername(string $username): ?User
     {
         return $this->findFiltered(array('username' => $username))->current();
     }
 
-    /**
-     * @param array|Filter $filter
-     * @return Result|User[]
-     * @throws \Exception
-     */
-    public function findFiltered($filter, ?Tool $tool = null): Result
+    public function findFiltered(array|Filter $filter, ?Tool $tool = null): Result
     {
         $r = $this->selectFromFilter($this->makeQuery(Filter::create($filter)), $tool);
         return $r;
     }
 
-    /**
-     * @param Filter $filter
-     * @return Filter
-     */
     public function makeQuery(Filter $filter): Filter
     {
         $filter->appendFrom('%s a', $this->quoteParameter($this->getTable()));

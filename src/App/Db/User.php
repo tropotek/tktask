@@ -22,7 +22,7 @@ class User extends Model
      */
     const TYPE_ADMIN = 'admin';
     /**
-     * Base logged in user type (Access to user pages)
+     * Base logged-in user type (Access to user pages)
      */
     const TYPE_MEMBER = 'member';
 
@@ -71,10 +71,7 @@ class User extends Model
         return $this;
     }
 
-    /**
-     * @param string|array $type
-     */
-    public function hasType($type): bool
+    public function hasType(string|array $type): bool
     {
         if (func_num_args() > 1) $type = func_get_args();
         else if (!is_array($type)) $type = array($type);
@@ -182,53 +179,33 @@ class User extends Model
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getLastLogin(): ?\DateTime
     {
         return $this->lastLogin;
     }
 
-    /**
-     * @param \DateTime|null $lastLogin
-     * @return User
-     */
     public function setLastLogin(?\DateTime $lastLogin): User
     {
         $this->lastLogin = $lastLogin;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return $this->active;
     }
 
-    /**
-     * @param bool $active
-     * @return User
-     */
     public function setActive(bool $active): User
     {
         $this->active = $active;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getModified(): ?\DateTime
     {
         return $this->modified;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getCreated(): ?\DateTime
     {
         return $this->created;
