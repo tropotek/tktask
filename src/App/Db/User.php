@@ -242,7 +242,7 @@ class User extends Model
     public function validate(): array
     {
         $errors = [];
-        $usermap = $this->getMapper();
+        $mapper = $this->getMapper();
 
         if (!$this->getNameFirst()) {
             $errors['nameFirst'] = 'Invalid field value';
@@ -254,7 +254,7 @@ class User extends Model
         if (!$this->getUsername()) {
             $errors['username'] = 'Invalid field username value';
         } else {
-            $dup = $usermap->findByUsername($this->getUsername());
+            $dup = $mapper->findByUsername($this->getUsername());
             if ($dup && $dup->getId() != $this->getId()) {
                 $errors['username'] = 'This username is already in use';
             }
