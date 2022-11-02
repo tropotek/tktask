@@ -58,6 +58,7 @@ class Home extends PageController
     <ul>
       <li><a href="#?e" var="eurl">Test Exception</a></li>
       <li><a href="domTest">Template Test</a></li>
+      <li><a href="info" title="Confirmation Dialog Test" data-confirm="<p><em>Are you sure?</em></p>" data-cancel="Nuh!!">Confirm Test</a></li>
       <li><a href="info">phpinfo</a></li>
       <li><a href="install">Install</a></li>
       <hr />

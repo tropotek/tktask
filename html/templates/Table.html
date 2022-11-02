@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bootstrap v5.2 Table Template</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
+
+  <link href="/html/assets/app.css" rel="stylesheet" />
+  <style>
+    body {
+      padding-top: 5rem;
+      padding-bottom: 3rem;
+      color: #5a5a5a;
+      background-color: #FFF;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+          crossorigin="anonymous"></script>
+</head>
+<body class="bg-white">
+<main class="container">
+
+
+<div class="tk-table" var="tk-table" id="tpl-table">
+  <a var="fragment"></a>
+  <div class="tk-filters" var="filters" choice="filters"></div>
+
+  <form var="form">
+      <div class="tk-actions" var="actions" choice="actions"></div>
+
+      <div class="tk-table-wrap table-responsive">
+        <table class="" var="table">
+          <thead var="head">
+            <tr>
+              <th var="th" repeat="th"></th>
+            </tr>
+          </thead>
+          <tbody class="table-body" var="body">
+            <tr var="tr" repeat="tr">
+              <td var="td" repeat="td">&#160;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tk-foot row" choice="foot" var="foot"></div>
+  </form>
+
+</div>
+
+
+<div class="tk-table div-table" var="table" id="tpl-table-div">
+  <a var="fragment"></a>
+  <div class="tk-filters" var="filters" choice="filters"></div>
+
+  <form var="form">
+    <div class="tk-actions" var="actions" choice="actions"></div>
+
+    <!-- Table -->
+    <div class="tk-table-wrap">
+      <div class="table table-body" var="table-body">
+        <div class="tr" var="tr" repeat="tr">
+          <div class="row-group">
+            <div class="td" var="td" repeat="td"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tk-foot" choice="foot" var="foot"></div>
+  </form>
+
+</div>
+
+
+</main>
+</body>
+</html>

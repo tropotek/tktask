@@ -61,8 +61,7 @@ class UserMap extends Mapper
 
     public function findFiltered(array|Filter $filter, ?Tool $tool = null): Result
     {
-        $r = $this->selectFromFilter($this->makeQuery(Filter::create($filter)), $tool);
-        return $r;
+        return $this->selectFromFilter($this->makeQuery(Filter::create($filter)), $tool);
     }
 
     public function makeQuery(Filter $filter): Filter
@@ -121,6 +120,5 @@ class UserMap extends Mapper
 
         return $filter;
     }
-
 
 }
