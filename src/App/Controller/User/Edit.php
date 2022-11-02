@@ -8,6 +8,7 @@ use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Exception;
 use Tk\Form;
+use Tk\FormRenderer;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Checkbox;
 use Tk\Uri;
@@ -79,7 +80,7 @@ class Edit extends PageController
         $this->form->getField('username')->setGroupAttr('class', 'col-6');
         $this->form->getField('password')->setGroupAttr('class', 'col-6');
 
-        $formRenderer = new Form\Renderer($this->form, $this->makePath($this->getConfig()->get('form.template.path')));
+        $formRenderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('form.template.path')));
         $template->appendTemplate('content', $formRenderer->show());
 
 

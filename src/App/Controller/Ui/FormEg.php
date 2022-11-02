@@ -5,6 +5,7 @@ use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Form;
+use Tk\FormRenderer;
 use Tk\Uri;
 
 /**
@@ -92,7 +93,7 @@ class FormEg extends PageController
         $this->form->getField('address')->setGroupAttr('class', 'col-8');
         $this->form->getField('state')->setGroupAttr('class', 'col-4');
 
-        $formRenderer = new Form\Renderer($this->form, $this->makePath($this->getConfig()->get('form.template.path')));
+        $formRenderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('form.template.path')));
         $template->appendTemplate('content', $formRenderer->show());
 
         return $template;

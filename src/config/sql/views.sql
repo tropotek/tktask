@@ -11,7 +11,7 @@
 -- @author: Tropotek <https://tropotek.com/>
 -- ------------------------------------------------------
 
-
+-- Show only active users
 CREATE OR REPLACE ALGORITHM=MERGE VIEW v_user AS
 SELECT *
 FROM
