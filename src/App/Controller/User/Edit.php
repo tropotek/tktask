@@ -80,8 +80,8 @@ class Edit extends PageController
         $this->form->getField('username')->setGroupAttr('class', 'col-6');
         $this->form->getField('password')->setGroupAttr('class', 'col-6');
 
-        $formRenderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('form.template.path')));
-        $template->appendTemplate('content', $formRenderer->show());
+        $renderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('template.path.form')));
+        $template->appendTemplate('content', $renderer->show());
 
 
         return $template;

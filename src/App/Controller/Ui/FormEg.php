@@ -93,7 +93,7 @@ class FormEg extends PageController
         $this->form->getField('address')->setGroupAttr('class', 'col-8');
         $this->form->getField('state')->setGroupAttr('class', 'col-4');
 
-        $formRenderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('form.template.path')));
+        $formRenderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('template.path.form')));
         $template->appendTemplate('content', $formRenderer->show());
 
         return $template;

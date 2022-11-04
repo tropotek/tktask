@@ -28,32 +28,30 @@
 
 <div class="tk-table" var="tk-table" id="tpl-table">
   <a var="fragment"></a>
-  <div class="tk-filters" var="filters" choice="filters"></div>
+  <div class="tk-filters" choice="filters"></div>
 
   <form var="form">
-      <div class="tk-actions" var="actions" choice="actions"></div>
+      <div class="tk-actions" choice="actions"></div>
 
-      <div class="tk-table-wrap table-responsive">
-        <table class="" var="table">
-          <thead var="head">
+      <div class="tk-table-wrapper table-responsive">
+        <table class="table table-bordered table-hover align-top" var="table">
+          <thead class="table-light" var="thead">
             <tr>
-              <th var="th" repeat="th"></th>
+              <th class="center" repeat="td"></th>
             </tr>
           </thead>
-          <tbody class="table-body" var="body">
-            <tr var="tr" repeat="tr">
-              <td var="td" repeat="td">&#160;</td>
+          <tbody class="table-body" var="tbody">
+            <tr repeat="tr">
+              <td repeat="td"></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div class="tk-foot row" choice="foot" var="foot"></div>
+      <div class="tk-foot row" choice="foot"></div>
   </form>
 
 </div>
-
-
 
 </main>
 </body>

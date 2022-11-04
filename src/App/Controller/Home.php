@@ -25,10 +25,25 @@ class Home extends PageController
             throw new Exception('This is a test exception...', 500);
         }
 
-
+        vd($this->setId('test'));
+        vd($this->setId('test'));
+        vd($this->setId('test'));
 
 
         return $this->getPage();
+    }
+
+    protected function setId($id)
+    {
+        static $instances = [];
+        if (!isset($instances[$id])) {
+            $instances[$id] = 0;
+        } else {
+            $instances[$id]++;
+        }
+        if ($instances[$id] > 0)
+            return $id.$instances[$id];
+        return $id;
     }
 
     public function show(): ?Template

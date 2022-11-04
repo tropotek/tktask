@@ -8,6 +8,7 @@ use Tk\Db\Mapper\Result;
 use Tk\Db\Tool;
 use Tk\DataMap\Db;
 use Tk\DataMap\Form;
+use Tk\DataMap\Table;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
@@ -15,43 +16,54 @@ use Tk\DataMap\Form;
 class UserMap extends Mapper
 {
 
-    public function getDbMap(): DataMap
+    public function makeDataMaps(): void
     {
-        if (!$this->dbMap) {
-            $this->dbMap = new DataMap();
-            $this->dbMap->addDataType(new Db\Integer('id', 'user_id'));
-            $this->dbMap->addDataType(new Db\Text('uid'));
-            $this->dbMap->addDataType(new Db\Text('type'));
-            $this->dbMap->addDataType(new Db\Text('username'));
-            $this->dbMap->addDataType(new Db\Text('password'));
-            $this->dbMap->addDataType(new Db\Text('nameFirst', 'name_first'));
-            $this->dbMap->addDataType(new Db\Text('nameLast', 'name_last'));
-            $this->dbMap->addDataType(new Db\Text('email'));
-            $this->dbMap->addDataType(new Db\Date('lastLogin', 'last_login'));
-            $this->dbMap->addDataType(new Db\Boolean('active'));
-            $this->dbMap->addDataType(new Db\Date('modified'));
-            $this->dbMap->addDataType(new Db\Date('created'));
-            $del = $this->dbMap->addDataType(new Db\Boolean('del'));
-
+        if (!$this->getDataMappers()->has(self::DATA_MAP_DB)) {
+            $map = new DataMap();
+            $map->addDataType(new Db\Integer('id', 'user_id'));
+            $map->addDataType(new Db\Text('uid'));
+            $map->addDataType(new Db\Text('type'));
+            $map->addDataType(new Db\Text('username'));
+            $map->addDataType(new Db\Text('password'));
+            $map->addDataType(new Db\Text('nameFirst', 'name_first'));
+            $map->addDataType(new Db\Text('nameLast', 'name_last'));
+            $map->addDataType(new Db\Text('email'));
+            $map->addDataType(new Db\Date('lastLogin', 'last_login'));
+            $map->addDataType(new Db\Boolean('active'));
+            $map->addDataType(new Db\Date('modified'));
+            $map->addDataType(new Db\Date('created'));
+            $del = $map->addDataType(new Db\Boolean('del'));
             $this->setDeleteType($del);
+            $this->addDataMap(self::DATA_MAP_DB, $map);
         }
-        return $this->dbMap;
-    }
 
-    public function getFormMap(): DataMap
-    {
-        if (!$this->formMap) {
-            $this->formMap = new DataMap();
-            $this->formMap->addDataType(new Form\Text('uid'));
-            $this->formMap->addDataType(new Form\Text('type'));
-            $this->formMap->addDataType(new Form\Text('username'));
-            $this->formMap->addDataType(new Form\Text('password'));
-            $this->formMap->addDataType(new Form\Text('nameFirst'));
-            $this->formMap->addDataType(new Form\Text('nameLast'));
-            $this->formMap->addDataType(new Form\Text('email'));
-            $this->formMap->addDataType(new Form\Boolean('active'));
+        if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
+            $map = new DataMap();
+            $map->addDataType(new Form\Text('uid'));
+            $map->addDataType(new Form\Text('type'));
+            $map->addDataType(new Form\Text('username'));
+            $map->addDataType(new Form\Text('password'));
+            $map->addDataType(new Form\Text('nameFirst'));
+            $map->addDataType(new Form\Text('nameLast'));
+            $map->addDataType(new Form\Text('email'));
+            $map->addDataType(new Form\Boolean('active'));
+            $this->addDataMap(self::DATA_MAP_FORM, $map);
         }
-        return $this->formMap;
+
+        if (!$this->getDataMappers()->has(self::DATA_MAP_TABLE)) {
+            $map = new DataMap();
+            $map->addDataType(new Form\Text('uid'));
+            $map->addDataType(new Form\Text('type'));
+            $map->addDataType(new Form\Text('username'));
+            $map->addDataType(new Form\Text('password'));
+            $map->addDataType(new Form\Text('nameFirst'));
+            $map->addDataType(new Form\Text('nameLast'));
+            $map->addDataType(new Form\Text('email'));
+            $map->addDataType(new Table\Boolean('active'));
+            $map->addDataType(new Form\Date('modified'));
+            $map->addDataType(new Form\Date('created'));
+            $this->addDataMap(self::DATA_MAP_TABLE, $map);
+        }
     }
 
     public function findByUsername(string $username): ?User
