@@ -33,7 +33,10 @@ class Manager extends PageController
         $this->table->appendCell(new Table\Cell\Text('username'));
         $this->table->appendCell(new Table\Cell\Text('nameFirst'));
         $this->table->appendCell(new Table\Cell\Text('nameLast'));
-        $this->table->appendCell(new Table\Cell\Text('email'))->addOnShow(function (Table\Cell\Text $cell, Template $template) {
+        $this->table->appendCell(new Table\Cell\Text('email'))->addOnShow(function (Template $template, Table\Cell\Text $cell) {
+//            $data = $cell->getRow()->getData();
+//            vd($data);
+
             $cell->getRow()->setAttr('data-row-id', $cell->getRow()->getId());
             $cell->setAttr('title', $cell->getValue());
             return $template;
@@ -49,8 +52,14 @@ class Manager extends PageController
 
         // TODO: Setup Table Actions
 
-        $tool = Tool::create('created');
+        // TODO: Generate the tool from the table offset/limit/orderBy data????
+        //$this->table->resetTableSession();
+        $tool = $this->table->getTableSession()->getTool('created DESC');
+
+        // Query
         $list = UserMap::create()->findFiltered([], $tool);
+
+        // Format data into something the table can use (For now an array)
         $listData = [];
         foreach ($list as $obj) {
             $a = [];

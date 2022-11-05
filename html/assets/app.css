@@ -1,0 +1,38 @@
+
+
+
+
+
+/* OrderBy Arrows */
+th a,
+td a {
+  display: block;
+  width: 100%;
+}
+th a {
+  padding-right: 18px;
+  position: relative;
+}
+a:before,
+a:after {
+  border: 4px solid transparent;
+  content: "";
+  display: block;
+  height: 0;
+  right: 5px;
+  top: 50%;
+  position: absolute;
+  width: 0;
+}
+a.desc:before {
+  border-bottom-color: #666;
+  margin-top: -9px;
+}
+a.asc:after {
+  border-top-color: #666;
+  margin-top: 1px;
+}
+
+
+
+
