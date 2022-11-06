@@ -27,10 +27,10 @@
 
 
 <div class="tk-table" var="tk-table" id="tpl-table">
-  <a var="fragment"></a>
+
   <div class="tk-filters" choice="filters"></div>
 
-  <form var="form">
+  <form method="post" class="tk-table-form" var="form">
       <div class="tk-actions" choice="actions"></div>
 
       <div class="tk-table-wrapper table-responsive">
@@ -52,6 +52,10 @@
   </form>
 
 </div>
+
+  <button type="submit" class="btn btn-sm btn-light" var="btn" id="tpl-action-button"><i var="icon" choice="icon"></i> <span var="text"></span></button>
+  <a class="btn btn-sm btn-light" var="btn" id="tpl-action-link"><i var="icon"></i> <span var="text"></span></a>
+
 
 </main>
 </body>

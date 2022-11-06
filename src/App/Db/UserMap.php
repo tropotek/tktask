@@ -20,6 +20,8 @@ class UserMap extends Mapper
     {
         if (!$this->getDataMappers()->has(self::DATA_MAP_DB)) {
             $map = new DataMap();
+            // TODO: These should be the default ID key names {object}Id / {table_name}_id
+            //$map->addDataType(new Db\Integer('userId', 'user_id'));
             $map->addDataType(new Db\Integer('id', 'user_id'));
             $map->addDataType(new Db\Text('uid'));
             $map->addDataType(new Db\Text('type'));
@@ -52,6 +54,7 @@ class UserMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_TABLE)) {
             $map = new DataMap();
+            $map->addDataType(new Form\Text('id'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
             $map->addDataType(new Form\Text('username'));
@@ -60,8 +63,8 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('nameLast'));
             $map->addDataType(new Form\Text('email'));
             $map->addDataType(new Table\Boolean('active'));
-            $map->addDataType(new Form\Date('modified'));
-            $map->addDataType(new Form\Date('created'));
+            $map->addDataType(new Form\Date('modified'))->setDateFormat('d/m/Y h:i:s');
+            $map->addDataType(new Form\Date('created'))->setDateFormat('d/m/Y h:i:s');
             $this->addDataMap(self::DATA_MAP_TABLE, $map);
         }
     }

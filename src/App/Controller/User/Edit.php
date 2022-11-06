@@ -44,7 +44,7 @@ class Edit extends PageController
         $this->form->appendField(new Input('email'));
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']));
 
-        $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
+        $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/userManager')));
         $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($id) {
             /** @var User $user */
             $user = UserMap::create()->find($id);
@@ -57,7 +57,7 @@ class Edit extends PageController
 
             $user->save();
 
-            $action->setRedirect(Uri::create());
+            $action->setRedirect(Uri::create('/userManager'));
         }));
 
         $load = [];

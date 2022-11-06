@@ -4,6 +4,10 @@
 
 
 /* OrderBy Arrows */
+th
+{
+  text-align: center;
+}
 th a,
 td a {
   display: block;
