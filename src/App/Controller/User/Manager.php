@@ -41,15 +41,15 @@ class Manager extends PageController
         $this->table->appendCell(new Table\Cell\Text('nameLast'));
         $this->table->appendCell(new Table\Cell\Text('type'));
         $this->table->appendCell(new Table\Cell\Text('email'))->addOnShow(function (Table\Cell\Text $cell) {
-            $cell->getRow()->setAttr('data-row-id', $cell->getRow()->getId());
-            $cell->setAttr('title', $cell->getValue());
+            $obj = $cell->getRow()->getData();
+            $cell->setUrl('mailto:'.$obj->getEmail());
         });
         $this->table->appendCell(new Table\Cell\Text('active'));
         $this->table->appendCell(new Table\Cell\Text('modified'));
         $this->table->appendCell(new Table\Cell\Text('created'));
 
         $this->table->addCss('table-hover');
-        $this->table->getRow()->setAttr('data-test');
+        //$this->table->getRow()->setAttr('data-test');
 
 
 
