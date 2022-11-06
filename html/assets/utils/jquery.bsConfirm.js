@@ -96,7 +96,12 @@
         });
         $('.btn-ok', modal).on('click', function () {
           modal.modal('hide');
-          document.location = el.attr('href');
+          if (el.attr('href')) {  // Url submit
+            document.location = el.attr('href');
+          } else if (el.attr('type') === 'submit') {  // Form submit
+            el.off('click');
+            el.trigger('click');
+          }
           return true;
         });
 

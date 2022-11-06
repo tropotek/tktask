@@ -31,30 +31,31 @@
   <div class="tk-filters" choice="filters"></div>
 
   <form method="post" class="tk-table-form" var="form">
-      <div class="tk-actions" choice="actions"></div>
 
-      <div class="tk-table-wrapper table-responsive">
-        <table class="table table-bordered table-hover table-sortable align-top" var="table">
-          <thead class="table-light" var="thead">
-            <tr>
-              <th class="center" repeat="td"></th>
-            </tr>
-          </thead>
-          <tbody class="table-body" var="tbody">
-            <tr repeat="tr">
-              <td repeat="td"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="tk-actions mb-2" choice="actions"></div>
 
-      <div class="tk-foot row" choice="foot"></div>
+    <div class="tk-table-wrapper table-responsive">
+      <table class="table table-bordered table-hover table-sortable align-top" var="table">
+        <thead class="table-light" var="thead">
+          <tr>
+            <th class="center" repeat="td"></th>
+          </tr>
+        </thead>
+        <tbody class="table-body" var="tbody">
+          <tr repeat="tr">
+            <td repeat="td"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tk-foot row" choice="foot"></div>
   </form>
 
 </div>
 
-  <button type="submit" class="btn btn-sm btn-light" var="btn" id="tpl-action-button"><i var="icon" choice="icon"></i> <span var="text"></span></button>
-  <a class="btn btn-sm btn-light" var="btn" id="tpl-action-link"><i var="icon"></i> <span var="text"></span></a>
+  <button type="submit" class="btn btn-sm btn-light me-2" var="btn" id="tpl-action-button"><i var="icon" choice="icon"></i> <span var="text"></span></button>
+  <a class="btn btn-sm btn-light me-2" var="btn" id="tpl-action-link"><i var="icon"></i> <span var="text"></span></a>
 
 
 </main>

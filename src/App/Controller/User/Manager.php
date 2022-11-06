@@ -31,7 +31,6 @@ class Manager extends PageController
         $this->table = new Table('newTable');
 
         $this->table->appendCell(new Table\Cell\Checkbox('id'));
-        //$this->table->appendCell(new Table\Cell\Text('id'));
         $this->table->appendCell(new Table\Cell\Text('username'))->addOnShow(function (Table\Cell\Text $cell) {
             $obj = $cell->getRow()->getData();
             $cell->setUrl('/userEdit/'.$obj->getId());
@@ -60,7 +59,11 @@ class Manager extends PageController
 
 
         // TODO: Setup Table Actions
-        $this->table->appendAction(new Table\Action\Button('Test', 'fa fa-doc', Uri::create()));
+        $this->table->appendAction(new Table\Action\Button('Test', 'fa fa-doc'))->setUrl(Uri::create('/home'));
+        $this->table->appendAction(new Table\Action\Link('TestTwo', Uri::create('/home'), 'fa fa-doc-o'));
+        $this->table->appendAction(new Table\Action\Delete());
+        $this->table->appendAction(new Table\Action\Csv());
+
 
 
         //$this->table->resetTableSession();
@@ -71,7 +74,6 @@ class Manager extends PageController
         $this->table->setList($list, $tool->getFoundRows());
 
         $this->table->execute($request);
-
 
         return $this->getPage();
     }
