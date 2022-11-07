@@ -25,39 +25,15 @@ class Home extends PageController
             throw new Exception('This is a test exception...', 500);
         }
 
-        vd($this->setId('test'));
-        vd($this->setId('test'));
-        vd($this->setId('test'));
-
-
         return $this->getPage();
-    }
-
-    protected function setId($id)
-    {
-        static $instances = [];
-        if (!isset($instances[$id])) {
-            $instances[$id] = 0;
-        } else {
-            $instances[$id]++;
-        }
-        if ($instances[$id] > 0)
-            return $id.$instances[$id];
-        return $id;
     }
 
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $url = Uri::create();
+        $template->setText('title', $this->getPage()->getTitle());
 
         $template->setAttr('eurl', 'href', Uri::create()->set('e', true));
-
-        if ($this->getFactory()->getAuthUser()) {
-            $template->appendHtml('username', "<p>My Username: <b>{$this->getFactory()->getAuthUser()}</b></p>");
-            $template->setVisible('user');
-            $template->setAttr('userEdit', 'href', Uri::create('/userEdit/2'));
-        }
 
         return $template;
     }
@@ -72,19 +48,12 @@ class Home extends PageController
     <p var="username"></p>
     <ul>
       <li><a href="#?e" var="eurl">Test Exception</a></li>
-      <li><a href="domTest">Template Test</a></li>
-      <li><a href="info" title="Confirmation Dialog Test" data-confirm="<p><em>Are you sure?</em></p>" data-cancel="Nuh!!">Confirm Test</a></li>
-      <li><a href="info">phpinfo</a></li>
-      <li><a href="install">Install</a></li>
-      <hr />
-      <li choice="user"><a href="userManager">User Manager</a></li>
-      <li choice="user"><a href="userEdit/0" var="userEdit">User Edit</a></li>
-      <li><a href="dashboard">My Dashboard</a></li>
+      <li><a href="/info" title="Confirmation Dialog Test" data-confirm="<p><em>Are you sure?</em></p>" data-cancel="Nuh!!">Confirm Test</a></li>
+      <li><a href="/install">Install Page</a></li>
     </ul>
 
-    <ul repeat="link">
-      <li var="item"><a href="#" var="link"></a></li>
-    </ul>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
 
 </div>
 HTML;

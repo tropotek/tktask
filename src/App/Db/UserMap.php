@@ -74,6 +74,9 @@ class UserMap extends Mapper
         return $this->findFiltered(array('username' => $username))->current();
     }
 
+    /**
+     * @return Result|User[]
+     */
     public function findFiltered(array|Filter $filter, ?Tool $tool = null): Result
     {
         return $this->selectFromFilter($this->makeQuery(Filter::create($filter)), $tool);

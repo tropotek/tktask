@@ -37,6 +37,24 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('phpinfo', '/info')
         ->controller([\App\Controller\Info::class, 'doDefault']);
-    $routes->add('dom-test', '/domTest')
+    $routes->add('test-dom', '/domTest')
         ->controller([\App\Controller\DomTest::class, 'doDefault']);
+    $routes->add('test-htmx', '/htmx')
+        ->controller([\App\Controller\Htmx::class, 'doDefault']);
+
+
+    // API Endpoints
+    $routes->add('api-htmx-test', '/api/htmx/test')
+        ->controller([\App\Api\Htmx::class, 'doTest'])
+    ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
+    $routes->add('api-htmx-users', '/api/htmx/users')
+        ->controller([\App\Api\Htmx::class, 'doFindUsers'])
+        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
+    $routes->add('api-htmx-button', '/api/htmx/button')
+        ->controller([\App\Api\Htmx::class, 'doButton'])
+        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
+    $routes->add('api-htmx-tabs', '/api/htmx/tabs')
+        ->controller([\App\Api\Htmx::class, 'doGetTabs'])
+        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
+
 };
