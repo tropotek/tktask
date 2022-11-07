@@ -5,33 +5,27 @@ use App\Db\UserMap;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tk\Traits\SystemTrait;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
 class Htmx
 {
+    use SystemTrait;
 
     public function doTest(Request $request)
     {
         sleep(1);
         vd(apache_request_headers());
-        // is a HTMX HX-REQUEST
-        //vd($request->headers->has('hx-request'));
-
         $q = $request->request->get('q');
-        $html = <<<HTML
-            <p>The search string was: <b>$q</b></p>
-        HTML;
-        return $html;
+        return "<p>The search string was: <b>$q</b></p>";
     }
 
     public function doFindUsers(Request $request)
     {
         sleep(1);
-        $type = $request->query->get('type');
-        $list = UserMap::create()->findFiltered(['type' => $type]);
-
+        $list = UserMap::create()->findFiltered(['type' => $request->query->get('type')]);
         $html = '';
         foreach ($list as $user) {
             $html .= sprintf('<option value="%s">%s</option>', $user->getId(), $user->getName());
@@ -64,13 +58,29 @@ class Htmx
 
     public function doButton(Request $request)
     {
-        $text = $request->request->get('text', 'Hello!!!');
-        $html = <<<HTML
-<button class="btn btn-sm btn-primary">$text</button>
-HTML;
+        $idx = $this->getSession()->get('btn-test', 0);
+        $idx++;
+        if ($idx > 9) $idx = 0;
+        $this->getSession()->set('btn-test', $idx);
 
+
+        $text = $request->request->get('text', 'Click ' . $idx);
+        $html = <<<HTML
+<button class="btn btn-sm btn-primary" hx-get="api/htmx/button" hx-target="unset" hx-trigger="click" hx-swap="outerHTML" >$text</button>
+HTML;
         $response = new Response($html, Response::HTTP_OK, []);
         return $response;
+    }
+
+    public function doFileUpload(Request $request)
+    {
+        sleep(1);
+        $list = UserMap::create()->findFiltered(['type' => $request->query->get('type')]);
+        $html = '';
+        foreach ($list as $user) {
+            $html .= sprintf('<option value="%s">%s</option>', $user->getId(), $user->getName());
+        }
+        return $html;
     }
 
 }

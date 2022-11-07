@@ -21,8 +21,9 @@ class Htmx extends PageController
 
     public function doDefault(Request $request)
     {
+        $res = $this->forward([\App\Api\Htmx::class, 'doButton'], null, null, ['text' => 'Internal!!']);
 
-
+        vd($res->getContent());
 
         return $this->getPage();
     }
@@ -31,6 +32,10 @@ class Htmx extends PageController
     {
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
+
+        $btnRes = $this->forward([\App\Api\Htmx::class, 'doButton'], null, null, null);
+        $template->insertHtml('btn', $btnRes->getContent());
+
 
         $css = <<<CSS
 .tk-loading {
@@ -70,6 +75,10 @@ JS;
 <div>
     <h3 var="title">Welcome Home</h3>
     <p var="content"></p>
+
+    <p>Button Test</p>
+    <p var="btn"></p>
+    <p>&nbsp;</p>
 
     <h4>Search Example</h4>
     <div class="row mb-3">

@@ -38,7 +38,7 @@ return function (CollectionConfigurator $routes) {
     $routes->add('phpinfo', '/info')
         ->controller([\App\Controller\Info::class, 'doDefault']);
     $routes->add('test-dom', '/domTest')
-        ->controller([\App\Controller\DomTest::class, 'doDefault']);
+        ->controller([\App\Controller\DomTest::class, 'doDefaultfirefox']);
     $routes->add('test-htmx', '/htmx')
         ->controller([\App\Controller\Htmx::class, 'doDefault']);
 
