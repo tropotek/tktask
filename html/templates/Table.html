@@ -23,7 +23,6 @@
           crossorigin="anonymous"></script>
 </head>
 <body class="bg-white">
-<main class="container">
 
 
 <div class="tk-table" var="tk-table" id="tpl-table">
@@ -35,9 +34,9 @@
     <div class="tk-actions mb-2" choice="actions"></div>
 
     <div class="tk-table-wrapper table-responsive">
-      <table class="table table-bordered table-hover table-sortable align-top" var="table">
+      <table class="table table-bordered table-hover table-sortable" var="table">
         <thead class="table-light" var="thead">
-          <tr>
+          <tr var="tr">
             <th class="center" repeat="td"></th>
           </tr>
         </thead>
@@ -58,6 +57,5 @@
   <a class="btn btn-sm btn-light me-2" var="btn" id="tpl-action-link"><i var="icon"></i> <span var="text"></span></a>
 
 
-</main>
 </body>
 </html>

@@ -43,6 +43,8 @@ class User extends Model
 
     public string $email = '';
 
+    public string $notes = '';
+
     public ?\DateTime $lastLogin = null;
 
     public bool $active = false;
@@ -165,6 +167,24 @@ class User extends Model
     public function setEmail(?string $email): User
     {
         $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotes(): string
+    {
+        return $this->notes;
+    }
+
+    /**
+     * @param string $notes
+     * @return User
+     */
+    public function setNotes(string $notes): User
+    {
+        $this->notes = $notes;
         return $this;
     }
 

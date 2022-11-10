@@ -17,8 +17,9 @@ use Tk\Uri;
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Edit extends PageController
+class EditNew extends PageController
 {
+
     protected \App\Form\User $form;
 
 
@@ -36,7 +37,12 @@ class Edit extends PageController
         }
 
         // Get the form template
+
         $this->form = new \App\Form\User();
+        // Enable HTMX
+        $this->form->getForm()->setAttr('hx-post', Uri::create('/form/user/'.$id));
+        $this->form->getForm()->setAttr('hx-target', 'this');
+        $this->form->getForm()->setAttr('hx-swap', 'outerHTML');
         $this->form->doDefault($request, $id);
 
         return $this->getPage();
@@ -47,7 +53,7 @@ class Edit extends PageController
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-        $template->appendTemplate('content', $this->form->getRenderer()->getTemplate());
+        $template->replaceTemplate('content', $this->form->getRenderer()->getTemplate());
 
         return $template;
     }

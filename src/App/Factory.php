@@ -18,14 +18,14 @@ class Factory extends \Tk\Factory implements FactoryInterface
     public function getPublicPage(): Page
     {
         $page = Page::create($this->getConfig()->getTemplatePath() . '/public.html');
-        $page->addRenderer(new AlertRenderer(), 'alert');
+        //$page->addRenderer(new AlertRenderer(), 'alert');
         return $page;
     }
 
     public function getUserPage(): Page
     {
         $page = Page::create($this->getConfig()->getTemplatePath() . '/public.html');
-        $page->addRenderer(new AlertRenderer(), 'alert');
+        //$page->addRenderer(new AlertRenderer(), 'alert');
 
         // PagePermission Check
         if (!$this->getAuthUser()) {
@@ -38,7 +38,7 @@ class Factory extends \Tk\Factory implements FactoryInterface
     public function getLoginPage(): Page
     {
         $page = Page::create($this->getConfig()->getTemplatePath() . '/login.html');
-        $page->addRenderer(new AlertRenderer(), 'alert');
+        //$page->addRenderer(new AlertRenderer(), 'alert');
         return $page;
     }
 

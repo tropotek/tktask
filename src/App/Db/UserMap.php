@@ -30,6 +30,7 @@ class UserMap extends Mapper
             $map->addDataType(new Db\Text('nameFirst', 'name_first'));
             $map->addDataType(new Db\Text('nameLast', 'name_last'));
             $map->addDataType(new Db\Text('email'));
+            $map->addDataType(new Db\Text('notes'));
             $map->addDataType(new Db\Date('lastLogin', 'last_login'));
             $map->addDataType(new Db\Boolean('active'));
             $map->addDataType(new Db\Date('modified'));
@@ -41,6 +42,7 @@ class UserMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
             $map = new DataMap();
+            $map->addDataType(new Form\Text('id'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
             $map->addDataType(new Form\Text('username'));
@@ -48,6 +50,7 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('nameFirst'));
             $map->addDataType(new Form\Text('nameLast'));
             $map->addDataType(new Form\Text('email'));
+            $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Form\Boolean('active'));
             $this->addDataMap(self::DATA_MAP_FORM, $map);
         }
@@ -62,6 +65,7 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('nameFirst'));
             $map->addDataType(new Form\Text('nameLast'));
             $map->addDataType(new Form\Text('email'));
+            $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Table\Boolean('active'));
             $map->addDataType(new Form\Date('modified'))->setDateFormat('d/m/Y h:i:s');
             $map->addDataType(new Form\Date('created'))->setDateFormat('d/m/Y h:i:s');
