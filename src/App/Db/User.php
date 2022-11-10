@@ -47,7 +47,7 @@ class User extends Model
 
     public ?\DateTime $lastLogin = null;
 
-    public bool $active = false;
+    public bool $active = true;
 
     public bool $del = false;
 

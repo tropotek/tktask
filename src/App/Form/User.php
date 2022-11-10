@@ -21,6 +21,8 @@ class User
 {
     use SystemTrait;
 
+    protected \App\Db\User $user;
+
     protected Form $form;
 
     protected FormRenderer $renderer;
@@ -32,8 +34,12 @@ class User
 
     public function doDefault(Request $request, $id)
     {
-        $user = UserMap::create()->find($id);
-        if (!$user) {
+        $this->user = new \App\Db\User();
+
+        if ($id) {
+            $this->user = UserMap::create()->find($id);
+        }
+        if (!$this->user) {
             throw new Exception('Invalid User ID: ' . $id);
         }
 
@@ -58,8 +64,8 @@ class User
         //$this->form->appendField(new Form\Action\Submit('save', 'App\Controller\User\FormView::doSubmit'));
 
         $load = [];
-        $user->getMapper()->getFormMap()->loadArray($load, $user);
-        $load['id'] = $user->getId();
+        $this->user->getMapper()->getFormMap()->loadArray($load, $this->user);
+        $load['id'] = $this->user->getId();
         $this->form->setFieldValues($load); // Use form data mapper if loading objects
 
         $this->form->execute($request->request->all());
@@ -69,17 +75,15 @@ class User
 
     public function doSubmit(Form $form, Form\Action\ActionInterface $action)
     {
-        /** @var \App\Db\User $user */
-        $user = UserMap::create()->find($form->getFieldValue('id'));
-        $user->getMapper()->getFormMap()->loadObject( $user, $form->getFieldValues());
+        $this->user->getMapper()->getFormMap()->loadObject($this->user, $form->getFieldValues());
 
-        $form->setErrors($user->validate());
+        $form->setErrors($this->user->validate());
         if ($form->hasErrors()) {
             $form->getSession()->getFlashBag()->add('danger', 'Form contains errors.');
             return;
         }
 
-        $user->save();
+        $this->user->save();
 
         $form->getSession()->getFlashBag()->add('success', 'Form save successfully.');
 
@@ -94,11 +98,16 @@ class User
         $this->form->getField('nameFirst')->setGroupAttr('class', 'col-6');
         $this->form->getField('nameLast')->setGroupAttr('class', 'col-6');
         $this->form->getField('username')->setGroupAttr('class', 'col-6');
-        $this->form->getField('password')->setGroupAttr('class', 'col-6');
+        $this->form->getField('password')->setGroupAttr('class', 'col-6')->setReadonly(true)->setAttr('onfocus', 'this.removeAttribute(\'readonly\');');
 
         $this->renderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('template.path.form')));
 
         return $this->renderer->show();
+    }
+
+    public function getUser(): \App\Db\User
+    {
+        return $this->user;
     }
 
     public function getForm(): Form

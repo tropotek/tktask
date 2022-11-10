@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Tk\Table;
 use Tk\TableRenderer;
 use Tk\Ui\Button;
-use Tk\Ui\Link;
 use Tk\Uri;
 
 /**
@@ -92,6 +91,7 @@ class Manager extends PageController
 
 
         // TODO: Setup Table Actions
+        $this->table->appendAction(new Table\Action\Button('Create'))->setUrl(Uri::create('/userEdit'));
         $this->table->appendAction(new Table\Action\Delete());
         $this->table->appendAction(new Table\Action\Csv())->addExcluded('actions');
 

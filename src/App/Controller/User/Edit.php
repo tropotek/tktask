@@ -30,11 +30,6 @@ class Edit extends PageController
 
     public function doDefault(Request $request, $id)
     {
-        $user = UserMap::create()->find($id);
-        if (!$user) {
-            throw new Exception('Invalid User ID: ' . $id);
-        }
-
         // Get the form template
         $this->form = new \App\Form\User();
         $this->form->doDefault($request, $id);
