@@ -31,7 +31,6 @@ class Manager extends PageController
     {
 
         $this->table = new Table('newTable');
-        $this->table->getRow()->addCss('text-nowrap');
 
         $this->table->appendCell(new Table\Cell\Checkbox('id'));
         $this->table->appendCell(new Table\Cell\Text('actions'))->addOnShow(function (Table\Cell\Text $cell) {
@@ -112,6 +111,7 @@ class Manager extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
+        $this->table->getRow()->addCss('text-nowrap');
         $template->setText('title', $this->getPage()->getTitle());
 
         $renderer = new TableRenderer($this->table, $this->makePath($this->getConfig()->get('template.path.table')));
