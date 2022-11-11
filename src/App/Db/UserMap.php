@@ -90,16 +90,16 @@ class UserMap extends Mapper
     {
         $filter->appendFrom('%s a', $this->quoteParameter($this->getTable()));
 
-        if (!empty($filter['keywords'])) {
-            $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
+        if (!empty($filter['search'])) {
+            $kw = '%' . $this->getDb()->escapeString($filter['search']) . '%';
             $w = '';
             $w .= sprintf('a.uid LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.name_first LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.name_last LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.username LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.email LIKE %s OR ', $this->quote($kw));
-            if (is_numeric($filter['keywords'])) {
-                $id = (int)$filter['keywords'];
+            if (is_numeric($filter['search'])) {
+                $id = (int)$filter['search'];
                 $w .= sprintf('a.id = %d OR ', $id);
             }
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));

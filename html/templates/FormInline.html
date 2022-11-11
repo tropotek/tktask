@@ -27,37 +27,10 @@
   <!--
   Main Form container
   -->
-  <form method="post" class="tk-form row g-3 needs-validation" novalidate="novalidate"
-        data-opt-valid-css="is-valid"  data-opt-error-css="is-invalid"
-        id="tpl-form" var="form">
-
-    <script data-trace="/html/templates/Form.html">
-      // Example starter JavaScript for disabling form submissions if there are invalid fields
-      // https://getbootstrap.com/docs/5.2/forms/validation/
-      (() => {
-        'use strict'
-
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        const forms = document.querySelectorAll('.needs-validation')
-
-        // Loop over them and prevent submission
-        Array.from(forms).forEach(form => {
-          form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-              event.preventDefault()
-              event.stopPropagation()
-            }
-
-            form.classList.add('was-validated')
-          }, false)
-        })
-      })();
-    </script>
-
-    <div class="tk-form-fields row g-3" var="fields"></div>
-
-    <div class="tk-actions d-grid gap-2 d-md-flex" var="actions"></div>
-
+  <form method="post" class="tk-form tk-form-inline" novalidate="novalidate" id="tpl-form" var="form">
+    <div class="">
+      <div class="tk-form-fields row gy-1 gx-2 align-items-center" var="fields actions"></div>
+    </div>
   </form>
 
   <!--
@@ -70,39 +43,39 @@
 
     <input type="hidden" var="element" id="tpl-form-hidden">
 
-    <div var="field" id="tpl-form-input">
-      <label class="form-label" var="label"></label>
-      <input type="text" class="form-control" var="element">
+    <div class="col-auto" var="field" id="tpl-form-input">
+      <label class="visually-hidden" class="form-label" var="label"></label>
+      <input type="text" class="form-control form-control-sm" var="element">
       <div class="form-text" var="notes"></div>
       <div class="invalid-feedback" var="error"></div>
     </div>
 
-    <div var="field" id="tpl-form-file">
-      <label class="form-label" var="label"></label>
-      <input type="file" class="form-control" var="element">
+    <div class="col-auto" var="field" id="tpl-form-file">
+      <label class="visually-hidden" class="form-label" var="label"></label>
+      <input type="file" class="form-control form-control-sm" var="element">
       <div class="form-text" choice="file-notes"></div>
       <div class="form-text" var="notes"></div>
       <div class="invalid-feedback" var="error"></div>
     </div>
 
-    <div var="field" id="tpl-form-textarea">
-      <label class="form-label" var="label"></label>
-      <textarea class="form-control" var="element"></textarea>
+    <div class="col-auto" var="field" id="tpl-form-textarea">
+      <label class="visually-hidden" class="form-label" var="label"></label>
+      <textarea class="form-control form-control-sm" var="element"></textarea>
       <div class="form-text" var="notes"></div>
       <div class="invalid-feedback" var="error"></div>
     </div>
 
-    <div var="field" id="tpl-form-select">
-      <label class="form-label" var="label"></label>
-      <select class="form-select" var="element">
+    <div class="col-auto" var="field" id="tpl-form-select">
+      <label class="visually-hidden" class="form-label" var="label"></label>
+      <select class="form-select form-select-sm" var="element">
         <option repeat="option"></option>
       </select>
       <div class="form-text" var="notes"></div>
       <div class="invalid-feedback" choice="error"></div>
     </div>
 
-    <div var="field" id="tpl-form-checkbox">
-      <label class="form-check-label" choice="label"></label>
+    <div class="col-auto" var="field" id="tpl-form-checkbox">
+      <label class="visually-hidden" class="form-check-label" choice="label"></label>
       <div class="form-check" repeat="option">
         <input type="checkbox" class="form-check-input" var="element">
         <label class="form-check-label" var="label"></label>
@@ -111,8 +84,8 @@
       <div class="form-text text-danger" var="error"></div>
     </div>
 
-    <div var="field" id="tpl-form-radio">
-      <label class="form-check-label" choice="label"></label>
+    <div class="col-auto" var="field" id="tpl-form-radio">
+      <label class="visually-hidden" class="form-check-label" choice="label"></label>
       <div class="form-check" repeat="option">
         <input type="radio" class="form-check-input" var="element">
         <label class="form-check-label" var="label"></label>
@@ -121,8 +94,8 @@
       <div class="form-text text-danger" var="error"></div>
     </div>
 
-    <div var="field" id="tpl-form-switch">
-      <label class="form-check-label" choice="label"></label>
+    <div class="col-auto" var="field" id="tpl-form-switch">
+      <label class="visually-hidden" class="form-check-label" choice="label"></label>
       <div class="form-check form-switch" repeat="option">
         <input type="checkbox" role="switch" class="form-check-input" var="element">
         <label class="form-check-label" var="label"></label>
@@ -131,15 +104,18 @@
       <div class="form-text text-danger" var="error"></div>
     </div>
 
-    <div id="tpl-form-null">
-      <!-- Just here to allow us to view repeats above - ignore -->
-      <div repeat="option"></div>
-
-      <a href="#" class="btn btn-secondary" var="element" id="tpl-form-link"><i choice="icon-l"></i><span var="text">Link</span><i choice="iconR"></i></a>
-      <button type="button" class="btn btn-secondary" var="element" id="tpl-form-button"><i choice="icon-l"></i><span var="text">Button</span><i choice="iconR"></i></button>
-      <button type="submit" class="btn btn-primary" var="element" id="tpl-form-submit"><i choice="icon-l"></i><span var="text">Submit</span><i choice="iconR"></i></button>
-
+    <div class="tk-inline-btn col-auto" var="field" id="tpl-form-link">
+      <a href="#" class="btn btn-sm btn-secondary" var="element" style=""><i choice="icon-l"></i><span var="text">Link</span><i choice="iconR"></i></a>
     </div>
+
+    <div class="tk-inline-btn col-auto" var="field" id="tpl-form-button">
+      <button type="button" class="btn btn-sm btn-secondary" var="element"><i choice="icon-l"></i><span var="text">Button</span><i choice="iconR"></i></button>
+    </div>
+
+    <div class="tk-inline-btn col-auto" var="field" id="tpl-form-submit">
+      <button type="submit" class="btn btn-sm btn-primary" var="element"><i choice="icon-l"></i><span var="text">Submit</span><i choice="iconR"></i></button>
+    </div>
+
 
   </div>
 

@@ -6,6 +6,8 @@ use App\Db\UserMap;
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Form;
+use Tk\FormRenderer;
 use Tk\Table;
 use Tk\TableRenderer;
 use Tk\Ui\Button;
@@ -18,6 +20,7 @@ class Manager extends PageController
 {
 
     protected Table $table;
+    protected Form $filters;
 
 
     public function __construct()
@@ -87,7 +90,26 @@ class Manager extends PageController
         $this->table->appendCell(new Table\Cell\Text('modified'));
         $this->table->appendCell(new Table\Cell\Text('created'));
 
+
         // TODO: Setup Table Filters
+        $this->filters = new Form($this->table->getId() . '-filters');
+
+        $this->filters->appendField(new Form\Field\Input('search'))->setAttr('placeholder', 'Search');
+        $list = array('-- Type --' => '', 'Admin' => 'admin', 'Member' => 'member');
+        $this->filters->appendField(new Form\Field\Select('type', $list));
+
+        // load values
+        $this->filters->setFieldValues($this->table->getTableSession()->get($this->filters->getId(), []));
+        $this->filters->appendField(new Form\Action\Submit('Search', function (Form $form, Form\Action\ActionInterface $action) {
+            $this->table->getTableSession()->set($this->filters->getId(), $form->getFieldValues());
+            Uri::create()->redirect();
+        }));
+        $this->filters->appendField(new Form\Action\Submit('Clear', function (Form $form, Form\Action\ActionInterface $action) {
+            $this->table->getTableSession()->set($this->filters->getId(), []);
+            Uri::create()->redirect();
+        }))->addCss('btn-secondary');
+
+        $this->filters->execute($request->request->all());
 
 
         // TODO: Setup Table Actions
@@ -100,7 +122,9 @@ class Manager extends PageController
         $tool = $this->table->getTool('created DESC');
 
         // Query
-        $list = UserMap::create()->findFiltered([], $tool);
+        $filter = $this->filters->getFieldValues();
+        vd($filter);
+        $list = UserMap::create()->findFiltered($filter, $tool);
         $this->table->setList($list, $tool->getFoundRows());
 
         $this->table->execute($request);
@@ -116,6 +140,12 @@ class Manager extends PageController
 
         $renderer = new TableRenderer($this->table, $this->makePath($this->getConfig()->get('template.path.table')));
         $this->table->addCss('table-hover');
+
+        $this->filters->addCss('row gy-2 gx-3 align-items-center');
+        $filterRenderer = new FormRenderer($this->filters, $this->makePath('/html/templates/FormInline.html'));
+        $renderer->getTemplate()->appendTemplate('filters', $filterRenderer->show());
+        $renderer->getTemplate()->setVisible('filters');
+
         $template->appendTemplate('content', $renderer->show());
 
 

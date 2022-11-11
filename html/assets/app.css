@@ -9,8 +9,30 @@
 }
 
 
+/***************** F O R M ******************/
 
-/* OrderBy head Arrows */
+
+
+/***************** T A B L E ******************/
+
+
+.tk-form-inline {
+  margin-bottom: .5rem;
+}
+/* position submit buttons for filter form */
+.tk-form-inline .tk-inline-btn {
+  padding-bottom: 0.3rem;
+}
+.tk-form-inline .tk-inline-btn .btn {
+  --bs-btn-padding-y: .2rem;
+  --bs-btn-padding-x: .4rem;
+  --bs-btn-font-size: .75rem;
+}
+.tk-table .tk-actions {
+  padding-bottom: 0.75rem;
+}
+
+/* Header OrderBy Arrows */
 th
 {
   text-align: center;
