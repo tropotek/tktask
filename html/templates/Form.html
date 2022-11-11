@@ -8,7 +8,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"/>
 
-  <link href="/html/assets/app.css" rel="stylesheet" />
   <style>
     body {
       padding-top: 5rem;
@@ -56,7 +55,13 @@
 
     <div class="tk-form-fields row g-3" var="fields"></div>
 
-    <div class="tk-actions d-grid gap-2 d-md-flex" var="actions"></div>
+    <!--
+        repeat: "{group|fieldset}-{group}"
+        var:    "fields"
+         Groups and fieldset`s can be defined in the form template for positioning using a template repeat attr,
+         make sure the var="fields" is in the node you want the fields to be appended to.
+    -->
+    <div class="tk-actions d-grid gap-2 d-md-flex" var="fields" repeat="group-actions"></div>
 
   </form>
 
@@ -64,9 +69,17 @@
     Element template fragments.
     Edit these to match the design framework you are using.
     Make sure the var,choice,repeat attributes are set in the new templates
-
   -->
   <div class="row g-3">
+
+    <!-- default group template if no repeat defined in the form-->
+    <div class="tk-form-group row" var="fields" id="tpl-form-group"></div>
+
+    <!-- default fieldset template if no repeat defined in the form -->
+    <fieldset class="col-12" id="tpl-form-fieldset">
+      <legend var="legend"></legend>
+      <div class="row" var="fields"></div>
+    </fieldset>
 
     <input type="hidden" var="element" id="tpl-form-hidden">
 

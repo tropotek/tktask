@@ -50,14 +50,15 @@ class User
             $this->form->getForm()->setAttr('hx-swap', 'outerHTML');
         }
 
-        $this->form->appendField(new Hidden('id'));
-        $this->form->appendField(new Input('nameFirst'));
-        $this->form->appendField(new Input('nameLast'))->setRequired();
-        $this->form->appendField(new Input('username'));
-        $this->form->appendField(new Input('password'))->setType('password');
-        $this->form->appendField(new Input('email'));
-        $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']));
-        $this->form->appendField(new Form\Field\Textarea('notes'))->setAttr('rows', '5');
+        $group = 'left';
+        $this->form->appendField(new Hidden('id'))->setGroup($group);
+        $this->form->appendField(new Input('nameFirst'))->setGroup($group);
+        $this->form->appendField(new Input('nameLast'))->setGroup($group)->setRequired();
+        $this->form->appendField(new Input('username'))->setGroup($group);
+        $this->form->appendField(new Input('password'))->setGroup($group)->setType('password');
+        $this->form->appendField(new Input('email'))->setGroup($group);
+        $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
+        $this->form->appendField(new Form\Field\Textarea('notes'))->setAttr('rows', '5')->setGroup($group);
 
         $this->form->appendField(new Form\Action\Link('back', Uri::create('/userManager')));
         $this->form->appendField(new Form\Action\Submit('save', [$this, 'doSubmit']));
@@ -95,10 +96,10 @@ class User
     public function show(): ?Template
     {
         // Setup field group widths with bootstrap classes
-        $this->form->getField('nameFirst')->setGroupAttr('class', 'col-6');
-        $this->form->getField('nameLast')->setGroupAttr('class', 'col-6');
-        $this->form->getField('username')->setGroupAttr('class', 'col-6');
-        $this->form->getField('password')->setGroupAttr('class', 'col-6')->setReadonly(true)->setAttr('onfocus', 'this.removeAttribute(\'readonly\');');
+        $this->form->getField('nameFirst')->setFieldAttr('class', 'col-6');
+        $this->form->getField('nameLast')->setFieldAttr('class', 'col-6');
+        $this->form->getField('username')->setFieldAttr('class', 'col-6');
+        $this->form->getField('password')->setFieldAttr('class', 'col-6')->setReadonly(true)->setAttr('onfocus', 'this.removeAttribute(\'readonly\');');
 
         $this->renderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('template.path.form')));
 

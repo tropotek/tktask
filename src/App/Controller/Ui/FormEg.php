@@ -58,12 +58,14 @@ class FormEg extends PageController
 
         $this->form->appendField(new Form\Field\Textarea('notes'));
 
+
         $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($files) {
             vd($this->form->getFieldValues());
             vd($files->getValue());
             $action->setRedirect(Uri::create());
         }));
         $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
+
 
         $load = [
             'email' => 'test@example.com',
@@ -88,10 +90,10 @@ class FormEg extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
         // Setup field group widths with bootstrap classes
-        $this->form->getField('email')->setGroupAttr('class', 'col-6');
-        $this->form->getField('password')->setGroupAttr('class', 'col-6');
-        $this->form->getField('address')->setGroupAttr('class', 'col-8');
-        $this->form->getField('state')->setGroupAttr('class', 'col-4');
+        $this->form->getField('email')->setFieldAttr('class', 'col-6');
+        $this->form->getField('password')->setFieldAttr('class', 'col-6');
+        $this->form->getField('address')->setFieldAttr('class', 'col-8');
+        $this->form->getField('state')->setFieldAttr('class', 'col-4');
 
         $formRenderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('template.path.form')));
         $template->appendTemplate('content', $formRenderer->show());

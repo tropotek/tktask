@@ -142,7 +142,7 @@ class Manager extends PageController
         $this->table->addCss('table-hover');
 
         $this->filters->addCss('row gy-2 gx-3 align-items-center');
-        $filterRenderer = new FormRenderer($this->filters, $this->makePath('/html/templates/FormInline.html'));
+        $filterRenderer = new FormRenderer($this->filters, $this->makePath($this->getConfig()->get('template.path.form.inline')));
         $renderer->getTemplate()->appendTemplate('filters', $filterRenderer->show());
         $renderer->getTemplate()->setVisible('filters');
 
