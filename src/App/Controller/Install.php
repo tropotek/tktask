@@ -4,6 +4,7 @@ namespace App\Controller;
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Mail\Message;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
@@ -20,6 +21,14 @@ class Install extends PageController
 
     public function doDefault(Request $request)
     {
+        $message = Message::create(
+            'This is a test message',
+            'Testing 1 2 3 4 ...',
+            'info@tropotek.com',
+            'info@tropotek.com'
+        );
+        $this->getFactory()->getMailGateway()?->send($message);
+
 
         return $this->getPage();
     }
