@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller\User;
 
 use App\Db\UserMap;
@@ -44,8 +43,7 @@ class Manager extends PageController
             $btn->setText('');
             $btn->setIcon('fa fa-edit');
             $btn->addCss('btn btn-primary');
-            $url = Uri::create('/userEdit/'.$obj->getId());
-            $btn->setAttr('onclick', 'location.href =\''.$url.'\'');
+            $btn->setUrl('/userEdit/'.$obj->getId());
 
             $btn->setAttr('data-id', $obj->getId());
             $btn->setAttr('style', '--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .4rem; --bs-btn-font-size: .75rem;');
@@ -113,13 +111,19 @@ class Manager extends PageController
 
 
         // TODO: Setup Table Actions
+        if ($this->getConfig()->isDebug()) {
+            $this->table->appendAction(new Table\Action\Link('reset', Uri::create()->set(Table::RESET_TABLE, $this->table->getId()), 'fa fa-retweet'))
+                ->setLabel('')
+                ->setAttr('data-confirm', 'Are you sure you want to reset the Table`s session?')
+                ->setAttr('title', 'Reset table filters and order to default.');
+        }
         $this->table->appendAction(new Table\Action\Button('Create'))->setUrl(Uri::create('/userEdit'));
         $this->table->appendAction(new Table\Action\Delete());
         $this->table->appendAction(new Table\Action\Csv())->addExcluded('actions');
 
 
         //$this->table->resetTableSession();
-        $tool = $this->table->getTool('created DESC', 10);
+        $tool = $this->table->getTool('created DESC', 25);
 
         // Query
         $filter = $this->filters->getFieldValues();
