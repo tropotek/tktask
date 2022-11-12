@@ -244,9 +244,9 @@ class User extends Model
         if (!$this->getNameFirst()) {
             $errors['nameFirst'] = 'Invalid field value';
         }
-        if (!$this->getNameLast()) {
-            $errors['nameLast'] = 'Invalid field value';
-        }
+//        if (!$this->getNameLast()) {
+//            $errors['nameLast'] = 'Invalid field value';
+//        }
 
         if (!$this->getUsername()) {
             $errors['username'] = 'Invalid field username value';

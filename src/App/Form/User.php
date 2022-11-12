@@ -52,11 +52,13 @@ class User
 
         $group = 'left';
         $this->form->appendField(new Hidden('id'))->setGroup($group);
-        $this->form->appendField(new Input('nameFirst'))->setGroup($group);
-        $this->form->appendField(new Input('nameLast'))->setGroup($group)->setRequired();
-        $this->form->appendField(new Input('username'))->setGroup($group);
-        $this->form->appendField(new Input('password'))->setGroup($group)->setType('password');
-        $this->form->appendField(new Input('email'))->setGroup($group);
+        $list = array('-- Type --' => '', 'Admin' => 'admin', 'Member' => 'member');
+        $this->form->appendField(new Form\Field\Select('type', $list))->setGroup($group);
+        $this->form->appendField(new Input('nameFirst'))->setGroup($group)->setRequired();
+        $this->form->appendField(new Input('nameLast'))->setGroup($group);
+        $this->form->appendField(new Input('username'))->setGroup($group)->setRequired();
+        $this->form->appendField(new Input('password'))->setGroup($group)->setRequired()->setType('password');
+        $this->form->appendField(new Input('email'))->setGroup($group)->setRequired();
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
         $this->form->appendField(new Form\Field\Textarea('notes'))->setAttr('rows', '5')->setGroup($group);
 

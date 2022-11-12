@@ -19,7 +19,7 @@ try {
     // Setup Local Console Commands
     $app->add(new \App\Console\Cron());
     if (\Tk\Config::instance()->isDebug()) {
-        //$app->add(new \App\Console\TestData());
+        $app->add(new \App\Console\TestData());
         //$app->add(new \App\Console\Test());
     }
 

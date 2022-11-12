@@ -55,20 +55,22 @@
 
     <div class="tk-form-fields row g-3" var="fields"></div>
 
+    <div class="tk-actions d-grid gap-2 d-md-flex" var="actions"></div>
+
     <!--
         repeat: "{group|fieldset}-{group}"
         var:    "fields"
-         Groups and fieldset`s can be defined in the form template for positioning using a template repeat attr,
-         make sure the var="fields" is in the node you want the fields to be appended to.
+        Groups and fieldset`s  templates can be defined in the form template for positioning using a repeat,
+        make sure the var="fields" is in the node you want the fields to be appended to.
     -->
-    <div class="tk-actions d-grid gap-2 d-md-flex" var="fields" repeat="group-actions"></div>
+<!--    <div class="tk-actions d-grid gap-2 d-md-flex" var="fields" repeat="group-actions"></div>-->
 
   </form>
 
   <!--
-    Element template fragments.
+    Element, group and fieldset template fragments.
     Edit these to match the design framework you are using.
-    Make sure the var,choice,repeat attributes are set in the new templates
+    Make sure the var,choice,repeat attributes are set in the new templates as they are here
   -->
   <div class="row g-3">
 

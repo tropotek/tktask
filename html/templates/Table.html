@@ -47,7 +47,7 @@
       </table>
     </div>
 
-    <div class="tk-foot row" choice="foot"></div>
+    <div class="tk-foot row" choice="footer"></div>
   </form>
 
 </div>
@@ -55,6 +55,34 @@
   <button type="submit" class="btn btn-sm btn-light me-2" var="btn" id="tpl-action-button"><i var="icon" choice="icon"></i> <span var="text"></span></button>
   <a class="btn btn-sm btn-light me-2" var="btn" id="tpl-action-link"><i var="icon"></i> <span var="text"></span></a>
 
+  <div class="tk-results col" var="results" id="tpl-footer-results">
+    <small choice="values">
+      <span var="from"></span>-<span var="to"></span> of <span var="total"></span> rows
+    </small>
+  </div>
+
+  <nav class="tk-pager col" aria-label="Page Navigation" var="pager" id="tpl-footer-pager">
+    <ul class="pagination pagination-sm justify-content-center" choice="values">
+      <li class="page-item" var="start"><a class="page-link" href="javascript:;" var="startUrl" rel="nofollow">&lt;&lt;</a></li>
+      <li class="page-item" var="back"><a class="page-link" href="javascript:;" var="backUrl">&lt;</a></li>
+
+      <li class="page-item" repeat="page" var="page"><a class="page-link" href="javascript:;" var="pageUrl" rel="nofollow"></a></li>
+
+      <li class="page-item" var="next"><a class="page-link" href="javascript:;" var="nextUrl">&gt;</a></li>
+      <li class="page-item" var="end"><a class="page-link" href="javascript:;" var="endUrl" rel="nofollow">&gt;&gt;</a></li>
+    </ul>
+  </nav>
+
+  <div class="col" id="tpl-footer-limit">
+    <div class="row">
+      <div class="col" var="limit"></div>
+      <div class="tk-limit col-auto align-self-end" var="limit">
+        <select class="form-select form-select-sm" id="limit" choice="select">
+          <option value="0">-- ALL --</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

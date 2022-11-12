@@ -87,7 +87,7 @@ class Manager extends PageController
         //$this->table->appendCell(new Table\Cell\Summarize('notes'));
 
         $this->table->appendCell(new Table\Cell\Text('active'));
-        $this->table->appendCell(new Table\Cell\Text('modified'));
+        //$this->table->appendCell(new Table\Cell\Text('modified'));
         $this->table->appendCell(new Table\Cell\Text('created'));
 
 
@@ -103,11 +103,11 @@ class Manager extends PageController
         $this->filters->appendField(new Form\Action\Submit('Search', function (Form $form, Form\Action\ActionInterface $action) {
             $this->table->getTableSession()->set($this->filters->getId(), $form->getFieldValues());
             Uri::create()->redirect();
-        }));
+        }))->setGroup('');
         $this->filters->appendField(new Form\Action\Submit('Clear', function (Form $form, Form\Action\ActionInterface $action) {
             $this->table->getTableSession()->set($this->filters->getId(), []);
             Uri::create()->redirect();
-        }))->addCss('btn-secondary');
+        }))->setGroup('')->addCss('btn-secondary');
 
         $this->filters->execute($request->request->all());
 
@@ -119,11 +119,11 @@ class Manager extends PageController
 
 
         //$this->table->resetTableSession();
-        $tool = $this->table->getTool('created DESC');
+        $tool = $this->table->getTool('created DESC', 10);
 
         // Query
         $filter = $this->filters->getFieldValues();
-        vd($filter);
+        //vd($filter);
         $list = UserMap::create()->findFiltered($filter, $tool);
         $this->table->setList($list, $tool->getFoundRows());
 
@@ -139,6 +139,7 @@ class Manager extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
         $renderer = new TableRenderer($this->table, $this->makePath($this->getConfig()->get('template.path.table')));
+        //$renderer->setFooterEnabled(false);
         $this->table->addCss('table-hover');
 
         $this->filters->addCss('row gy-2 gx-3 align-items-center');
