@@ -38,7 +38,8 @@
     "ttek/tk-auth": "~8.0.0",
     "ttek/tk-domtemplate": "~8.0.0",
     "ttek/tk-table": "~8.0.0",
-    "ttek/tk-form": "~8.0.0"
+    "ttek/tk-form": "~8.0.0",
+    "ttek/tk-mail": "~8.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.x-dev",
