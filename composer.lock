@@ -1894,6 +1894,65 @@
             "time": "2022-11-02T09:08:04+00:00"
         },
         {
+            "name": "tinymce/tinymce",
+            "version": "6.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tinymce/tinymce-dist.git",
+                "reference": "396dc0d4c4a970918e5a4322c7957c90c85c4c4f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/396dc0d4c4a970918e5a4322c7957c90c85c4c4f",
+                "reference": "396dc0d4c4a970918e5a4322c7957c90c85c4c4f",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "scripts": [
+                        "tinymce.js",
+                        "plugins/*/plugin.js",
+                        "themes/*/theme.js",
+                        "models/*/model.js",
+                        "icons/*/icons.js"
+                    ],
+                    "files": [
+                        "tinymce.min.js",
+                        "plugins/*/plugin.min.js",
+                        "themes/*/theme.min.js",
+                        "models/*/model.min.js",
+                        "skins/**",
+                        "icons/*/icons.min.js"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT-only"
+            ],
+            "description": "Web based JavaScript HTML WYSIWYG editor control.",
+            "homepage": "https://www.tiny.cloud/",
+            "keywords": [
+                "contenteditable",
+                "editing",
+                "html",
+                "javascript",
+                "rich editor",
+                "rich text",
+                "rich text editor",
+                "richtext",
+                "rte",
+                "text",
+                "tinymce",
+                "wysiwyg"
+            ],
+            "support": {
+                "source": "https://github.com/tinymce/tinymce-dist/tree/6.2.0"
+            },
+            "time": "2022-09-08T04:15:30+00:00"
+        },
+        {
             "name": "ttek/tk-auth",
             "version": "8.0.x-dev",
             "source": {
@@ -1951,17 +2010,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "d3029c269aa39fecd182c9e416d5bdfe73462fcb"
+                "reference": "2f4a175d668bc06ce4a726a2b6c81c5602a8a1db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/d3029c269aa39fecd182c9e416d5bdfe73462fcb",
-                "reference": "d3029c269aa39fecd182c9e416d5bdfe73462fcb",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/2f4a175d668bc06ce4a726a2b6c81c5602a8a1db",
+                "reference": "2f4a175d668bc06ce4a726a2b6c81c5602a8a1db",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.0",
                 "studio-42/elfinder": "~2.1.0",
+                "tinymce/tinymce": "~6.2.0",
                 "ttek/tk-auth": "~8.0.0",
                 "ttek/tk-domtemplate": "~8.0.0",
                 "ttek/tk-form": "~8.0.0",

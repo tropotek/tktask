@@ -60,7 +60,7 @@ class User
         $this->form->appendField(new Input('password'))->setGroup($group)->setRequired()->setType('password');
         $this->form->appendField(new Input('email'))->setGroup($group)->setRequired();
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
-        $this->form->appendField(new Form\Field\Textarea('notes'))->setAttr('rows', '5')->setGroup($group);
+        $this->form->appendField(new Form\Field\Textarea('notes'))->addCss('mce')->setAttr('rows', '5')->setGroup($group);
 
         $this->form->appendField(new Form\Action\Link('back', Uri::create('/userManager')));
         $this->form->appendField(new Form\Action\Submit('save', [$this, 'doSubmit']));
@@ -91,7 +91,8 @@ class User
         $form->getSession()->getFlashBag()->add('success', 'Form save successfully.');
 
         if (!$form->getRequest()->headers->has('HX-Request')) {
-            $action->setRedirect(Uri::create('/userManager'));
+            $action->setRedirect(Uri::create());
+            //$action->setRedirect(Uri::create('/userManager'));
         }
     }
 

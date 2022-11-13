@@ -58,7 +58,9 @@ class FormEg extends PageController
 
         $this->form->appendField(new Form\Field\Textarea('notes'));
 
-        $this->form->appendField(new Form\Field\Textarea('tinyMce'));
+        $this->form->appendField(new Form\Field\Textarea('tinyMceMin'))->addCss('mce-min');
+
+        $this->form->appendField(new Form\Field\Textarea('tinyMce'))->addCss('mce');
 
 
         $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($files) {
