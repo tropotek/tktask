@@ -1,11 +1,19 @@
 
-
+/* TINY-MCE */
+/* Remove promotion button */
 .tox .tox-promotion {
   display: none;
 }
+/* Add disabled state */
+.mce .disabled,
+.mce-min .disabled {
+  background-color: #E9ECEF;
+}
+
 
 
 /***************** F O R M ******************/
+
 textarea {
   height: 150px;
 }
