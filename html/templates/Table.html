@@ -52,9 +52,12 @@
 
 </div>
 
+  <!-- Table action button templates -->
   <button type="submit" class="btn btn-sm btn-light me-2" var="btn" id="tpl-action-button"><i var="icon" choice="icon"></i> <span var="text"></span></button>
   <a class="btn btn-sm btn-light me-2" var="btn" id="tpl-action-link"><i var="icon"></i> <span var="text"></span></a>
 
+
+  <!-- Table footer item templates -->
   <div class="tk-results col" var="results" id="tpl-footer-results">
     <small choice="values">
       <span var="from"></span>-<span var="to"></span> of <span var="total"></span> rows
@@ -82,6 +85,17 @@
         </select>
       </div>
     </div>
+  </div>
+
+  <!-- Table cell templates -->
+  <div class="tk-orderBy text-center" var="orderBy" id="tpl-cell-orderBy">
+    <div class="btn-group" role="group">
+      <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
+      <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
+    </div>
+    <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPAgMAAABGuH3ZAAAACVBMVEX///8AAAAAM8wY6EL2AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfjCwYAHAmRFEi4AAAAH0lEQVQI12NgAANGEMHqACREA2Bc/ARYHVgHI8QIBgAy+QFeo6/RgQAAAABJRU5ErkJggg==" alt="Drag"/>
+    </a>
   </div>
 
 </body>

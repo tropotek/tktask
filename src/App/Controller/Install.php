@@ -21,15 +21,6 @@ class Install extends PageController
 
     public function doDefault(Request $request)
     {
-        $message = Message::create(
-            'This is a test message',
-            'Testing 1 2 3 4 ...',
-            'info@tropotek.com',
-            'info@tropotek.com'
-        );
-        $this->getFactory()->getMailGateway()?->send($message);
-
-
         return $this->getPage();
     }
 

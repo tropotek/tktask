@@ -36,12 +36,6 @@ class FormEg extends PageController
             ->setNotes('This is a select box');
         $files = $this->form->appendField(new Form\Field\File('attach'))->setNotes('Only upload valid files'); //->setMultiple(true);
 
-        $this->form->appendField(new Form\Field\Radio('radio', [
-            'Radio 1' => 'rb_1',
-            'Radio 2' => 'rb_2',
-            'Radio 3' => 'rb_3',
-            'Radio 4' => 'rb_4'
-        ]));
         $this->form->appendField(new Form\Field\Checkbox('active'));
         $this->form->appendField(new Form\Field\Checkbox('checkbox', [
             'Checkbox 1' => 'cb_1',
@@ -49,14 +43,22 @@ class FormEg extends PageController
             'Checkbox 3' => 'cb_3',
             'Checkbox 4' => 'cb_4'
         ]));
-        $this->form->appendField(new Form\Field\Checkbox('switch', [
-            'Switch 1' => 'sw_1',
-            'Switch 2' => 'sw_2',
-            'Switch 3' => 'sw_3',
-            'Switch 4' => 'sw_4'
-        ]))->setType('switch');
+//        $this->form->appendField(new Form\Field\Radio('radio', [
+//            'Radio 1' => 'rb_1',
+//            'Radio 2' => 'rb_2',
+//            'Radio 3' => 'rb_3',
+//            'Radio 4' => 'rb_4'
+//        ]));
+//        $this->form->appendField(new Form\Field\Checkbox('switch', [
+//            'Switch 1' => 'sw_1',
+//            'Switch 2' => 'sw_2',
+//            'Switch 3' => 'sw_3',
+//            'Switch 4' => 'sw_4'
+//        ]))->setType('switch');
 
         $this->form->appendField(new Form\Field\Textarea('notes'));
+
+        $this->form->appendField(new Form\Field\Textarea('tinyMce'));
 
 
         $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($files) {
