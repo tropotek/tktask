@@ -21,7 +21,7 @@
     ]
   },
   "scripts": {
-    "post-install-cmd": [,
+    "post-install-cmd": [
       "Tk\\Composer\\Installer::postInstall"
     ],
     "post-update-cmd": [
