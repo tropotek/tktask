@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fcb405d2eb026a5aadf18cbfb3901620",
+    "content-hash": "b32b064b0d1db9d60e586bb9ee30d72a",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -477,6 +477,74 @@
                 "source": "https://github.com/sensiolabs/ansi-to-html/tree/master"
             },
             "time": "2022-09-30T07:50:44+00:00"
+        },
+        {
+            "name": "studio-42/elfinder",
+            "version": "2.1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Studio-42/elFinder.git",
+                "reference": "31ad3c57e6fdbd155b69317d7ca1cca5ccd12391"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Studio-42/elFinder/zipball/31ad3c57e6fdbd155b69317d7ca1cca5ccd12391",
+                "reference": "31ad3c57e6fdbd155b69317d7ca1cca5ccd12391",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "suggest": {
+                "barryvdh/elfinder-flysystem-driver": "VolumeDriver for elFinder to use Flysystem as a root.",
+                "google/apiclient": "VolumeDriver GoogleDrive require `google/apiclient:^2.0.",
+                "kunalvarma05/dropbox-php-sdk": "VolumeDriver `Dropbox`2 require `kunalvarma05/dropbox-php-sdk.",
+                "nao-pon/flysystem-google-drive": "require in GoogleDrive network volume mounting with Flysystem."
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitry Levashov",
+                    "email": "dio@std42.ru",
+                    "homepage": "http://std42.ru"
+                },
+                {
+                    "name": "Troex Nevelin",
+                    "email": "troex@fury.scancode.ru",
+                    "homepage": "http://std42.ru"
+                },
+                {
+                    "name": "Naoki Sawada",
+                    "email": "hypweb+elfinder@gmail.com",
+                    "homepage": "http://xoops.hypweb.net"
+                },
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/Studio-42/elFinder/contributors"
+                }
+            ],
+            "description": "File manager for web",
+            "homepage": "http://elfinder.org",
+            "support": {
+                "issues": "https://github.com/Studio-42/elFinder/issues",
+                "source": "https://github.com/Studio-42/elFinder/tree/2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/nao-pon",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-09-01T00:39:57+00:00"
         },
         {
             "name": "symfony/console",
@@ -1876,6 +1944,61 @@
                 "source": "https://github.com/tropotek/tk-auth/tree/8.0"
             },
             "time": "2022-10-15T00:00:00+00:00"
+        },
+        {
+            "name": "ttek/tk-base",
+            "version": "8.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tropotek/tk-base.git",
+                "reference": "d3029c269aa39fecd182c9e416d5bdfe73462fcb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/d3029c269aa39fecd182c9e416d5bdfe73462fcb",
+                "reference": "d3029c269aa39fecd182c9e416d5bdfe73462fcb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "studio-42/elfinder": "~2.1.0",
+                "ttek/tk-auth": "~8.0.0",
+                "ttek/tk-domtemplate": "~8.0.0",
+                "ttek/tk-form": "~8.0.0",
+                "ttek/tk-framework": "~8.0.0",
+                "ttek/tk-mail": "~8.0.0",
+                "ttek/tk-table": "~8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Bs\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Mifsud",
+                    "homepage": "http://www.tropotek.com/"
+                }
+            ],
+            "description": "Base site library for the Tk lib",
+            "keywords": [
+                "tropotek"
+            ],
+            "support": {
+                "issues": "https://github.com/tropotek/tk-base/issues",
+                "source": "https://github.com/tropotek/tk-base/tree/8.0"
+            },
+            "time": "2022-11-13T00:00:00+00:00"
         },
         {
             "name": "ttek/tk-domtemplate",
