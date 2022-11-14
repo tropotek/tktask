@@ -23,8 +23,9 @@ let config = {
   vendorOrgUrl   : '{$this->getSystem()->makeUrl($this->getConfig()->get('path.vendor.org'))}',
   debug          : $isDebug,
   dateFormat: {
-    jquery:      'dd/mm/yy',
-    datepicker:  'dd/mm/yyyy'
+    jqDatepicker : 'dd/mm/yy',
+    bsDatepicker : 'dd/mm/yyyy',
+    sugarjs      : '%d/%m/%Y',
   }
 }
 

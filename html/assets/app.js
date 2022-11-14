@@ -1,99 +1,164 @@
-
+/**
+ * Init all application specific scripts here
+ *
+ *
+ */
 
 jQuery(function ($) {
 
-  //htmx.logAll();
+  // Init tkbase functionality
+  // comment/delete out the unused init scripts
+  tkbase.initSugar();
+  tkbase.initDialogConfirm();
+  tkbase.initTkInputLock();
+  tkbase.initDataToggle();
+  tkbase.initTinymce();
+  tkbase.initCodemirror();
 
-  if ($.fn.bsConfirm === undefined) {
-    $('[data-confirm]').on('click', document, function () {
-      return confirm($('<p>' + $(this).data('confirm') + '</p>').text());
-    });
-  } else {
-    $('[data-confirm]').bsConfirm();
-  }
-
-  // Trigger on finished request loads (ie: after a form submits)
-  $(document).on('htmx:afterSettle', '.toastPanel', function () {
-    $('.toast', this).toast('show');
-  });
-
-  // make instance
-  const mceElf = new tinymceElfinder({
-    // connector URL (Use elFinder Demo site's connector for this demo)
-    url: config.vendorOrgUrl + '/tk-base/assets/js/elfinder/connector.minimal.php',
-    // upload target folder hash for this tinyMCE
-    uploadTargetHash: 'l1_dGVzdA', // l3 MCE_Imgs on elFinder Demo site for this demo
-    // elFinder dialog node id
-    nodeId: 'elfinder'
-  });
-
-  tinymce.init({
-    selector: '.mce-min'
-  });
-
-function myCustomURLConverter(url, node, on_save) {
-  // Do some custom URL conversion
-  //url = url.substring(3);
-  let parts = url.split(config.baseUrl);
-  if (parts.length > 1) {
-    url = config.baseUrl + parts[1];
-  }
-  console.log(url);
-  console.log(on_save);
-  // Return new URL
-  return url;
-}
-
-
-
-// See this article for how to create plugins in custom paths and see if it works
-// Custom plugins: https://stackoverflow.com/questions/21779730/custom-plugin-in-custom-directory-for-tinymce-jquery-plugin
-
-  tinymce.init({
-    selector: '.mce',
-    height: 500,
-    //theme : "advanced",
-    plugins: [
-      'advlist', 'autolink', 'lists', 'link', 'image', 'media', 'charmap', 'preview',
-      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-      'insertdatetime', 'media', 'table', 'help', 'wordcount'
-    ],
-    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
-
-    toolbar1:
-      'bold italic backcolor | blocks | alignleft aligncenter ' +
-      'alignright alignjustify | bullist numlist outdent indent',
-    toolbar2:
-      'link image media | removeformat code | help',
-    // toolbar: 'undo redo | blocks | ' +
-    //   'bold italic backcolor | alignleft aligncenter ' +
-    //   'alignright alignjustify | bullist numlist outdent indent | ' +
-    //   'removeformat code | link image media | help',
-
-    // Optimisations
-    //button_tile_map: true,
-    //entity_encoding: 'raw',
-    //verify_html: false,
-
-
-    urlconverter_callback : function (url, node, on_save) {
-      let parts = url.split(config.baseUrl);
-      if (parts.length > 1) {
-        url = config.baseUrl + parts[1];
-      }
-      return url;
-    },
-
-    //file_picker_callback : _elFinderPickerCallback,
-    file_picker_callback : mceElf.browser,
-    images_upload_handler: mceElf.uploadHandler,
-    imagetools_cors_hosts: ['hypweb.net'] // set CORS for this demo
-  });
-
-
-
+  // Init app functionality
+  app.initHtmxToasts();
 
 
 });
 
 
+let app = function () {
+  "use strict";
+
+  /**
+   * remove focus on tab links
+   */
+  let initTabBlur = function () {
+    $(document).on('click', '.nav-tabs .nav-link', function () {
+      $(this).blur();
+    });
+  };
+
+  /**
+   * remove focus on menu links
+   */
+  let initHtmxToasts = function () {
+    // Enable HTMX logging in the console
+    //htmx.logAll();
+    // Trigger on finished request loads (ie: after a form submits)
+    $(document).on('htmx:afterSettle', '.toastPanel', function () {
+      $('.toast', this).toast('show');
+    });
+  };
+
+  /**
+   * Creates bootstrap tabs around the \Tk\Form renderer output
+   *
+   * @todo: update this to use the new Form groups no longer called tabGroups
+   */
+  let initTkFormTabs = function () {
+
+    function init() {
+      let form = $(this);
+      // create bootstrap tab elements around a tabbed form
+      form.find('.formTabs').each(function (id, tabContainer) {
+        let ul = $('<ul class="nav nav-tabs"></ul>');
+        let errorSet = false;
+
+        $(tabContainer).find('.tab-pane').each(function (i, tbox) {
+          let name = $(tbox).attr('data-name');
+          let li = $('<li class="nav-item"></li>');
+          let a = $('<a class="nav-link"></a>');
+          a.attr('href', '#' + tbox.id);
+          a.attr('data-toggle', 'tab');
+          a.text(name);
+          li.append(a);
+
+          // Check for errors
+          if ($(tbox).find('.has-error, .is-invalid').length) {
+            li.addClass('has-error');
+          }
+          if (i === 0) {
+            $(tbox).addClass('active');
+            li.addClass('active');
+            a.addClass('active');
+          }
+          ul.append(li);
+        });
+        $(tabContainer).prepend(ul);
+        $(tabContainer).find('li.has-error a');
+
+        //$(tabContainer).find('li.has-error a').tab('show'); // shows last error tab
+        $(tabContainer).find('li.has-error a').first().tab('show');   // shows first error tab
+      });
+
+      // Deselect tab
+      form.find('.formTabs li a').on('click', function (e) {
+        $(this).trigger('blur');
+      });
+    }
+    $('form').on('init', document, init).each(init);
+
+  };
+
+  /**
+   * Create a bootstrap 3 panel around a div. Update the template to add your own panel
+   * Div Eg:
+   *   <div class="tk-panel" data-panel-title="Panel Title" data-panel-icon="fa fa-building-o"></div>
+   * @todo Update/Remove this if not needed
+   */
+  let initTkPanel = function () {
+
+    if (config.tkPanel === undefined) {
+      config.tkPanel = {};
+    }
+    if (config.tkPanel.template === undefined) {
+      config.tkPanel.template =
+        '<div class="panel panel-default">\n' +
+        '  <div class="panel-heading"><i class="tp-icon"></i> <span class="tp-title"></span></div>\n' +
+        '  <div class="tp-body panel-body"></div>\n' +
+        '</div>';
+    }
+
+    $('.tk-panel').each(function () {
+      let element = $(this);
+      element.hide();
+      let defaults = {
+        panelTemplate: config.tkPanel.template
+      };
+      let settings = $.extend({}, defaults, element.data());
+      if (settings.panelTitle === undefined && $('.page-header').length) {
+        if ($('.page-header .page-title').length) {
+          settings.panelTitle = $('.page-header .page-title').text();
+        } else {
+          settings.panelTitle = $('.page-header').text();
+        }
+      }
+      let tpl = $(settings.panelTemplate);
+      tpl.addClass(element.attr('class'));
+      element.attr('class', 'tk-panel-org');
+
+      tpl.hide();
+      if (settings.panelIcon !== undefined) {
+        tpl.find('.tp-icon').addClass(settings.panelIcon);
+      }
+      if (settings.panelTitle !== undefined) {
+        tpl.find('.tp-title').text(settings.panelTitle);
+      }
+      if (element.find('.tk-panel-title-right')) {
+        element.find('.tk-panel-title-right').addClass('pull-right float-right');
+        tpl.find('.tp-title').parent().append(element.find('.tk-panel-title-right'));
+        //tpl.find('.tp-title').parent().parent().append(element.find('.tk-panel-title-right'));
+      }
+      element.before(tpl);
+      element.detach();
+      tpl.find('.tp-body').append(element);
+      element.show();
+      tpl.show();
+
+    });
+  };
+
+  return {
+    initTabBlur: initTabBlur,
+    initHtmxToasts: initHtmxToasts,
+    initTkFormTabs: initTkFormTabs,
+    initTkPanel: initTkPanel,
+  }
+
+}();

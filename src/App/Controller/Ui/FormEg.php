@@ -28,8 +28,8 @@ class FormEg extends PageController
         $this->form = Form::create('test');
         $this->form->appendField(new Form\Field\Hidden('hidden'))->setLabel('Hide Me!');
 
-        $this->form->appendField(new Form\Field\Input('email'))->setType('email')->setAttr('data-foo', 'Foo is good!!');
-        $this->form->appendField(new Form\Field\Input('password'));
+        $this->form->appendField(new Form\Field\Input('email'))->setType('email');
+        $this->form->appendField(new Form\Field\Input('test'));
         $this->form->appendField(new Form\Field\Input('address'))->setNotes('Only upload valid addresses');
         $list = ['-- Select --' => '', 'VIC' => 'Victoria', 'NSW' => 'New South Wales', 'WA' => 'Western Australia'];
         $this->form->appendField(new Form\Field\Select('state', $list))
@@ -58,17 +58,17 @@ class FormEg extends PageController
 
         $this->form->appendField(new Form\Field\Textarea('notes'));
 
-        $this->form->appendField(new Form\Field\Textarea('tinyMceMin'))->addCss('mce-min');
+        //$this->form->appendField(new Form\Field\Textarea('tinyMceMin'))->addCss('mce-min');
 
-        $this->form->appendField(new Form\Field\Textarea('tinyMce'))->addCss('mce');
+        //$this->form->appendField(new Form\Field\Textarea('tinyMce'))->addCss('mce');
 
 
+        $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
         $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($files) {
             vd($this->form->getFieldValues());
             vd($files->getValue());
             $action->setRedirect(Uri::create());
         }));
-        $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
 
 
         $load = [
@@ -95,7 +95,7 @@ class FormEg extends PageController
 
         // Setup field group widths with bootstrap classes
         $this->form->getField('email')->setFieldAttr('class', 'col-6');
-        $this->form->getField('password')->setFieldAttr('class', 'col-6');
+        $this->form->getField('test')->setFieldAttr('class', 'col-6');
         $this->form->getField('address')->setFieldAttr('class', 'col-8');
         $this->form->getField('state')->setFieldAttr('class', 'col-4');
 
