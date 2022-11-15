@@ -1,23 +1,18 @@
 <?php
-namespace App\Controller\User;
+namespace App\Controller\Examples;
 
-use App\Db\User;
 use App\Db\UserMap;
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Exception;
-use Tk\Form;
-use Tk\FormRenderer;
-use Tk\Form\Field\Input;
-use Tk\Form\Field\Checkbox;
 use Tk\Uri;
 
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class EditNew extends PageController
+class EditHtmx extends PageController
 {
 
     protected \App\Form\User $form;

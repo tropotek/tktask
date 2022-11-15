@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Examples;
 
 use Dom\Mvc\PageController;
 use Dom\Template;

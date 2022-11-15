@@ -1,7 +1,6 @@
 <?php
 namespace App\Ui;
 
-
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\CallbackCollection;

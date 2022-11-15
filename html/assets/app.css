@@ -62,8 +62,8 @@ th a {
   padding-right: 18px;
   position: relative;
 }
-a:before,
-a:after {
+th a:before,
+th a:after {
   border: 4px solid transparent;
   content: "";
   display: block;
@@ -73,11 +73,11 @@ a:after {
   position: absolute;
   width: 0;
 }
-a.desc:before {
+th a.desc:before {
   border-bottom-color: #666;
   margin-top: -9px;
 }
-a.asc:after {
+th a.asc:after {
   border-top-color: #666;
   margin-top: 1px;
 }

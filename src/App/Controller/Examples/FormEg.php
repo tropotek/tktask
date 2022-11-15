@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Ui;
+namespace App\Controller\Examples;
 
 use Dom\Mvc\PageController;
 use Dom\Template;
@@ -99,7 +99,7 @@ class FormEg extends PageController
         $this->form->getField('address')->setFieldAttr('class', 'col-8');
         $this->form->getField('state')->setFieldAttr('class', 'col-4');
 
-        $formRenderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('template.path.form')));
+        $formRenderer = new FormRenderer($this->form);
         $template->appendTemplate('content', $formRenderer->show());
 
         return $template;

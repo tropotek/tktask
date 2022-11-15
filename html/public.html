@@ -28,10 +28,13 @@
   <script src="/vendor/ttek/tk-base/assets/js/include/sugar.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/sugar.min.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
+
   <script src="/vendor/tinymce/tinymce/tinymce.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/elfinder/tinymceElfinder.js"></script>
   <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tinymce.min.js"></script>
+
   <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
   <script src="/html/assets/app.js"></script>
 
@@ -48,25 +51,26 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" style="--bs-scroll-height: 100px;">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/home">Home</a>
           </li>
           <li class="nav-item" choice="loggedIn">
             <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/domTest">DomTest</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Examples
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/domTest">DomTest</a></li>
+              <li><a class="dropdown-item" href="/htmx">HTMX</a></li>
+              <li><a class="dropdown-item" href="/ui/form">Form</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/info">Info</a></li>
+            </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/info">Info</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/htmx">HTMX</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/ui/form">Form</a>
-          </li>
+
           <li class="nav-item" choice="loggedIn">
             <a class="nav-link" href="/userManager">Users</a>
           </li>

@@ -1,12 +1,9 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Examples;
 
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Tk\Exception;
-use Tk\Str;
-use Tk\Uri;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>

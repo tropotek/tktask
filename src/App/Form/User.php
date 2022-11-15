@@ -64,11 +64,11 @@ class User
         $this->form->appendField(new Input('email'))->setGroup($group)->setRequired();
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
         $this->form->appendField(new Form\Field\Textarea('notes'))
-            ->addCss('mce')->setAttr('rows', '5')->setGroup($group);
+            ->addCss('mce')->setAttr('data-elfinder-path', '/exampleFolder')
+            ->setAttr('rows', '5')->setGroup($group);
 
         $this->form->appendField(new Form\Action\Link('back', Uri::create('/userManager')));
         $this->form->appendField(new Form\Action\Submit('save', [$this, 'doSubmit']));
-        //$this->form->appendField(new Form\Action\Submit('save', 'App\Controller\User\FormView::doSubmit'));
 
         $load = [];
         $this->user->getMapper()->getFormMap()->loadArray($load, $this->user);
@@ -110,7 +110,7 @@ class User
         //$this->form->getField('password')->setAttr('readonly')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
         //$this->form->getField('password')->setReadonly(true)->setAttr('onfocus', 'this.removeAttribute(\'readonly\');');
 
-        $this->renderer = new FormRenderer($this->form, $this->makePath($this->getConfig()->get('template.path.form')));
+        $this->renderer = new FormRenderer($this->form);
 
         return $this->renderer->show();
     }

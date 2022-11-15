@@ -72,10 +72,11 @@ class Manager extends PageController
             $obj = $cell->getRow()->getData();
             $cell->setUrl('/userEdit/'.$obj->getId());
         });
-        $this->table->appendCell(new Table\Cell\Text('nameFirst'))->addOnShow(function (Table\Cell\Text $cell) {
-            $obj = $cell->getRow()->getData();
-            $cell->setUrl('/nUserEdit/'.$obj->getId());
-        });
+        $this->table->appendCell(new Table\Cell\Text('nameFirst'));
+//        ->addOnShow(function (Table\Cell\Text $cell) {
+//            $obj = $cell->getRow()->getData();
+//            $cell->setUrl('/nUserEdit/'.$obj->getId());
+//        });
         $this->table->appendCell(new Table\Cell\Text('nameLast'));
         $this->table->appendCell(new Table\Cell\Text('type'));
         $this->table->appendCell(new Table\Cell\Text('email'))->addOnShow(function (Table\Cell\Text $cell) {
@@ -142,12 +143,12 @@ class Manager extends PageController
         $this->table->getRow()->addCss('text-nowrap');
         $template->setText('title', $this->getPage()->getTitle());
 
-        $renderer = new TableRenderer($this->table, $this->makePath($this->getConfig()->get('template.path.table')));
+        $renderer = new TableRenderer($this->table);
         //$renderer->setFooterEnabled(false);
         $this->table->addCss('table-hover');
 
         $this->filters->addCss('row gy-2 gx-3 align-items-center');
-        $filterRenderer = new FormRenderer($this->filters, $this->makePath($this->getConfig()->get('template.path.form.inline')));
+        $filterRenderer = FormRenderer::createInlineRenderer($this->filters);
         $renderer->getTemplate()->appendTemplate('filters', $filterRenderer->show());
         $renderer->getTemplate()->setVisible('filters');
 
