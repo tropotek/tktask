@@ -35,12 +35,11 @@ class User
     public function doDefault(Request $request, $id)
     {
         $this->user = new \App\Db\User();
-
         if ($id) {
             $this->user = UserMap::create()->find($id);
-        }
-        if (!$this->user) {
-            throw new Exception('Invalid User ID: ' . $id);
+            if (!$this->user) {
+                throw new Exception('Invalid User ID: ' . $id);
+            }
         }
 
         if ($request->headers->has('HX-Request')) {
@@ -56,16 +55,16 @@ class User
         $this->form->appendField(new Form\Field\Select('type', $list))->setGroup($group);
         $this->form->appendField(new Input('nameFirst'))->setGroup($group)->setRequired();
         $this->form->appendField(new Input('nameLast'))->setGroup($group);
-        $this->form->appendField(new Input('username'))->setGroup($group)->setRequired();
-        $this->form->appendField(new Input('password'))
-            ->setGroup($group)->setRequired()->addCss('tk-input-lock')->setType('password');
+        $this->form->appendField(new Input('username'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
+//        $this->form->appendField(new Input('password'))
+//            ->setGroup($group)->setRequired()->setType('password');
 
 
-        $this->form->appendField(new Input('email'))->setGroup($group)->setRequired();
+        $this->form->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
-        $this->form->appendField(new Form\Field\Textarea('notes'))
-            ->addCss('mce')->setAttr('data-elfinder-path', '/exampleFolder')
-            ->setAttr('rows', '5')->setGroup($group);
+        $this->form->appendField(new Form\Field\Textarea('notes'))->setGroup($group)
+            //->setAttr('data-elfinder-path', '/exampleFolder')
+            ->addCss('mce');
 
         $this->form->appendField(new Form\Action\Link('back', Uri::create('/userManager')));
         $this->form->appendField(new Form\Action\Submit('save', [$this, 'doSubmit']));
@@ -106,9 +105,7 @@ class User
         $this->form->getField('nameFirst')->setFieldAttr('class', 'col-6');
         $this->form->getField('nameLast')->setFieldAttr('class', 'col-6');
         $this->form->getField('username')->setFieldAttr('class', 'col-6');
-        $this->form->getField('password')->setFieldAttr('class', 'col-6');
-        //$this->form->getField('password')->setAttr('readonly')->setAttr('onfocus', "this.removeAttribute('readonly');this.removeAttribute('placeholder');");
-        //$this->form->getField('password')->setReadonly(true)->setAttr('onfocus', 'this.removeAttribute(\'readonly\');');
+        $this->form->getField('email')->setFieldAttr('class', 'col-6');
 
         $this->renderer = new FormRenderer($this->form);
 
