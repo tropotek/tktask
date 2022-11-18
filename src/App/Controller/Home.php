@@ -28,6 +28,7 @@ class Home extends PageController
         $reg->save();
         vd('test');
         vdd($reg->all());
+        console.log('---');
 
 
         return $this->getPage();
