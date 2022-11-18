@@ -26,10 +26,6 @@ class Home extends PageController
         }
         $reg = $this->getFactory()->getRegistry();
         $reg->save();
-        vd('test');
-        vdd($reg->all());
-        console.log('---');
-
 
         return $this->getPage();
     }
