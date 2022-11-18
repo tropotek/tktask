@@ -24,11 +24,10 @@ class Home extends PageController
         if ($request->query->has('e')) {
             throw new Exception('This is a test exception...', 500);
         }
-        
+
         $reg = $this->getFactory()->getRegistry();
         $reg->save();
-
-
+        
         return $this->getPage();
     }
 
