@@ -25,11 +25,11 @@ class Home extends PageController
             throw new Exception('This is a test exception...', 500);
         }
         $reg = $this->getFactory()->getRegistry();
-        $reg->save();
-
         vd('test');
         vd($reg->all());
-        
+        $reg->save();
+
+
         return $this->getPage();
     }
 
