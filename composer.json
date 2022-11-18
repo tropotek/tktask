@@ -2,7 +2,9 @@
   "name": "ttek/tk8base",
   "type": "project",
   "description": "A base example site using the tropotek tk v8 libs.",
-  "keywords": ["tropotek"],
+  "keywords": [
+    "tropotek"
+  ],
   "time": "2022-10-17",
   "license": "MIT",
   "minimum-stability": "dev",
@@ -50,6 +52,9 @@
   "config": {
     "allow-plugins": {
       "ttek/tk-installers": true
+    },
+    "preferred-install": {
+      "ttek/*": "source"
     }
   }
 }

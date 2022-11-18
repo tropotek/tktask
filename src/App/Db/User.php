@@ -27,7 +27,7 @@ class User extends Model
     const TYPE_MEMBER = 'member';
 
 
-    public int $id = 0;
+    public int $userId = 0;
 
     public string $uid = '';
 
@@ -60,6 +60,17 @@ class User extends Model
     {
         $this->modified = Date::create();
         $this->created = Date::create();
+    }
+
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(int $userId): User
+    {
+        $this->userId = $userId;
+        return $this;
     }
 
     public function getUid(): string

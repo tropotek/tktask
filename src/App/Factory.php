@@ -6,13 +6,14 @@ use Dom\Mvc\Loader;
 use Dom\Mvc\Modifier;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Auth\Adapter\AdapterInterface;
+use Tk\Auth\Adapter\DbTable;
 use Tk\Auth\Auth;
 use Tk\Auth\FactoryInterface;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Factory extends \Tk\Factory implements FactoryInterface
+class Factory extends \Bs\Factory implements FactoryInterface
 {
 
     public function getPublicPage(): Page
@@ -105,11 +106,12 @@ class Factory extends \Tk\Factory implements FactoryInterface
      */
     public function getAuthAdapter(): AdapterInterface
     {
-        if (!$this->has('authAdapter')) {
-            $adapter = new \Tk\Auth\Adapter\Config('admin', hash('md5', 'password'));
-            $this->set('authAdapter', $adapter);
-        }
-        return $this->get('authAdapter');
+        return parent::getAuthAdapter();
+//        if (!$this->has('authAdapter')) {
+//            $adapter = new \Tk\Auth\Adapter\Config('admin', hash('md5', 'password'));
+//            $this->set('authAdapter', $adapter);
+//        }
+//        return $this->get('authAdapter');
     }
 
     /**
@@ -117,7 +119,7 @@ class Factory extends \Tk\Factory implements FactoryInterface
      * Override this method in your own site's Factory object
      * @return null|mixed Null if no user logged in
      */
-    public function getAuthUser()
+    public function getAuthUser(): mixed
     {
         if (!$this->has('authUser')) {
             if ($this->getAuthController()->hasIdentity()) {

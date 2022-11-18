@@ -22,7 +22,7 @@ class UserMap extends Mapper
             $map = new DataMap();
             // TODO: These should be the default ID key names {object}Id / {table_name}_id
             //$map->addDataType(new Db\Integer('userId', 'user_id'));
-            $map->addDataType(new Db\Integer('id', 'user_id'));
+            $map->addDataType(new Db\Integer('userId', 'user_id'));
             $map->addDataType(new Db\Text('uid'));
             $map->addDataType(new Db\Text('type'));
             $map->addDataType(new Db\Text('username'));

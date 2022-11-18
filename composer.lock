@@ -2010,12 +2010,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "06684ef27cd88f4bbeeb4d313ff328b944082f75"
+                "reference": "3128c27f1b96aacf778120b07e763fd001e8d05e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/06684ef27cd88f4bbeeb4d313ff328b944082f75",
-                "reference": "06684ef27cd88f4bbeeb4d313ff328b944082f75",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/3128c27f1b96aacf778120b07e763fd001e8d05e",
+                "reference": "3128c27f1b96aacf778120b07e763fd001e8d05e",
                 "shasum": ""
             },
             "require": {
