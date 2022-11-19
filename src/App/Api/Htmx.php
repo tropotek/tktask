@@ -18,7 +18,7 @@ class Htmx
     public function doTest(Request $request)
     {
         sleep(1);
-        vd(apache_request_headers());
+        //vd(apache_request_headers());
         $q = $request->request->get('q');
         return "<p>The search string was: <b>$q</b></p>";
     }
@@ -77,7 +77,7 @@ HTML;
     public function doUpload(Request $request)
     {
         //sleep(1);
-        vd('Upload: ', $request->request->all());
+        //vd('Upload: ', $request->request->all());
         if ($request->files->count()) {
             vd($request->files->all());
 
