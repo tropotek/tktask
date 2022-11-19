@@ -11,18 +11,16 @@ use Symfony\Component\Routing\Loader\Configurator\CollectionConfigurator;
 return function (CollectionConfigurator $routes) {
 
 
-    $routes->add('index', '/')
+    $routes->add('home-base', '/')
         ->controller([\App\Controller\Home::class, 'doDefault']);
     $routes->add('home', '/home')
         ->controller([\App\Controller\Home::class, 'doDefault']);
 
-    $routes->add('login', '/login')
-        ->controller([\App\Controller\Login::class, 'doDefault']);
-    $routes->add('logout', '/logout')
-        ->controller([\App\Controller\Login::class, 'doLogout']);
-
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
+
+
+
 
 
     // API Endpoints
@@ -40,8 +38,6 @@ return function (CollectionConfigurator $routes) {
 
     // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
 
-    $routes->add('install', '/install')
-        ->controller([\App\Controller\Install::class, 'doDefault']);
 
     $routes->add('user-manager', '/userManager')
         ->controller([\App\Controller\User\Manager::class, 'doDefault']);

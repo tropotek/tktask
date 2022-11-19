@@ -4,22 +4,21 @@
  *
  */
 
-jQuery(function ($) {
-
-  // Init tkbase functionality
-  // comment/delete out the unused init scripts
-  tkbase.initSugar();
-  tkbase.initDialogConfirm();
-  tkbase.initTkInputLock();
-  tkbase.initDataToggle();
-  tkbase.initTinymce();
-  tkbase.initCodemirror();
-
-  // Init app functionality
-  app.initHtmxToasts();
-
-
-});
+// Put this into the app page templates
+// jQuery(function ($) {
+//
+//   // Init page javascript functions
+//   tkbase.initSugar();
+//   tkbase.initDialogConfirm();
+//   tkbase.initTkInputLock();
+//   tkbase.initDataToggle();
+//   tkbase.initTinymce();
+//   tkbase.initCodemirror();
+//
+//   // Init app functionality
+//   app.initHtmxToasts();
+//
+// });
 
 
 let app = function () {

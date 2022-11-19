@@ -9,7 +9,7 @@ use Dom\Mvc\Modifier\PageBytes;
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Dispatch extends \Tk\Mvc\Dispatch
+class Dispatch extends \Bs\Dispatch
 {
 
     /**
@@ -29,11 +29,6 @@ class Dispatch extends \Tk\Mvc\Dispatch
     {
         parent::httpInit();
 
-        $this->getDispatcher()->addSubscriber(new ViewHandler($this->getFactory()->getTemplateModifier()));
-        $this->getDispatcher()->addSubscriber(new PageBytesHandler(
-            $this->getFactory()->getLogger(),
-            $this->getFactory()->getTemplateModifier()->getFilter('pageBytes')
-        ));
 
     }
 
