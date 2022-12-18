@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS user
   user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   uid VARCHAR(128) NOT NULL DEFAULT '',
   type VARCHAR(32) NOT NULL DEFAULT '',
+  username VARCHAR(128) NOT NULL DEFAULT '',
+  password VARCHAR(128) NOT NULL DEFAULT '',
   email VARCHAR(255) NOT NULL DEFAULT '',
   title VARCHAR(16) NOT NULL DEFAULT '',
   first_name VARCHAR(128) NOT NULL DEFAULT '',
@@ -28,16 +30,17 @@ CREATE TABLE IF NOT EXISTS user
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   KEY (uid),
   KEY (type),
-  KEY (email)
+  KEY (email),
+  UNIQUE KEY (username)
 ) ENGINE=InnoDB;
 
 
 -- SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE user;
-INSERT INTO user (type, email, title, first_name, last_name, timezone, hash) VALUES
-   ('admin', 'admin@example.com', '', 'Administrator', '', NULL, MD5(CONCAT('admin', user_id))),
-   ('admin', 'beketts@example.com', '', 'Moderator', '', 'Australia/Melbourne', MD5(CONCAT('moderator', user_id))),
-   ('member', 'user@example.com', 'Mr', 'User', 'One', 'Australia/Brisbane', MD5(CONCAT('user', user_id)))
+INSERT INTO user (type, username, email, title, first_name, last_name, timezone, hash) VALUES
+   ('admin', 'admin', 'admin@example.com', '', 'Administrator', '', NULL, MD5(CONCAT('admin', user_id))),
+   ('admin', 'mod', 'moderator@example.com', '', 'Moderator', '', 'Australia/Melbourne', MD5(CONCAT('moderator', user_id))),
+   ('member', 'user', 'user@example.com', 'Mr', 'User', 'One', 'Australia/Brisbane', MD5(CONCAT('user', user_id)))
 ;
 
 

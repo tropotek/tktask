@@ -1,6 +1,7 @@
 <?php
 namespace App\Db;
 
+use Bs\Db\UserInterface;
 use Tk\Date;
 use Tk\Db\Mapper\Model;
 
@@ -8,7 +9,7 @@ use Tk\Db\Mapper\Model;
  *
  * @author Tropotek <http://www.tropotek.com/>
  */
-class User extends Model
+class User extends Model implements UserInterface
 {
 
     /**
@@ -37,17 +38,23 @@ class User extends Model
 
     public string $password = '';
 
-    public string $nameFirst = '';
-
-    public string $nameLast = '';
-
     public string $email = '';
+
+    public string $title = '';
+
+    public string $firstName = '';
+
+    public string $lastName = '';
+
+    public string $timezone = '';
+
+    public bool $active = true;
 
     public string $notes = '';
 
-    public ?\DateTime $lastLogin = null;
+    public string $hash = '';
 
-    public bool $active = true;
+    public ?\DateTime $lastLogin = null;
 
     public bool $del = false;
 
@@ -60,6 +67,7 @@ class User extends Model
     {
         $this->modified = Date::create();
         $this->created = Date::create();
+        $this->timezone = $this->getConfig()->get('php.date.timezone');
     }
 
     public function getUserId(): int
@@ -129,47 +137,6 @@ class User extends Model
         return $this;
     }
 
-    public function getName(): string
-    {
-        $name = trim($this->getNameFirst() . ' ' . $this->getNameLast());
-        if (!trim($name)) $name = $this->getUsername();
-        return $name;
-    }
-
-    public function setName(?string $name): User
-    {
-        $name = trim($name);
-        if ( preg_match('/\s/',$name) ) {
-            $this->setNameFirst(substr($name, 0, strpos($name, ' ')));
-            $this->setNameLast(substr($name, strpos($name, ' ') + 1));
-        } else {
-            $this->setNameFirst($name);
-        }
-        return $this;
-    }
-
-    public function getNameFirst(): string
-    {
-        return $this->nameFirst;
-    }
-
-    public function setNameFirst(string $nameFirst): User
-    {
-        $this->nameFirst = $nameFirst;
-        return $this;
-    }
-
-    public function getNameLast(): string
-    {
-        return $this->nameLast;
-    }
-
-    public function setNameLast(string $nameLast): User
-    {
-        $this->nameLast = $nameLast;
-        return $this;
-    }
-
     public function getEmail(): string
     {
         return $this->email;
@@ -178,6 +145,83 @@ class User extends Model
     public function setEmail(?string $email): User
     {
         $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     * @return User
+     */
+    public function setTitle(string $title): User
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        $name = trim($this->getFirstName() . ' ' . $this->getLastName());
+        if (!trim($name)) $name = $this->getUsername();
+        return $name;
+    }
+
+    public function setName(?string $name): User
+    {
+        $name = trim($name);
+        if ( preg_match('/\s/',$name) ) {
+            $this->setFirstName(substr($name, 0, strpos($name, ' ')));
+            $this->setLastName(substr($name, strpos($name, ' ') + 1));
+        } else {
+            $this->setFirstName($name);
+        }
+        return $this;
+    }
+
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): User
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): User
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimezone(): string
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * @param string $timezone
+     * @return User
+     */
+    public function setTimezone(string $timezone): User
+    {
+        $this->timezone = $timezone;
         return $this;
     }
 
@@ -199,14 +243,32 @@ class User extends Model
         return $this;
     }
 
-    public function isDel(): bool
+    public function isActive(): bool
     {
-        return $this->del;
+        return $this->active;
     }
 
-    public function setDel(bool $del): User
+    public function setActive(bool $active): User
     {
-        $this->del = $del;
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash(): string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param string $hash
+     * @return User
+     */
+    public function setHash(string $hash): User
+    {
+        $this->hash = $hash;
         return $this;
     }
 
@@ -221,14 +283,14 @@ class User extends Model
         return $this;
     }
 
-    public function isActive(): bool
+    public function isDel(): bool
     {
-        return $this->active;
+        return $this->del;
     }
 
-    public function setActive(bool $active): User
+    public function setDel(bool $del): User
     {
-        $this->active = $active;
+        $this->del = $del;
         return $this;
     }
 
@@ -252,7 +314,7 @@ class User extends Model
         $errors = [];
         $mapper = $this->getMapper();
 
-        if (!$this->getNameFirst()) {
+        if (!$this->getFirstName()) {
             $errors['nameFirst'] = 'Invalid field value';
         }
 //        if (!$this->getNameLast()) {
@@ -272,4 +334,14 @@ class User extends Model
         }
         return $errors;
     }
+
+
+
+    public static function findByIdentity(string $identity): mixed
+    {
+        vd($identity);
+
+        return null;
+    }
+
 }

@@ -30,8 +30,8 @@ class TestData extends \Tk\Console\Command\TestData
         $db->exec('DELETE FROM `user` WHERE `notes` = \'***\' ');
         for($i = 0; $i < 250; $i++) {
             $obj = new \App\Db\User();
-            $obj->setNameFirst($this->createName());
-            $obj->setNameLast($this->createName());
+            $obj->setFirstName($this->createName());
+            $obj->setLastName($this->createName());
             do {
                 $obj->setUsername(strtolower($this->createName()) . '.' . rand(1000, 10000000));
             } while(\App\Db\UserMap::create()->findByUsername($obj->getUsername()) != null);

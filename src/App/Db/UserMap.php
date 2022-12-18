@@ -27,12 +27,16 @@ class UserMap extends Mapper
             $map->addDataType(new Db\Text('type'));
             $map->addDataType(new Db\Text('username'));
             $map->addDataType(new Db\Text('password'));
-            $map->addDataType(new Db\Text('nameFirst', 'name_first'));
-            $map->addDataType(new Db\Text('nameLast', 'name_last'));
             $map->addDataType(new Db\Text('email'));
+            $map->addDataType(new Db\Text('title'));
+            $map->addDataType(new Db\Text('firstName', 'first_name'));
+            $map->addDataType(new Db\Text('lastName', 'last_name'));
+            $map->addDataType(new Db\Text('timezone'));
             $map->addDataType(new Db\Text('notes'));
-            $map->addDataType(new Db\Date('lastLogin', 'last_login'));
             $map->addDataType(new Db\Boolean('active'));
+            $map->addDataType(new Db\Text('hash'));
+            $map->addDataType(new Db\Date('lastLogin', 'last_login'));
+            $map->addDataType(new Db\Boolean('del'));
             $map->addDataType(new Db\Date('modified'));
             $map->addDataType(new Db\Date('created'));
             $del = $map->addDataType(new Db\Boolean('del'));
@@ -47,9 +51,11 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('type'));
             $map->addDataType(new Form\Text('username'));
             $map->addDataType(new Form\Text('password'));
-            $map->addDataType(new Form\Text('nameFirst'));
-            $map->addDataType(new Form\Text('nameLast'));
             $map->addDataType(new Form\Text('email'));
+            $map->addDataType(new Form\Text('title'));
+            $map->addDataType(new Form\Text('firstName'));
+            $map->addDataType(new Form\Text('lastName'));
+            $map->addDataType(new Form\Text('timezone'));
             $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Form\Boolean('active'));
             $this->addDataMap(self::DATA_MAP_FORM, $map);
@@ -62,9 +68,11 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('type'));
             $map->addDataType(new Form\Text('username'));
             $map->addDataType(new Form\Text('password'));
-            $map->addDataType(new Form\Text('nameFirst'));
-            $map->addDataType(new Form\Text('nameLast'));
             $map->addDataType(new Form\Text('email'));
+            $map->addDataType(new Form\Text('title'));
+            $map->addDataType(new Form\Text('firstName'));
+            $map->addDataType(new Form\Text('lastName'));
+            $map->addDataType(new Form\Text('timezone'));
             $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Table\Boolean('active'));
             $map->addDataType(new Form\Date('modified'))->setDateFormat('d/m/Y h:i:s');
@@ -94,8 +102,8 @@ class UserMap extends Mapper
             $kw = '%' . $this->getDb()->escapeString($filter['search']) . '%';
             $w = '';
             $w .= sprintf('a.uid LIKE %s OR ', $this->quote($kw));
-            $w .= sprintf('a.name_first LIKE %s OR ', $this->quote($kw));
-            $w .= sprintf('a.name_last LIKE %s OR ', $this->quote($kw));
+            $w .= sprintf('a.first_name LIKE %s OR ', $this->quote($kw));
+            $w .= sprintf('a.last_name LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.username LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.email LIKE %s OR ', $this->quote($kw));
             if (is_numeric($filter['search'])) {
@@ -125,14 +133,6 @@ class UserMap extends Mapper
 
         if (!empty($filter['email'])) {
             $filter->appendWhere('a.email = %s AND ', $this->quote($filter['email']));
-        }
-
-        if (!empty($filter['nameFirst'])) {
-            $filter->appendWhere('a.name_first = %s AND ', $this->quote($filter['nameFirst']));
-        }
-
-        if (!empty($filter['nameLast'])) {
-            $filter->appendWhere('a.name_last = %s AND ', $this->quote($filter['nameLast']));
         }
 
         if (!empty($filter['exclude'])) {
