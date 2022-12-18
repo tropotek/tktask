@@ -4,9 +4,7 @@
 -- @author: Tropotek <https://tropotek.com/>
 -- --------------------------------------------
 
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE user;
-
+-- SET FOREIGN_KEY_CHECKS = 0;
 
 --
 --
@@ -25,6 +23,7 @@ CREATE TABLE IF NOT EXISTS user
   active BOOL NOT NULL DEFAULT TRUE,
   hash VARCHAR(64) NOT NULL DEFAULT '',       -- use this instead of user_id for public requests
   last_login TIMESTAMP NULL,
+  del BOOL NOT NULL DEFAULT FALSE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   KEY (uid),
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS user
 ) ENGINE=InnoDB;
 
 
-SET FOREIGN_KEY_CHECKS = 0;
+-- SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE user;
 INSERT INTO user (type, email, title, first_name, last_name, timezone, hash) VALUES
    ('admin', 'admin@example.com', '', 'Administrator', '', NULL, MD5(CONCAT('admin', user_id))),
