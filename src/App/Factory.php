@@ -37,12 +37,12 @@ class Factory extends \Bs\Factory implements FactoryInterface
      */
     public function getAuthAdapter(): AdapterInterface
     {
-//        return parent::getAuthAdapter();
+        return parent::getAuthAdapter();
 
-        if (!$this->has('authAdapter')) {
-            $adapter = new \Tk\Auth\Adapter\Config('admin', hash('md5', 'password'));
-            $this->set('authAdapter', $adapter);
-        }
-        return $this->get('authAdapter');
+//        if (!$this->has('authAdapter')) {
+//            $adapter = new \Tk\Auth\Adapter\Config('admin', hash('md5', 'password'));
+//            $this->set('authAdapter', $adapter);
+//        }
+//        return $this->get('authAdapter');
     }
 }
