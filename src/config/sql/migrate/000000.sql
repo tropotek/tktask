@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS user
   title VARCHAR(16) NOT NULL DEFAULT '',
   first_name VARCHAR(128) NOT NULL DEFAULT '',
   last_name VARCHAR(128) NOT NULL DEFAULT '',
-  timezone VARCHAR(128) NULL,
+  timezone VARCHAR(128) NOT NULL DEFAULT '',
   notes VARCHAR(512) NOT NULL DEFAULT '',
   active BOOL NOT NULL DEFAULT TRUE,
   hash VARCHAR(64) NOT NULL DEFAULT '',       -- use this instead of user_id for public requests
@@ -38,9 +38,10 @@ CREATE TABLE IF NOT EXISTS user
 -- SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE user;
 INSERT INTO user (type, username, email, title, first_name, last_name, timezone, hash) VALUES
-   ('admin', 'admin', 'admin@example.com', '', 'Administrator', '', NULL, MD5(CONCAT('admin', user_id))),
+   ('admin', 'admin', 'admin@example.com', '', 'Administrator', '', '', MD5(CONCAT('admin', user_id))),
    ('admin', 'mod', 'moderator@example.com', '', 'Moderator', '', 'Australia/Melbourne', MD5(CONCAT('moderator', user_id))),
    ('member', 'user', 'user@example.com', 'Mr', 'User', 'One', 'Australia/Brisbane', MD5(CONCAT('user', user_id)))
 ;
 
+UPDATE `user` SET `password` = MD5(CONCAT('password', `hash`));
 

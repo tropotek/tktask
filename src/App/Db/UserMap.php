@@ -46,7 +46,7 @@ class UserMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
             $map = new DataMap();
-            $map->addDataType(new Form\Text('id'));
+            $map->addDataType(new Form\Text('userId'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
             $map->addDataType(new Form\Text('username'));
@@ -63,7 +63,7 @@ class UserMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_TABLE)) {
             $map = new DataMap();
-            $map->addDataType(new Form\Text('id'));
+            $map->addDataType(new Form\Text('userId'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
             $map->addDataType(new Form\Text('username'));
@@ -108,9 +108,14 @@ class UserMap extends Mapper
             $w .= sprintf('a.email LIKE %s OR ', $this->quote($kw));
             if (is_numeric($filter['search'])) {
                 $id = (int)$filter['search'];
-                $w .= sprintf('a.id = %d OR ', $id);
+                $w .= sprintf('a.user_id = %d OR ', $id);
             }
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+        }
+
+        if (!empty($filter['userId'])) {
+            $w = $this->makeMultiQuery($filter['userId'], 'a.user_id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
         if (!empty($filter['id'])) {

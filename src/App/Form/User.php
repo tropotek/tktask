@@ -53,13 +53,9 @@ class User
         $this->form->appendField(new Hidden('id'))->setGroup($group);
         $list = array('-- Type --' => '', 'Admin' => 'admin', 'Member' => 'member');
         $this->form->appendField(new Form\Field\Select('type', $list))->setGroup($group);
-        $this->form->appendField(new Input('nameFirst'))->setGroup($group)->setRequired();
-        $this->form->appendField(new Input('nameLast'))->setGroup($group);
+        $this->form->appendField(new Input('firstName'))->setGroup($group)->setRequired();
+        $this->form->appendField(new Input('lastName'))->setGroup($group);
         $this->form->appendField(new Input('username'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
-//        $this->form->appendField(new Input('password'))
-//            ->setGroup($group)->setRequired()->setType('password');
-
-
         $this->form->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
         $this->form->appendField(new Form\Field\Textarea('notes'))->setGroup($group)
@@ -102,8 +98,8 @@ class User
     public function show(): ?Template
     {
         // Setup field group widths with bootstrap classes
-        $this->form->getField('nameFirst')->setFieldAttr('class', 'col-6');
-        $this->form->getField('nameLast')->setFieldAttr('class', 'col-6');
+        $this->form->getField('firstName')->setFieldAttr('class', 'col-6');
+        $this->form->getField('lastName')->setFieldAttr('class', 'col-6');
         $this->form->getField('username')->setFieldAttr('class', 'col-6');
         $this->form->getField('email')->setFieldAttr('class', 'col-6');
 
