@@ -4,7 +4,6 @@
 -- @author: Tropotek <https://tropotek.com/>
 -- --------------------------------------------
 
--- SET FOREIGN_KEY_CHECKS = 0;
 
 --
 --
@@ -42,6 +41,8 @@ INSERT INTO user (type, username, email, title, first_name, last_name, timezone,
    ('admin', 'mod', 'moderator@example.com', '', 'Moderator', '', 'Australia/Melbourne', MD5(CONCAT('moderator', user_id))),
    ('member', 'user', 'user@example.com', 'Mr', 'User', 'One', 'Australia/Brisbane', MD5(CONCAT('user', user_id)))
 ;
+-- SET FOREIGN_KEY_CHECKS = 1;
 
-UPDATE `user` SET `password` = MD5(CONCAT('password', `hash`));
-
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `user` SET `password` = MD5(CONCAT('password', `hash`)) WHERE 1;
+SET SQL_SAFE_UPDATES = 1;
