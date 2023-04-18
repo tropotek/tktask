@@ -2072,16 +2072,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.2.0",
+            "version": "6.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "396dc0d4c4a970918e5a4322c7957c90c85c4c4f"
+                "reference": "b2327c03fba64f8c47ec030c1f3bce98da8f7596"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/396dc0d4c4a970918e5a4322c7957c90c85c4c4f",
-                "reference": "396dc0d4c4a970918e5a4322c7957c90c85c4c4f",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/b2327c03fba64f8c47ec030c1f3bce98da8f7596",
+                "reference": "b2327c03fba64f8c47ec030c1f3bce98da8f7596",
                 "shasum": ""
             },
             "type": "component",
@@ -2125,9 +2125,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.2.0"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/6.4.1"
             },
-            "time": "2022-09-08T04:15:30+00:00"
+            "time": "2023-03-29T01:33:40+00:00"
         },
         {
             "name": "ttek/tk-auth",
@@ -2187,18 +2187,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "c41681023b62df9a55b6124d693c5bedb53fd338"
+                "reference": "df315539b3826d277e12b798ffe09ac0b8e3d121"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/c41681023b62df9a55b6124d693c5bedb53fd338",
-                "reference": "c41681023b62df9a55b6124d693c5bedb53fd338",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/df315539b3826d277e12b798ffe09ac0b8e3d121",
+                "reference": "df315539b3826d277e12b798ffe09ac0b8e3d121",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.0",
                 "studio-42/elfinder": "~2.1.0",
-                "tinymce/tinymce": "~6.2.0",
+                "tinymce/tinymce": "~6.4.0",
                 "ttek/tk-auth": "~8.0.0",
                 "ttek/tk-domtemplate": "~8.0.0",
                 "ttek/tk-form": "~8.0.0",
