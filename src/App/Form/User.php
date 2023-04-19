@@ -59,7 +59,7 @@ class User
         $this->form->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
         $this->form->appendField(new Form\Field\Textarea('notes'))->setGroup($group)
-            //->setAttr('data-elfinder-path', '/exampleFolder')
+            ->setAttr('data-elfinder-path', '/user/'.$this->user->getVolatileId().'/media')
             ->addCss('mce');
 
         $this->form->appendField(new Form\Action\Link('back', Uri::create('/userManager')));
