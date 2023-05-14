@@ -27,18 +27,17 @@ class TestData extends \Tk\Console\Command\TestData
 
         $db = $this->getFactory()->getDb();
 
-        $db->exec('DELETE FROM `user` WHERE `notes` = \'***\' ');
+        $db->exec('DELETE FROM `user` WHERE `uid` = \'***\' ');
         for($i = 0; $i < 250; $i++) {
             $obj = new \App\Db\User();
-            $obj->setFirstName($this->createName());
-            $obj->setLastName($this->createName());
+            $obj->setUid('***');
+            $obj->setName($this->createName() . ' ' . $this->createName());
             do {
                 $obj->setUsername(strtolower($this->createName()) . '.' . rand(1000, 10000000));
             } while(\App\Db\UserMap::create()->findByUsername($obj->getUsername()) != null);
             $obj->setPassword('password');
             $obj->setEmail($this->createUniqueEmail($obj->getUsername()));
-            $obj->setType((rand(1, 10) <= 5) ? User::TYPE_ADMIN : User::TYPE_MEMBER);
-            $obj->setNotes('***');
+            $obj->setType((rand(1, 10) <= 5) ? User::TYPE_STAFF : User::TYPE_MEMBER);
             $obj->save();
         }
 

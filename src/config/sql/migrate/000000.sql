@@ -28,9 +28,11 @@ CREATE TABLE IF NOT EXISTS user
 
 TRUNCATE user;
 INSERT INTO user (type, username, email, name, timezone, permissions) VALUES
-   ('staff', 'admin', 'admin@example.com', 'Administrator', NULL, 1),
-   ('staff', 'staff', 'staff@example.com', 'Staff', 'Australia/Melbourne', 2),
-   ('member', 'user', 'user@example.com', 'User', 'Australia/Brisbane', 4)
+  ('staff', 'admin', 'admin@example.com', 'Administrator', NULL, 1),
+  ('staff', 'dev', 'dev@example.com', 'Developer', 'Australia/Melbourne', 1),
+  ('staff', 'design', 'design@example.com', 'Designer', 'Australia/Melbourne', 1),
+  ('staff', 'staff', 'staff@example.com', 'Staff', 'Australia/Melbourne', 2),
+  ('member', 'user', 'user@example.com', 'User', 'Australia/Brisbane', 4)
 ;
 
 SET SQL_SAFE_UPDATES = 0;

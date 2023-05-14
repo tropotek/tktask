@@ -79,8 +79,8 @@ class Manager extends PageController
 //            $obj = $cell->getRow()->getData();
 //            $cell->setUrl('/nUserEdit/'.$obj->getId());
 //        });
-        $this->table->appendCell(new Table\Cell\Text('role'));
-        //$this->table->appendCell(new Table\Cell\Text('permissions'));
+        $this->table->appendCell(new Table\Cell\Text('type'));
+        $this->table->appendCell(new Table\Cell\Text('permissions'));
         $this->table->appendCell(new Table\Cell\Text('email'))->addOnShow(function (Table\Cell\Text $cell) {
             $obj = $cell->getRow()->getData();
             $cell->setUrl('mailto:'.$obj->getEmail());
@@ -96,8 +96,8 @@ class Manager extends PageController
         $this->filters = new Form($this->table->getId() . '-filters');
 
         $this->filters->appendField(new Form\Field\Input('search'))->setAttr('placeholder', 'Search');
-        $list = array('-- Type --' => '', 'Admin' => 'admin', 'Member' => 'member');
-        $this->filters->appendField(new Form\Field\Select('type', $list));
+        $list = ['Staff' => 'staff', 'Member' => 'member'];
+        $this->filters->appendField(new Form\Field\Select('type', $list))->prependOption('-- Type --', '');
 
         // load values
         $this->filters->setFieldValues($this->table->getTableSession()->get($this->filters->getId(), []));

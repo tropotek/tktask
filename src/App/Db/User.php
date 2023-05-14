@@ -14,6 +14,7 @@ class User extends Model implements UserInterface
 	// if the result is non-zero the user has permission
 	//
 	// high-level permissions for specific roles
+    // TODO: create a base level set of permissions that work with all sites [user management, content management, site settings, etc]
 	const PERM_ADMIN            = 0x00000001; // All permissions
 	const PERM_STAFF            = 0x00000002; // All basic staff permissions
 	const PERM_MEMBER           = 0x00000004; // All basic site member/user permissions
