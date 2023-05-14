@@ -10,9 +10,6 @@ use Tk\DataMap\Db;
 use Tk\DataMap\Form;
 use Tk\DataMap\Table;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class UserMap extends Mapper
 {
 
@@ -20,19 +17,15 @@ class UserMap extends Mapper
     {
         if (!$this->getDataMappers()->has(self::DATA_MAP_DB)) {
             $map = new DataMap();
-            // TODO: These should be the default ID key names {object}Id / {table_name}_id
-            //$map->addDataType(new Db\Integer('userId', 'user_id'));
             $map->addDataType(new Db\Integer('userId', 'user_id'));
             $map->addDataType(new Db\Text('uid'));
             $map->addDataType(new Db\Text('type'));
+            $map->addDataType(new Db\Integer('permissions'));
             $map->addDataType(new Db\Text('username'));
             $map->addDataType(new Db\Text('password'));
             $map->addDataType(new Db\Text('email'));
-            $map->addDataType(new Db\Text('title'));
-            $map->addDataType(new Db\Text('firstName', 'first_name'));
-            $map->addDataType(new Db\Text('lastName', 'last_name'));
+            $map->addDataType(new Db\Text('name'));
             $map->addDataType(new Db\Text('timezone'));
-            $map->addDataType(new Db\Text('notes'));
             $map->addDataType(new Db\Boolean('active'));
             $map->addDataType(new Db\Text('hash'));
             $map->addDataType(new Db\Date('lastLogin', 'last_login'));
@@ -49,14 +42,12 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('userId'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
+            $map->addDataType(new Form\Integer('permissions'));
             $map->addDataType(new Form\Text('username'));
             $map->addDataType(new Form\Text('password'));
             $map->addDataType(new Form\Text('email'));
-            $map->addDataType(new Form\Text('title'));
-            $map->addDataType(new Form\Text('firstName'));
-            $map->addDataType(new Form\Text('lastName'));
+            $map->addDataType(new Form\Text('name'));
             $map->addDataType(new Form\Text('timezone'));
-            $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Form\Boolean('active'));
             $this->addDataMap(self::DATA_MAP_FORM, $map);
         }
@@ -66,14 +57,12 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('userId'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
+            $map->addDataType(new Form\Integer('permissions'));
             $map->addDataType(new Form\Text('username'));
             $map->addDataType(new Form\Text('password'));
             $map->addDataType(new Form\Text('email'));
-            $map->addDataType(new Form\Text('title'));
-            $map->addDataType(new Form\Text('firstName'));
-            $map->addDataType(new Form\Text('lastName'));
+            $map->addDataType(new Form\Text('name'));
             $map->addDataType(new Form\Text('timezone'));
-            $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Table\Boolean('active'));
             $map->addDataType(new Form\Date('modified'))->setDateFormat('d/m/Y h:i:s');
             $map->addDataType(new Form\Date('created'))->setDateFormat('d/m/Y h:i:s');
@@ -102,8 +91,7 @@ class UserMap extends Mapper
             $kw = '%' . $this->getDb()->escapeString($filter['search']) . '%';
             $w = '';
             $w .= sprintf('a.uid LIKE %s OR ', $this->quote($kw));
-            $w .= sprintf('a.first_name LIKE %s OR ', $this->quote($kw));
-            $w .= sprintf('a.last_name LIKE %s OR ', $this->quote($kw));
+            $w .= sprintf('a.name LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.username LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.email LIKE %s OR ', $this->quote($kw));
             if (is_numeric($filter['search'])) {
@@ -113,23 +101,21 @@ class UserMap extends Mapper
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
+        if (!empty($filter['id'])) {
+            $filter['userId'] = $filter['id'];
+        }
         if (!empty($filter['userId'])) {
             $w = $this->makeMultiQuery($filter['userId'], 'a.user_id');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
-        if (!empty($filter['id'])) {
-            $w = $this->makeMultiQuery($filter['id'], 'a.user_id');
-            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        if (!empty($filter['uid'])) {
+            $filter->appendWhere('a.uid = %s AND ', $this->getDb()->quote($filter['uid']));
         }
 
         if (!empty($filter['type'])) {
             $w = $this->makeMultiQuery($filter['type'], 'a.type');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
-        }
-
-        if (!empty($filter['uid'])) {
-            $filter->appendWhere('a.uid = %s AND ', $this->getDb()->quote($filter['uid']));
         }
 
         if (!empty($filter['username'])) {

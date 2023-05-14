@@ -17,6 +17,14 @@ return function (CollectionConfigurator $routes) {
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
 
+    // Auth pages Login, Logout, Register, Recover
+    $routes->add('login', '/login')
+        ->controller([\App\Controller\User\Login::class, 'doLogin']);
+    $routes->add('logout', '/logout')
+        ->controller([\App\Controller\User\Login::class, 'doLogout']);
+
+
+
     // API Endpoints
     $routes->add('api-htmx-alert', '/api/htmx/alert')
         ->controller([\App\Api\App::class, 'doAlert'])
@@ -24,6 +32,9 @@ return function (CollectionConfigurator $routes) {
     $routes->add('api-htmx-toast', '/api/htmx/toast')
         ->controller([\App\Api\App::class, 'doToast'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
+
+    $routes->add('settings-edit', '/settings')
+        ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
 
 
     // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
@@ -41,6 +52,7 @@ return function (CollectionConfigurator $routes) {
 //        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
 
 
+    // Htmx Examples (TODO: remove for productions sites)
     $routes->add('ui-form', '/ui/form')
         ->controller([\App\Controller\Examples\FormEg::class, 'doDefault']);
     $routes->add('phpinfo', '/info')
@@ -50,22 +62,21 @@ return function (CollectionConfigurator $routes) {
     $routes->add('test-htmx', '/htmx')
         ->controller([\App\Controller\Examples\Htmx::class, 'doDefault']);
 
-
     $routes->add('api-htmx-test', '/api/htmx/test')
-        ->controller([\App\Api\Htmx::class, 'doTest'])
+        ->controller([\App\Api\HtmxExamples::class, 'doTest'])
     ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
     $routes->add('api-htmx-users', '/api/htmx/users')
-        ->controller([\App\Api\Htmx::class, 'doFindUsers'])
+        ->controller([\App\Api\HtmxExamples::class, 'doFindUsers'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
     $routes->add('api-htmx-button', '/api/htmx/button')
-        ->controller([\App\Api\Htmx::class, 'doButton'])
+        ->controller([\App\Api\HtmxExamples::class, 'doButton'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
     $routes->add('api-htmx-tabs', '/api/htmx/tabs')
-        ->controller([\App\Api\Htmx::class, 'doGetTabs'])
+        ->controller([\App\Api\HtmxExamples::class, 'doGetTabs'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
 
     $routes->add('api-htmx-upload', '/api/htmx/upload')
-        ->controller([\App\Api\Htmx::class, 'doUpload'])
+        ->controller([\App\Api\HtmxExamples::class, 'doUpload'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
 
 };

@@ -11,13 +11,14 @@ try {
     $input = new ArgvInput();
     $output = new ConsoleOutput();
 
-    $app = $factory->getConsole();
+    $app = \App\Factory::instance()->getConsole();
     //Determine Environment
     $env = $input->getParameterOption(array('--env', '-e'), getenv('MYAPP_ENV') ?: 'prod');
-    $app->environment = $env;
+    //$app->environment = $env;
 
     // Setup Local Console Commands
     $app->add(new \App\Console\Cron());
+    $app->add(new \App\Console\Password());
     if (\Tk\Config::instance()->isDebug()) {
         $app->add(new \App\Console\TestData());
         //$app->add(new \App\Console\Test());

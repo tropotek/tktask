@@ -8,32 +8,25 @@
 
   <title>Bootstrap v5.2 TkLib Template</title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-        crossorigin="anonymous"/>
-
-  <link rel="stylesheet" href="/vendor/ttek/tk-base/assets/css/fontawesome/css/fontawesome.min.css" />
-  <link rel="stylesheet" href="/vendor/ttek/tk-base/assets/js/include/jquery-ui/jquery-ui.min.css" />
+  <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/vendor/components/font-awesome/css/all.min.css" />
+  <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/jquery-ui.min.css" />
+<!--  <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/theme.css" />-->
   <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css" />
   <link rel="stylesheet" href="/html/assets/app.css" />
 
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-          crossorigin="anonymous"></script>
-
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery-ui/external/jquery/jquery.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery-ui/jquery-ui.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/htmx.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/sugar.min.js"></script>
+  <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/vendor/components/jquery/jquery.min.js"></script>
+  <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/components/htmx.min.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/components/sugar.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/sugar.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
 
   <script src="/vendor/tinymce/tinymce/tinymce.min.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/components/jquery.tinymce.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/elfinder/tinymceElfinder.js"></script>
   <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tinymce.min.js"></script>
 
   <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
   <script src="/html/assets/app.js"></script>
@@ -82,8 +75,14 @@ jQuery(function ($) {
             </ul>
           </li>
 
-          <li class="nav-item" choice="loggedIn">
-            <a class="nav-link" href="/userManager">Users</a>
+          <li class="nav-item dropdown" choice="loggedIn">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Admin
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/userManager">Users</a></li>
+              <li><a class="dropdown-item" href="/settings">Site Settings</a></li>
+            </ul>
           </li>
 
           <li class="nav-item" choice="loggedIn">

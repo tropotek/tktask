@@ -11,7 +11,7 @@ use Tk\Uri;
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Htmx
+class HtmxExamples
 {
     use SystemTrait;
 

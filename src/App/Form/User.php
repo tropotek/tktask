@@ -29,7 +29,7 @@ class User
 
     public function __construct()
     {
-        $this->form = Form::create('user-edit');
+        $this->form = Form::create('edit-user');
     }
 
     public function doDefault(Request $request, $id)
@@ -41,7 +41,7 @@ class User
                 throw new Exception('Invalid User ID: ' . $id);
             }
         }
-
+vd($this->user);
         if ($request->headers->has('HX-Request')) {
             // Enable HTMX
             $this->form->getForm()->setAttr('hx-post', Uri::create('/form/user/' . $id));
@@ -51,12 +51,14 @@ class User
 
         $group = 'left';
         $this->form->appendField(new Hidden('id'))->setGroup($group);
-        $list = array('-- Type --' => '', 'Admin' => 'admin', 'Member' => 'member');
+
+        $this->form->appendField(new Input('name'))->setGroup($group)->setRequired();
+        $list = ['-- Type --' => '', 'Staff' => 'staff', 'Member' => 'member'];
         $this->form->appendField(new Form\Field\Select('type', $list))->setGroup($group);
-        $this->form->appendField(new Input('firstName'))->setGroup($group)->setRequired();
-        $this->form->appendField(new Input('lastName'))->setGroup($group);
+
         $this->form->appendField(new Input('username'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
         $this->form->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
+
         $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
         $this->form->appendField(new Form\Field\Textarea('notes'))->setGroup($group)
             ->setAttr('data-elfinder-path', '/user/'.$this->user->getVolatileId().'/media')
@@ -68,6 +70,7 @@ class User
         $load = [];
         $this->user->getMapper()->getFormMap()->loadArray($load, $this->user);
         $load['id'] = $this->user->getId();
+        vd($load);
         $this->form->setFieldValues($load); // Use form data mapper if loading objects
 
         $this->form->execute($request->request->all());
@@ -98,13 +101,12 @@ class User
     public function show(): ?Template
     {
         // Setup field group widths with bootstrap classes
-        $this->form->getField('firstName')->setFieldAttr('class', 'col-6');
-        $this->form->getField('lastName')->setFieldAttr('class', 'col-6');
-        $this->form->getField('username')->setFieldAttr('class', 'col-6');
-        $this->form->getField('email')->setFieldAttr('class', 'col-6');
+        $this->form->getField('type')->addFieldCss('col-6');
+        $this->form->getField('name')->addFieldCss('col-6');
+        $this->form->getField('username')->addFieldCss('col-6');
+        $this->form->getField('email')->addFieldCss('col-6');
 
         $this->renderer = new FormRenderer($this->form);
-
         return $this->renderer->show();
     }
 

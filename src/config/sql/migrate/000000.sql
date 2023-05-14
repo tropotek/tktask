@@ -1,28 +1,20 @@
 -- --------------------------------------------
 -- @version 0.0.0
---
--- @author: Tropotek <https://tropotek.com/>
 -- --------------------------------------------
 
-
---
---
---
 CREATE TABLE IF NOT EXISTS user
 (
   user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   uid VARCHAR(128) NOT NULL DEFAULT '',
   type VARCHAR(32) NOT NULL DEFAULT '',
+  permissions BIGINT NOT NULL DEFAULT 0,
   username VARCHAR(128) NOT NULL DEFAULT '',
   password VARCHAR(128) NOT NULL DEFAULT '',
   email VARCHAR(255) NOT NULL DEFAULT '',
-  title VARCHAR(16) NOT NULL DEFAULT '',
-  first_name VARCHAR(128) NOT NULL DEFAULT '',
-  last_name VARCHAR(128) NOT NULL DEFAULT '',
-  timezone VARCHAR(128) NOT NULL DEFAULT '',
-  notes VARCHAR(512) NOT NULL DEFAULT '',
+  name VARCHAR(128) NOT NULL DEFAULT '',    -- Display name or preferred name
+  timezone VARCHAR(64) NULL,
   active BOOL NOT NULL DEFAULT TRUE,
-  hash VARCHAR(64) NOT NULL DEFAULT '',       -- use this instead of user_id for public requests
+  hash VARCHAR(64) NOT NULL DEFAULT '',
   last_login TIMESTAMP NULL,
   del BOOL NOT NULL DEFAULT FALSE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -34,15 +26,13 @@ CREATE TABLE IF NOT EXISTS user
 ) ENGINE=InnoDB;
 
 
--- SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE user;
-INSERT INTO user (type, username, email, title, first_name, last_name, timezone, hash) VALUES
-   ('admin', 'admin', 'admin@example.com', '', 'Administrator', '', '', MD5(CONCAT('admin', user_id))),
-   ('admin', 'mod', 'moderator@example.com', '', 'Moderator', '', 'Australia/Melbourne', MD5(CONCAT('moderator', user_id))),
-   ('member', 'user', 'user@example.com', 'Mr', 'User', 'One', 'Australia/Brisbane', MD5(CONCAT('user', user_id)))
+INSERT INTO user (type, username, email, name, timezone, permissions) VALUES
+   ('staff', 'admin', 'admin@example.com', 'Administrator', NULL, 1),
+   ('staff', 'staff', 'staff@example.com', 'Staff', 'Australia/Melbourne', 2),
+   ('member', 'user', 'user@example.com', 'User', 'Australia/Brisbane', 4)
 ;
--- SET FOREIGN_KEY_CHECKS = 1;
 
 SET SQL_SAFE_UPDATES = 0;
-UPDATE `user` SET `password` = MD5(CONCAT('password', `hash`)) WHERE 1;
+UPDATE `user` SET `hash` = MD5(CONCAT(username, user_id)) WHERE 1;
 SET SQL_SAFE_UPDATES = 1;

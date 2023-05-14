@@ -94,10 +94,10 @@ class FormEg extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
         // Setup field group widths with bootstrap classes
-        $this->form->getField('email')->setFieldAttr('class', 'col-6');
-        $this->form->getField('test')->setFieldAttr('class', 'col-6');
-        $this->form->getField('address')->setFieldAttr('class', 'col-8');
-        $this->form->getField('state')->setFieldAttr('class', 'col-4');
+        $this->form->getField('email')->addFieldCss('col-6');
+        $this->form->getField('test')->addFieldCss('col-6');
+        $this->form->getField('address')->addFieldCss('col-6');
+        $this->form->getField('state')->addFieldCss('col-6');
 
         $formRenderer = new FormRenderer($this->form);
         $template->appendTemplate('content', $formRenderer->show());

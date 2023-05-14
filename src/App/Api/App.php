@@ -8,9 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class App
 {
     use SystemTrait;

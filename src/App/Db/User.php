@@ -5,23 +5,41 @@ use Bs\Db\UserInterface;
 use Tk\Date;
 use Tk\Db\Mapper\Model;
 
-/**
- *
- * @author Tropotek <http://www.tropotek.com/>
- */
 class User extends Model implements UserInterface
 {
 
+	// permission values
+	// permissions are bit masks that can include on or more bits
+	// requests for permission are ANDed with the user's permissions
+	// if the result is non-zero the user has permission
+	//
+	// high-level permissions for specific roles
+	const PERM_ADMIN            = 0x00000001; // All permissions
+	const PERM_STAFF            = 0x00000002; // All basic staff permissions
+	const PERM_MEMBER           = 0x00000004; // All basic site member/user permissions
+	//                            0x00000008; // available
+	//                            0x00000010; // available
+
+	// permission groups and display name
+	private const permission_names = [
+        self::PERM_ADMIN            => "System Admin",
+        self::PERM_STAFF            => "Staff Member",
+        self::PERM_MEMBER           => "Site User",
+    ];
+
+
     /**
-     * Default Guest user This type should never be saved to storage
+     * Default Guest user This type should never be saved to storage/DB or be an option to select.
      * It is intended to be the default system user that has not logged in
      * (Access to public pages only)
      */
     const TYPE_GUEST = 'guest';
+
     /**
-     * Administration user (Access to the admin area)
+     * Site staff user
      */
-    const TYPE_ADMIN = 'admin';
+    const TYPE_STAFF = 'staff';
+
     /**
      * Base logged-in user type (Access to user pages)
      */
@@ -32,25 +50,21 @@ class User extends Model implements UserInterface
 
     public string $uid = '';
 
-    public string $type = '';
+    public string $type = self::TYPE_GUEST;
 
-    public string $username = '';
+    public int $permissions = 0;
+
+    public string $username = 'guest';
 
     public string $password = '';
 
-    public string $email = '';
+    public string $email = 'guest@null.com';
 
-    public string $title = '';
+    public string $name = '';
 
-    public string $firstName = '';
-
-    public string $lastName = '';
-
-    public string $timezone = '';
+    public ?string $timezone = null;
 
     public bool $active = true;
-
-    public string $notes = '';
 
     public string $hash = '';
 
@@ -75,7 +89,7 @@ class User extends Model implements UserInterface
         return $this->userId;
     }
 
-    public function setUserId(int $userId): User
+    public function setUserId(int $userId): static
     {
         $this->userId = $userId;
         return $this;
@@ -86,16 +100,16 @@ class User extends Model implements UserInterface
         return $this->uid;
     }
 
-    public function setUid(string $uid): User
+    public function setUid(string $uid): static
     {
         $this->uid = $uid;
         return $this;
     }
 
-    public function hasType(string|array $type): bool
+    public function isType(string|array $type): bool
     {
-        if (func_num_args() > 1) $type = func_get_args();
-        else if (!is_array($type)) $type = array($type);
+        if (!is_array($type)) $type = [$type];
+
         foreach ($type as $r) {
             if (trim($r) == trim($this->getType())) {
                 return true;
@@ -109,9 +123,31 @@ class User extends Model implements UserInterface
         return $this->type;
     }
 
-    public function setType(string $type): User
+    public function setType(string $type): static
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function hasPermission(int $perm): bool
+    {
+		// non-logged in users have no permissions
+		if (!$this->active) return false;
+
+		// admin users have all permissions
+		if ((self::PERM_ADMIN & $this->permissions) != 0) return true;
+
+		return ($perm & $this->permissions) != 0;
+    }
+
+    public function getPermissions(): int
+    {
+        return $this->permissions;
+    }
+
+    public function setPermissions(int $permissions): static
+    {
+        $this->permissions = $permissions;
         return $this;
     }
 
@@ -120,7 +156,7 @@ class User extends Model implements UserInterface
         return $this->username;
     }
 
-    public function setUsername(?string $username): User
+    public function setUsername(?string $username): static
     {
         $this->username = $username;
         return $this;
@@ -131,7 +167,7 @@ class User extends Model implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): User
+    public function setPassword(string $password): static
     {
         $this->password = $password;
         return $this;
@@ -142,104 +178,31 @@ class User extends Model implements UserInterface
         return $this->email;
     }
 
-    public function setEmail(?string $email): User
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     * @return User
-     */
-    public function setTitle(string $title): User
-    {
-        $this->title = $title;
-        return $this;
-    }
-
     public function getName(): string
     {
-        $name = trim($this->getFirstName() . ' ' . $this->getLastName());
-        if (!trim($name)) $name = $this->getUsername();
-        return $name;
+        return $this->name;
     }
 
-    public function setName(?string $name): User
+    public function setName(?string $name): static
     {
-        $name = trim($name);
-        if ( preg_match('/\s/',$name) ) {
-            $this->setFirstName(substr($name, 0, strpos($name, ' ')));
-            $this->setLastName(substr($name, strpos($name, ' ') + 1));
-        } else {
-            $this->setFirstName($name);
-        }
+        $this->name = $name;
         return $this;
     }
 
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): User
-    {
-        $this->firstName = $firstName;
-        return $this;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): User
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTimezone(): string
+    public function getTimezone(): ?string
     {
         return $this->timezone;
     }
 
-    /**
-     * @param string $timezone
-     * @return User
-     */
-    public function setTimezone(string $timezone): User
+    public function setTimezone(?string $timezone): static
     {
         $this->timezone = $timezone;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNotes(): string
-    {
-        return $this->notes;
-    }
-
-    /**
-     * @param string $notes
-     * @return User
-     */
-    public function setNotes(string $notes): User
-    {
-        $this->notes = $notes;
         return $this;
     }
 
@@ -248,25 +211,18 @@ class User extends Model implements UserInterface
         return $this->active;
     }
 
-    public function setActive(bool $active): User
+    public function setActive(bool $active): static
     {
         $this->active = $active;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getHash(): string
     {
         return $this->hash;
     }
 
-    /**
-     * @param string $hash
-     * @return User
-     */
-    public function setHash(string $hash): User
+    public function setHash(string $hash): static
     {
         $this->hash = $hash;
         return $this;
@@ -277,7 +233,7 @@ class User extends Model implements UserInterface
         return $this->lastLogin;
     }
 
-    public function setLastLogin(?\DateTime $lastLogin): User
+    public function setLastLogin(?\DateTime $lastLogin): static
     {
         $this->lastLogin = $lastLogin;
         return $this;
@@ -288,7 +244,7 @@ class User extends Model implements UserInterface
         return $this->del;
     }
 
-    public function setDel(bool $del): User
+    public function setDel(bool $del): static
     {
         $this->del = $del;
         return $this;
@@ -314,12 +270,9 @@ class User extends Model implements UserInterface
         $errors = [];
         $mapper = $this->getMapper();
 
-        if (!$this->getFirstName()) {
-            $errors['nameFirst'] = 'Invalid field value';
+        if (!$this->getName()) {
+            $errors['name'] = 'Invalid field value';
         }
-//        if (!$this->getNameLast()) {
-//            $errors['nameLast'] = 'Invalid field value';
-//        }
 
         if (!$this->getUsername()) {
             $errors['username'] = 'Invalid field username value';
@@ -329,19 +282,10 @@ class User extends Model implements UserInterface
                 $errors['username'] = 'This username is already in use';
             }
         }
+
         if (!filter_var($this->getEmail(), FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Please enter a valid email address';
         }
         return $errors;
     }
-
-
-
-    public static function findByIdentity(string $identity): mixed
-    {
-        vd($identity);
-
-        return null;
-    }
-
 }

@@ -31,7 +31,9 @@ class Dashboard extends PageController
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-        $template->appendHtml('content', "<p>My Username: <b>{$this->getFactory()->getAuthUser()}</b></p>");
+        if ($this->getFactory()->getAuthUser()) {
+            $template->appendHtml('content', "<p>My Username: <b>{$this->getFactory()->getAuthUser()->getUsername()}</b></p>");
+        }
 
         return $template;
     }

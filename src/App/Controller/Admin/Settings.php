@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\User;
+namespace App\Controller\Admin;
 
 use App\Db\User;
 use App\Db\UserMap;
@@ -13,22 +13,23 @@ use Tk\Form\Field\Input;
 use Tk\Form\Field\Checkbox;
 use Tk\Uri;
 
-class Edit extends PageController
+class Settings extends PageController
 {
-    protected \App\Form\User $form;
+    protected \App\Form\Settings $form;
 
 
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->setTitle('Edit User');
+        $this->getPage()->setTitle('Edit Settings');
+        $this->getRegistry()->save();
     }
 
-    public function doDefault(Request $request, $id)
+    public function doDefault(Request $request)
     {
         // Get the form template
-        $this->form = new \App\Form\User();
-        $this->form->doDefault($request, $id);
+        $this->form = new \App\Form\Settings();
+        $this->form->doDefault($request);
 
         return $this->getPage();
     }

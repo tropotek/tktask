@@ -17,6 +17,7 @@ use Tk\Uri;
  */
 class Manager extends PageController
 {
+    //protected $permission =
 
     protected Table $table;
     protected Form $filters;
@@ -26,6 +27,7 @@ class Manager extends PageController
     {
         parent::__construct($this->getFactory()->getPublicPage());
         $this->getPage()->setTitle('User Manager');
+        //vd($this->getFactory()->getAuthUser());
     }
 
     public function doDefault(Request $request)
@@ -72,13 +74,13 @@ class Manager extends PageController
             $obj = $cell->getRow()->getData();
             $cell->setUrl('/userEdit/'.$obj->getId());
         });
-        $this->table->appendCell(new Table\Cell\Text('nameFirst'));
+        $this->table->appendCell(new Table\Cell\Text('name'));
 //        ->addOnShow(function (Table\Cell\Text $cell) {
 //            $obj = $cell->getRow()->getData();
 //            $cell->setUrl('/nUserEdit/'.$obj->getId());
 //        });
-        $this->table->appendCell(new Table\Cell\Text('nameLast'));
-        $this->table->appendCell(new Table\Cell\Text('type'));
+        $this->table->appendCell(new Table\Cell\Text('role'));
+        //$this->table->appendCell(new Table\Cell\Text('permissions'));
         $this->table->appendCell(new Table\Cell\Text('email'))->addOnShow(function (Table\Cell\Text $cell) {
             $obj = $cell->getRow()->getData();
             $cell->setUrl('mailto:'.$obj->getEmail());

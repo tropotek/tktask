@@ -4,11 +4,12 @@ namespace App\Console;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tk\Console\Console;
 
 /**
  * @author Tropotek <https://www.tropotek.com/>
  */
-class Test extends \Tk\Console\Console
+class Test extends Console
 {
 
     protected function configure()

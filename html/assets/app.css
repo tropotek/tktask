@@ -24,10 +24,15 @@ body {
 
 /***************** F O R M ******************/
 
-textarea {
+form textarea {
   height: 150px;
 }
-
+form label {
+  font-weight: 500;
+}
+form .form-check-label {
+  font-weight: normal;
+}
 
 /***************** T A B L E ******************/
 

@@ -1,6 +1,9 @@
 <?php
 namespace App;
 
+use App\Db\User;
+use App\Db\UserMap;
+use Bs\Db\UserInterface;
 use Dom\Mvc\Loader;
 use Dom\Mvc\Modifier;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -29,6 +32,22 @@ class Factory extends \Bs\Factory implements FactoryInterface
             call_user_func_array($onCreate, [$page]);
         }
         return $page;
+    }
+
+    /**
+     * Return a User object or record that is located from the Auth's getIdentity() method
+     * Override this method in your own site's Factory object
+     * @return mixed|UserInterface|User Null if no user logged in
+     */
+    public function getAuthUser(): mixed
+    {
+        if (!$this->has('authUser')) {
+            if ($this->getAuthController()->hasIdentity()) {
+                $user = UserMap::create()->findByUsername($this->getAuthController()->getIdentity());
+                $this->set('authUser', $user);
+            }
+        }
+        return $this->get('authUser');
     }
 
     /**
