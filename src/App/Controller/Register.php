@@ -1,19 +1,12 @@
 <?php
-namespace Bs\Controller;
+namespace App\Controller;
 
+use Dom\Mvc\PageController;
 use Tk\Form;
 use Tk\Form\Field;
 use Tk\Form\Event;
-use Tk\Request;
-use Tk\Auth\AuthEvents;
 
-
-/**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @link http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
- */
-class Register extends Iface
+class Register extends PageController
 {
     /**
      * @var Form

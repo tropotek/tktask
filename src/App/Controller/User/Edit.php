@@ -2,16 +2,9 @@
 namespace App\Controller\User;
 
 use App\Db\User;
-use App\Db\UserMap;
-use Dom\Mvc\PageController;
+use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Tk\Exception;
-use Tk\Form;
-use Tk\FormRenderer;
-use Tk\Form\Field\Input;
-use Tk\Form\Field\Checkbox;
-use Tk\Uri;
 
 class Edit extends PageController
 {
@@ -22,6 +15,7 @@ class Edit extends PageController
     {
         parent::__construct($this->getFactory()->getPublicPage());
         $this->getPage()->setTitle('Edit User');
+        $this->setAccess(User::PERM_MANAGE_USER | User::PERM_MANAGE_STAFF);
     }
 
     public function doDefault(Request $request, $id)
@@ -38,7 +32,8 @@ class Edit extends PageController
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-        $template->appendTemplate('content', $this->form->getRenderer()->getTemplate());
+        //$template->appendTemplate('content', $this->form->getRenderer()->getTemplate());
+        $template->appendTemplate('content', $this->form->show());
 
         return $template;
     }
@@ -48,7 +43,7 @@ class Edit extends PageController
         $html = <<<HTML
 <div>
   <h2 var="title"></h2>
-  <div var="content"></div>
+  <div var="content" class="tk-form-content"></div>
 </div>
 HTML;
         return $this->loadTemplate($html);

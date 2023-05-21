@@ -12,12 +12,12 @@
 -- ------------------------------------------------------
 
 -- Show only active users
-CREATE OR REPLACE ALGORITHM=MERGE VIEW v_user AS
-SELECT *
-FROM
-  user u
-WHERE
-  u.active
-;
+# CREATE OR REPLACE ALGORITHM=MERGE VIEW v_user AS
+# SELECT *
+# FROM
+#   user u
+# WHERE
+#   u.active
+# ;
 
 

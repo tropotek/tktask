@@ -19,10 +19,20 @@ return function (CollectionConfigurator $routes) {
 
     // Auth pages Login, Logout, Register, Recover
     $routes->add('login', '/login')
-        ->controller([\App\Controller\User\Login::class, 'doLogin']);
+        ->controller([\App\Controller\Login::class, 'doLogin']);
     $routes->add('logout', '/logout')
-        ->controller([\App\Controller\User\Login::class, 'doLogout']);
+        ->controller([\App\Controller\Login::class, 'doLogout']);
+    $routes->add('recover', '/recover')
+        ->controller([\App\Controller\Recover::class, 'doDefault']);
+    $routes->add('recover-pass', '/recoverUpdate')
+        ->controller([\App\Controller\Recover::class, 'doRecover']);
 
+
+    $routes->add('register', '/register')
+        ->controller([\App\Controller\Register::class, 'doDefault']);
+
+    $routes->add('login-org', '/loginOrg')
+        ->controller([\App\Controller\LoginOrg::class, 'doLogin']);
 
 
     // API Endpoints
@@ -38,15 +48,18 @@ return function (CollectionConfigurator $routes) {
 
 
     // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
+    $routes->add('staff-manager', '/staffManager')
+        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
     $routes->add('user-manager', '/userManager')
         ->controller([\App\Controller\User\Manager::class, 'doDefault']);
     $routes->add('user-edit', '/userEdit/{id}')
         ->controller([\App\Controller\User\Edit::class, 'doDefault'])
         ->defaults(['id' => 0]);
-//    $routes->add('user-edit-new', '/nUserEdit/{id}')
-//        ->controller([\App\Controller\Examples\EditHtmx::class, 'doDefault'])
+    // HTMX edit
+//    $routes->add('user-edit-x', '/userEditX/{id}')
+//        ->controller([\App\Controller\User\EditX::class, 'doDefault'])
 //        ->defaults(['id' => 0]);
-//    $routes->add('user-form', '/form/user/{id}')
+//    $routes->add('api-form-user', '/form/user/{id}')
 //        ->controller([\App\Form\User::class, 'doDefault'])
 //        ->defaults(['id' => 0])
 //        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);

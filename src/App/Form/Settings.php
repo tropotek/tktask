@@ -13,15 +13,14 @@ use Tk\Uri;
 class Settings
 {
     use SystemTrait;
-
-    protected Form $form;
+    use Form\FormTrait;
 
     protected FormRenderer $renderer;
 
 
     public function __construct()
     {
-        $this->form = Form::create('edit-settings');
+        $this->setForm(Form::create('edit-settings'));
     }
 
     public function doDefault(Request $request)
@@ -35,8 +34,8 @@ class Settings
         $this->form->appendField(new Field\Input('google.map.apikey'))->setGroup($tab)->setLabel('Google API Key')
             ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.');
         $this->form->appendField(new Field\Checkbox('site.account.registration'))->setGroup($tab)->setLabel('Account Registration');
-        $this->form->appendField(new Field\Checkbox('site.account.activation'))->setGroup($tab)->setLabel('Account Activation')
-            ->setNotes('If not checked you must manually activate new user accounts.');
+//        $this->form->appendField(new Field\Checkbox('site.account.activation'))->setGroup($tab)->setLabel('Account Activation')
+//            ->setNotes('If not checked admin manually activate new user accounts.');
 
         $tab = 'Email';
         $this->form->appendField(new Field\Textarea('site.email.sig'))->setGroup($tab)->setLabel('Email Signature')
@@ -57,9 +56,9 @@ class Settings
 
 
         $this->form->appendField(new Form\Action\Link('back', Uri::create('/')));
-        $this->form->appendField(new Form\Action\Submit('save', [$this, 'doSubmit']));
-//        $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
-//        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->form->appendField(new Form\Action\Submit('save', [$this, 'onSubmit']));
+//        $this->form->appendField(new Event\Submit('update', array($this, 'onSubmit')));
+//        $this->form->appendField(new Event\Submit('save', array($this, 'onSubmit')));
 //        $this->form->appendField(new Event\LinkButton('cancel', $this->getBackUrl()));
 
 
@@ -75,7 +74,7 @@ class Settings
         return $this->show();
     }
 
-    public function doSubmit(Form $form, Form\Action\ActionInterface $action)
+    public function onSubmit(Form $form, Form\Action\ActionInterface $action)
     {
         $values = $form->getFieldValues();
         $this->getRegistry()->replace($values);
@@ -97,19 +96,7 @@ class Settings
 
     public function show(): ?Template
     {
-        $this->renderer = new FormRenderer($this->form);
-        return $this->renderer->show();
+        $this->setFormRenderer(new FormRenderer($this->form));
+        return $this->getFormRenderer()->show();
     }
-
-
-    public function getForm(): Form
-    {
-        return $this->form;
-    }
-
-    public function getRenderer(): FormRenderer
-    {
-        return $this->renderer;
-    }
-
 }

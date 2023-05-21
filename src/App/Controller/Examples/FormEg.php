@@ -65,8 +65,8 @@ class FormEg extends PageController
 
         $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
         $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($files) {
-            vd($this->form->getFieldValues());
-            vd($files->getValue());
+//            vd($this->form->getFieldValues());
+//            vd($files->getValue());
             $action->setRedirect(Uri::create());
         }));
 

@@ -53,6 +53,13 @@ form .form-check-label {
   padding-bottom: 0.75rem;
 }
 
+.tk-table table td a.btn {
+  display: inline;
+  --bs-btn-padding-y: .2rem;
+  --bs-btn-padding-x: .4rem;
+  --bs-btn-font-size: .75rem;
+}
+
 /* Header OrderBy Arrows */
 th
 {

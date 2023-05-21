@@ -22,7 +22,6 @@ class Dashboard extends PageController
     public function doDefault(Request $request)
     {
 
-
         return $this->getPage();
     }
 
@@ -32,6 +31,7 @@ class Dashboard extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
         if ($this->getFactory()->getAuthUser()) {
+            //vd($this->getFactory()->getAuthUser());
             $template->appendHtml('content', "<p>My Username: <b>{$this->getFactory()->getAuthUser()->getUsername()}</b></p>");
         }
 
@@ -45,6 +45,8 @@ class Dashboard extends PageController
     <h3 var="title"></h3>
 
     <div var="content"></div>
+    <p><a class="nav-link" href="/login">Login</a></p>
+    <p><a class="nav-link" href="/loginOrg">Login Org</a></p>
 
 </div>
 HTML;

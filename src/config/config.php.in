@@ -17,6 +17,17 @@ return function (Config $config) {
     $config['db.default.pass'] = '';
 
     /*
+     * Email template relative path
+     */
+    $config['system.mail.template'] = '/html/templates/mail.default.xtpl';
+
+    /*
+     * Encrypt function secret seed
+     * Change this on your production systems
+     */
+    $config['system.encrypt'] = '3c57a0c2acdd6f3bc0b180c709746d1b';
+
+    /*
      * DB secret API key
      * Use this  key for the mirror command in a dev environment.
      * Keep this key secret. Access to the sites DB can be gained with it.

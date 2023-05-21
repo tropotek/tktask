@@ -13,74 +13,77 @@ use Tk\Form\Field\Hidden;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
-
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class User
 {
     use SystemTrait;
+    use Form\FormTrait;
 
-    protected \App\Db\User $user;
+    protected ?\App\Db\User $user = null;
 
-    protected Form $form;
-
-    protected FormRenderer $renderer;
 
     public function __construct()
     {
-        $this->form = Form::create('edit-user');
+        $this->setForm(Form::create('user-edit'));
     }
 
     public function doDefault(Request $request, $id)
     {
         $this->user = new \App\Db\User();
+        $this->getUser()->setType(\App\Db\User::TYPE_USER);
+        if ($request->query->get('type') == \App\Db\User::TYPE_STAFF) {
+            $this->getUser()->setType(\App\Db\User::TYPE_STAFF);
+        }
+
         if ($id) {
             $this->user = UserMap::create()->find($id);
-            if (!$this->user) {
+            if (!$this->getUser()) {
                 throw new Exception('Invalid User ID: ' . $id);
             }
         }
-vd($this->user);
+
+        // Enable HTMX
         if ($request->headers->has('HX-Request')) {
-            // Enable HTMX
-            $this->form->getForm()->setAttr('hx-post', Uri::create('/form/user/' . $id));
-            $this->form->getForm()->setAttr('hx-target', 'this');
-            $this->form->getForm()->setAttr('hx-swap', 'outerHTML');
+            $this->getForm()->setAttr('hx-post', Uri::create('/form/user/' . $id));
+            $this->getForm()->setAttr('hx-target', 'this');
+            $this->getForm()->setAttr('hx-swap', 'outerHTML');
         }
 
         $group = 'left';
-        $this->form->appendField(new Hidden('id'))->setGroup($group);
+        $this->getForm()->appendField(new Hidden('id'))->setGroup($group);
+        $this->getForm()->appendField(new Input('name'))->setGroup($group)->setRequired();
 
-        $this->form->appendField(new Input('name'))->setGroup($group)->setRequired();
-        $list = ['-- Type --' => '', 'Staff' => 'staff', 'Member' => 'member'];
-        $this->form->appendField(new Form\Field\Select('type', $list))->setGroup($group);
+//        $list = ['Staff' => 'staff', 'User' => 'user'];
+//        $this->form->appendField(new Form\Field\Select('type', $list))->prependOption('-- Type --', '')->setGroup($group);
 
-        $this->form->appendField(new Input('username'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
-        $this->form->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
+        $this->getForm()->appendField(new Input('username'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
+        $this->getForm()->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
 
-        $this->form->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
-        $this->form->appendField(new Form\Field\Textarea('notes'))->setGroup($group)
-            ->setAttr('data-elfinder-path', '/user/'.$this->user->getVolatileId().'/media')
-            ->addCss('mce');
+        if ($this->user->isType(\App\Db\User::TYPE_STAFF)) {
+            $this->getForm()->appendField(new Checkbox('perm', array_flip(\App\Db\User::PERMISSION_LIST)))->setGroup($group);
+        }
 
-        $this->form->appendField(new Form\Action\Link('back', Uri::create('/userManager')));
-        $this->form->appendField(new Form\Action\Submit('save', [$this, 'doSubmit']));
+        $this->getForm()->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
+        $this->getForm()->appendField(new Form\Field\Textarea('notes'))->setGroup($group);
 
-        $load = [];
-        $this->user->getMapper()->getFormMap()->loadArray($load, $this->user);
-        $load['id'] = $this->user->getId();
-        vd($load);
-        $this->form->setFieldValues($load); // Use form data mapper if loading objects
+        $this->getForm()->appendField(new Form\Action\Link('back', Uri::create('/'.$this->getUser()->getType().'Manager')));
+        $this->getForm()->appendField(new Form\Action\Submit('save', [$this, 'onSubmit']));
 
-        $this->form->execute($request->request->all());
+        $load = $this->getUser()->getMapper()->getFormMap()->getArray($this->getUser());
+        $load['id'] = $this->getUser()->getId();
+        $load['perm'] = $this->getUser()->getPermissionList();
+        $this->getForm()->setFieldValues($load); // Use form data mapper if loading objects
 
-        return $this->show();
+        $this->getForm()->execute($request->request->all());
+
+        if ($request->headers->has('HX-Request')) {
+            return $this->show();
+        }
     }
 
-    public function doSubmit(Form $form, Form\Action\ActionInterface $action)
+    public function onSubmit(Form $form, Form\Action\ActionInterface $action)
     {
-        $this->user->getMapper()->getFormMap()->loadObject($this->user, $form->getFieldValues());
+        $this->getUser()->getMapper()->getFormMap()->loadObject($this->user, $form->getFieldValues());
+        $this->getUser()->setPermissions(array_sum($form->getFieldValue('perm') ?? []));
 
         $form->setErrors($this->user->validate());
         if ($form->hasErrors()) {
@@ -88,41 +91,37 @@ vd($this->user);
             return;
         }
 
-        $this->user->save();
+        $this->getUser()->save();
 
         $form->getSession()->getFlashBag()->add('success', 'Form save successfully.');
 
         if (!$form->getRequest()->headers->has('HX-Request')) {
             $action->setRedirect(Uri::create());
-            //$action->setRedirect(Uri::create('/userManager'));
         }
     }
 
     public function show(): ?Template
     {
         // Setup field group widths with bootstrap classes
-        $this->form->getField('type')->addFieldCss('col-6');
-        $this->form->getField('name')->addFieldCss('col-6');
-        $this->form->getField('username')->addFieldCss('col-6');
-        $this->form->getField('email')->addFieldCss('col-6');
+        //$this->getForm()->getField('type')->addFieldCss('col-6');
+        //$this->getForm()->getField('name')->addFieldCss('col-6');
+        $this->getForm()->getField('username')->addFieldCss('col-6');
+        $this->getForm()->getField('email')->addFieldCss('col-6');
 
-        $this->renderer = new FormRenderer($this->form);
-        return $this->renderer->show();
+        $renderer = new FormRenderer($this->getForm());
+
+//        $js = <<<JS
+//            jQuery(function ($) {
+//
+//            });
+//        JS;
+//        $renderer->getTemplate()->appendJs($js);
+
+        return $renderer->show();
     }
 
     public function getUser(): \App\Db\User
     {
         return $this->user;
     }
-
-    public function getForm(): Form
-    {
-        return $this->form;
-    }
-
-    public function getRenderer(): FormRenderer
-    {
-        return $this->renderer;
-    }
-
 }

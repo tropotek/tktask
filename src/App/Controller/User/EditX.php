@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Examples;
+namespace App\Controller\User;
 
 use App\Db\UserMap;
 use Dom\Mvc\PageController;
@@ -8,11 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Tk\Exception;
 use Tk\Uri;
 
-
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
-class EditHtmx extends PageController
+class EditX extends PageController
 {
 
     protected \App\Form\User $form;
@@ -48,7 +44,7 @@ class EditHtmx extends PageController
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-        $template->replaceTemplate('content', $this->form->getRenderer()->getTemplate());
+        $template->appendTemplate('content', $this->form->show());
 
         return $template;
     }

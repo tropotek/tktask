@@ -8,26 +8,29 @@ use Tk\Db\Mapper\Model;
 class User extends Model implements UserInterface
 {
 
-	// permission values
-	// permissions are bit masks that can include on or more bits
-	// requests for permission are ANDed with the user's permissions
-	// if the result is non-zero the user has permission
-	//
-	// high-level permissions for specific roles
-    // TODO: create a base level set of permissions that work with all sites [user management, content management, site settings, etc]
+    /**
+     * permission values
+	 * permissions are bit masks that can include on or more bits
+	 * requests for permission are ANDed with the user's permissions
+	 * if the result is non-zero the user has permission.
+     *
+     * high-level permissions for specific roles
+     */
 	const PERM_ADMIN            = 0x00000001; // All permissions
-	const PERM_STAFF            = 0x00000002; // All basic staff permissions
-	const PERM_MEMBER           = 0x00000004; // All basic site member/user permissions
-	//                            0x00000008; // available
+	const PERM_SYSADMIN         = 0x00000002; // Change system settings
+	const PERM_MANAGE_STAFF     = 0x00000004; // Manage staff users
+    const PERM_MANAGE_USER      = 0x00000008; // Manage base users
 	//                            0x00000010; // available
 
-	// permission groups and display name
-	private const permission_names = [
-        self::PERM_ADMIN            => "System Admin",
-        self::PERM_STAFF            => "Staff Member",
-        self::PERM_MEMBER           => "Site User",
+	/**
+     * permission groups and descriptions
+     */
+	const PERMISSION_LIST = [
+        self::PERM_ADMIN            => "Admin Full Access",
+        self::PERM_SYSADMIN         => "Change Site Settings",
+        self::PERM_MANAGE_STAFF     => "Manage Staff",
+        self::PERM_MANAGE_USER      => "Manage Users",
     ];
-
 
     /**
      * Default Guest user This type should never be saved to storage/DB or be an option to select.
@@ -44,10 +47,10 @@ class User extends Model implements UserInterface
     /**
      * Base logged-in user type (Access to user pages)
      */
-    const TYPE_MEMBER = 'member';
+    const TYPE_USER = 'user';
 
 
-    public int $userId = 0;
+    public int $id = 0;
 
     public string $uid = '';
 
@@ -63,6 +66,8 @@ class User extends Model implements UserInterface
 
     public string $name = '';
 
+    public string $notes = '';
+
     public ?string $timezone = null;
 
     public bool $active = true;
@@ -70,8 +75,6 @@ class User extends Model implements UserInterface
     public string $hash = '';
 
     public ?\DateTime $lastLogin = null;
-
-    public bool $del = false;
 
     public ?\DateTime $modified = null;
 
@@ -85,17 +88,6 @@ class User extends Model implements UserInterface
         $this->timezone = $this->getConfig()->get('php.date.timezone');
     }
 
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): static
-    {
-        $this->userId = $userId;
-        return $this;
-    }
-
     public function getUid(): string
     {
         return $this->uid;
@@ -107,10 +99,24 @@ class User extends Model implements UserInterface
         return $this;
     }
 
+    public function isAdmin(): bool
+    {
+        return ($this->isStaff() && $this->hasPermission(self::PERM_ADMIN));
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->isType(self::TYPE_STAFF);
+    }
+
+    public function isUser(): bool
+    {
+        return $this->isType(self::TYPE_USER);
+    }
+
     public function isType(string|array $type): bool
     {
         if (!is_array($type)) $type = [$type];
-
         foreach ($type as $r) {
             if (trim($r) == trim($this->getType())) {
                 return true;
@@ -130,15 +136,13 @@ class User extends Model implements UserInterface
         return $this;
     }
 
-    public function hasPermission(int $perm): bool
+    public function hasPermission(int $permission): bool
     {
 		// non-logged in users have no permissions
-		if (!$this->active) return false;
-
+		if (!$this->isActive()) return false;
 		// admin users have all permissions
-		if ((self::PERM_ADMIN & $this->permissions) != 0) return true;
-
-		return ($perm & $this->permissions) != 0;
+		if ((self::PERM_ADMIN & $this->getPermissions()) != 0) return true;
+		return ($permission & $this->getPermissions()) != 0;
     }
 
     public function getPermissions(): int
@@ -150,6 +154,23 @@ class User extends Model implements UserInterface
     {
         $this->permissions = $permissions;
         return $this;
+    }
+
+    /**
+     * return a list of individual permission values
+     * Use for select lists or anywhere you need to list
+     * the permissions and lookup their names
+     */
+    public function getPermissionList(): array
+    {
+        return array_keys(array_filter(self::PERMISSION_LIST, fn($k) => ($k & $this->permissions), ARRAY_FILTER_USE_KEY));
+    }
+
+    public function canMasqueradeAs(UserInterface $msqUser): bool
+    {
+        if ($this->isAdmin()) return true;
+        if ($this->isStaff() && $msqUser->isType(self::TYPE_USER)) return true;
+        return false;
     }
 
     public function getUsername(): string
@@ -196,6 +217,17 @@ class User extends Model implements UserInterface
         return $this;
     }
 
+    public function getNotes(): string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(string $notes): static
+    {
+        $this->notes = $notes;
+        return $this;
+    }
+
     public function getTimezone(): ?string
     {
         return $this->timezone;
@@ -237,17 +269,6 @@ class User extends Model implements UserInterface
     public function setLastLogin(?\DateTime $lastLogin): static
     {
         $this->lastLogin = $lastLogin;
-        return $this;
-    }
-
-    public function isDel(): bool
-    {
-        return $this->del;
-    }
-
-    public function setDel(bool $del): static
-    {
-        $this->del = $del;
         return $this;
     }
 

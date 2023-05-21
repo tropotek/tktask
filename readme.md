@@ -1,6 +1,6 @@
-# tk7base
+# tk8base
 
-__Project:__ tkbase    
+__Project:__ tk8base    
 __Web:__ <http://www.tropotek.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>
 
@@ -17,8 +17,8 @@ A base site using the Tk framework, use this as a starting point for your own si
 2. Make sure you have the latest version of composer [https://getcomposer.org/download/] installed.
 3. Use the following commands:
 ~~~bash
-# git clone https://github.com/tropotek/tk7base.git
-# cd tk7base
+# git clone https://github.com/tropotek/tk8base.git
+# cd tk8base
 # composer install
 ~~~
 4. Edit the `/src/App/config/config.php` file to your required settings.

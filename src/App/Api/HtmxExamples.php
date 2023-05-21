@@ -79,7 +79,7 @@ HTML;
         //sleep(1);
         //vd('Upload: ', $request->request->all());
         if ($request->files->count()) {
-            vd($request->files->all());
+            //vd($request->files->all());
 
         }
         return new Response('', Response::HTTP_NO_CONTENT);

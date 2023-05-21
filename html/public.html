@@ -15,13 +15,13 @@
   <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css" />
   <link rel="stylesheet" href="/html/assets/app.css" />
 
-  <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/vendor/components/jquery/jquery.min.js"></script>
   <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
+  <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/components/htmx.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/components/sugar.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
 
   <script src="/vendor/tinymce/tinymce/tinymce.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/components/jquery.tinymce.min.js"></script>
@@ -80,8 +80,10 @@ jQuery(function ($) {
               Admin
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/userManager">Users</a></li>
               <li><a class="dropdown-item" href="/settings">Site Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/staffManager">Staff</a></li>
+              <li><a class="dropdown-item" href="/userManager">Users</a></li>
             </ul>
           </li>
 

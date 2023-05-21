@@ -3,18 +3,17 @@ namespace App\Console;
 
 use App\Db\User;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @author Tropotek <https://www.tropotek.com/>
- */
 class TestData extends \Tk\Console\Command\TestData
 {
 
     protected function configure()
     {
         $this->setName('testData')
-            ->setAliases(array('td'))
+            ->setAliases(['td'])
+            ->addOption('clear', 'c', InputOption::VALUE_NONE, 'Clear all test data')
             ->setDescription('Fill the database with test data');
     }
 
@@ -27,21 +26,51 @@ class TestData extends \Tk\Console\Command\TestData
 
         $db = $this->getFactory()->getDb();
 
-        $db->exec('DELETE FROM `user` WHERE `uid` = \'***\' ');
-        for($i = 0; $i < 250; $i++) {
+        $this->clearData();
+        if ($input->getOption('clear')) return self::SUCCESS;
+
+        // Generate new users
+        for($i = 0; $i < 150; $i++) {
             $obj = new \App\Db\User();
             $obj->setUid('***');
+            $obj->setType((rand(1, 10) <= 5) ? User::TYPE_STAFF : User::TYPE_USER);
+
+            // Add permissions
+            if ($obj->isType(User::TYPE_STAFF)) {
+                $perm = 0;
+                if (rand(1, 10) <= 5) {
+                    $perm = User::PERM_ADMIN;
+                } else {
+                    if (rand(1, 10) <= 5) {
+                        $perm |= User::PERM_SYSADMIN;
+                    }
+                    if (rand(1, 10) <= 5) {
+                        $perm |= User::PERM_MANAGE_STAFF;
+                    }
+                    if (rand(1, 10) <= 5) {
+                        $perm |= User::PERM_MANAGE_USER;
+                    }
+                }
+                $obj->setPermissions($perm);
+            }
             $obj->setName($this->createName() . ' ' . $this->createName());
             do {
                 $obj->setUsername(strtolower($this->createName()) . '.' . rand(1000, 10000000));
             } while(\App\Db\UserMap::create()->findByUsername($obj->getUsername()) != null);
-            $obj->setPassword('password');
+            $obj->setPassword(password_hash('password', PASSWORD_DEFAULT));
             $obj->setEmail($this->createUniqueEmail($obj->getUsername()));
-            $obj->setType((rand(1, 10) <= 5) ? User::TYPE_STAFF : User::TYPE_MEMBER);
             $obj->save();
         }
 
-        return self::FAILURE;
+        return self::SUCCESS;
     }
+
+    private function clearData()
+    {
+        $db = $this->getFactory()->getDb();
+
+        $db->exec('DELETE FROM `user` WHERE `uid` = \'***\' ');
+    }
+
 
 }
