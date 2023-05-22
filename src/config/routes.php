@@ -26,13 +26,10 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Recover::class, 'doDefault']);
     $routes->add('recover-pass', '/recoverUpdate')
         ->controller([\App\Controller\Recover::class, 'doRecover']);
-
-
     $routes->add('register', '/register')
         ->controller([\App\Controller\Register::class, 'doDefault']);
-
-    $routes->add('login-org', '/loginOrg')
-        ->controller([\App\Controller\LoginOrg::class, 'doLogin']);
+    $routes->add('register-activate', '/registerActivate')
+        ->controller([\App\Controller\Register::class, 'doActivate']);
 
 
     // API Endpoints

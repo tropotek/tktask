@@ -6,8 +6,9 @@ use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Encrypt;
 use Tk\Form;
+use Tk\Form\Field;
+use Tk\Form\Action;
 use Tk\FormRenderer;
-use Tk\Form\Field\Input;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
@@ -23,18 +24,19 @@ class Recover
         // Set a token in the session on show, to ensure this browser is the one that requested the login.
         $this->getSession()->set('recover', time());
         $this->setForm(Form::create('recover'));
+        $this->setFormRenderer(new FormRenderer($this->getForm()));
     }
 
     public function doDefault(Request $request)
     {
-        $this->getForm()->appendField(new Input('username'))->setAttr('autocomplete', 'off')
+        $this->getForm()->appendField(new Field\Input('username'))->setAttr('autocomplete', 'off')
             ->setRequired()->setNotes('Enter your username to recover access your account.');
 
         $html = <<<HTML
-            <a href="/login">Login</a> | <a href="/register">Register</a>
+            <a href="/register">Register</a> | <a href="/login">Login</a>
         HTML;
-        $this->getForm()->appendField(new Form\Field\Html('links', $html))->setLabel('');
-        $this->getForm()->appendField(new Form\Action\Submit('recover', [$this, 'onSubmit']))->addCss('w-100');
+        $this->getForm()->appendField(new Field\Html('links', $html))->setLabel('');
+        $this->getForm()->appendField(new Action\Submit('recover', [$this, 'onSubmit']))->addCss('w-100');
 
         $load = [];
         $this->getForm()->setFieldValues($load);
@@ -42,7 +44,7 @@ class Recover
         $this->getForm()->execute($request->request->all());
     }
 
-    public function onSubmit(Form $form, Form\Action\ActionInterface $action)
+    public function onSubmit(Form $form, Action\ActionInterface $action)
     {
         if (!$form->getFieldValue('username')) {
             $form->addFieldError('username', 'Please enter a valid username.');
@@ -83,6 +85,7 @@ class Recover
 
         $hashToken = Encrypt::create($this->getConfig()->get('system.encrypt'))->encrypt(serialize(['h' => $user->getHash(), 't' => time()]));
         $url = Uri::create('/recoverUpdate')->set('t', $hashToken);
+        //$url = Uri::create('/recoverUpdate/'.urlencode($hashToken));
         $message->set('activate-url', $url->toString());
 
         $this->getFactory()->getMailGateway()->send($message);
@@ -97,13 +100,12 @@ class Recover
         $token = $_REQUEST['t'] ?? '';
         $arr = Encrypt::create($this->getConfig()->get('system.encrypt'))->decrypt($token);
         $arr = unserialize($arr);
-        vd($arr);
         if (!is_array($arr)) {
             $this->getFactory()->getSession()->getFlashBag()->add('danger', 'Unknown account recovery error, please try again.');
             Uri::create('/home')->redirect();
         }
 
-        if ((($arr['t'] ?? 0) + 60*60*8) < time()) { // submit before form token times out
+        if ((($arr['t'] ?? 0) + 60*60*1) < time()) { // submit before form token times out
         //if ((($arr['t'] ?? time()) + 60*1) < time()) { // submit before form token times out
             $this->getFactory()->getSession()->getFlashBag()->add('danger', 'Recovery URL has expired, please try again.');
             Uri::create('/home')->redirect();
@@ -115,13 +117,13 @@ class Recover
             Uri::create('/home')->redirect();
         }
 
-        $this->getForm()->appendField(new Form\Field\Hidden('t'));
-        $this->getForm()->appendField(new Input('newPassword'))->setLabel('Password')
+        $this->getForm()->appendField(new Field\Hidden('t'));
+        $this->getForm()->appendField(new Field\Password('newPassword'))->setLabel('Password')
             ->setAttr('autocomplete', 'off')->setRequired();
-        $this->getForm()->appendField(new Input('confPassword'))->setLabel('Confirm')
+        $this->getForm()->appendField(new Field\Password('confPassword'))->setLabel('Confirm')
             ->setAttr('autocomplete', 'off')->setRequired();
 
-        $this->getForm()->appendField(new Form\Action\Submit('recover-update', [$this, 'onRecover']))->addCss('w-100');
+        $this->getForm()->appendField(new Action\Submit('recover-update', [$this, 'onRecover']))->addCss('w-100');
 
         $load = [
             't' => $token
@@ -131,7 +133,7 @@ class Recover
         $this->getForm()->execute($request->request->all());
     }
 
-    public function onRecover(Form $form, Form\Action\ActionInterface $action)
+    public function onRecover(Form $form, Action\ActionInterface $action)
     {
         if (!$form->getFieldValue('newPassword')  || $form->getFieldValue('newPassword') != $form->getFieldValue('confPassword')) {
             $form->addFieldError('newPassword');
@@ -139,7 +141,7 @@ class Recover
             $form->addFieldError('confPassword', 'Passwords do not match');
         } else {
             if (!$this->getConfig()->isDebug()) {
-                $errors = $this->checkPassword($form->getFieldValue('newPassword'));
+                $errors = \App\Db\User::checkPassword($form->getFieldValue('newPassword'));
                 if (count($errors)) {
                     $form->addFieldError('confPassword', implode('<br/>', $errors));
                 }
@@ -157,36 +159,9 @@ class Recover
         Uri::create('/login')->redirect();
     }
 
-    protected function checkPassword(string $pwd, array &$errors = []): array
-    {
-        if (strlen($pwd) < 8) {
-            $errors[] = "Password too short!";
-        }
-
-        if (!preg_match("#[0-9]+#", $pwd)) {
-            $errors[] = "Must include at least one number!";
-        }
-
-        if (!preg_match("#[a-zA-Z]+#", $pwd)) {
-            $errors[] = "Must include at least one letter!";
-        }
-
-        if( !preg_match("#[A-Z]+#", $pwd) ) {
-            $errors[] = "Must include at least one Capital!";
-        }
-
-        if( !preg_match("#\W+#", $pwd) ) {
-            $errors[] = "Must include at least one symbol!";
-        }
-
-        return $errors;
-    }
-
     public function show(): ?Template
     {
-        $renderer = new FormRenderer($this->getForm());
-
-        return $renderer->show();
+        return $this->getFormRenderer()->show();
     }
 
 }

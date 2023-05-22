@@ -292,10 +292,6 @@ class User extends Model implements UserInterface
         $errors = [];
         $mapper = $this->getMapper();
 
-        if (!$this->getName()) {
-            $errors['name'] = 'Invalid field value';
-        }
-
         if (!$this->getUsername()) {
             $errors['username'] = 'Invalid field username value';
         } else {
@@ -308,6 +304,35 @@ class User extends Model implements UserInterface
         if (!filter_var($this->getEmail(), FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Please enter a valid email address';
         }
+
+        if (!$this->getName()) {
+            $errors['name'] = 'Invalid field value';
+        }
+        return $errors;
+    }
+
+    public static function checkPassword(string $pwd, array &$errors = []): array
+    {
+        if (strlen($pwd) < 8) {
+            $errors[] = "Password too short!";
+        }
+
+        if (!preg_match("#[0-9]+#", $pwd)) {
+            $errors[] = "Must include at least one number!";
+        }
+
+        if (!preg_match("#[a-zA-Z]+#", $pwd)) {
+            $errors[] = "Must include at least one letter!";
+        }
+
+        if( !preg_match("#[A-Z]+#", $pwd) ) {
+            $errors[] = "Must include at least one Capital!";
+        }
+
+        if( !preg_match("#\W+#", $pwd) ) {
+            $errors[] = "Must include at least one symbol!";
+        }
+
         return $errors;
     }
 }

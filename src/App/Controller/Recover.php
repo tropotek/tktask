@@ -48,7 +48,7 @@ class Recover extends PageController
     {
         $html = <<<HTML
 <div>
-    <h1 class="h3 mb-3 fw-normal">Recover</h1>
+    <h1 class="h3 mb-3 fw-normal">Recover Account</h1>
     <div class="" var="content"></div>
 </div>
 HTML;

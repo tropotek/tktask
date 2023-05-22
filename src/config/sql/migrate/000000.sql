@@ -32,7 +32,7 @@ INSERT INTO user (type, username, email, name, timezone, permissions) VALUES
   ('staff', 'dev', 'dev@example.com', 'Developer', 'Australia/Melbourne', 1),
   ('staff', 'design', 'design@example.com', 'Designer', 'Australia/Melbourne', 1),
   ('staff', 'staff', 'staff@example.com', 'Staff', 'Australia/Melbourne', 2),
-  ('user', 'user', 'user@example.com', 'User', 'Australia/Brisbane', 4)
+  ('user', 'user', 'user@example.com', 'User', 'Australia/Brisbane', 0)
 ;
 
 SET SQL_SAFE_UPDATES = 0;
