@@ -1,53 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="" />
-  <meta name="author" content="Me!!!" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content=""/>
+  <meta name="author" content="Me!!!"/>
 
   <title>Bootstrap v5.2</title>
 
-  <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css" />
-  <link rel="stylesheet" href="/vendor/components/font-awesome/css/all.min.css" />
-
-  <style>
-    html,
-    body {
-      height: 100%;
-    }
-
-    .wrap {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      padding-top: 40px;
-      padding-bottom: 40px;
-      background-color: #f5f5f5;
-    }
-
-    .form-signin {
-      max-width: 330px;
-      padding: 15px;
-    }
-
-    .form-signin .form-floating:focus-within {
-      z-index: 2;
-    }
-
-    .form-signin #login-form input[type="text"] {
-      margin-bottom: -1px;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-
-    .form-signin #login-form input[type="password"] {
-      margin-bottom: 10px;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-    }
-
-  </style>
+  <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css"/>
+  <link rel="stylesheet" href="/vendor/components/font-awesome/css/all.min.css"/>
 
   <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/vendor/components/jquery/jquery.min.js"></script>
@@ -56,26 +18,50 @@
   <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
   <script src="/html/assets/app.js"></script>
 
-<script>
-jQuery(function ($) {
-  // Init page javascript functions
-  app.initHtmxToasts();
-});
-</script>
+
+  <style>
+    .login-box {
+      max-width: 330px;
+      margin-top: 11%;
+    }
+    form .btn-primary {
+      width: 95%;
+    }
+    form .fld > label {
+      display: none;
+    }
+    form .tk-form-errors {
+      margin: 15px 0 0 0;
+    }
+  </style>
+
+  <script>
+    jQuery(function ($) {
+      // Init page javascript functions
+      app.initHtmxToasts();
+    });
+  </script>
 
 </head>
-<body class="text-center">
+<body class="bg-light h-100">
 
-<div>
+<div class="pb-1">
   <div aria-live="polite" aria-atomic="true" class="toastPanel position-relative"
        hx-get="/api/htmx/toast" hx-trigger="load" hx-target="this" hx-swap="outerHTML"
   ></div>
 </div>
-<div class="wrap">
-  <main class="form-signin w-100 m-auto">
 <!--    <div var="alert"></div>-->
-    <div var="content"></div>
-  </main>
+
+<div class="login-box text-left mx-auto card p-4 w-100 p-2">
+  <div class="" var="content"></div>
+
+  <p class="my-3 text-center">
+    <a href="https://www.tropotek.com/" target="_blank" class="small text-muted text-decoration-none">
+      Tropotek &copy; 2023
+    </a>
+  </p>
 </div>
+
 </body>
 </html>
+

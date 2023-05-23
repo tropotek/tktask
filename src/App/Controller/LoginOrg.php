@@ -7,6 +7,7 @@ use App\Util\Masquerade;
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Auth\Result;
 use Tk\Date;
 use Tk\Form;
@@ -33,7 +34,7 @@ class LoginOrg extends PageController
         $user = $this->retrieveMe();
         if ($user) {    // remembered user already logged in
             $this->getFactory()->getAuthController()->getStorage()->write($user->getUsername());
-            $this->getFactory()->getSession()->getFlashBag()->add('success', 'Logged in successfully');
+            Alert::addSuccess('Logged in successfully');
             Uri::create('/dashboard')->redirect();
         }
 
@@ -61,13 +62,13 @@ class LoginOrg extends PageController
         $token = $this->getSession()->get('login', 0);
         $this->getSession()->remove('login');
         if ($token + 60*2 < time()) { // login before form token times out
-            $this->getFactory()->getSession()->getFlashBag()->add('error', 'Invalid form submission. Please try again.');
+            Alert::addError('Invalid form submission. Please try again.');
             Uri::create()->redirect();
         }
 
         $result = $this->getFactory()->getAuthController()->clearIdentity()->authenticate($this->getFactory()->getAuthAdapter());
         if ($result->getCode() != Result::SUCCESS) {
-            $this->getFactory()->getSession()->getFlashBag()->add('error', $result->getMessage());
+            Alert::addError($result->getMessage());
             Uri::create()->redirect();
         }
 
@@ -131,7 +132,7 @@ class LoginOrg extends PageController
             UserMap::create()->deleteToken($this->getFactory()->getAuthUser()->getId());
             setcookie(UserMap::REMEMBER_CID, '', -1);
         }
-        $this->getFactory()->getSession()->getFlashBag()->add('success', 'Logged out successfully');
+        Alert::addSuccess('Logged out successfully');
         Uri::create('/')->redirect();
     }
 

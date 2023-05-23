@@ -5,6 +5,7 @@ use App\Db\UserMap;
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Encrypt;
 use Tk\Uri;
 
@@ -20,6 +21,11 @@ class Register extends PageController
 
     public function doDefault(Request $request)
     {
+        if (!$this->getRegistry()->get('site.account.registration', false)) {
+            Alert::addError('New user registrations are closed for this account');
+            Uri::create('/home')->redirect();
+        }
+
         $this->form = new \App\Form\Register();
 
         $this->form->doDefault($request);
@@ -29,18 +35,23 @@ class Register extends PageController
 
     public function doActivate(Request $request)
     {
+        if (!$this->getRegistry()->get('site.account.registration', false)) {
+            Alert::addError('New user registrations are closed for this account');
+            Uri::create('/home')->redirect();
+        }
+
         //$token = $request->get('t');        // Bug in here that replaces + with a space on POSTS
         $token = $_REQUEST['t'] ?? '';
         $arr = Encrypt::create($this->getConfig()->get('system.encrypt'))->decrypt($token);
         $arr = unserialize($arr);
         if (!is_array($arr)) {
-            $this->getFactory()->getSession()->getFlashBag()->add('danger', 'Unknown account registration error, please try again.');
+            Alert::addError('Unknown account registration error, please try again.');
             Uri::create('/home')->redirect();
         }
 
         $user = UserMap::create()->findByHash($arr['h'] ?? '');
         if (!$user) {
-            $this->getFactory()->getSession()->getFlashBag()->add('danger', 'Invalid user registration');
+            Alert::addError('Invalid user registration');
             Uri::create('/home')->redirect();
         }
 
@@ -48,7 +59,7 @@ class Register extends PageController
         $user->setNotes('');
         $user->save();
 
-        $this->getFactory()->getSession()->getFlashBag()->add('success', 'You account has been successfully activated, please login.');
+        Alert::addSuccess('You account has been successfully activated, please login.');
         Uri::create('/login')->redirect();
 
         return $this->getPage();
@@ -69,7 +80,7 @@ class Register extends PageController
     {
         $html = <<<HTML
 <div>
-    <h1 class="h3 mb-3 fw-normal">Account Registration</h1>
+    <h1 class="h3 mb-3 fw-normal text-center">Account Registration</h1>
     <div class="" var="content"></div>
 </div>
 HTML;

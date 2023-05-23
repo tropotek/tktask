@@ -1,31 +1,28 @@
 <?php
-namespace App\Controller\Admin;
+namespace App\Controller\User;
 
 use App\Db\User;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Tk\Alert;
 
-class Settings extends PageController
+class Profile extends PageController
 {
-    protected \App\Form\Settings $form;
+    protected \App\Form\User $form;
 
 
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->setTitle('Edit Settings');
-        $this->setAccess(User::PERM_SYSADMIN);
-        $this->getRegistry()->save();
+        $this->getPage()->setTitle('Edit User');
+        $this->setAccess(User::PERM_MANAGE_USER | User::PERM_MANAGE_STAFF);
     }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request, $id)
     {
         // Get the form template
-        $this->form = new \App\Form\Settings();
-
-        $this->form->doDefault($request);
+        $this->form = new \App\Form\User();
+        $this->form->doDefault($request, $id);
 
         return $this->getPage();
     }
@@ -35,6 +32,7 @@ class Settings extends PageController
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
+        //$template->appendTemplate('content', $this->form->getRenderer()->getTemplate());
         $template->appendTemplate('content', $this->form->show());
 
         return $template;
@@ -45,7 +43,7 @@ class Settings extends PageController
         $html = <<<HTML
 <div>
   <h2 var="title"></h2>
-  <div var="content"></div>
+  <div var="content" class="tk-form-content"></div>
 </div>
 HTML;
         return $this->loadTemplate($html);

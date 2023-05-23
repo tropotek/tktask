@@ -5,6 +5,7 @@ use App\Db\UserMap;
 use App\Util\Masquerade;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Form;
 use Tk\FormRenderer;
 use Tk\Log;
@@ -51,7 +52,7 @@ class User
         $user = UserMap::create()->find($user_id);
         $user?->delete();
 
-        $this->getSession()->getFlashBag()->add('success', 'User removed successfully.');
+        Alert::addSuccess('User removed successfully.');
         Uri::create()->reset()->redirect();
     }
 
@@ -61,10 +62,10 @@ class User
         $msqUser = UserMap::create()->find($user_id);
 
         if ($msqUser && Masquerade::masqueradeLogin($this->getFactory()->getAuthUser(), $msqUser)) {
-            $this->getSession()->getFlashBag()->add('success', 'You are now logged in as user ' . $msqUser->getUsername());
+            Alert::addSuccess('You are now logged in as user ' . $msqUser->getUsername());
             Uri::create('/dashboard')->redirect();
         }
-        $this->getSession()->getFlashBag()->add('warning', 'You cannot login as user ' . $msqUser->getUsername() . ' invalid permissions');
+        Alert::addWarning('You cannot login as user ' . $msqUser->getUsername() . ' invalid permissions');
         Uri::create()->remove(Masquerade::QUERY_MSQ)->redirect();
     }
 
@@ -87,7 +88,7 @@ class User
             $btn->setText('');
             $btn->setIcon('fa fa-edit');
             $btn->addCss('btn btn-primary');
-            $btn->setUrl('/userEditX/'.$obj->getId());
+            $btn->setUrl('/userEdit/'.$obj->getId());
             $template->appendTemplate('td', $btn->show());
             $template->appendHtml('td', '&nbsp;');
 

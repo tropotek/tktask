@@ -6,6 +6,7 @@ use App\Util\Masquerade;
 use Dom\Mvc\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Uri;
 
 class Login extends PageController
@@ -38,7 +39,7 @@ class Login extends PageController
             UserMap::create()->deleteToken($this->getFactory()->getAuthUser()->getId());
             setcookie(UserMap::REMEMBER_CID, '', -1);
         }
-        $this->getFactory()->getSession()->getFlashBag()->add('success', 'Logged out successfully');
+        Alert::addSuccess('Logged out successfully');
         Uri::create('/')->redirect();
     }
 
@@ -57,7 +58,7 @@ class Login extends PageController
     {
         $html = <<<HTML
 <div>
-    <h1 class="h3 mb-3 fw-normal">Login</h1>
+    <h1 class="text-center h3 mb-3 fw-normal">Login</h1>
     <div class="" var="content"></div>
 </div>
 HTML;

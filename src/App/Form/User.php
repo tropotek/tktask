@@ -4,6 +4,7 @@ namespace App\Form;
 use App\Db\UserMap;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Exception;
 use Tk\Form;
 use Tk\FormRenderer;
@@ -85,15 +86,15 @@ class User
         $this->getUser()->getMapper()->getFormMap()->loadObject($this->user, $form->getFieldValues());
         $this->getUser()->setPermissions(array_sum($form->getFieldValue('perm') ?? []));
 
-        $form->setErrors($this->user->validate());
+        $form->addFieldErrors($this->user->validate());
         if ($form->hasErrors()) {
-            $form->getSession()->getFlashBag()->add('danger', 'Form contains errors.');
+            Alert::addError('Form contains errors.');
             return;
         }
 
         $this->getUser()->save();
 
-        $form->getSession()->getFlashBag()->add('success', 'Form save successfully.');
+        Alert::addSuccess('Form save successfully.');
 
         if (!$form->getRequest()->headers->has('HX-Request')) {
             $action->setRedirect(Uri::create());

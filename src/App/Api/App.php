@@ -29,13 +29,14 @@ HTML;
 
         $template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/alert'));
         foreach ($this->getFactory()->getSession()->getFlashBag()->all() as $type => $flash) {
-            foreach ($flash as $msg) {
+            foreach ($flash as $a) {
+                $a = unserialize($a);
                 $r = $template->getRepeat('panel');
                 $css = strtolower($type);
                 if ($css == 'error') $css = 'danger';
                 $r->addCss('panel', 'alert-' . $css);
                 $r->setText('title', ucfirst(strtolower($type)));
-                $r->insertHtml('message', $msg);
+                $r->insertHtml('message', $a->message);
                 $r->appendRepeat();
             }
         }
@@ -53,7 +54,8 @@ HTML;
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" repeat="panel">
       <div class="toast-header">
         <!--<img src="..." class="rounded mr-2" alt="...">-->
-        <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect fill="#007aff" width="100%" height="100%" var="svg" /></svg>&nbsp;
+        <svg choice="svg" class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect fill="#007aff" width="100%" height="100%" var="svg" /></svg>&nbsp;
+        <i class="bd-placeholder-img rounded mr-2" style="width: 20px;height: 20px; line-height: 1.5em;" choice="icon"></i>
         <strong class="me-auto" var="title"> Alert</strong>
         <small class="text-muted" var="time"></small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -68,23 +70,35 @@ HTML;
 
         $template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/toast'));
         foreach ($this->getFactory()->getSession()->getFlashBag()->all() as $type => $flash) {
-            foreach ($flash as $msg) {
+            foreach ($flash as $a) {
+                $a = unserialize($a);
                 $r = $template->getRepeat('panel');
-                $colorMap = [
-                    'primary'   => '#0d6efd',
-                    'secondary' => '#0d6efd',
-                    'success'   => '#198754',
-                    'info'      => '#0dcaf0',
-                    'warning'   => '#ffc107',
-                    'danger'    => '#dc3545',
-                    'error'     => '#dc3545',
-                    'light'     => '#f8f9fa',
-                    'dark'      => '#212529',
-                ];
+                if ($a->icon) {
+                    $r->addCss('icon', $a->icon);
+                    $r->addCss('icon', 'text-'.$type);
+                    $r->setVisible('icon');
+                } else {
+                    $colorMap = [
+                        'primary' => '#0d6efd',
+                        'secondary' => '#0d6efd',
+                        'success' => '#198754',
+                        'info' => '#0dcaf0',
+                        'warning' => '#ffc107',
+                        'danger' => '#dc3545',
+                        'error' => '#dc3545',
+                        'light' => '#f8f9fa',
+                        'dark' => '#212529',
+                    ];
+                    $r->setAttr('svg', 'fill', $colorMap[$type]);
+                    $r->setVisible('svg');
+                }
+                if ($a->title) {
+                    $r->setText('title', $a->title);
+                } else {
+                    $r->setText('title', ucfirst(strtolower($type)));
+                }
 
-                $r->setAttr('svg', 'fill', $colorMap[$type]);
-                $r->setText('title', ucfirst(strtolower($type)));
-                $r->insertHtml('message', $msg);
+                $r->insertHtml('message', $a->message);
                 $r->appendRepeat();
             }
         }

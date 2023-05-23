@@ -6,12 +6,13 @@ use App\Db\UserMap;
 use App\Util\Masquerade;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Auth\Result;
 use Tk\Date;
 use Tk\Form;
 use Tk\FormRenderer;
-use Tk\Form\Field\Input;
-use Tk\Form\Field\Checkbox;
+use Tk\Form\Field;
+use Tk\Form\Action;
 use Tk\Log;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
@@ -35,19 +36,26 @@ class Login
         $user = $this->retrieveMe();
         if ($user) {    // remembered user already logged in
             $this->getFactory()->getAuthController()->getStorage()->write($user->getUsername());
-            $this->getFactory()->getSession()->getFlashBag()->add('success', 'Logged in successfully');
+            Alert::addSuccess('Logged in successfully');
             Uri::create('/dashboard')->redirect();
         }
 
-        $this->getForm()->appendField(new Input('username'))->setRequired();
-        $this->getForm()->appendField(new Input('password'))->setType('password')->setRequired();
-        $this->getForm()->appendField(new Checkbox('remember', ['Remember me' => 'remember']))->setLabel('');
+        $this->getForm()->appendField(new Field\Input('username'))->setRequired()
+            ->setAttr('placeholder', 'Username');
+        $this->getForm()->appendField(new Field\Password('password'))->setRequired()
+            ->setAttr('placeholder', 'Password');
+        $this->getForm()->appendField(new Field\Checkbox('remember', ['Remember me' => 'remember']))->setLabel('');
 
         $html = <<<HTML
-            <a href="/recover">Recover</a> | <a href="/register">Register</a>
+            <a href="/recover">Recover</a>
         HTML;
-        $this->getForm()->appendField(new Form\Field\Html('links', $html))->setLabel('');
-        $this->getForm()->appendField(new Form\Action\Submit('login', [$this, 'onSubmit']))->addCss('w-100');
+        if ($this->getRegistry()->get('site.account.registration', false)) {
+            $html = <<<HTML
+                <a href="/recover">Recover</a> | <a href="/register">Register</a>
+            HTML;
+        }
+        $this->getForm()->appendField(new Field\Html('links', $html))->setLabel('')->addFieldCss('text-center');
+        $this->getForm()->appendField(new Action\Submit('login', [$this, 'onSubmit']));
 
         $load = [];
         $this->getForm()->setFieldValues($load);
@@ -55,7 +63,7 @@ class Login
         $this->getForm()->execute($request->request->all());
     }
 
-    public function onSubmit(Form $form, Form\Action\ActionInterface $action)
+    public function onSubmit(Form $form, Action\ActionInterface $action)
     {
         $values = $form->getFieldValues();
 
@@ -66,14 +74,14 @@ class Login
         $token = $this->getSession()->get('login', 0);
         $this->getSession()->remove('login');
         if (($token + 60*2) < time()) { // login before form token times out
-            $form->addFieldError('remember', 'Invalid form submission, please try again.');
+            $form->addError( 'Invalid form submission, please try again.');
             return;
         }
 
         $result = $this->getFactory()->getAuthController()->clearIdentity()->authenticate($this->getFactory()->getAuthAdapter());
         if ($result->getCode() != Result::SUCCESS) {
             Log::error($result->getMessage());
-            $form->addFieldError('remember', 'Invalid login details.');
+            $form->addError('Invalid login details.');
             return;
         }
 

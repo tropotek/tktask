@@ -3,6 +3,7 @@ namespace App\Form;
 
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Form\Field;
 use Tk\Form;
 use Tk\FormRenderer;
@@ -87,7 +88,7 @@ class Settings
 
         $this->getRegistry()->save();
 
-        $form->getSession()->getFlashBag()->add('success', 'Site settings saved successfully.');
+        Alert::addSuccess('Site settings saved successfully.');
         $action->setRedirect(Uri::create());
     }
 
