@@ -1,6 +1,7 @@
 <?php
 namespace App\Db;
 
+use App\Factory;
 use Bs\Db\FileInterface;
 use Bs\Db\FileMap;
 use Bs\Db\Traits\TimestampTrait;
@@ -339,5 +340,58 @@ class User extends Model implements UserInterface, FileInterface
         }
 
         return $errors;
+    }
+
+    public function rememberMe(int $day = 30): void
+    {
+        [$selector, $validator, $token] = UserMap::create()->generateToken();
+
+        // remove all existing token associated with the user id
+        UserMap::create()->deleteToken($this->getId());
+
+        // set expiration date
+        $expired_seconds = time() + 60 * 60 * 24 * $day;
+
+        // insert a token to the database
+        $hash_validator = password_hash($validator, PASSWORD_DEFAULT);
+        $expiry = date('Y-m-d H:i:s', $expired_seconds);
+
+        if (UserMap::create()->insertToken($this->getId(), $selector, $hash_validator, $expiry)) {
+            // TODO: we need to manage the response object so we can call on it when needed.
+            //$cookie = Cookie::create('remember', $token, Date::create()->add(new \DateInterval('PT'.$expired_seconds.'S')));
+            // use standard php cookie for now.
+            setcookie(UserMap::REMEMBER_CID, $token, $expired_seconds);
+        }
+    }
+
+    /**
+     * Remove the `remember me` cookie
+     */
+    public function removeMe(): void
+    {
+        $this->getMapper()->deleteToken($this->getId());
+        setcookie(UserMap::REMEMBER_CID, '', -1);
+    }
+
+    /**
+     * Attempt to find a user by the cookie
+     * If the user checked the `remember me` checkbox at login this should find the user
+     * if a user is found it will be automatically logged into the auth controller
+     */
+    public static function retrieveMe(): ?User
+    {
+        $user = null;
+        $token = Factory::instance()->getRequest()->cookies->get(UserMap::REMEMBER_CID, '');
+        if ($token) {
+            [$selector, $validator] = UserMap::create()->parseToken($token);
+            $tokens = UserMap::create()->findTokenBySelector($selector);
+            if (password_verify($validator, $tokens['hashed_validator'])) {
+                $user = UserMap::create()->findBySelector($selector);
+                if ($user) {
+                    Factory::instance()->getAuthController()->getStorage()->write($user->getUsername());
+                }
+            }
+        }
+        return $user;
     }
 }

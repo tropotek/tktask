@@ -33,9 +33,8 @@ class Login
         $this->getSession()->set('login', time());
 
         // check if user already logged in...
-        $user = $this->retrieveMe();
+        $user = User::retrieveMe();
         if ($user) {    // remembered user already logged in
-            $this->getFactory()->getAuthController()->getStorage()->write($user->getUsername());
             Alert::addSuccess('Logged in successfully');
             Uri::create('/dashboard')->redirect();
         }
@@ -91,48 +90,12 @@ class Login
         $user->save();
 
         if (!empty($values['remember'] ?? '')) {
-            $this->rememberMe($user->getId());
+            $user->rememberMe();
         } else {
-            UserMap::create()->deleteToken($user->getId());
-            setcookie(UserMap::REMEMBER_CID, '', -1);
+            $user->removeMe();
         }
 
         Uri::create('/dashboard')->redirect();
-    }
-
-    protected function rememberMe(int $userId, int $day = 30): void
-    {
-        [$selector, $validator, $token] = UserMap::create()->generateToken();
-
-        // remove all existing token associated with the user id
-        UserMap::create()->deleteToken($userId);
-
-        // set expiration date
-        $expired_seconds = time() + 60 * 60 * 24 * $day;
-
-        // insert a token to the database
-        $hash_validator = password_hash($validator, PASSWORD_DEFAULT);
-        $expiry = date('Y-m-d H:i:s', $expired_seconds);
-
-        if (UserMap::create()->insertToken($userId, $selector, $hash_validator, $expiry)) {
-            // TODO: we need to manage the response object so we can call on it when needed.
-            //$cookie = Cookie::create('remember', $token, Date::create()->add(new \DateInterval('PT'.$expired_seconds.'S')));
-            // use standard php cookie for now.
-            setcookie(UserMap::REMEMBER_CID, $token, $expired_seconds);
-        }
-    }
-
-    protected function retrieveMe(): ?User
-    {
-        $token = $this->getRequest()->cookies->get(UserMap::REMEMBER_CID, '');
-        if ($token) {
-            [$selector, $validator] = UserMap::create()->parseToken($token);
-            $tokens = UserMap::create()->findTokenBySelector($selector);
-            if (password_verify($validator, $tokens['hashed_validator'])) {
-                return UserMap::create()->findBySelector($selector);
-            }
-        }
-        return null;
     }
 
     public function show(): ?Template

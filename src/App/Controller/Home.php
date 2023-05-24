@@ -55,6 +55,8 @@ class Home extends PageController
     </ul>
 
     <p>&nbsp;</p>
+    <p app-is-user="true">You are logged in!</p>
+    <p app-is-user="false">You are not logged in</p>
     <p>&nbsp;</p>
 
 </div>
