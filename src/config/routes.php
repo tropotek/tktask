@@ -61,6 +61,11 @@ return function (CollectionConfigurator $routes) {
 //        ->defaults(['id' => 0])
 //        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
 
+    $routes->add('example-manager', '/exampleManager')
+        ->controller([\App\Controller\Example\Manager::class, 'doDefault']);
+    $routes->add('example-edit', '/exampleEdit/{id}')
+        ->controller([\App\Controller\Example\Edit::class, 'doDefault'])
+        ->defaults(['id' => 0]);
 
     // Htmx Examples (TODO: remove for productions sites)
     $routes->add('ui-form', '/ui/form')

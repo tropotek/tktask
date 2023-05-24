@@ -3,6 +3,7 @@ namespace App;
 
 use App\Db\User;
 use App\Db\UserMap;
+use App\Dom\Modifier\AppAttributes;
 use Bs\Db\UserInterface;
 use Dom\Mvc\Loader;
 use Dom\Mvc\Modifier;
@@ -11,9 +12,6 @@ use Tk\Auth\Adapter\AdapterInterface;
 use Tk\Auth\Auth;
 use Tk\Auth\FactoryInterface;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Factory extends \Bs\Factory implements FactoryInterface
 {
 
@@ -32,6 +30,15 @@ class Factory extends \Bs\Factory implements FactoryInterface
             call_user_func_array($onCreate, [$page]);
         }
         return $page;
+    }
+
+    public function getTemplateModifier(): Modifier
+    {
+        if (!$this->get('templateModifier')) {
+            $dm = parent::getTemplateModifier();
+            $dm->addFilter('appAttributes', new AppAttributes());
+        }
+        return $this->get('templateModifier');
     }
 
     /**

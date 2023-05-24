@@ -1,12 +1,17 @@
 <?php
 namespace App\Db;
 
+use Bs\Db\FileInterface;
+use Bs\Db\FileMap;
+use Bs\Db\Traits\TimestampTrait;
 use Bs\Db\UserInterface;
 use Tk\Date;
 use Tk\Db\Mapper\Model;
+use Tk\Db\Mapper\Result;
 
-class User extends Model implements UserInterface
+class User extends Model implements UserInterface, FileInterface
 {
+    use TimestampTrait;
 
     /**
      * permission values
@@ -83,9 +88,19 @@ class User extends Model implements UserInterface
 
     public function __construct()
     {
-        $this->modified = Date::create();
-        $this->created = Date::create();
+        $this->_TimestampTrait();
         $this->timezone = $this->getConfig()->get('php.date.timezone');
+    }
+
+    public function getFileList(array $filter = [], ?\Tk\Db\Tool $tool = null): Result
+    {
+        $filter += ['model' => $this];
+        return FileMap::create()->findFiltered($filter, $tool);
+    }
+
+    public function getDataPath(): string
+    {
+        return sprintf('/users/%s', $this->getVolatileId());
     }
 
     public function getUid(): string
@@ -270,16 +285,6 @@ class User extends Model implements UserInterface
     {
         $this->lastLogin = $lastLogin;
         return $this;
-    }
-
-    public function getModified(): ?\DateTime
-    {
-        return $this->modified;
-    }
-
-    public function getCreated(): ?\DateTime
-    {
-        return $this->created;
     }
 
     /**

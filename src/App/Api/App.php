@@ -13,7 +13,7 @@ class App
     use SystemTrait;
 
 
-    public function doAlert(Request $request)
+    public function doAlert(Request $request): string
     {
         $html = <<<HTML
 <div hx-get="" hx-trigger="submit from:form" hx-target="this" hx-swap="outerHTML" var="alertPanel">
@@ -44,7 +44,7 @@ HTML;
         return $template->toString();
     }
 
-    public function doToast(Request $request)
+    public function doToast(Request $request): string
     {
         $toasts = <<<HTML
 <div aria-live="polite" aria-atomic="true" class="toastPanel position-relative" var="alertPanel"

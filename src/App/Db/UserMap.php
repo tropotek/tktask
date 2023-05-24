@@ -18,7 +18,6 @@ class UserMap extends Mapper
     {
         if (!$this->getDataMappers()->has(self::DATA_MAP_DB)) {
             $map = new DataMap();
-            //$map->addDataType(new Db\Integer('userId', 'user_id'));
             $map->addDataType(new Db\Integer('id'));
             $map->addDataType(new Db\Text('uid'));
             $map->addDataType(new Db\Text('type'));
@@ -42,7 +41,6 @@ class UserMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
             $map = new DataMap();
-            //$map->addDataType(new Form\Text('userId'));
             $map->addDataType(new Form\Text('id'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
@@ -51,15 +49,15 @@ class UserMap extends Mapper
             $map->addDataType(new Form\Text('password'));
             $map->addDataType(new Form\Text('email'));
             $map->addDataType(new Form\Text('name'));
+            $map->addDataType(new Form\File('fileOne'));
+            $map->addDataType(new Form\Boolean('active'));
             $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Form\Text('timezone'));
-            $map->addDataType(new Form\Boolean('active'));
             $this->addDataMap(self::DATA_MAP_FORM, $map);
         }
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_TABLE)) {
             $map = new DataMap();
-            //$map->addDataType(new Form\Text('userId'));
             $map->addDataType(new Form\Text('id'));
             $map->addDataType(new Form\Text('uid'));
             $map->addDataType(new Form\Text('type'));
@@ -146,11 +144,16 @@ class UserMap extends Mapper
             $filter->appendWhere('a.email = %s AND ', $this->quote($filter['email']));
         }
 
+        if (is_bool($filter['active'] ?? '')) {
+            $filter->appendWhere('a.active = %s AND ', (int)$filter['active']);
+        }
+
         if (!empty($filter['exclude'])) {
             $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
+        // Filter for any remember me saved token selectors
         if (!empty($filter['selector'])) {
             $filter->appendFrom('INNER JOIN %s z ON (z.user_id = a.id) ', $this->quoteParameter('user_tokens'));
             $filter->appendWhere('z.selector = %s AND expiry > NOW() AND ', $this->quote($filter['selector']));

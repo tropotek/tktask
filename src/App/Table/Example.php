@@ -1,8 +1,8 @@
 <?php
 namespace App\Table;
 
+use App\Db\ExampleMap;
 use App\Db\UserMap;
-use App\Util\Masquerade;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
@@ -17,19 +17,7 @@ use Tk\Table\Cell;
 use Tk\Table\Action;
 use Tk\TableRenderer;
 
-/**
- * Example:
- * <code>
- *   $table = new \App\Table\User::create();
- *   $table->init();
- *   $list = ObjectMap::getObjectListing();
- *   $table->setList($list);
- *   $tableTemplate = $table->show();
- *   $template->appendTemplate($tableTemplate);
- * </code>
- *
- */
-class User
+class Example
 {
     use SystemTrait;
 
@@ -37,46 +25,27 @@ class User
 
     protected ?Form $filter = null;
 
-    protected string $type = \App\Db\User::TYPE_USER;
 
-
-    public function __construct(string $type)
+    public function __construct()
     {
-        $this->table = new Table($type);
+        $this->table = new Table('example');
         $this->filter = new Form($this->table->getId() . '-filters');
-        $this->type = $type;
     }
 
-    private function doDelete($user_id)
+    private function doDelete($id)
     {
-        /** @var \App\Db\User $user */
-        $user = UserMap::create()->find($user_id);
-        $user?->delete();
+        /** @var \App\Db\Example $ex */
+        $ex = ExampleMap::create()->find($id);
+        $ex?->delete();
 
-        Alert::addSuccess('User removed successfully.');
+        Alert::addSuccess('Example removed successfully.');
         Uri::create()->reset()->redirect();
-    }
-
-    private function doMsq($user_id)
-    {
-        /** @var \App\Db\User $msqUser */
-        $msqUser = UserMap::create()->find($user_id);
-
-        if ($msqUser && Masquerade::masqueradeLogin($this->getFactory()->getAuthUser(), $msqUser)) {
-            Alert::addSuccess('You are now logged in as user ' . $msqUser->getUsername());
-            Uri::create('/dashboard')->redirect();
-        }
-        Alert::addWarning('You cannot login as user ' . $msqUser->getUsername() . ' invalid permissions');
-        Uri::create()->remove(Masquerade::QUERY_MSQ)->redirect();
     }
 
     public function doDefault(Request $request)
     {
         if ($request->query->has('del')) {
             $this->doDelete($request->query->get('del'));
-        }
-        if ($request->query->has(Masquerade::QUERY_MSQ)) {
-            $this->doMsq($request->query->get(Masquerade::QUERY_MSQ));
         }
 
         $this->getTable()->appendCell(new Cell\Checkbox('id'));
@@ -89,16 +58,8 @@ class User
             $btn->setText('');
             $btn->setIcon('fa fa-edit');
             $btn->addCss('btn btn-primary');
-            $btn->setUrl('/userEdit/'.$obj->getId());
-            $template->appendTemplate('td', $btn->show());
-            $template->appendHtml('td', '&nbsp;');
-
-            $btn = new Link('Masquerade');
-            $btn->setText('');
-            $btn->setIcon('fa fa-user-secret');
-            $btn->addCss('btn btn-outline-dark');
-            $btn->setUrl(Uri::create()->set(Masquerade::QUERY_MSQ, $obj->getId()));
-            $btn->setAttr('data-confirm', 'Are you sure you want to log-in as user \''.$obj->getName().'\'');
+            $btn->setUrl(Uri::create('/exampleEdit')->set('id', $obj->getId()));
+            //$btn->setUrl(Uri::create('/exampleEdit/' . $obj->getId()));
             $template->appendTemplate('td', $btn->show());
             $template->appendHtml('td', '&nbsp;');
 
@@ -111,37 +72,15 @@ class User
             $template->appendTemplate('td', $btn->show());
 
         });
-        $this->getTable()->appendCell(new Cell\Text('username'))->setAttr('style', 'width: 100%;')
+
+        $this->getTable()->appendCell(new Cell\Text('name'))->setAttr('style', 'width: 100%;')
             ->addOnShow(function (Cell\Text $cell) {
                 $obj = $cell->getRow()->getData();
-                $cell->setUrl('/userEdit/'.$obj->getId());
+                $cell->setUrl('/exampleEdit/'.$obj->getId());
             });
-        $this->getTable()->appendCell(new Cell\Text('name'));
-        //$this->getTable()->appendCell(new Table\Cell\Text('type'));
-
-        if ($this->type == \App\Db\User::TYPE_STAFF) {
-            $this->getTable()->appendCell(new Cell\Text('permissions'))->addOnShow(function (Cell\Text $cell) {
-                /** @var \App\Db\User $user */
-                $user = $cell->getRow()->getData();
-                //vd(ObjectUtil::getClassConstants(\App\Db\User::class, 'PERM_'));
-                //vd($user->getPermissionList(), \App\Db\User::PERMISSION_LIST);
-                if ($user->hasPermission(\App\Db\User::PERM_ADMIN)) {
-                    $cell->setValue(\App\Db\User::PERMISSION_LIST[\App\Db\User::PERM_ADMIN]);
-                    return;
-                }
-                $list = array_filter(\App\Db\User::PERMISSION_LIST, function ($k) use ($user) {
-                    return $user->hasPermission($k);
-                }, ARRAY_FILTER_USE_KEY);
-                $cell->setValue(implode(', ', $list));
-            });
-        }
-        $this->getTable()->appendCell(new Cell\Text('email'))->addOnShow(function (Cell\Text $cell) {
-            /** @var \App\Db\User $user */
-            $user = $cell->getRow()->getData();
-            $cell->setUrl('mailto:'.$user->getEmail());
-        });
-        $this->getTable()->appendCell(new Cell\Text('active'));
-        //$this->getTable()->appendCell(new Cell\Text('modified'));
+        $this->getTable()->appendCell(new Cell\Text('image'));
+        $this->getTable()->appendCell(new Cell\Boolean('active'));
+        $this->getTable()->appendCell(new Cell\Text('modified'));
         $this->getTable()->appendCell(new Cell\Text('created'));
 
 
@@ -171,19 +110,15 @@ class User
                 ->setAttr('data-confirm', 'Are you sure you want to reset the Table`s session?')
                 ->setAttr('title', 'Reset table filters and order to default.');
         }
-        $this->getTable()->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/userEdit')->set('type', $this->type));
+        $this->getTable()->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/exampleEdit'));
         $this->getTable()->appendAction(new Action\Delete());
-        $this->getTable()->appendAction(new Action\Csv())->addExcluded('actions');
-
 
         // Query
         $tool = $this->getTable()->getTool();
         $filter = $this->getFilter()->getFieldValues();
-        $filter['type'] = $this->type;
-        $list = UserMap::create()->findFiltered($filter, $tool);
+        $list = ExampleMap::create()->findFiltered($filter, $tool);
         $this->getTable()->setList($list, $tool->getFoundRows());
 
-        //$this->table->resetTableSession();
         $this->getTable()->execute($request);
     }
 

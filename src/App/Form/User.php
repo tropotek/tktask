@@ -24,7 +24,7 @@ class User
 
     public function __construct()
     {
-        $this->setForm(Form::create('user-edit'));
+        $this->setForm(Form::create('user'));
     }
 
     public function doDefault(Request $request, $id)
@@ -95,9 +95,8 @@ class User
         $this->getUser()->save();
 
         Alert::addSuccess('Form save successfully.');
-
         if (!$form->getRequest()->headers->has('HX-Request')) {
-            $action->setRedirect(Uri::create());
+            $action->setRedirect(Uri::create('/userEdit'.$this->getUser()->getId()));
         }
     }
 
