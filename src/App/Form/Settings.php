@@ -92,6 +92,8 @@ class Settings
 
     public function show(): ?Template
     {
-        return $this->getFormRenderer()->show();
+        $renderer = $this->getFormRenderer();
+        $renderer->addFieldCss('mb-3');
+        return $renderer->show();
     }
 }

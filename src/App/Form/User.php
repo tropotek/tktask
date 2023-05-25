@@ -99,6 +99,7 @@ class User
         $this->getForm()->getField('email')->addFieldCss('col-6');
 
         $renderer = $this->getFormRenderer();
+        $renderer->addFieldCss('mb-3');
 
         return $renderer->show();
     }

@@ -64,7 +64,7 @@ class Example
             $image->setViewUrl($this->getConfig()->getDataUrl() . $this->ex->getImage());
             $image->setDeleteUrl(Uri::create()->set('del-image', $this->ex->getId()));
         }
-        
+
 //        $fileList = $this->getForm()->appendField(new \Bs\Form\Field\File('fileList', $this->ex))->setGroup($group);
 
         $this->getForm()->appendField(new Field\Checkbox('active', ['Enable Example' => 'active']))->setGroup($group);
@@ -132,6 +132,7 @@ class Example
         //$this->getForm()->getField('email')->addFieldCss('col-6');
 
         $renderer = $this->getFormRenderer();
+        $renderer->addFieldCss('mb-3');
 //        $js = <<<JS
 //            jQuery(function ($) {
 //                $('[name=image]');
