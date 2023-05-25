@@ -15,8 +15,8 @@
     }
   ],
   "autoload": {
-    "psr-0": {
-      "App\\": "src/"
+    "psr-4": {
+      "App\\": "src/App/"
     }
   },
   "scripts": {
@@ -52,7 +52,7 @@
   },
   "require-dev": {
     "composer/composer": "^2.0",
-    "phpstan/phpstan": "1.11.x-dev"
+    "phpstan/phpstan": "1.10.x-dev"
   },
 
   "config": {
