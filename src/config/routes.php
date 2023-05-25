@@ -17,6 +17,7 @@ return function (CollectionConfigurator $routes) {
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
 
+
     // Auth pages Login, Logout, Register, Recover
     $routes->add('login', '/login')
         ->controller([\App\Controller\Login::class, 'doLogin']);
@@ -32,6 +33,17 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Register::class, 'doActivate']);
 
 
+    $routes->add('settings-edit', '/settings')
+        ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
+
+    $routes->add('staff-manager', '/staffManager')
+        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
+    $routes->add('user-manager', '/userManager')
+        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
+    $routes->add('user-edit', '/userEdit')
+        ->controller([\App\Controller\User\Edit::class, 'doDefault']);
+
+
     // API Endpoints
     $routes->add('api-htmx-alert', '/api/htmx/alert')
         ->controller([\App\Api\App::class, 'doAlert'])
@@ -40,34 +52,17 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Api\App::class, 'doToast'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
 
-    $routes->add('settings-edit', '/settings')
-        ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
 
+
+    // TODO: remove for productions sites
 
     // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
-    $routes->add('staff-manager', '/staffManager')
-        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
-    $routes->add('user-manager', '/userManager')
-        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
-    $routes->add('user-edit', '/userEdit/{id}')
-        ->controller([\App\Controller\User\Edit::class, 'doDefault'])
-        ->defaults(['id' => 0]);
-    // HTMX edit
-//    $routes->add('user-edit-x', '/userEditX/{id}')
-//        ->controller([\App\Controller\User\EditX::class, 'doDefault'])
-//        ->defaults(['id' => 0]);
-//    $routes->add('api-form-user', '/form/user/{id}')
-//        ->controller([\App\Form\User::class, 'doDefault'])
-//        ->defaults(['id' => 0])
-//        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
-
     $routes->add('example-manager', '/exampleManager')
         ->controller([\App\Controller\Example\Manager::class, 'doDefault']);
-    $routes->add('example-edit', '/exampleEdit/{id}')
-        ->controller([\App\Controller\Example\Edit::class, 'doDefault'])
-        ->defaults(['id' => 0]);
+    $routes->add('example-edit', '/exampleEdit')
+        ->controller([\App\Controller\Example\Edit::class, 'doDefault']);
 
-    // Htmx Examples (TODO: remove for productions sites)
+    // Htmx Examples
     $routes->add('ui-form', '/ui/form')
         ->controller([\App\Controller\Examples\FormEg::class, 'doDefault']);
     $routes->add('phpinfo', '/info')

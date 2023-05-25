@@ -17,18 +17,6 @@ use Tk\Table\Cell;
 use Tk\Table\Action;
 use Tk\TableRenderer;
 
-/**
- * Example:
- * <code>
- *   $table = new \App\Table\User::create();
- *   $table->init();
- *   $list = ObjectMap::getObjectListing();
- *   $table->setList($list);
- *   $tableTemplate = $table->show();
- *   $template->appendTemplate($tableTemplate);
- * </code>
- *
- */
 class User
 {
     use SystemTrait;
@@ -57,15 +45,15 @@ class User
         Uri::create()->reset()->redirect();
     }
 
-    private function doMsq($user_id)
+    private function doMsq($id)
     {
         /** @var \App\Db\User $msqUser */
-        $msqUser = UserMap::create()->find($user_id);
-
+        $msqUser = UserMap::create()->find($id);
         if ($msqUser && Masquerade::masqueradeLogin($this->getFactory()->getAuthUser(), $msqUser)) {
             Alert::addSuccess('You are now logged in as user ' . $msqUser->getUsername());
             Uri::create('/dashboard')->redirect();
         }
+
         Alert::addWarning('You cannot login as user ' . $msqUser->getUsername() . ' invalid permissions');
         Uri::create()->remove(Masquerade::QUERY_MSQ)->redirect();
     }
@@ -89,7 +77,7 @@ class User
             $btn->setText('');
             $btn->setIcon('fa fa-edit');
             $btn->addCss('btn btn-primary');
-            $btn->setUrl('/userEdit/'.$obj->getId());
+            $btn->setUrl(Uri::create('/userEdit')->set('id', $obj->getId()));
             $template->appendTemplate('td', $btn->show());
             $template->appendHtml('td', '&nbsp;');
 
@@ -111,20 +99,14 @@ class User
             $template->appendTemplate('td', $btn->show());
 
         });
-        $this->getTable()->appendCell(new Cell\Text('username'))->setAttr('style', 'width: 100%;')
-            ->addOnShow(function (Cell\Text $cell) {
-                $obj = $cell->getRow()->getData();
-                $cell->setUrl('/userEdit/'.$obj->getId());
-            });
+        $this->getTable()->appendCell(new Cell\Text('username'))
+            ->setUrl(Uri::create('/userEdit'))->setAttr('style', 'width: 100%;');
         $this->getTable()->appendCell(new Cell\Text('name'));
-        //$this->getTable()->appendCell(new Table\Cell\Text('type'));
 
         if ($this->type == \App\Db\User::TYPE_STAFF) {
             $this->getTable()->appendCell(new Cell\Text('permissions'))->addOnShow(function (Cell\Text $cell) {
                 /** @var \App\Db\User $user */
                 $user = $cell->getRow()->getData();
-                //vd(ObjectUtil::getClassConstants(\App\Db\User::class, 'PERM_'));
-                //vd($user->getPermissionList(), \App\Db\User::PERMISSION_LIST);
                 if ($user->hasPermission(\App\Db\User::PERM_ADMIN)) {
                     $cell->setValue(\App\Db\User::PERMISSION_LIST[\App\Db\User::PERM_ADMIN]);
                     return;
@@ -135,11 +117,12 @@ class User
                 $cell->setValue(implode(', ', $list));
             });
         }
-        $this->getTable()->appendCell(new Cell\Text('email'))->addOnShow(function (Cell\Text $cell) {
-            /** @var \App\Db\User $user */
-            $user = $cell->getRow()->getData();
-            $cell->setUrl('mailto:'.$user->getEmail());
-        });
+        $this->getTable()->appendCell(new Cell\Text('email'))
+            ->addOnShow(function (Cell\Text $cell) {
+                /** @var \App\Db\User $user */
+                $user = $cell->getRow()->getData();
+                $cell->setUrl('mailto:'.$user->getEmail());
+            });
         $this->getTable()->appendCell(new Cell\Text('active'));
         //$this->getTable()->appendCell(new Cell\Text('modified'));
         $this->getTable()->appendCell(new Cell\Text('created'));
@@ -183,7 +166,6 @@ class User
         $list = UserMap::create()->findFiltered($filter, $tool);
         $this->getTable()->setList($list, $tool->getFoundRows());
 
-        //$this->table->resetTableSession();
         $this->getTable()->execute($request);
     }
 

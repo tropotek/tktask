@@ -25,7 +25,6 @@ class Recover
         // Set a token in the session on show, to ensure this browser is the one that requested the login.
         $this->getSession()->set('recover', time());
         $this->setForm(Form::create('recover'));
-        $this->setFormRenderer(new FormRenderer($this->getForm()));
     }
 
     public function doDefault(Request $request)
@@ -50,6 +49,8 @@ class Recover
         $this->getForm()->setFieldValues($load);
 
         $this->getForm()->execute($request->request->all());
+
+        $this->setFormRenderer(new FormRenderer($this->getForm()));
     }
 
     public function onSubmit(Form $form, Action\ActionInterface $action)

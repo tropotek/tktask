@@ -15,6 +15,8 @@ class Example extends Model implements FileInterface
 
     public string $name = '';
 
+    public ?string $nick = null;
+
     public string $image = '';
 
     public string $content = '';
@@ -44,21 +46,31 @@ class Example extends Model implements FileInterface
         return sprintf('/exampleFiles/%s', $this->getVolatileId());
     }
 
-
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
+    public function getNick(): ?string
+    {
+        return $this->nick;
+    }
+
+    public function setNick(?string $nick): static
+    {
+        $this->nick = $nick;
+        return $this;
+    }
+
     public function getImage(): string
     {
-        return $this->name;
+        return $this->image;
     }
 
     public function setImage(string $image = ''): static

@@ -1,15 +1,8 @@
 <?php
 namespace App;
 
-
 use App\Listener\RequestHandler;
-use Dom\Mvc\EventListener\PageBytesHandler;
-use Dom\Mvc\EventListener\ViewHandler;
-use Dom\Mvc\Modifier\PageBytes;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Dispatch extends \Bs\Dispatch
 {
 

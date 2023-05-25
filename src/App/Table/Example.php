@@ -2,7 +2,6 @@
 namespace App\Table;
 
 use App\Db\ExampleMap;
-use App\Db\UserMap;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
@@ -59,7 +58,7 @@ class Example
             $btn->setIcon('fa fa-edit');
             $btn->addCss('btn btn-primary');
             $btn->setUrl(Uri::create('/exampleEdit')->set('id', $obj->getId()));
-            //$btn->setUrl(Uri::create('/exampleEdit/' . $obj->getId()));
+//            $btn->setUrl(Uri::create('/exampleEdit/' . $obj->getId()));
             $template->appendTemplate('td', $btn->show());
             $template->appendHtml('td', '&nbsp;');
 
@@ -73,10 +72,25 @@ class Example
 
         });
 
-        $this->getTable()->appendCell(new Cell\Text('name'))->setAttr('style', 'width: 100%;')
+        $this->getTable()->appendCell(new Cell\Text('name'))
+            ->setUrl(Uri::create('/exampleEdit'))->setAttr('style', 'width: 100%;')
             ->addOnShow(function (Cell\Text $cell) {
                 $obj = $cell->getRow()->getData();
-                $cell->setUrl('/exampleEdit/'.$obj->getId());
+//                $cell->setUrlProperty('');  // Do this to disable the Url property
+//                $cell->setUrl('/exampleEdit/'.$obj->getId());
+            });
+
+        $this->getTable()->appendCell(new Cell\Text('nick'))->setUrl(Uri::create('/exampleEdit'))
+            ->addOnShow(function (Cell\Text $cell) {
+                $obj = $cell->getRow()->getData();
+                if ($obj->getNick() === null) {
+                    // How to change the HTML display
+                    $t = $cell->getTemplate();
+                    $html = sprintf('<b>{{NULL}</b>');
+                    $t->insertHtml('td', $html);
+                    // How to set the css value
+                    $cell->setValue('{null}');
+                }
             });
         $this->getTable()->appendCell(new Cell\Text('image'));
         $this->getTable()->appendCell(new Cell\Boolean('active'));
@@ -86,11 +100,8 @@ class Example
 
         // Table filters
         $this->getFilter()->appendField(new Field\Input('search'))->setAttr('placeholder', 'Search');
-
-
         // Load filter values
         $this->getFilter()->setFieldValues($this->getTable()->getTableSession()->get($this->getFilter()->getId(), []));
-
         $this->getFilter()->appendField(new Form\Action\Submit('Search', function (Form $form, Action\ActionInterface $action) {
             $this->getTable()->getTableSession()->set($this->getFilter()->getId(), $form->getFieldValues());
             Uri::create()->redirect();
@@ -99,7 +110,7 @@ class Example
             $this->getTable()->getTableSession()->set($this->getFilter()->getId(), []);
             Uri::create()->redirect();
         }))->setGroup('')->addCss('btn-secondary');
-
+        //
         $this->getFilter()->execute($request->request->all());
 
 
@@ -112,6 +123,7 @@ class Example
         }
         $this->getTable()->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/exampleEdit'));
         $this->getTable()->appendAction(new Action\Delete());
+        $this->getTable()->appendAction(new Action\Csv())->addExcluded('actions');
 
         // Query
         $tool = $this->getTable()->getTool();

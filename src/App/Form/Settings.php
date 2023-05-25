@@ -19,7 +19,6 @@ class Settings
     public function __construct()
     {
         $this->setForm(Form::create('settings-edit'));
-        $this->setFormRenderer(new FormRenderer($this->getForm()));
     }
 
     public function doDefault(Request $request)
@@ -33,8 +32,6 @@ class Settings
         $this->getForm()->appendField(new Field\Input('google.map.apikey'))->setGroup($tab)->setLabel('Google API Key')
             ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.');
         $this->getForm()->appendField(new Field\Checkbox('site.account.registration'))->setGroup($tab)->setLabel('Account Registration');
-//        $this->getForm()->appendField(new Field\Checkbox('site.account.activation'))->setGroup($tab)->setLabel('Account Activation')
-//            ->setNotes('If not checked admin manually activate new user accounts.');
 
         $tab = 'Email';
         $this->getForm()->appendField(new Field\Textarea('site.email.sig'))->setGroup($tab)->setLabel('Email Signature')
@@ -54,11 +51,8 @@ class Settings
         $this->getForm()->appendField(new Field\Textarea('system.maintenance.message'))->addCss('mce-min')->setGroup($tab)->setLabel('Message');
 
 
+        $this->getForm()->appendField(new Form\Action\SubmitExit('save', [$this, 'onSubmit']));
         $this->getForm()->appendField(new Form\Action\Link('back', Uri::create('/')));
-        $this->getForm()->appendField(new Form\Action\Submit('save', [$this, 'onSubmit']));
-//        $this->getForm()->appendField(new Event\Submit('update', array($this, 'onSubmit')));
-//        $this->getForm()->appendField(new Event\Submit('save', array($this, 'onSubmit')));
-//        $this->getForm()->appendField(new Event\LinkButton('cancel', $this->getBackUrl()));
 
         $this->getForm()->setFieldValues($this->getRegistry()->all()); // Use form data mapper if loading objects
 
@@ -69,7 +63,8 @@ class Settings
         );
         $this->getForm()->execute($values);
 
-        //return $this->show();
+        $this->setFormRenderer(new FormRenderer($this->getForm()));
+
     }
 
     public function onSubmit(Form $form, Form\Action\ActionInterface $action)
@@ -90,6 +85,9 @@ class Settings
 
         Alert::addSuccess('Site settings saved successfully.');
         $action->setRedirect(Uri::create());
+        if ($form->getTriggeredAction()->isExit()) {
+            $action->setRedirect(Uri::create('/dashboard'));
+        }
     }
 
     public function show(): ?Template

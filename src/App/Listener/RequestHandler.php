@@ -20,14 +20,14 @@ class RequestHandler implements EventSubscriberInterface
         if (!$this->getFactory()->getAuthUser()) {
             $user = \App\Db\User::retrieveMe();
             if ($user) {
-                Log::debug('user `' . $user->getUsername() . '` auto logged in via cookie');
+                Log::alert('user `' . $user->getUsername() . '` auto logged in via cookie');
             }
         }
 
 
         // TODO: Check if maintenance mode is enabled then redirect to appropriate URI
 
-        \Tk\Log::emergency('TODO: HTTP implement RequestHandler....');
+        //\Tk\Log::emergency('TODO: HTTP implement RequestHandler....');
 
     }
 

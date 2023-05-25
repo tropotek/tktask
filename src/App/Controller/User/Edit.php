@@ -18,11 +18,11 @@ class Edit extends PageController
         $this->setAccess(User::PERM_MANAGE_USER | User::PERM_MANAGE_STAFF);
     }
 
-    public function doDefault(Request $request, $id)
+    public function doDefault(Request $request)
     {
         // Get the form template
         $this->form = new \App\Form\User();
-        $this->form->doDefault($request, $id);
+        $this->form->doDefault($request, $request->query->get('id'));
 
         return $this->getPage();
     }

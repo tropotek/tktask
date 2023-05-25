@@ -6,6 +6,9 @@ use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * TODO: Create a user profile edit page.
+ */
 class Profile extends PageController
 {
     protected \App\Form\User $form;

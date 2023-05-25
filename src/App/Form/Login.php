@@ -60,6 +60,8 @@ class Login
         $this->getForm()->setFieldValues($load);
 
         $this->getForm()->execute($request->request->all());
+
+        $this->setFormRenderer(new FormRenderer($this->getForm()));
     }
 
     public function onSubmit(Form $form, Action\ActionInterface $action)
@@ -100,7 +102,7 @@ class Login
 
     public function show(): ?Template
     {
-        $renderer = new FormRenderer($this->getForm());
+        $renderer =$this->getFormRenderer();
 
         return $renderer->show();
     }

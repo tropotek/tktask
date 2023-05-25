@@ -42,19 +42,9 @@ class User
             }
         }
 
-        // Enable HTMX
-        if ($request->headers->has('HX-Request')) {
-            $this->getForm()->setAttr('hx-post', Uri::create('/form/user/' . $id));
-            $this->getForm()->setAttr('hx-target', 'this');
-            $this->getForm()->setAttr('hx-swap', 'outerHTML');
-        }
-
         $group = 'left';
         $this->getForm()->appendField(new Hidden('id'))->setGroup($group);
         $this->getForm()->appendField(new Input('name'))->setGroup($group)->setRequired();
-
-//        $list = ['Staff' => 'staff', 'User' => 'user'];
-//        $this->form->appendField(new Form\Field\Select('type', $list))->prependOption('-- Type --', '')->setGroup($group);
 
         $this->getForm()->appendField(new Input('username'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
         $this->getForm()->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
@@ -66,8 +56,8 @@ class User
         $this->getForm()->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
         $this->getForm()->appendField(new Form\Field\Textarea('notes'))->setGroup($group);
 
+        $this->getForm()->appendField(new Form\Action\SubmitExit('save', [$this, 'onSubmit']));
         $this->getForm()->appendField(new Form\Action\Link('back', Uri::create('/'.$this->getUser()->getType().'Manager')));
-        $this->getForm()->appendField(new Form\Action\Submit('save', [$this, 'onSubmit']));
 
         $load = $this->getUser()->getMapper()->getFormMap()->getArray($this->getUser());
         $load['id'] = $this->getUser()->getId();
@@ -76,9 +66,8 @@ class User
 
         $this->getForm()->execute($request->request->all());
 
-        if ($request->headers->has('HX-Request')) {
-            return $this->show();
-        }
+        $this->setFormRenderer(new FormRenderer($this->getForm()));
+
     }
 
     public function onSubmit(Form $form, Form\Action\ActionInterface $action)
@@ -95,8 +84,9 @@ class User
         $this->getUser()->save();
 
         Alert::addSuccess('Form save successfully.');
-        if (!$form->getRequest()->headers->has('HX-Request')) {
-            $action->setRedirect(Uri::create('/userEdit'.$this->getUser()->getId()));
+        $action->setRedirect(Uri::create('/userEdit')->set('id', $this->getUser()->getId()));
+        if ($form->getTriggeredAction()->isExit()) {
+            $action->setRedirect(Uri::create('/userManager'));
         }
     }
 
@@ -108,14 +98,7 @@ class User
         $this->getForm()->getField('username')->addFieldCss('col-6');
         $this->getForm()->getField('email')->addFieldCss('col-6');
 
-        $renderer = new FormRenderer($this->getForm());
-
-//        $js = <<<JS
-//            jQuery(function ($) {
-//
-//            });
-//        JS;
-//        $renderer->getTemplate()->appendJs($js);
+        $renderer = $this->getFormRenderer();
 
         return $renderer->show();
     }

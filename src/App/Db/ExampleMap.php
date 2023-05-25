@@ -19,6 +19,7 @@ class ExampleMap extends Mapper
             $map = new DataMap();
             $map->addDataType(new Db\Integer('id'));
             $map->addDataType(new Db\Text('name'));
+            $map->addDataType(new Db\Text('nick'))->setNullable(true);
             $map->addDataType(new Db\Text('image'));
             $map->addDataType(new Db\Text('content'));
             $map->addDataType(new Db\Text('notes'));
@@ -35,7 +36,8 @@ class ExampleMap extends Mapper
             $map = new DataMap();
             $map->addDataType(new Form\Text('id'));
             $map->addDataType(new Form\Text('name'));
-            $map->addDataType(new Form\File('image'));
+            $map->addDataType(new Form\Text('nick'))->setNullable(true);
+            $map->addDataType(new Form\Text('image'));
             $map->addDataType(new Form\Text('content'));
             $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Form\Boolean('active'));
@@ -46,6 +48,7 @@ class ExampleMap extends Mapper
             $map = new DataMap();
             $map->addDataType(new Form\Text('id'));
             $map->addDataType(new Form\Text('name'));
+            $map->addDataType(new Form\Text('nick'))->setNullable(true);
             $map->addDataType(new Form\Text('image'));
             $map->addDataType(new Form\Text('content'));
             $map->addDataType(new Form\Text('notes'));
@@ -72,6 +75,7 @@ class ExampleMap extends Mapper
             $kw = '%' . $this->getDb()->escapeString($filter['search']) . '%';
             $w = '';
             $w .= sprintf('a.name LIKE %s OR ', $this->quote($kw));
+            $w .= sprintf('a.nick LIKE %s OR ', $this->quote($kw));
             if (is_numeric($filter['search'])) {
                 $id = (int)$filter['search'];
                 $w .= sprintf('a.id = %d OR ', $id);
@@ -86,6 +90,10 @@ class ExampleMap extends Mapper
 
         if (!empty($filter['name'])) {
             $filter->appendWhere('a.name = %s AND ', $this->quote($filter['name']));
+        }
+
+        if (!empty($filter['nick'])) {
+            $filter->appendWhere('a.nick = %s AND ', $this->quote($filter['nick']));
         }
 
         if (is_bool($filter['active'] ?? '')) {
