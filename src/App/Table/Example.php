@@ -102,11 +102,11 @@ class Example
         $this->getFilter()->appendField(new Field\Input('search'))->setAttr('placeholder', 'Search');
         // Load filter values
         $this->getFilter()->setFieldValues($this->getTable()->getTableSession()->get($this->getFilter()->getId(), []));
-        $this->getFilter()->appendField(new Form\Action\Submit('Search', function (Form $form, Action\ActionInterface $action) {
+        $this->getFilter()->appendField(new Form\Action\Submit('Search', function (Form $form, Form\Action\ActionInterface $action) {
             $this->getTable()->getTableSession()->set($this->getFilter()->getId(), $form->getFieldValues());
             Uri::create()->redirect();
         }))->setGroup('');
-        $this->getFilter()->appendField(new Form\Action\Submit('Clear', function (Form $form, Action\ActionInterface $action) {
+        $this->getFilter()->appendField(new Form\Action\Submit('Clear', function (Form $form, Form\Action\ActionInterface $action) {
             $this->getTable()->getTableSession()->set($this->getFilter()->getId(), []);
             Uri::create()->redirect();
         }))->setGroup('')->addCss('btn-secondary');

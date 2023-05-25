@@ -37,7 +37,7 @@ class ExampleMap extends Mapper
             $map->addDataType(new Form\Text('id'));
             $map->addDataType(new Form\Text('name'));
             $map->addDataType(new Form\Text('nick'))->setNullable(true);
-            $map->addDataType(new Form\Text('image'));
+            //$map->addDataType(new Form\Text('image'));        // No need for file types to be mapped
             $map->addDataType(new Form\Text('content'));
             $map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Form\Boolean('active'));

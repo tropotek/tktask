@@ -57,12 +57,14 @@ class Example
         $group = 'left';
         $this->getForm()->appendField(new Field\Hidden('id'))->setGroup($group);
         $this->getForm()->appendField(new Field\Input('name'))->setGroup($group)->setRequired();
+
         /** @var Form\Field\File $image */
         $image = $this->getForm()->appendField(new Form\Field\File('image'))->setGroup($group);
         if ($this->ex->getImage()) {
             $image->setViewUrl($this->getConfig()->getDataUrl() . $this->ex->getImage());
             $image->setDeleteUrl(Uri::create()->set('del-image', $this->ex->getId()));
         }
+        
 //        $fileList = $this->getForm()->appendField(new \Bs\Form\Field\File('fileList', $this->ex))->setGroup($group);
 
         $this->getForm()->appendField(new Field\Checkbox('active', ['Enable Example' => 'active']))->setGroup($group);
@@ -89,7 +91,7 @@ class Example
     {
         $this->ex->getMapper()->getFormMap()->loadObject($this->ex, $form->getFieldValues());
 
-        // TODO: validate file uploads
+        // TODO: validate file ???
 
         $form->addFieldErrors($this->ex->validate());
         if ($form->hasErrors()) {
@@ -99,6 +101,9 @@ class Example
         /** @var Form\Field\File $fileOne */
         $image = $form->getField('image');
         if ($image->hasFile()) {
+            if ($this->ex->getImage()) {    // Delete any existing file
+                unlink($this->getConfig()->getDataPath() . $this->ex->getImage());
+            }
             $filepath = $image->move($this->getConfig()->getDataPath() . $this->ex->getDataPath());
             $filepath = str_replace($this->getConfig()->getDataPath(), '', $filepath);
             $this->ex->setImage($filepath);
