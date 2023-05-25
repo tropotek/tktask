@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5fa34c8ce76bb9dbc34d513410ab6060",
+    "content-hash": "daec8832e58b10c9bccf042a7fe88bac",
     "packages": [
         {
             "name": "components/font-awesome",

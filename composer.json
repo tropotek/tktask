@@ -51,7 +51,7 @@
     "studio-42/elfinder": "~2.1.0"
   },
   "require-dev": {
-    "composer/composer": "^2.5.7",
+    "composer/composer": "^2.5.x-dev",
     "phpstan/phpstan": "1.10.x-dev"
   },
 
