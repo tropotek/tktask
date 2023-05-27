@@ -14,7 +14,8 @@ most of the time adding callbacks to an object would suffice where needed.
 - [ ] Check table csv (raw) values and html output and ensure there is a way to output raw data and html data to a cell
 - [ ] Implement a Form tabs jQuery plugin, that creates tab markup from a form group's template.
 - [ ] Run `vendor/bin/phpstan analyse vendor/ttek/tk-base/Bs/` through all libs and remove all errors
-- [ ] Implement PSR-4 namespaces (seems to generate an error requiring php8.2):
+- [ ] Create a DOM table renderer, may just need a new template (hopefully!!!!)
+- [ ] Implement PSR-4 namespaces
 ```json
 {
   "autoload": {
