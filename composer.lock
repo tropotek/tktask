@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "737fbd1fec177bc7dc051ce39fc329f0",
+    "content-hash": "98afab20aebaa0f9c5433b9872702737",
     "packages": [
         {
             "name": "components/font-awesome",
@@ -769,12 +769,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "82aff26fed407f8e2b7611c16fe696e8fb4b96f1"
+                "reference": "89e308f0a2371a93304dc551bca8195b55bcec42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/82aff26fed407f8e2b7611c16fe696e8fb4b96f1",
-                "reference": "82aff26fed407f8e2b7611c16fe696e8fb4b96f1",
+                "url": "https://api.github.com/repos/symfony/console/zipball/89e308f0a2371a93304dc551bca8195b55bcec42",
+                "reference": "89e308f0a2371a93304dc551bca8195b55bcec42",
                 "shasum": ""
             },
             "require": {
@@ -851,7 +851,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-25T13:09:45+00:00"
+            "time": "2023-05-26T08:18:17+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1233,12 +1233,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "ea9d43c85280ef9f62208fbfbd5877d62ae03f9e"
+                "reference": "00af9b97eb48f365a41ff558841a589a1d523263"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/ea9d43c85280ef9f62208fbfbd5877d62ae03f9e",
-                "reference": "ea9d43c85280ef9f62208fbfbd5877d62ae03f9e",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/00af9b97eb48f365a41ff558841a589a1d523263",
+                "reference": "00af9b97eb48f365a41ff558841a589a1d523263",
                 "shasum": ""
             },
             "require": {
@@ -1266,6 +1266,7 @@
                 "symfony/translation-contracts": "<2.5",
                 "symfony/twig-bridge": "<5.4",
                 "symfony/validator": "<5.4",
+                "symfony/var-dumper": "<6.3",
                 "twig/twig": "<2.13"
             },
             "provide": {
@@ -1337,7 +1338,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-25T13:00:36+00:00"
+            "time": "2023-05-26T08:18:17+00:00"
         },
         {
             "name": "symfony/lock",
@@ -4187,7 +4188,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-curl": "*",
         "ext-pdo": "*",
         "ext-dom": "*",

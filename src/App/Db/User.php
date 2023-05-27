@@ -4,6 +4,7 @@ namespace App\Db;
 use App\Factory;
 use Bs\Db\FileInterface;
 use Bs\Db\FileMap;
+use Bs\Db\Traits\HashTrait;
 use Bs\Db\Traits\TimestampTrait;
 use Bs\Db\UserInterface;
 use Tk\Date;
@@ -13,6 +14,7 @@ use Tk\Db\Mapper\Result;
 class User extends Model implements UserInterface, FileInterface
 {
     use TimestampTrait;
+    use HashTrait;
 
     /**
      * permission values
@@ -101,7 +103,7 @@ class User extends Model implements UserInterface, FileInterface
 
     public function getDataPath(): string
     {
-        return sprintf('/users/%s', $this->getVolatileId());
+        return sprintf('/user/%s/data', $this->getVolatileId());
     }
 
     public function getUid(): string
@@ -263,17 +265,6 @@ class User extends Model implements UserInterface, FileInterface
     public function setActive(bool $active): static
     {
         $this->active = $active;
-        return $this;
-    }
-
-    public function getHash(): string
-    {
-        return $this->hash;
-    }
-
-    public function setHash(string $hash): static
-    {
-        $this->hash = $hash;
         return $this;
     }
 

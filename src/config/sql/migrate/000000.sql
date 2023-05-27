@@ -51,26 +51,26 @@ CREATE TABLE IF NOT EXISTS user_tokens
   CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES `user` (`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS file
-(
-  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  fkey VARCHAR(64) DEFAULT '' NOT NULL,
-  fid INT DEFAULT 0 NOT NULL,
-  label VARCHAR(128) default '' NOT NULL,
-  `path` TEXT NULL,
-  bytes INT DEFAULT 0 NOT NULL,
-  mime VARCHAR(255) DEFAULT '' NOT NULL,
-  notes TEXT NULL,
-  selected BOOL NOT NULL DEFAULT FALSE,
-  hash VARCHAR(128) DEFAULT '' NOT NULL,
-  modified datetime NOT NULL,
-  created datetime NOT NULL,
-  KEY user_id (user_id),
-  KEY fkey (fkey),
-  KEY fkey_2 (fkey, fid),
-  KEY fkey_3 (fkey, fid, label)
-);
+# CREATE TABLE IF NOT EXISTS file
+# (
+#   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+#   user_id INT(10) UNSIGNED NOT NULL DEFAULT 0,
+#   fkey VARCHAR(64) DEFAULT '' NOT NULL,
+#   fid INT DEFAULT 0 NOT NULL,
+#   label VARCHAR(128) default '' NOT NULL,
+#   `path` TEXT NULL,
+#   bytes INT DEFAULT 0 NOT NULL,
+#   mime VARCHAR(255) DEFAULT '' NOT NULL,
+#   notes TEXT NULL,
+#   selected BOOL NOT NULL DEFAULT FALSE,
+#   hash VARCHAR(128) DEFAULT '' NOT NULL,
+#   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+#   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+#   KEY user_id (user_id),
+#   KEY fkey (fkey),
+#   KEY fkey_2 (fkey, fid),
+#   KEY fkey_3 (fkey, fid, label)
+# );
 
 
 
