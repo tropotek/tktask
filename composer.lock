@@ -2521,12 +2521,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "5d3b8625596a568fbcd4f9a3fb4d2d381779d95c"
+                "reference": "c13eae7e19584c6ecfa53b3a6f29471e7ac17e0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/5d3b8625596a568fbcd4f9a3fb4d2d381779d95c",
-                "reference": "5d3b8625596a568fbcd4f9a3fb4d2d381779d95c",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/c13eae7e19584c6ecfa53b3a6f29471e7ac17e0d",
+                "reference": "c13eae7e19584c6ecfa53b3a6f29471e7ac17e0d",
                 "shasum": ""
             },
             "require": {
@@ -2557,7 +2557,7 @@
                     "Tk/Exception.php"
                 ],
                 "psr-4": {
-                    "Tk\\": ""
+                    "Tk\\": "./"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
