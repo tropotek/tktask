@@ -2364,16 +2364,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "26c92fb5ee3019f850cd8c9ce9171becbebe6b8b"
+                "reference": "bb23168a83fd73e7129fdf8611877bb64ae2b8b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/26c92fb5ee3019f850cd8c9ce9171becbebe6b8b",
-                "reference": "26c92fb5ee3019f850cd8c9ce9171becbebe6b8b",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/bb23168a83fd73e7129fdf8611877bb64ae2b8b7",
+                "reference": "bb23168a83fd73e7129fdf8611877bb64ae2b8b7",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0",
+                "php": "^8.2",
                 "studio-42/elfinder": "~2.1.0",
                 "tinymce/tinymce": "~6.4.0",
                 "ttek/tk-auth": "~8.0.0",
@@ -2420,18 +2420,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-domtemplate.git",
-                "reference": "c9bb68e64922d308ae91d3eb835954a135c347c5"
+                "reference": "90b0c36bf6b45d57271e79e9a368fe5eee2c615d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/c9bb68e64922d308ae91d3eb835954a135c347c5",
-                "reference": "c9bb68e64922d308ae91d3eb835954a135c347c5",
+                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/90b0c36bf6b45d57271e79e9a368fe5eee2c615d",
+                "reference": "90b0c36bf6b45d57271e79e9a368fe5eee2c615d",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-tidy": "*",
-                "php": "^8.1",
+                "php": "^8.2",
                 "scssphp/scssphp": "^1.11.0"
             },
             "type": "library",
