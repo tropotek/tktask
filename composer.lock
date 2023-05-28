@@ -2364,12 +2364,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "17aa21153980b484ead46c68f457a005848c8a40"
+                "reference": "26c92fb5ee3019f850cd8c9ce9171becbebe6b8b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/17aa21153980b484ead46c68f457a005848c8a40",
-                "reference": "17aa21153980b484ead46c68f457a005848c8a40",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/26c92fb5ee3019f850cd8c9ce9171becbebe6b8b",
+                "reference": "26c92fb5ee3019f850cd8c9ce9171becbebe6b8b",
                 "shasum": ""
             },
             "require": {
@@ -2420,12 +2420,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-domtemplate.git",
-                "reference": "0f247a0f0bc1bf9d5101bb3b12ca40301fe37f53"
+                "reference": "c9bb68e64922d308ae91d3eb835954a135c347c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/0f247a0f0bc1bf9d5101bb3b12ca40301fe37f53",
-                "reference": "0f247a0f0bc1bf9d5101bb3b12ca40301fe37f53",
+                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/c9bb68e64922d308ae91d3eb835954a135c347c5",
+                "reference": "c9bb68e64922d308ae91d3eb835954a135c347c5",
                 "shasum": ""
             },
             "require": {
@@ -2482,12 +2482,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-form.git",
-                "reference": "9745d3ad3ce7afeeb40669f7433db17db56bc4ac"
+                "reference": "fab82fc702d10efaad033a715ebcd03f1d455a4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/9745d3ad3ce7afeeb40669f7433db17db56bc4ac",
-                "reference": "9745d3ad3ce7afeeb40669f7433db17db56bc4ac",
+                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/fab82fc702d10efaad033a715ebcd03f1d455a4a",
+                "reference": "fab82fc702d10efaad033a715ebcd03f1d455a4a",
                 "shasum": ""
             },
             "require": {
@@ -2535,12 +2535,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "42b80bebba4e0497fbcb09d4c80e4d83814da883"
+                "reference": "7c6e28f430e46705d30d3ebde87b8015aa927b74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/42b80bebba4e0497fbcb09d4c80e4d83814da883",
-                "reference": "42b80bebba4e0497fbcb09d4c80e4d83814da883",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/7c6e28f430e46705d30d3ebde87b8015aa927b74",
+                "reference": "7c6e28f430e46705d30d3ebde87b8015aa927b74",
                 "shasum": ""
             },
             "require": {
@@ -2719,12 +2719,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-table.git",
-                "reference": "4925cb180f7135f7bd1dfcc34c166a4e458471f1"
+                "reference": "84754cf4072cdf1b8574065041b85bf430bb37cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/4925cb180f7135f7bd1dfcc34c166a4e458471f1",
-                "reference": "4925cb180f7135f7bd1dfcc34c166a4e458471f1",
+                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/84754cf4072cdf1b8574065041b85bf430bb37cc",
+                "reference": "84754cf4072cdf1b8574065041b85bf430bb37cc",
                 "shasum": ""
             },
             "require": {
@@ -2972,12 +2972,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "52f6f74b7c342f7b90be9c1a87e183092e8ab452"
+                "reference": "7528c86e58884f5676d5851d52cd94c67372d609"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/52f6f74b7c342f7b90be9c1a87e183092e8ab452",
-                "reference": "52f6f74b7c342f7b90be9c1a87e183092e8ab452",
+                "url": "https://api.github.com/repos/composer/composer/zipball/7528c86e58884f5676d5851d52cd94c67372d609",
+                "reference": "7528c86e58884f5676d5851d52cd94c67372d609",
                 "shasum": ""
             },
             "require": {
@@ -3079,7 +3079,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-24T13:00:53+00:00"
+            "time": "2023-05-28T13:15:21+00:00"
         },
         {
             "name": "composer/metadata-minifier",
@@ -3528,12 +3528,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3b6bd74576bc2b244d5dca5e07005cd37387cdad"
+                "reference": "60f9a44b1eb9d6144524ba7f358768ee07cd1c73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3b6bd74576bc2b244d5dca5e07005cd37387cdad",
-                "reference": "3b6bd74576bc2b244d5dca5e07005cd37387cdad",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/60f9a44b1eb9d6144524ba7f358768ee07cd1c73",
+                "reference": "60f9a44b1eb9d6144524ba7f358768ee07cd1c73",
                 "shasum": ""
             },
             "require": {
@@ -3583,7 +3583,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-25T11:13:21+00:00"
+            "time": "2023-05-27T08:06:17+00:00"
         },
         {
             "name": "react/promise",
