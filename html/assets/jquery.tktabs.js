@@ -45,15 +45,14 @@
     // constructor method
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, $element.data(), options);
-      if (!$(plugin.settings.tabGroup, element).length) return;
+
+      if ($(plugin.settings.tabGroup, element).length < 2) return;
 
       navTabs = $(plugin.settings.navTabsTpl);
-
       $(plugin.settings.tabGroup, element).each(function (i) {
         let name = $(this).data('name');
         let id = $(this).attr('id');
         let li = $(plugin.settings.tabItemTpl);
-        let selected = (i === 0);
 
         $('a', li).text(name);
         $('a', li).attr({
@@ -67,34 +66,26 @@
           li.addClass('has-error');
         }
         navTabs.append(li);
-        $('.tk-form-fields', element).before(navTabs);
-
-        // setup panel groups
-        $('.tk-form-fields', element).addClass('tab-content');
-        //$(this).addClass('tab-pane fade')
         $(this).addClass('tab-pane')
           .attr('tabindex', '0')
           .attr('role', 'tabpanel')
           .attr('aria-labelledby', id+'-tab');
-        // if (selected) {
-        //   $(this).addClass('show active').attr('aria-selected', 'true');
-        //   $('a', li).addClass('active').attr('aria-selected', 'true');
-        // }
-
-        // show first tab or first error tab
-        $('li:nth-child(1) a', navTabs).tab('show');   // shows first tab
-        $('li.has-error a', navTabs).first().tab('show');   // shows first error tab
       });
 
+      $('a.nav-link', navTabs).on('click', function () {
+        $(this).blur();
+      });
 
-console.log(navTabs);
+      // append tabs
+      $('.tk-form-fields', element).before(navTabs);
+      // setup tab panes
+      $('.tk-form-fields', element).addClass('tab-content');
+
+      // show first tab or first error tab
+      $('li:nth-child(1) a', navTabs).tab('show');   // shows first tab
+      $('li.has-error a', navTabs).first().tab('show');   // shows first error tab
+
     };  // END init()
-
-    // private methods
-    //let foo_private_method = function() { };
-
-    // public methods
-    //plugin.foo_public_method = function() { };
 
     // call the "constructor" method
     plugin.init();

@@ -46,10 +46,10 @@ HTML;
 
     public function doToast(Request $request): string
     {
+
+        //hx-get="/api/htmx/toast" hx-trigger="submit from:form" hx-sync="form:queue last" hx-target="this" hx-swap="outerHTML"
         $toasts = <<<HTML
-<div aria-live="polite" aria-atomic="true" class="toastPanel position-relative" var="alertPanel"
-  hx-get="/api/htmx/toast" hx-trigger="submit from:form" hx-sync="form:queue last" hx-target="this" hx-swap="outerHTML"
->
+<div aria-live="polite" aria-atomic="true" class="toastPanel position-relative" var="alertPanel">
   <div class="toast-container top-0 end-0 p-3">
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" repeat="panel">
       <div class="toast-header">

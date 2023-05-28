@@ -8,9 +8,6 @@ use Tk\Form;
 use Tk\FormRenderer;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class FormEg extends PageController
 {
 
@@ -34,6 +31,19 @@ class FormEg extends PageController
         $list = ['-- Select --' => '', 'VIC' => 'Victoria', 'NSW' => 'New South Wales', 'WA' => 'Western Australia'];
         $this->form->appendField(new Form\Field\Select('state', $list))
             ->setNotes('This is a select box');
+
+        $this->form->appendField(new Form\Field\Input('date1'))
+            ->setRequired()
+            ->addCss('date')->setAttr('data-max-date', '+1w');
+        // Native HTML datepicker has issues with unsupported browsers and required input:
+        // See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
+        $this->form->appendField(new Form\Field\Input('date2'))
+            ->setRequired()
+            ->setType('date')->setAttr('pattern', '\d{4}-\d{2}-\d{2}');
+
+        $this->form->appendField(new Form\Field\Input('date3'));
+        $this->form->appendField(new Form\Field\Input('date4'));
+
         $files = $this->form->appendField(new Form\Field\File('attach'))->setNotes('Only upload valid files'); //->setMultiple(true);
 
         $this->form->appendField(new Form\Field\Checkbox('active'));
@@ -98,6 +108,11 @@ class FormEg extends PageController
         $this->form->getField('test')->addFieldCss('col-6');
         $this->form->getField('address')->addFieldCss('col-6');
         $this->form->getField('state')->addFieldCss('col-6');
+
+        $this->form->getField('date1')->addFieldCss('col-3');
+        $this->form->getField('date2')->addFieldCss('col-3');
+        $this->form->getField('date3')->addFieldCss('col-3');
+        $this->form->getField('date4')->addFieldCss('col-3');
 
         $formRenderer = new FormRenderer($this->form);
         $template->appendTemplate('content', $formRenderer->show());
