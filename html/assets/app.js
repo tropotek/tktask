@@ -45,57 +45,20 @@ let app = function () {
     });
   };
 
-
-
-
   /**
-   * Creates bootstrap tabs around the \Tk\Form renderer output
-   *
-   * @todo: update this to use the new Form groups no longer called tabGroups
+   * Creates bootstrap 5 tabs around the \Tk\Form renderer groups (.tk-form-group) output
    */
   let initTkFormTabs = function () {
+    // if ($.fn.tktabs === undefined) {
+    //   console.warn('jquery.tktabs.js is not installed.');
+    //   return;
+    // }
 
     function init() {
-      let form = $(this);
-      // create bootstrap tab elements around a tabbed form
-      form.find('.formTabs').each(function (id, tabContainer) {
-        let ul = $('<ul class="nav nav-tabs"></ul>');
-        let errorSet = false;
-
-        $(tabContainer).find('.tab-pane').each(function (i, tbox) {
-          let name = $(tbox).attr('data-name');
-          let li = $('<li class="nav-item"></li>');
-          let a = $('<a class="nav-link"></a>');
-          a.attr('href', '#' + tbox.id);
-          a.attr('data-toggle', 'tab');
-          a.text(name);
-          li.append(a);
-
-          // Check for errors
-          if ($(tbox).find('.has-error, .is-invalid').length) {
-            li.addClass('has-error');
-          }
-          if (i === 0) {
-            $(tbox).addClass('active');
-            li.addClass('active');
-            a.addClass('active');
-          }
-          ul.append(li);
-        });
-        $(tabContainer).prepend(ul);
-        $(tabContainer).find('li.has-error a');
-
-        //$(tabContainer).find('li.has-error a').tab('show'); // shows last error tab
-        $(tabContainer).find('li.has-error a').first().tab('show');   // shows first error tab
-      });
-
-      // Deselect tab
-      form.find('.formTabs li a').on('click', function (e) {
-        $(this).trigger('blur');
-      });
+      $(this).tktabs({});
     }
-    $('form').on('init', document, init).each(init);
 
+    $('form').on(EVENT_INIT, document, init).each(init);
   };
 
   /**

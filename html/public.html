@@ -29,6 +29,7 @@
   <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
 
   <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
+  <script src="/html/assets/jquery.tktabs.js"></script>
   <script src="/html/assets/app.js"></script>
 <script>
 jQuery(function ($) {
@@ -38,8 +39,9 @@ jQuery(function ($) {
   tkbase.initTkInputLock();
   tkbase.initDataToggle();
   tkbase.initTinymce();
-  tkbase.initCodemirror();
+  //tkbase.initCodemirror();
   app.initHtmxToasts();
+  app.initTkFormTabs();
 });
 </script>
 
@@ -98,7 +100,7 @@ jQuery(function ($) {
           </li>
 
         </ul>
-        <form class="d-flex" role="search" name="search">
+        <form id="site-search" class="d-flex" role="search" name="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
           <button class="btn btn-primary" type="submit">Search</button>
         </form>

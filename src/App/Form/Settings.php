@@ -18,7 +18,7 @@ class Settings
 
     public function __construct()
     {
-        $this->setForm(Form::create('settings-edit'));
+        $this->setForm(Form::create('settings'));
     }
 
     public function doDefault(Request $request)
