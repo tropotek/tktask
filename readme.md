@@ -2,7 +2,7 @@
 
 __Project:__ tk8base    
 __Web:__ <http://www.tropotek.com/>  
-__Authors:__ Michael Mifsud <http://www.tropotek.com/>
+__Authors:__ Tropotek <http://www.tropotek.com/>
 
 A base site using the Tk framework, use this as a starting point for your own site.
 

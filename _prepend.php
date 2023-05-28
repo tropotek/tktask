@@ -4,8 +4,6 @@
  *
  * Load this file when running any script to
  * set up and bootstrap the system environment
- *
- * @author Tropotek <http://www.tropotek.com/>
  */
 
 $composer = include __DIR__ . '/vendor/autoload.php';
