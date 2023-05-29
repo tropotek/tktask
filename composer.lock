@@ -2312,12 +2312,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-auth.git",
-                "reference": "83e7bcb0840b9bc24a090dc48900df4a678b8db8"
+                "reference": "26b41de40f068c8d196c09fd7fb5644cef94a646"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-auth/zipball/83e7bcb0840b9bc24a090dc48900df4a678b8db8",
-                "reference": "83e7bcb0840b9bc24a090dc48900df4a678b8db8",
+                "url": "https://api.github.com/repos/tropotek/tk-auth/zipball/26b41de40f068c8d196c09fd7fb5644cef94a646",
+                "reference": "26b41de40f068c8d196c09fd7fb5644cef94a646",
                 "shasum": ""
             },
             "type": "library",
@@ -2327,8 +2327,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Tk\\": ""
+                "psr-4": {
+                    "Tk\\": "Tk/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2413,12 +2413,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-domtemplate.git",
-                "reference": "4f81edffc99b57f1444418903de68eec241e53e6"
+                "reference": "8600ffed348ba4427ce0e1de938d0bd5062bec5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/4f81edffc99b57f1444418903de68eec241e53e6",
-                "reference": "4f81edffc99b57f1444418903de68eec241e53e6",
+                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/8600ffed348ba4427ce0e1de938d0bd5062bec5f",
+                "reference": "8600ffed348ba4427ce0e1de938d0bd5062bec5f",
                 "shasum": ""
             },
             "require": {
@@ -2434,8 +2434,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Dom\\": ""
+                "psr-4": {
+                    "Dom\\": "Dom/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2472,12 +2472,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-form.git",
-                "reference": "b0f329e5650b42d64af5fdf6d91dd714b61f9f75"
+                "reference": "cd7f6c07a50ba6070e40cb82e4954428ba07ef57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/b0f329e5650b42d64af5fdf6d91dd714b61f9f75",
-                "reference": "b0f329e5650b42d64af5fdf6d91dd714b61f9f75",
+                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/cd7f6c07a50ba6070e40cb82e4954428ba07ef57",
+                "reference": "cd7f6c07a50ba6070e40cb82e4954428ba07ef57",
                 "shasum": ""
             },
             "require": {
@@ -2490,8 +2490,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Tk\\": ""
+                "psr-4": {
+                    "Tk\\": "Tk/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
