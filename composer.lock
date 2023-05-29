@@ -2702,12 +2702,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-table.git",
-                "reference": "37fd09bd70faecf1d98f6162f06b7d1e361999b2"
+                "reference": "f1a916f8ed92b8915e849b3951fecd9328a7fde7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/37fd09bd70faecf1d98f6162f06b7d1e361999b2",
-                "reference": "37fd09bd70faecf1d98f6162f06b7d1e361999b2",
+                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/f1a916f8ed92b8915e849b3951fecd9328a7fde7",
+                "reference": "f1a916f8ed92b8915e849b3951fecd9328a7fde7",
                 "shasum": ""
             },
             "require": {
@@ -2721,7 +2721,7 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Tk\\": ""
+                    "Tk\\": "Tk/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
