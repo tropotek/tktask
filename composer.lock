@@ -2652,12 +2652,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-mail.git",
-                "reference": "c9467ca841fb8e5eccdbaf95de2af3b9dde9fd9e"
+                "reference": "c60fc80981837c45e13215c696b17976677dd760"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-mail/zipball/c9467ca841fb8e5eccdbaf95de2af3b9dde9fd9e",
-                "reference": "c9467ca841fb8e5eccdbaf95de2af3b9dde9fd9e",
+                "url": "https://api.github.com/repos/tropotek/tk-mail/zipball/c60fc80981837c45e13215c696b17976677dd760",
+                "reference": "c60fc80981837c45e13215c696b17976677dd760",
                 "shasum": ""
             },
             "require": {
@@ -2671,8 +2671,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Tk": ""
+                "psr-4": {
+                    "Tk\\": "Tk/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2702,12 +2702,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-table.git",
-                "reference": "f1a916f8ed92b8915e849b3951fecd9328a7fde7"
+                "reference": "dacd27f89e627b832cf8ae5535b8301f815dda7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/f1a916f8ed92b8915e849b3951fecd9328a7fde7",
-                "reference": "f1a916f8ed92b8915e849b3951fecd9328a7fde7",
+                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/dacd27f89e627b832cf8ae5535b8301f815dda7c",
+                "reference": "dacd27f89e627b832cf8ae5535b8301f815dda7c",
                 "shasum": ""
             },
             "require": {
@@ -2720,7 +2720,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Tk\\": "Tk/"
                 }
             },
