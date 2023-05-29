@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Listener\AlertHandler;
 use App\Listener\RequestHandler;
 
 class Dispatch extends \Bs\Dispatch
@@ -24,6 +25,7 @@ class Dispatch extends \Bs\Dispatch
         parent::httpInit();
 
         $this->getDispatcher()->addSubscriber(new RequestHandler());
+        $this->getDispatcher()->addSubscriber(new AlertHandler());
 
     }
 

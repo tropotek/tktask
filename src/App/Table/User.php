@@ -142,7 +142,7 @@ class User
         $this->getFilter()->appendField(new Form\Action\Submit('Clear', function (Form $form, Action\ActionInterface $action) {
             $this->getTable()->getTableSession()->set($this->getFilter()->getId(), []);
             Uri::create()->redirect();
-        }))->setGroup('')->addCss('btn-secondary');
+        }))->setGroup('')->addCss('btn-outline-secondary');
 
         $this->getFilter()->execute($request->request->all());
 

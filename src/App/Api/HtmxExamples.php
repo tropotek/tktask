@@ -15,6 +15,75 @@ class HtmxExamples
 {
     use SystemTrait;
 
+    /**
+     * Markup to be placed in the page:
+     * <div aria-live="polite" aria-atomic="true" class="toastPanel position-relative"
+     *    hx-get="/api/htmx/toast" hx-trigger="load" hx-target="this" hx-swap="outerHTML"
+     * ></div>
+     *
+     */
+    public function doToast(Request $request): string
+    {
+
+        //hx-get="/api/htmx/toast" hx-trigger="submit from:form" hx-sync="form:queue last" hx-target="this" hx-swap="outerHTML"
+        $toasts = <<<HTML
+<div aria-live="polite" aria-atomic="true" class="toastPanel position-relative" var="alertPanel">
+  <div class="toast-container top-0 end-0 p-3">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" repeat="panel">
+      <div class="toast-header">
+        <!--<img src="..." class="rounded mr-2" alt="...">-->
+        <svg choice="svg" class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect fill="#007aff" width="100%" height="100%" var="svg" /></svg>&nbsp;
+        <i class="bd-placeholder-img rounded mr-2" style="width: 20px;height: 20px; line-height: 1.5em;" choice="icon"></i>
+        <strong class="me-auto" var="title"> Alert</strong>
+        <small class="text-muted" var="time"></small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" var="message"></div>
+    </div>
+  </div>
+</div>
+HTML;
+
+        $template = $this->loadTemplate($toasts);
+
+        $template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/toast'));
+        foreach ($this->getFactory()->getSession()->getFlashBag()->all() as $type => $flash) {
+            foreach ($flash as $a) {
+                $a = unserialize($a);
+                $r = $template->getRepeat('panel');
+                if ($a->icon) {
+                    $r->addCss('icon', $a->icon);
+                    $r->addCss('icon', 'text-'.$type);
+                    $r->setVisible('icon');
+                } else {
+                    $colorMap = [
+                        'primary' => '#0d6efd',
+                        'secondary' => '#0d6efd',
+                        'success' => '#198754',
+                        'info' => '#0dcaf0',
+                        'warning' => '#ffc107',
+                        'danger' => '#dc3545',
+                        'error' => '#dc3545',
+                        'light' => '#f8f9fa',
+                        'dark' => '#212529',
+                    ];
+                    $r->setAttr('svg', 'fill', $colorMap[$type]);
+                    $r->setVisible('svg');
+                }
+                if ($a->title) {
+                    $r->setText('title', $a->title);
+                } else {
+                    $r->setText('title', ucfirst(strtolower($type)));
+                }
+
+                $r->insertHtml('message', $a->message);
+                $r->appendRepeat();
+            }
+        }
+
+        return $template->toString();
+    }
+
     public function doTest(Request $request)
     {
         sleep(1);

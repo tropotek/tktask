@@ -46,17 +46,18 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\User\Edit::class, 'doDefault']);
 
 
+
+    $routes->add('wiki-page', '/wiki/page')
+        ->controller([\App\Controller\Wiki\Page::class, 'doDefault']);
+
     // API Endpoints
-    $routes->add('api-htmx-alert', '/api/htmx/alert')
-        ->controller([\App\Api\App::class, 'doAlert'])
-        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
-    $routes->add('api-htmx-toast', '/api/htmx/toast')
-        ->controller([\App\Api\App::class, 'doToast'])
-        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
 
 
 
-    // TODO: remove for productions sites
+
+
+
+    // TODO: Examples - remove for productions sites...
 
     // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
     $routes->add('example-manager', '/exampleManager')
@@ -90,5 +91,9 @@ return function (CollectionConfigurator $routes) {
     $routes->add('api-htmx-upload', '/api/htmx/upload')
         ->controller([\App\Api\HtmxExamples::class, 'doUpload'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
+
+    $routes->add('api-htmx-toast', '/api/htmx/toast')
+        ->controller([\App\Api\HtmxExamples::class, 'doToast'])
+        ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
 
 };

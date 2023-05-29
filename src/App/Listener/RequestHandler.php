@@ -1,6 +1,7 @@
 <?php
 namespace App\Listener;
 
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Tk\Log;
@@ -10,11 +11,7 @@ class RequestHandler implements EventSubscriberInterface
 {
     use SystemTrait;
 
-
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
-     */
-    public function onRequest($event)
+    public function onRequest(RequestEvent $event)
     {
         // TODO: Check user still logged in, if not use any remember me cookies to auto login and redirect to back to this URI
         if (!$this->getFactory()->getAuthUser()) {
@@ -34,7 +31,7 @@ class RequestHandler implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => [['onRequest']],
+            KernelEvents::REQUEST => 'onRequest',
         ];
     }
 
