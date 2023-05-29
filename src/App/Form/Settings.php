@@ -29,8 +29,8 @@ class Settings
         $this->getForm()->appendField(new Field\Input('system.email'))->setGroup($tab)->setLabel('Site Email')->setRequired(true)
             ->setNotes('The default email address the system will use to send contact requests and system messages.');
 
-        $this->getForm()->appendField(new Field\Input('google.map.apikey'))->setGroup($tab)->setLabel('Google API Key')
-            ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.');
+//        $this->getForm()->appendField(new Field\Input('google.map.apikey'))->setGroup($tab)->setLabel('Google API Key')
+//            ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.');
         $this->getForm()->appendField(new Field\Checkbox('site.account.registration'))->setGroup($tab)->setLabel('Account Registration');
 
         $tab = 'Email';

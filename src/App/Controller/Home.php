@@ -7,9 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Tk\Exception;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Home extends PageController
 {
 

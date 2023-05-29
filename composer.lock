@@ -2358,12 +2358,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "7dbb317b805dd9f0a1a1de846f4e1a2f0b1ff98d"
+                "reference": "01de478ba0c50a98ae114427fe3b5679dd3f115d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/7dbb317b805dd9f0a1a1de846f4e1a2f0b1ff98d",
-                "reference": "7dbb317b805dd9f0a1a1de846f4e1a2f0b1ff98d",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/01de478ba0c50a98ae114427fe3b5679dd3f115d",
+                "reference": "01de478ba0c50a98ae114427fe3b5679dd3f115d",
                 "shasum": ""
             },
             "require": {
@@ -2383,8 +2383,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Bs\\": ""
+                "psr-4": {
+                    "Bs\\": "Bs/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2521,12 +2521,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "134ff31da158399650ba68edf511d99374bddc8a"
+                "reference": "c7f4865286c154b8ecc664ea94356456ba175cdb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/134ff31da158399650ba68edf511d99374bddc8a",
-                "reference": "134ff31da158399650ba68edf511d99374bddc8a",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/c7f4865286c154b8ecc664ea94356456ba175cdb",
+                "reference": "c7f4865286c154b8ecc664ea94356456ba175cdb",
                 "shasum": ""
             },
             "require": {
@@ -2556,8 +2556,8 @@
                 "files": [
                     "Tk/Exception.php"
                 ],
-                "psr-0": {
-                    "Tk\\": ""
+                "psr-4": {
+                    "Tk\\": "Tk/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",

@@ -16,6 +16,8 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Home::class, 'doDefault']);
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
+    $routes->add('contact', '/contact')
+        ->controller([\App\Controller\Contact::class, 'doDefault']);
 
 
     // Auth pages Login, Logout, Register, Recover

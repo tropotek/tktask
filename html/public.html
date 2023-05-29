@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="" />
   <meta name="author" content="Tropotek" />
 
   <title>Bootstrap v5.2 TkLib Template</title>
@@ -11,7 +10,6 @@
   <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css" />
   <link rel="stylesheet" href="/vendor/components/font-awesome/css/all.min.css" />
   <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/jquery-ui.min.css" />
-<!--  <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/theme.css" />-->
   <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css" />
   <link rel="stylesheet" href="/html/assets/app.css" />
 
@@ -60,7 +58,10 @@ jQuery(function ($) {
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0" style="--bs-scroll-height: 100px;">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/home">Home</a>
+            <a class="nav-link" href="/home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/contact">Contact Us</a>
           </li>
           <li class="nav-item" choice="loggedIn" app-is-user="true">
             <a class="nav-link" href="/dashboard">Dashboard</a>
