@@ -13,6 +13,14 @@ use Tk\FormRenderer;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
+/**
+ * This is only an example contact form.
+ *
+ * For commercial sites you should redirect to a "thank you" page or new thank you content template
+ * showing a message rather than only an alert message.
+ * Most clients prefer this type of
+ *
+ */
 class Contact extends PageController
 {
     use SystemTrait;
