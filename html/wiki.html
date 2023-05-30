@@ -12,7 +12,15 @@
   <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/jquery-ui.min.css" />
   <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css" />
   <link rel="stylesheet" href="/html/assets/app.css" />
+
 <style>
+  body {
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+    color: #5a5a5a;
+    background-color: #FFF;
+  }
+
   .navbar .megamenu {
     padding: 1rem;
     border-top-left-radius: 0;
@@ -37,9 +45,7 @@
     }
   }
   /* ============ mobile view .end// ============ */
-
 </style>
-
 
   <script src="/vendor/components/jquery/jquery.min.js"></script>
   <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
@@ -57,6 +63,7 @@
   <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
   <script src="/html/assets/jquery.tktabs.js"></script>
   <script src="/html/assets/app.js"></script>
+
 <script>
 jQuery(function ($) {
   // Init page javascript functions
@@ -75,7 +82,7 @@ jQuery(function ($) {
 <body class="bg-white">
 
 <header>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Tropotek</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
@@ -143,7 +150,7 @@ jQuery(function ($) {
           </li>
 
 
-          <li class="nav-item dropdown" app-is-type="TYPE_STAFF" choice="loggedIn">
+          <li class="nav-item dropdown" app-is-type="TYPE_STAFF">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Wiki
             </a>
@@ -161,17 +168,32 @@ jQuery(function ($) {
           </li>
 
         </ul>
-        <form id="site-search" class="d-flex" role="search" name="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-          <button class="btn btn-primary" type="submit">Search</button>
+
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+          <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
         </form>
+
+        <div class="dropdown text-end" app-is-user="true">
+          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+<!--            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle" />-->
+            <span var="username">username</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end text-small">
+            <li><a class="dropdown-item" href="#">New project...</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+          </ul>
+        </div>
+
       </div>
     </div>
   </nav>
 </header>
 
 
-<main class="container" var="container">
+<main class="container-fluid" var="container">
   <div class="shadow p-3 mb-5 bg-body rounded" var="content"></div>
 </main>
 
