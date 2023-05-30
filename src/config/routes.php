@@ -47,8 +47,10 @@ return function (CollectionConfigurator $routes) {
 
 
 
-    $routes->add('wiki-page', '/wiki/page')
-        ->controller([\App\Controller\Wiki\Page::class, 'doDefault']);
+    $routes->add('wiki-view', '/wiki/view')
+        ->controller([\App\Controller\Wiki\View::class, 'doDefault']);
+    $routes->add('wiki-edit', '/wiki/edit')
+        ->controller([\App\Controller\Wiki\Edit::class, 'doDefault']);
 
     // API Endpoints
 

@@ -12,6 +12,34 @@
   <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/jquery-ui.min.css" />
   <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css" />
   <link rel="stylesheet" href="/html/assets/app.css" />
+<style>
+  .navbar .megamenu {
+    padding: 1rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  /* @see: https://bootstrap-menu.com/detail-megamenu.html */
+  /* ============ desktop view ============ */
+  @media all and (min-width: 992px) {
+
+    .navbar .has-megamenu{position:static!important;}
+    .navbar .megamenu{left:0; right:0; width:100%; margin-top:0;  }
+
+  }
+  /* ============ desktop view .end// ============ */
+
+  /* ============ mobile view ============ */
+  @media(max-width: 991px){
+    .navbar.fixed-top .navbar-collapse, .navbar.sticky-top .navbar-collapse{
+      overflow-y: auto;
+      max-height: 90vh;
+      margin-top:10px;
+    }
+  }
+  /* ============ mobile view .end// ============ */
+
+</style>
+
 
   <script src="/vendor/components/jquery/jquery.min.js"></script>
   <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
@@ -59,37 +87,69 @@ jQuery(function ($) {
           <li class="nav-item">
             <a class="nav-link" href="/home">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/contact">Contact Us</a>
+          <li class="nav-item dropdown has-megamenu">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"> Mega menu  </a>
+            <div class="dropdown-menu megamenu shadow" role="menu">
+
+              <div class="wiki-menu-edit float-end">
+                <a href="/wiki/edit?pageId=0" class="btn btn-outline-primary wiki-menu-edit-btn" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .55rem;"><i class="fa fa-pencil"></i> Edit</a>
+              </div>
+              <div class="wiki-menu-content row">
+                <div class="col-sm-4">
+                <h3>Menu</h3>
+                <ul>
+                  <li><a class="wikiPage wiki-page wiki-canView" href="/Mick" title="Link To Page: Mick">Mick's Wiki Page</a></li>
+                  <li><a class="wiki-page wiki-canView" href="/Tropotek" title="Tropotek">Tropotek</a></li>
+                  <li><a href="/OUM" class="wiki-page wiki-canView" title="OUM">OUM</a></li>
+                  <li><a href="/Misc_Links" class="wiki-page wiki-canView" title="Misc Links">Misc Links</a></li>
+                </ul>
+                <h3><a href="/Hobbies" class="wiki-page wiki-canView" title="Hobbies">Hobbies</a></h3>
+                <ul>
+                  <li><a href="/Drones" class="wiki-page wiki-canView" title="Drones">Drones</a></li>
+                  <li><a href="/Electronics" class="wiki-page wiki-canView" title="Electronics">Electronics</a></li>
+                  <li><a href="/3D_Printers" class="wiki-page wiki-canView" title="3D Printers">3D Printers</a></li>
+                  <li><a href="/CNC" class="wiki-page wiki-canView" title="CNC">CNC</a></li>
+                  <li><a href="/Prospecting" class="wiki-page wiki-canView" title="Prospecting">Prospecting</a></li>
+                </ul>
+              </div>
+                <div class="col-sm-4">
+                  <h3>Development</h3>
+                  <ul>
+                    <li><a class="wikiPage wiki-page wiki-canView" href="/Web_Dev" title="Link To Page: Web_Dev">Web Dev</a></li>
+                    <li><a href="/GIT_Notes" class="wiki-page wiki-canView" title="GIT Notes">GIT Notes</a></li>
+                    <li><a href="/MySQL" class="wiki-page wiki-canView" title="MySQL">Mysql</a></li>
+                    <li><a class="wiki-page wiki-canView" href="/Linux" title="Link To Page: Linux">Linux</a></li>
+                    <li><a href="/Scratchpad" class="wiki-page wiki-canView" title="Scratchpad">Scratchpad</a></li>
+                  </ul>
+                  <p></p>
+                  <ul>
+                    <li><a class="dk-newWikiPage wiki-page wiki-canView" href="/Mobile_Dev" title="Link To Page: Mobile_Dev">Mobile Dev</a></li>
+                    <li><a class="dk-newWikiPage wiki-page wiki-canView" href="/Lipsum_Text" title="Link To Page: Lipsum_Text">Lipsum Text</a></li>
+                  </ul>
+                </div>
+                <div class="col-sm-4">
+                  <h3>Public</h3>
+                  <ul>
+                    <li><a href="/Links" class="wiki-page wiki-canView" title="Links">Links</a></li>
+                    <li><a href="/Recipes" class="wiki-page wiki-canView" title="Recipes">Recipes</a></li>
+                    <li><a href="/Bottle_Top_Counter" class="wiki-page wiki-canView" title="Bottle Top Counter">CaronaStar Game</a></li>
+                    <li><a href="/terms_and_conditions" class="wiki-page wiki-canView" title="terms and conditions">terms and conditions </a></li>
+                  </ul>
+                </div>
+
+
+              </div>
+            </div> <!-- dropdown-mega-menu.// -->
           </li>
-          <li class="nav-item" choice="loggedIn" app-is-user="true">
-            <a class="nav-link" href="/dashboard">Dashboard</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Examples
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/domTest">DomTest</a></li>
-              <li><a class="dropdown-item" href="/htmx">HTMX</a></li>
-              <li><a class="dropdown-item" href="/ui/form">Form</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="/info">Info</a></li>
-            </ul>
-          </li>
+
 
           <li class="nav-item dropdown" app-is-type="TYPE_STAFF" choice="loggedIn">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Admin
+              Wiki
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/settings" app-has-perm="PERM_SYSADMIN">Site Settings</a></li>
-              <li><a class="dropdown-item" href="/staffManager" app-has-perm="PERM_MANAGE_STAFF">Staff</a></li>
-              <li><a class="dropdown-item" href="/userManager" app-has-perm="PERM_MANAGE_USER | PERM_MANAGE_STAFF">Users</a></li>
-              <li><a class="dropdown-item" href="/fileManager" app-has-perm="PERM_ADMIN">File Manager</a></li>
-              <li><a class="dropdown-item" href="/exampleManager" app-has-perm="PERM_ADMIN">Example Manager</a></li>
-              <li><a class="dropdown-item" href="/tailLog" app-has-perm="PERM_ADMIN">Tail Log</a></li>
-              <li><a class="dropdown-item" href="/listEvents" app-has-perm="PERM_ADMIN">List Events</a></li>
+              <li><a class="dropdown-item" href="/wiki/view" app-has-perm="PERM_ADMIN">View Page</a></li>
+              <li><a class="dropdown-item" href="/wiki/edit" app-has-perm="PERM_ADMIN">Edit Page</a></li>
             </ul>
           </li>
 

@@ -15,6 +15,7 @@ class Dashboard extends PageController
     {
         parent::__construct($this->getFactory()->getUserPage());
         $this->getPage()->setTitle('Dashboard');
+        $this->getPage()->getCrumbs()->reset();
     }
 
     public function doDefault(Request $request)
