@@ -26,7 +26,9 @@ class View extends PageController
     {
         $template = $this->getTemplate();
 
-        $this->getPage()->getTemplate()->setText('username', $this->getFactory()->getAuthUser()->getUsername());
+        if ($this->getFactory()->getAuthUser()) {
+            $this->getPage()->getTemplate()->setText('username', $this->getFactory()->getAuthUser()->getUsername());
+        }
 
         return $template;
     }
@@ -79,6 +81,7 @@ Some notes for the new wiki system:
     Maybe they can be attached to pages as well so the can be listed in related pages. Could have a widget that shows the
     passcode and details inline to avoid password data being show accidentally???
   </li>
+  <li>get a bootstrap 5 jquery image viewer (lightbox style)</li>
 </ul>
 
 <p>&nbsp;</p>
