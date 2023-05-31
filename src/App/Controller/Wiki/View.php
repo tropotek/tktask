@@ -17,8 +17,6 @@ class View extends PageController
     public function doDefault(Request $request)
     {
 
-
-
         return $this->getPage();
     }
 

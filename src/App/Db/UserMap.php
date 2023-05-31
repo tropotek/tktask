@@ -235,9 +235,9 @@ class UserMap extends Mapper
         $statement = $this->getDb()->prepare($sql);
         $statement->bindValue(':user_id', $user_id);
 
-        // Remove all expired tokens too
-        $sql = 'DELETE FROM user_tokens WHERE expiry < NOW()';
-        $this->getDb()->exec($sql);
+        // Remove all expired tokens too (see sql/events.sql)
+//        $sql = 'DELETE FROM user_tokens WHERE expiry < NOW()';
+//        $this->getDb()->exec($sql);
 
         return $statement->execute();
     }
