@@ -19,7 +19,7 @@ if (!$config->isDebug()) {
 
 /** @var \App\Db\User $user */
 foreach (\App\Db\UserMap::create()->findAll() as $user) {
-    $user->setPassword(password_hash('password', PASSWORD_DEFAULT));
+    $user->setPassword(\App\Db\User::hashPassword('password', PASSWORD_DEFAULT));
     $user->save();
 }
 

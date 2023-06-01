@@ -163,7 +163,7 @@ class Recover
             return;
         }
 
-        $this->user->setPassword(password_hash($form->getFieldValue('newPassword'), PASSWORD_DEFAULT));
+        $this->user->setPassword(\App\Db\User::hashPassword($form->getFieldValue('newPassword')));
         $this->user->save();
 
         Alert::addSuccess('Successfully account recovery. Please login.');

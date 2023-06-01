@@ -98,7 +98,7 @@ class Register
             return;
         }
 
-        $this->user->setPassword(password_hash($this->user->getPassword(), PASSWORD_DEFAULT));
+        $this->user->setPassword(\App\Db\User::hashPassword($this->user->getPassword()));
         $this->user->save();
 
         // send email to user

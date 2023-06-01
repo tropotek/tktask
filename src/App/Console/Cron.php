@@ -1,12 +1,10 @@
 <?php
 namespace App\Console;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tk\Console\Console;
-
 
 /**
  * Cron job to be run nightly
@@ -14,17 +12,11 @@ use Tk\Console\Console;
  * # run Nightly site cron job
  *   * /5  *  *   *   *      php /home/user/public_html/bin/cmd cron > /dev/null 2>&1
  *
- *
- * @author tropotek <https://www.tropotek.com/>
  */
 class Cron extends Console
 {
     use LockableTrait;
 
-
-    /**
-     *
-     */
     protected function configure()
     {
         $path = getcwd();
@@ -32,14 +24,11 @@ class Cron extends Console
             ->setDescription('The site cron script. crontab line: */1 *  * * *   ' . $path . '/bin/cmd cron > /dev/null 2>&1');
     }
 
-    /**
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
-            return Command::SUCCESS;
+            return self::SUCCESS;
         }
 
 
@@ -50,7 +39,7 @@ class Cron extends Console
 
 
         $this->release();
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
 }

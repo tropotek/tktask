@@ -1,7 +1,7 @@
 # tk8base
 
 __Project:__ tk8base    
-__Web:__ <http://www.tropotek.com/>  
+__Web:__ <https://github.com/tropotek/tk8base>  
 __Authors:__ Tropotek <http://www.tropotek.com/>
 
 A base site using the Tk framework, use this as a starting point for your own site.
@@ -17,9 +17,9 @@ A base site using the Tk framework, use this as a starting point for your own si
 2. Make sure you have the latest version of composer [https://getcomposer.org/download/] installed.
 3. Use the following commands:
 ~~~bash
-# git clone https://github.com/tropotek/tk8base.git
-# cd tk8base
-# composer install
+$ git clone https://github.com/tropotek/tk8base.git
+$ cd tk8base
+$ composer install
 ~~~
 4. Edit the `/src/App/config/config.php` file to your required settings.
 5. You may have to change the permissions of the `/data/` folder so apache can read and write to it.
@@ -30,10 +30,10 @@ A base site using the Tk framework, use this as a starting point for your own si
 ## Upgrading
 
 ~~~bash
-# git reset --hard
-# git checkout master
-# git pull
-# composer update
+$ git reset --hard
+$ git checkout master
+$ git pull
+$ composer update
 ~~~
 
 __Warning:__ This could potentially break the site. Be sure to back up any DB and

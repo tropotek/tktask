@@ -1,14 +1,10 @@
 <?php
 namespace App\Console;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tk\Console\Console;
 
-/**
- * @author Tropotek <https://www.tropotek.com/>
- */
 class Test extends Console
 {
 
@@ -22,13 +18,11 @@ class Test extends Console
     {
         if (!$this->getConfig()->isDebug()) {
             $this->writeError('Error: Only run this command in a debug environment.');
-            return Command::FAILURE;
+            return self::FAILURE;
         }
 
-
-
         $output->writeln('Complete!!!');
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
 

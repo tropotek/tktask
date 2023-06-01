@@ -7,9 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Tk\Console\Console;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Password extends Console
 {
 
@@ -36,7 +33,7 @@ class Password extends Console
             return self::FAILURE;
         }
 
-        $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+        $user->setPassword(\App\Db\User::hashPassword($password));
         $user->save();
 
         return self::SUCCESS;

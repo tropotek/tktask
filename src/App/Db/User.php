@@ -213,6 +213,11 @@ class User extends Model implements UserInterface, FileInterface
         return $this;
     }
 
+    public static function hashPassword(string $password): string
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+
     public function getEmail(): string
     {
         return $this->email;
