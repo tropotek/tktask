@@ -33,7 +33,7 @@ class Profile extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
+        $template->appendText('title', $this->getPage()->getTitle());
 
         //$template->appendTemplate('content', $this->form->getRenderer()->getTemplate());
         $template->appendTemplate('content', $this->form->show());

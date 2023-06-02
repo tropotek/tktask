@@ -101,7 +101,7 @@ class FormEg extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
+        $template->appendText('title', $this->getPage()->getTitle());
 
         // Setup field group widths with bootstrap classes
         $this->form->getField('email')->addFieldCss('col-6');

@@ -26,7 +26,7 @@ class Htmx extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
+        $template->appendText('title', $this->getPage()->getTitle());
 
         $btnRes = $this->forward([\App\Api\HtmxExamples::class, 'doButton'], null, null, null);
         $template->insertHtml('btn', $btnRes->getContent());

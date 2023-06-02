@@ -105,7 +105,7 @@ HTML;
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
+        $template->appendText('title', $this->getPage()->getTitle());
 
         $renderer = $this->getFormRenderer();
         $renderer->addFieldCss('mb-3');
@@ -118,21 +118,16 @@ HTML;
     {
         $html = <<<HTML
 <div>
-
-    <div class="card">
-        <h3 class="card-header" var="title">Contact Us</h3>
-        <div class="card-body row">
-            <div class="col-6">
-                <p>This is the left side</p>
-                <p>Location</p>
-                <div>{Map Here!}</div>
-            </div>
-            <div class="col-6">
-                <div var="content"></div>
-            </div>
-        </div>
-    </div>
-
+<!--  <div class="card mb-3">-->
+<!--    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>-->
+<!--    <div class="card-body" var="actions">-->
+<!--      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>-->
+<!--    </div>-->
+<!--  </div>-->
+  <div class="card mb-3">
+    <div class="card-header" var="title"><i class="fa fa-envelope"></i> </div>
+    <div class="card-body" var="content"></div>
+  </div>
 </div>
 HTML;
         return $this->loadTemplate($html);

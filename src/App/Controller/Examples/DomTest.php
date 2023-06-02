@@ -27,7 +27,7 @@ class DomTest extends PageController
     {
         $template = $this->getTemplate();
 
-        $template->setText('title', 'This is a dynamic header');
+        $template->appendText('title', 'This is a dynamic header');
         $template->setVisible('link2');
 
         return $template;
