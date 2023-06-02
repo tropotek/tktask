@@ -15,6 +15,7 @@ class ExampleMap extends Mapper
 
     public function makeDataMaps(): void
     {
+
         if (!$this->getDataMappers()->has(self::DATA_MAP_DB)) {
             $map = new DataMap();
             $map->addDataType(new Db\Integer('id'));

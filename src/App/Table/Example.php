@@ -110,7 +110,7 @@ class Example
             $this->getTable()->getTableSession()->set($this->getFilter()->getId(), []);
             Uri::create()->redirect();
         }))->setGroup('')->addCss('btn-outline-secondary');
-        //
+        // execute filter form
         $this->getFilter()->execute($request->request->all());
 
 

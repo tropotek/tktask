@@ -42,8 +42,16 @@ class Edit extends PageController
     {
         $html = <<<HTML
 <div>
-  <h2 var="title"></h2>
-  <div var="content" class="tk-form-content"></div>
+  <div class="card mb-3">
+    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
+    <div class="card-body" var="actions">
+      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <div class="card-header" var="title"><i class="fa fa-cogs"></i> </div>
+    <div class="card-body" var="content"></div>
+  </div>
 </div>
 HTML;
         return $this->loadTemplate($html);

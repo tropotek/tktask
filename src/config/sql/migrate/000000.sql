@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS user_tokens
   hashed_validator VARCHAR(255) NOT NULL,
   user_id INT UNSIGNED NOT NULL,
   expiry DATETIME NOT NULL,
-  CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES `user` (`id`) ON DELETE CASCADE
+  CONSTRAINT fk_user_tokens__user_id FOREIGN KEY (user_id) REFERENCES `user` (`id`) ON DELETE CASCADE
 );
 
 # CREATE TABLE IF NOT EXISTS file
