@@ -29,9 +29,11 @@ class Recover
 
     public function doDefault(Request $request)
     {
-        $this->getForm()->appendField(new Field\Input('username'))->setAttr('autocomplete', 'off')
+        $this->getForm()->appendField(new Field\Input('username'))
+            ->setAttr('autocomplete', 'off')
             ->setAttr('placeholder', 'Username')
-            ->setRequired()->setNotes('Enter your username to recover access your account.');
+            ->setRequired()
+            ->setNotes('Enter your username to recover access your account.');
 
         $html = <<<HTML
             <a href="/login">Login</a>

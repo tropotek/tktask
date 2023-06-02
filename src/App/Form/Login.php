@@ -39,11 +39,16 @@ class Login
             Uri::create('/dashboard')->redirect();
         }
 
-        $this->getForm()->appendField(new Field\Input('username'))->setRequired()
+        $this->getForm()->appendField(new Field\Input('username'))
+            ->setRequired()
             ->setAttr('placeholder', 'Username');
-        $this->getForm()->appendField(new Field\Password('password'))->setRequired()
+
+        $this->getForm()->appendField(new Field\Password('password'))
+            ->setRequired()
             ->setAttr('placeholder', 'Password');
-        $this->getForm()->appendField(new Field\Checkbox('remember', ['Remember me' => 'remember']))->setLabel('');
+
+        $this->getForm()->appendField(new Field\Checkbox('remember', ['Remember me' => 'remember']))
+            ->setLabel('');
 
         $html = <<<HTML
             <a href="/recover">Recover</a>

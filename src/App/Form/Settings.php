@@ -24,32 +24,71 @@ class Settings
     public function doDefault(Request $request)
     {
         $tab = 'Site';
-        $this->getForm()->appendField(new Field\Input('system.site.name'))->setGroup($tab)->setLabel('Site Title')->setRequired(true);
-        $this->getForm()->appendField(new Field\Input('system.site.shortName'))->setGroup($tab)->setLabel('Site Short Title')->setRequired(true);
-        $this->getForm()->appendField(new Field\Input('system.email'))->setGroup($tab)->setLabel('Site Email')->setRequired(true)
-            ->setNotes('The default email address the system will use to send contact requests and system messages.');
+        $this->getForm()->appendField(new Field\Input('system.site.name'))
+            ->setLabel('Site Title')
+            ->setRequired(true)
+            ->setGroup($tab);
 
-//        $this->getForm()->appendField(new Field\Input('google.map.apikey'))->setGroup($tab)->setLabel('Google API Key')
-//            ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.');
-        $this->getForm()->appendField(new Field\Checkbox('site.account.registration'))->setGroup($tab)->setLabel('Account Registration');
+        $this->getForm()->appendField(new Field\Input('system.site.shortName'))
+            ->setLabel('Site Short Title')
+            ->setRequired(true)
+            ->setGroup($tab);
+
+        $this->getForm()->appendField(new Field\Input('system.email'))
+            ->setLabel('Site Email')
+            ->setRequired(true)
+            ->setNotes('The default email address the system will use to send contact requests and system messages.')
+            ->setGroup($tab);
+
+        $this->getForm()->appendField(new Field\Input('google.map.apikey'))
+            ->setGroup($tab)->setLabel('Google API Key')
+            ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.')
+            ->setGroup($tab);
+
+        $this->getForm()->appendField(new Field\Checkbox('site.account.registration'))
+            ->setLabel('Account Registration')
+            ->setGroup($tab);
 
         $tab = 'Email';
-        $this->getForm()->appendField(new Field\Textarea('site.email.sig'))->setGroup($tab)->setLabel('Email Signature')
-            ->setNotes('Set the email signature to appear at the foot of all system emails.')->addCss('mce-min');
+        $this->getForm()->appendField(new Field\Textarea('site.email.sig'))
+            ->setLabel('Email Signature')
+            ->setNotes('Set the email signature to appear at the foot of all system emails.')
+            ->addCss('mce-min')
+            ->setGroup($tab);
 
         $tab = 'Metadata';
-        $this->getForm()->appendField(new Field\Input('system.meta.keywords'))->setGroup($tab)->setLabel('Metadata Keywords');
-        $this->getForm()->appendField(new Field\Input('system.meta.description'))->setGroup($tab)->setLabel('Metadata Description');
+        $this->getForm()->appendField(new Field\Input('system.meta.keywords'))
+            ->setLabel('Metadata Keywords')
+            ->setGroup($tab);
 
-        $this->getForm()->appendField(new Field\Textarea('system.global.js'))->setAttr('id', 'site-global-js')->setGroup($tab)->setLabel('Custom JS')
-            ->setNotes('You can omit the &lt;script&gt; tags here')->addCss('code')->setAttr('data-mode', 'javascript');
-        $this->getForm()->appendField(new Field\Textarea('system.global.css'))->setAttr('id', 'site-global-css')->setGroup($tab)->setLabel('Custom CSS Styles')
-            ->setNotes('You can omit the &lt;style&gt; tags here')->addCss('code')->setAttr('data-mode', 'css');
+        $this->getForm()->appendField(new Field\Input('system.meta.description'))
+            ->setLabel('Metadata Description')
+            ->setGroup($tab);
+
+        $this->getForm()->appendField(new Field\Textarea('system.global.js'))
+            ->setAttr('id', 'site-global-js')
+            ->setLabel('Custom JS')
+            ->setNotes('You can omit the &lt;script&gt; tags here')
+            ->addCss('code')->setAttr('data-mode', 'javascript')
+            ->setGroup($tab);
+
+        $this->getForm()->appendField(new Field\Textarea('system.global.css'))
+            ->setAttr('id', 'site-global-css')
+            ->setLabel('Custom CSS Styles')
+            ->setNotes('You can omit the &lt;style&gt; tags here')
+            ->addCss('code')->setAttr('data-mode', 'css')
+            ->setGroup($tab);
 
         $tab = 'Maintenance';
-        $this->getForm()->appendField(new Field\Checkbox('system.maintenance.enabled'))->addCss('check-enable')->setLabel('Maintenance Mode Enabled')->setGroup($tab);
-        $this->getForm()->appendField(new Field\Textarea('system.maintenance.message'))->addCss('mce-min')->setGroup($tab)->setLabel('Message');
+        $this->getForm()->appendField(new Field\Checkbox('system.maintenance.enabled'))
+            ->addCss('check-enable')
+            ->setLabel('Maintenance Mode Enabled')
+            ->setGroup($tab);
 
+        $this->getForm()->appendField(new Field\Textarea('system.maintenance.message'))
+            ->addCss('mce-min')
+            ->setLabel('Message')
+            ->setGroup($tab);
 
         $this->getForm()->appendField(new Form\Action\SubmitExit('save', [$this, 'onSubmit']));
         $this->getForm()->appendField(new Form\Action\Link('back', Uri::create('/')));

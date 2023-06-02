@@ -28,21 +28,29 @@ class Register
 
     public function doDefault(Request $request)
     {
-
-        $this->form->appendField(new Field\Input('name'))->setRequired()
+        $this->form->appendField(new Field\Input('name'))
+            ->setRequired()
             ->setAttr('placeholder', 'Name');
-        $this->form->appendField(new Field\Input('email'))->setRequired()
+
+        $this->form->appendField(new Field\Input('email'))
+            ->setRequired()
             ->setAttr('placeholder', 'Email');
+
         $this->form->appendField(new Field\Input('username'))
             ->setAttr('placeholder', 'Username')
-            ->setAttr('autocomplete', 'off')->setRequired();
+            ->setAttr('autocomplete', 'off')
+            ->setRequired();
+
         $this->form->appendField(new Field\Password('password'))
             ->setAttr('placeholder', 'Password')
-            ->setAttr('autocomplete', 'off')->setRequired();
+            ->setAttr('autocomplete', 'off')
+            ->setRequired();
+
         $this->form->appendField(new Field\Password('confPassword'))
             ->setLabel('Password Confirm')
             ->setAttr('placeholder', 'Password Confirm')
-            ->setAttr('autocomplete', 'off')->setRequired();
+            ->setAttr('autocomplete', 'off')
+            ->setRequired();
 
         $html = <<<HTML
             <a href="/recover">Recover</a> | <a href="/login">Login</a>
