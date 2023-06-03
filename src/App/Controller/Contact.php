@@ -81,7 +81,7 @@ class Contact extends PageController
 
         $message = $this->getFactory()->createMessage();
         $message->addTo($form->getFieldValue('email'));
-        $message->setSubject($this->getRegistry()->get('system.site.name') . ' Contact Request');
+        $message->setSubject($this->getRegistry()->getSiteName() . ' Contact Request');
         $content = <<<HTML
 <p>
 Dear {name},

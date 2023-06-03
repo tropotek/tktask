@@ -124,7 +124,7 @@ class Register
 
         $message = $this->getFactory()->createMessage();
         $message->set('content', $content);
-        $message->setSubject($this->getRegistry()->get('system.site.name') . ' Account Registration');
+        $message->setSubject($this->getRegistry()->getSiteName() . ' Account Registration');
         $message->addTo($this->user->getEmail());
         $message->set('name', $this->user->getName());
 

@@ -44,6 +44,8 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\User\Manager::class, 'doDefault']);
     $routes->add('user-edit', '/userEdit')
         ->controller([\App\Controller\User\Edit::class, 'doDefault']);
+    $routes->add('user-profile', '/profile')
+        ->controller([\App\Controller\User\Profile::class, 'doDefault']);
 
 
 
