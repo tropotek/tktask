@@ -30,7 +30,7 @@ class Edit extends PageController
         return $template;
     }
 
-    public function __makeTemplate()
+    public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
 <div>
