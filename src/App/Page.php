@@ -32,7 +32,7 @@ class Page extends \Bs\Page
     protected function showCrumbs()
     {
         $crumbs = $this->getFactory()->getCrumbs();
-        if (!($crumbs && $crumbs->isVisible() && count($crumbs->getCrumbList()))) return;
+        if (!($crumbs && $crumbs->isVisible())) return;
 
         if (!$template = $crumbs->show()) {
             return;
