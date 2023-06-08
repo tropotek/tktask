@@ -73,7 +73,9 @@ class User
     public function onSubmit(Form $form, Form\Action\ActionInterface $action)
     {
         $this->getUser()->getMapper()->getFormMap()->loadObject($this->user, $form->getFieldValues());
-        $this->getUser()->setPermissions(array_sum($form->getFieldValue('perm') ?? []));
+        if ($form->getField('perm')) {
+            $this->getUser()->setPermissions(array_sum($form->getFieldValue('perm') ?? []));
+        }
 
         $form->addFieldErrors($this->user->validate());
         if ($form->hasErrors()) {
