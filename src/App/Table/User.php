@@ -28,11 +28,10 @@ class User
     protected string $type = \App\Db\User::TYPE_USER;
 
 
-    public function __construct(string $type)
+    public function __construct()
     {
-        $this->table = new Table($type);
+        $this->table = new Table('users');
         $this->filter = new Form($this->table->getId() . '-filters');
-        $this->type = $type;
     }
 
     private function doDelete($user_id)
@@ -58,65 +57,73 @@ class User
         Uri::create()->remove(Masquerade::QUERY_MSQ)->redirect();
     }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request, string $type)
     {
+        $this->type = $type;
         if ($request->query->has('del')) {
             $this->doDelete($request->query->get('del'));
         }
         if ($request->query->has(Masquerade::QUERY_MSQ)) {
             $this->doMsq($request->query->get(Masquerade::QUERY_MSQ));
         }
+        $editUrl = sprintf('/%sEdit', $this->type);
 
         $this->getTable()->appendCell(new Cell\Checkbox('id'));
-        $this->getTable()->appendCell(new Cell\Text('actions'))->addOnShow(function (Cell\Text $cell) {
-            $cell->addCss('text-nowrap text-center');
-            $obj = $cell->getRow()->getData();
+        $this->getTable()->appendCell(new Cell\Text('actions'))
+            ->addOnShow(function (Cell\Text $cell) use ($editUrl) {
+                $cell->addCss('text-nowrap text-center');
+                $obj = $cell->getRow()->getData();
 
-            $template = $cell->getTemplate();
-            $btn = new Link('Edit');
-            $btn->setText('');
-            $btn->setIcon('fa fa-edit');
-            $btn->addCss('btn btn-primary');
-            $btn->setUrl(Uri::create('/userEdit')->set('id', $obj->getId()));
-            $template->appendTemplate('td', $btn->show());
-            $template->appendHtml('td', '&nbsp;');
+                $template = $cell->getTemplate();
+                $btn = new Link('Edit');
+                $btn->setText('');
+                $btn->setIcon('fa fa-edit');
+                $btn->addCss('btn btn-primary');
+                $btn->setUrl(Uri::create($editUrl)->set('id', $obj->getId()));
+                $template->appendTemplate('td', $btn->show());
+                $template->appendHtml('td', '&nbsp;');
 
-            $btn = new Link('Masquerade');
-            $btn->setText('');
-            $btn->setIcon('fa fa-user-secret');
-            $btn->addCss('btn btn-outline-dark');
-            $btn->setUrl(Uri::create()->set(Masquerade::QUERY_MSQ, $obj->getId()));
-            $btn->setAttr('data-confirm', 'Are you sure you want to log-in as user \''.$obj->getName().'\'');
-            $template->appendTemplate('td', $btn->show());
-            $template->appendHtml('td', '&nbsp;');
+                $btn = new Link('Masquerade');
+                $btn->setText('');
+                $btn->setIcon('fa fa-user-secret');
+                $btn->addCss('btn btn-outline-dark');
+                $btn->setUrl(Uri::create()->set(Masquerade::QUERY_MSQ, $obj->getId()));
+                $btn->setAttr('data-confirm', 'Are you sure you want to log-in as user \''.$obj->getName().'\'');
+                $template->appendTemplate('td', $btn->show());
+                $template->appendHtml('td', '&nbsp;');
 
-            $btn = new Link('Delete');
-            $btn->setText('');
-            $btn->setIcon('fa fa-trash');
-            $btn->addCss('btn btn-danger');
-            $btn->setUrl(Uri::create()->set('del', $obj->getId()));
-            $btn->setAttr('data-confirm', 'Are you sure you want to delete \''.$obj->getName().'\'');
-            $template->appendTemplate('td', $btn->show());
+                $btn = new Link('Delete');
+                $btn->setText('');
+                $btn->setIcon('fa fa-trash');
+                $btn->addCss('btn btn-danger');
+                $btn->setUrl(Uri::create()->set('del', $obj->getId()));
+                $btn->setAttr('data-confirm', 'Are you sure you want to delete \''.$obj->getName().'\'');
+                $template->appendTemplate('td', $btn->show());
 
-        });
+            });
+
         $this->getTable()->appendCell(new Cell\Text('username'))
-            ->setUrl(Uri::create('/userEdit'))->setAttr('style', 'width: 100%;');
+            ->setUrl(Uri::create($editUrl))
+            ->setAttr('style', 'width: 100%;');
+
         $this->getTable()->appendCell(new Cell\Text('name'));
 
         if ($this->type == \App\Db\User::TYPE_STAFF) {
-            $this->getTable()->appendCell(new Cell\Text('permissions'))->addOnShow(function (Cell\Text $cell) {
-                /** @var \App\Db\User $user */
-                $user = $cell->getRow()->getData();
-                if ($user->hasPermission(\App\Db\User::PERM_ADMIN)) {
-                    $cell->setValue(\App\Db\User::PERMISSION_LIST[\App\Db\User::PERM_ADMIN]);
-                    return;
-                }
-                $list = array_filter(\App\Db\User::PERMISSION_LIST, function ($k) use ($user) {
-                    return $user->hasPermission($k);
-                }, ARRAY_FILTER_USE_KEY);
-                $cell->setValue(implode(', ', $list));
-            });
+            $this->getTable()->appendCell(new Cell\Text('permissions'))
+                ->addOnShow(function (Cell\Text $cell) {
+                    /** @var \App\Db\User $user */
+                    $user = $cell->getRow()->getData();
+                    if ($user->hasPermission(\App\Db\User::PERM_ADMIN)) {
+                        $cell->setValue(\App\Db\User::PERMISSION_LIST[\App\Db\User::PERM_ADMIN]);
+                        return;
+                    }
+                    $list = array_filter(\App\Db\User::PERMISSION_LIST, function ($k) use ($user) {
+                        return $user->hasPermission($k);
+                    }, ARRAY_FILTER_USE_KEY);
+                    $cell->setValue(implode(', ', $list));
+                });
         }
+
         $this->getTable()->appendCell(new Cell\Text('email'))
             ->addOnShow(function (Cell\Text $cell) {
                 /** @var \App\Db\User $user */
@@ -154,7 +161,7 @@ class User
                 ->setAttr('data-confirm', 'Are you sure you want to reset the Table`s session?')
                 ->setAttr('title', 'Reset table filters and order to default.');
         }
-        $this->getTable()->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/userEdit')->set('type', $this->type));
+        //$this->getTable()->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/userEdit')->set('type', $this->type));
         $this->getTable()->appendAction(new Action\Delete());
         $this->getTable()->appendAction(new Action\Csv())->addExcluded('actions');
 

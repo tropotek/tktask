@@ -21,40 +21,55 @@ class User
 
     protected ?\App\Db\User $user = null;
 
+    protected string $type = \App\Db\User::TYPE_USER;
+
 
     public function __construct()
     {
         $this->setForm(Form::create('user'));
     }
 
-    public function doDefault(Request $request, $id)
+    public function doDefault(Request $request, int $id, string $type = \App\Db\User::TYPE_USER)
     {
+        $this->type = $type;
         $this->user = new \App\Db\User();
-        $this->getUser()->setType(\App\Db\User::TYPE_USER);
-        if ($request->query->get('type') == \App\Db\User::TYPE_STAFF) {
-            $this->getUser()->setType(\App\Db\User::TYPE_STAFF);
-        }
+        $this->getUser()->setType($type);
 
-        if ($id) {
+        if ($id > 0) {
             $this->user = UserMap::create()->find($id);
             if (!$this->getUser()) {
                 throw new Exception('Invalid User ID: ' . $id);
             }
         }
 
-        $group = 'left';
+        $group = 'Details';
         $this->getForm()->appendField(new Hidden('id'))->setGroup($group);
-        $this->getForm()->appendField(new Input('name'))->setGroup($group)->setRequired();
+        $this->getForm()->appendField(new Input('name'))->setGroup($group)
+            ->setRequired();
 
-        $this->getForm()->appendField(new Input('username'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
-        $this->getForm()->appendField(new Input('email'))->addCss('tk-input-lock')->setGroup($group)->setRequired();
+        $l1 = $this->getForm()->appendField(new Input('username'))->setGroup($group)
+            ->setRequired();
 
-        if ($this->user->isType(\App\Db\User::TYPE_STAFF)) {
-            $this->getForm()->appendField(new Checkbox('perm', array_flip(\App\Db\User::PERMISSION_LIST)))->setGroup($group);
+        $l2 = $this->getForm()->appendField(new Input('email'))->setGroup($group)
+            ->setRequired();
+
+        // Only input lock existing user
+        if ($this->getUser()->getId()) {
+            $l1->addCss('tk-input-lock');
+            $l2->addCss('tk-input-lock');
         }
 
-        $this->getForm()->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setGroup($group);
-        $this->getForm()->appendField(new Form\Field\Textarea('notes'))->setGroup($group);
+        if ($this->getUser()->isStaff() && $this->getFactory()->getAuthUser()->hasPermission(\App\Db\User::PERM_SYSADMIN)) {
+            $this->getForm()->appendField(new Checkbox('perm', array_flip(\App\Db\User::PERMISSION_LIST)))
+                ->setGroup($group);
+
+            $this->getForm()->appendField(new Checkbox('active', ['Enable User Login' => 'active']))
+                ->setGroup($group);
+        }
+
+        $this->getForm()->appendField(new Form\Field\Textarea('notes'))
+            ->setGroup($group);
+
 
         $this->getForm()->appendField(new Form\Action\SubmitExit('save', [$this, 'onSubmit']));
         $this->getForm()->appendField(new Form\Action\Link('back', Uri::create('/'.$this->getUser()->getType().'Manager')));
@@ -83,12 +98,19 @@ class User
             return;
         }
 
+        $isNew = $this->getUser()->getId() == 0;
         $this->getUser()->save();
 
+        // Send email to update password
+        if ($isNew) {
+            $this->getUser()->sendRecoverEmail(true);
+            Alert::addSuccess('An email has been sent to ' . $this->getUser()->getEmail() . ' to create their password.');
+        }
+
         Alert::addSuccess('Form save successfully.');
-        $action->setRedirect(Uri::create('/userEdit')->set('id', $this->getUser()->getId()));
+        $action->setRedirect(Uri::create('/'.$this->type.'Edit')->set('id', $this->getUser()->getId()));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Uri::create('/userManager'));
+            $action->setRedirect(Uri::create('/'.$this->type.'Manager'));
         }
     }
 

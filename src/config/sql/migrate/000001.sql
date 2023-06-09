@@ -30,14 +30,14 @@ CREATE TABLE IF NOT EXISTS user
   timezone VARCHAR(64) NULL,
   active BOOL NOT NULL DEFAULT TRUE,
   hash VARCHAR(64) NOT NULL DEFAULT '',
+  session_id VARCHAR(128) NOT NULL DEFAULT '',
   last_login TIMESTAMP NULL,
-  -- del BOOL NOT NULL DEFAULT FALSE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  KEY (uid),
-  KEY (type),
-  KEY (email),
-  UNIQUE KEY (username)
+  UNIQUE KEY uk_username (username),
+  KEY k_uid (uid),
+  KEY k_type (type),
+  KEY k_email (email)
 );
 
 -- User tokens to enable the 'Remember Me' functionality

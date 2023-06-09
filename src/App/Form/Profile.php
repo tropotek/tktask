@@ -1,9 +1,11 @@
 <?php
 namespace App\Form;
 
+use App\Db\UserMap;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
+use Tk\Exception;
 use Tk\Form;
 use Tk\FormRenderer;
 use Tk\Form\Field\Input;
@@ -29,15 +31,39 @@ class Profile
     public function doDefault(Request $request)
     {
 
-        $this->getForm()->appendField(new Hidden('id'));
-        $this->getForm()->appendField(new Input('name'))->setRequired();
+        $tab = 'Details';
+        $this->getForm()->appendField(new Hidden('id'))->setGroup($tab);
 
-        $this->getForm()->appendField(new Input('username'))->setDisabled()->setReadonly();
-        $this->getForm()->appendField(new Input('email'))->addCss('tk-input-lock')->setRequired();
+        $this->getForm()->appendField(new Input('name'))->setGroup($tab)
+            ->setRequired();
+
+        $this->getForm()->appendField(new Input('username'))->setGroup($tab)
+            ->setDisabled()
+            ->setReadonly();
+
+        $this->getForm()->appendField(new Input('email'))->setGroup($tab)
+            ->addCss('tk-input-lock')
+            ->setRequired();
 
         if ($this->user->isType(\App\Db\User::TYPE_STAFF)) {
-            $this->getForm()->appendField(new Checkbox('perm', array_flip(\App\Db\User::PERMISSION_LIST)))->setDisabled()->setReadonly();
+            $this->getForm()->appendField(new Checkbox('perm', array_flip(\App\Db\User::PERMISSION_LIST)))
+                ->setGroup($tab)
+                ->setDisabled()
+                ->setReadonly();
         }
+
+        $tab = 'Password';
+
+        $this->getForm()->appendField(new Form\Field\Password('currentPass'))->setGroup($tab)
+            ->setLabel('Current Password')
+            ->setAttr('autocomplete', 'off');
+        $this->getForm()->appendField(new Form\Field\Password('newPass'))->setGroup($tab)
+            ->setLabel('New Password')
+            ->setAttr('autocomplete', 'off');
+        $this->getForm()->appendField(new Form\Field\Password('confPass'))->setGroup($tab)
+            ->setLabel('Confirm Password')
+            ->setAttr('autocomplete', 'off');
+
 
         //$this->getForm()->appendField(new Checkbox('active', ['Enable User Login' => 'active']))->setDisabled();
         //$this->getForm()->appendField(new Form\Field\Textarea('notes'))->setGroup($group);
@@ -61,12 +87,28 @@ class Profile
         $this->getUser()->getMapper()->getFormMap()->loadObject($this->user, $form->getFieldValues());
         $this->getUser()->setPermissions(array_sum($form->getFieldValue('perm') ?? []));
 
+        if ($form->getFieldValue('newPass')) {
+            if (!password_verify($form->getFieldValue('currentPass'), $this->user->getPassword())) {
+                $form->addFieldError('currentPass', 'Invalid current password, password not updated');
+            }
+            if ($form->getFieldValue('newPass') != $form->getFieldValue('confPass')) {
+                $form->addFieldError('newPass', 'Passwords do not match');
+            } else {
+                if (!$e = \App\Db\User::checkPassword($form->getFieldValue('newPass'))) {
+                    $form->addFieldError('newPass', 'Week password: ' . implode(', ' , $e));
+                }
+            }
+        }
+
         $form->addFieldErrors($this->user->validate());
         if ($form->hasErrors()) {
             Alert::addError('Form contains errors.');
             return;
         }
-
+        if ($form->getFieldValue('currentPass')) {
+            $this->getUser()->setPassword(\App\Db\User::hashPassword($form->getFieldValue('newPass')));
+            Alert::addSuccess('Your password has been updated, remember to use this on your next login.');
+        }
         $this->getUser()->save();
 
         Alert::addSuccess('Form save successfully.');

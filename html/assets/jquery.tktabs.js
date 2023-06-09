@@ -66,6 +66,18 @@
           li.addClass('has-error');
         }
         navTabs.append(li);
+
+        // CSS FIX:  Need to create a container and a row to avoid layout issues with .tab-pane class
+        let children = $(this).children().detach();
+        let container = $('<div class="container-fluid"><div class="row"></div></div>');
+        container.find('.row').append(children);
+        $(this).append(container);
+
+        $(this).parent()
+          .addClass('col-12 m-0')
+          .removeClass('row');
+        // END CSS FIX
+
         $(this).addClass('tab-pane')
           .attr('tabindex', '0')
           .attr('role', 'tabpanel')

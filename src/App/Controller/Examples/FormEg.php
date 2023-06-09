@@ -70,7 +70,7 @@ class FormEg extends PageController
 
         //$this->form->appendField(new Form\Field\Textarea('tinyMceMin'))->addCss('mce-min');
 
-        //$this->form->appendField(new Form\Field\Textarea('tinyMce'))->addCss('mce');
+        $this->form->appendField(new Form\Field\Textarea('tinyMce'))->addCss('mce');
 
 
         $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));

@@ -36,7 +36,7 @@ class AppAttributes extends FilterInterface
      */
     public function executeNode(\DOMElement $node)
     {
-        $isUser = is_object($this->getFactory()->getAuthUser()) && !$this->getFactory()->getAuthUser()->isType(User::TYPE_GUEST);
+        $isUser = is_object($this->getFactory()->getAuthUser());
         $user = $this->getFactory()->getAuthUser();
         $reflect = new \ReflectionClass('App\Db\User');
         $userConsts = $reflect->getConstants();

@@ -29,6 +29,7 @@ class UserMap extends Mapper
             $map->addDataType(new Db\Text('notes'));
             $map->addDataType(new Db\Text('timezone'))->setNullable(true);
             $map->addDataType(new Db\Boolean('active'));
+            $map->addDataType(new Db\Text('sessionId', 'session_id'));
             $map->addDataType(new Db\Text('hash'));
             $map->addDataType(new Db\Date('lastLogin', 'last_login'))->setNullable(true);
             //$map->addDataType(new Db\Boolean('del'));

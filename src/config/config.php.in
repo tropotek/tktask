@@ -8,6 +8,11 @@ use Tk\Config;
 
 return function (Config $config) {
 
+    /*
+     * Site hostname
+     */
+    $config['hostname'] = 'localhost';
+
     // Default System DB
     $config['db.default.type'] = 'mysql';
     $config['db.default.host'] = 'localhost';
@@ -17,15 +22,20 @@ return function (Config $config) {
     $config['db.default.pass'] = '';
 
     /*
-     * Email template relative path
-     */
-    $config['system.mail.template'] = '/html/templates/mail.default.xtpl';
-
-    /*
      * Encrypt function secret seed
      * Change this on your production systems
      */
-    $config['system.encrypt'] = '3c57a0c2acdd6f3bc0b180c709746d1b';
+    $config['system.encrypt'] = '';
+
+    /**
+     * Set the site timezone for PHP and MySQL
+     */
+    //$config['php.date.timezone']    = 'Australia/Melbourne';
+
+    /*
+     * Email template relative path
+     */
+    $config['system.mail.template'] = '/html/templates/mail.default.xtpl';
 
     /*
      * DB secret API key
@@ -39,10 +49,12 @@ return function (Config $config) {
      */
     //$config['session.db_enable']    = true;
 
-    /**
-     * Set the site timezone for PHP and MySQL
+    /*
+     * The default log level
      */
-    //$config['php.date.timezone']    = 'Australia/Melbourne';
+    $config['log.logLevel'] = \Psr\Log\LogLevel::ERROR;
+
+
 
     // Setup dev environment
     $config['debug'] = true;
@@ -51,7 +63,15 @@ return function (Config $config) {
         $config['php.display_errors'] = 'On';
         $config['php.error_log']      = '/home/user/log/error.log';
         $config['log.logLevel']       = \Psr\Log\LogLevel::DEBUG;
-        // Used for the Mirror command
+
+        /*
+         * This must be set for emails to be sent to a debug account in debug mode
+         */
+        $config['system.debug.email'] = 'admin@email.com';
+
+        /*
+         * Used for the Mirror command
+         */
         //$config['db.mirror.url']    = 'https://example.com/util/mirror';
     }
 

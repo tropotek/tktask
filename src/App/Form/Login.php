@@ -2,7 +2,6 @@
 namespace App\Form;
 
 use App\Db\User;
-use App\Db\UserMap;
 use App\Util\Masquerade;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +35,7 @@ class Login
         $user = User::retrieveMe();
         if ($user) {    // remembered user already logged in
             Alert::addSuccess('Logged in successfully');
-            Uri::create('/dashboard')->redirect();
+            Uri::create('/')->redirect();
         }
 
         $this->getForm()->appendField(new Field\Input('username'))
@@ -73,10 +72,6 @@ class Login
     {
         $values = $form->getFieldValues();
 
-        if (Masquerade::isMasquerading()) {
-            Masquerade::clearAll();
-        }
-
         $token = $this->getSession()->get('login', 0);
         $this->getSession()->remove('login');
         if (($token + 60*2) < time()) { // login before form token times out
@@ -84,7 +79,7 @@ class Login
             return;
         }
 
-        $result = $this->getFactory()->getAuthController()->clearIdentity()->authenticate($this->getFactory()->getAuthAdapter());
+        $result = $this->getFactory()->getAuthController()->authenticate($this->getFactory()->getAuthAdapter());
         if ($result->getCode() != Result::SUCCESS) {
             Log::error($result->getMessage());
             $form->addError('Invalid login details.');
@@ -94,15 +89,16 @@ class Login
         // Login successful
         $user = $this->getFactory()->getAuthUser();
         $user->setLastLogin(Date::create('now', $user->getTimezone() ?: null));
+        $user->setSessionId($this->getSession()->getId());
         $user->save();
 
         if (!empty($values['remember'] ?? '')) {
             $user->rememberMe();
         } else {
-            $user->removeMe();
+            $user->forgetMe();
         }
 
-        Uri::create('/dashboard')->redirect();
+        Uri::create('/')->redirect();
     }
 
     public function show(): ?Template

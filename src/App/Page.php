@@ -25,6 +25,10 @@ class Page extends \Bs\Page
         $this->showAlert();
         //$this->showMaintenanceRibbon();
 
+        if ($this->getFactory()->getAuthUser()) {
+            $template->setText('username', $this->getFactory()->getAuthUser()->getUsername());
+        }
+
         return $template;
     }
 
@@ -70,7 +74,7 @@ HTML;
                 $css = strtolower($type);
                 if ($css == 'error') $css = 'danger';
                 $r->addCss('alert', 'alert-' . $css);
-                $r->setText('title', ucfirst(strtolower($type)));
+                //$r->setText('title', ucfirst(strtolower($type)));
                 $r->insertHtml('message', $a->message);
                 if ($a->icon) {
                     $r->addCss('icon', $a->icon);

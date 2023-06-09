@@ -10,6 +10,8 @@ use Bs\Db\UserInterface;
 use Tk\Date;
 use Tk\Db\Mapper\Model;
 use Tk\Db\Mapper\Result;
+use Tk\Encrypt;
+use Tk\Uri;
 
 class User extends Model implements UserInterface, FileInterface
 {
@@ -41,13 +43,6 @@ class User extends Model implements UserInterface, FileInterface
     ];
 
     /**
-     * Default Guest user This type should never be saved to storage/DB or be an option to select.
-     * It is intended to be the default system user that has not logged in
-     * (Access to public pages only)
-     */
-    const TYPE_GUEST = 'guest';
-
-    /**
      * Site staff user
      */
     const TYPE_STAFF = 'staff';
@@ -62,15 +57,15 @@ class User extends Model implements UserInterface, FileInterface
 
     public string $uid = '';
 
-    public string $type = self::TYPE_GUEST;
+    public string $type = self::TYPE_USER;
 
     public int $permissions = 0;
 
-    public string $username = 'guest';
+    public string $username = '';
 
     public string $password = '';
 
-    public string $email = 'guest@null.com';
+    public string $email = '';
 
     public string $name = '';
 
@@ -79,6 +74,8 @@ class User extends Model implements UserInterface, FileInterface
     public ?string $timezone = null;
 
     public bool $active = true;
+
+    public string $sessionId = '';
 
     public string $hash = '';
 
@@ -273,6 +270,17 @@ class User extends Model implements UserInterface, FileInterface
         return $this;
     }
 
+    public function getSessionId(): string
+    {
+        return $this->sessionId;
+    }
+
+    public function setSessionId(string $sessionId): static
+    {
+        $this->sessionId = $sessionId;
+        return $this;
+    }
+
     public function getLastLogin(): ?\DateTime
     {
         return $this->lastLogin;
@@ -337,6 +345,35 @@ class User extends Model implements UserInterface, FileInterface
 
         return $errors;
     }
+
+    public function sendRecoverEmail(bool $isNewAccount = false): bool
+    {
+        // send email to user
+        $content = <<<HTML
+            <h2>Account Recovery.</h2>
+            <p>
+              Welcome {name}
+            </p>
+            <p>
+              Please follow the link to finish recovering your account password.<br/>
+              <a href="{activate-url}" target="_blank">{activate-url}</a>
+            </p>
+            <p><small>Note: If you did not initiate this email, you can safely disregard this message.</small></p>
+        HTML;
+
+        $message = $this->getFactory()->createMessage();
+        $message->set('content', $content);
+        $message->setSubject($this->getConfig()->get('site.title') . ' Password Recovery');
+        $message->addTo($this->getEmail());
+        $message->set('name', $this->getName());
+
+        $hashToken = Encrypt::create($this->getConfig()->get('system.encrypt'))->encrypt(serialize(['h' => $this->getHash(), 't' => time()]));
+        $url = Uri::create('/recoverUpdate')->set('t', $hashToken);
+        $message->set('activate-url', $url->toString());
+
+        return $this->getFactory()->getMailGateway()->send($message);
+    }
+
 
     public function rememberMe(int $day = 30): void
     {

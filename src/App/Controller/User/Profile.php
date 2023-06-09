@@ -1,10 +1,14 @@
 <?php
 namespace App\Controller\User;
 
+use App\Db\User;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * TODO: Create a user profile edit page.
+ */
 class Profile extends PageController
 {
     protected \App\Form\Profile $form;
@@ -14,6 +18,7 @@ class Profile extends PageController
     {
         parent::__construct($this->getFactory()->getPublicPage());
         $this->getPage()->setTitle('My Profile');
+
     }
 
     public function doDefault(Request $request)
