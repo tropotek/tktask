@@ -47,13 +47,6 @@ return function (CollectionConfigurator $routes) {
     $routes->add('user-profile', '/profile')
         ->controller([\App\Controller\User\Profile::class, 'doDefault']);
 
-
-
-    $routes->add('wiki-view', '/wiki/view')
-        ->controller([\App\Controller\Wiki\View::class, 'doDefault']);
-    $routes->add('wiki-edit', '/wiki/edit')
-        ->controller([\App\Controller\Wiki\Edit::class, 'doDefault']);
-
     // API Endpoints
 
 
