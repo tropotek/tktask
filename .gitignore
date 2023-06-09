@@ -11,7 +11,7 @@
 /vendor
 /plugin
 /html/theme-*
-/_notes
+/_*
 /data
 /data_*
 /docs/api
@@ -19,7 +19,9 @@ node_modules
 
 # Project Files
 /src/config/config.php
+/src/config/_config*
 /.htaccess
+/_.htaccess*
 /*.bak
 /*.sql
 
