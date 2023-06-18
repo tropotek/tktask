@@ -44,6 +44,9 @@ class FormEg extends PageController
         $this->form->appendField(new Form\Field\Input('date3'));
         $this->form->appendField(new Form\Field\Input('date4'));
 
+        $this->form->appendField(new Form\Field\InputButton('autocomplete'))
+            ->addBtnCss('fa fa-chevron-down');
+
         $files = $this->form->appendField(new Form\Field\File('attach'))->setNotes('Only upload valid files'); //->setMultiple(true);
 
         $this->form->appendField(new Form\Field\Checkbox('active'));
@@ -116,6 +119,49 @@ class FormEg extends PageController
 
         $formRenderer = new FormRenderer($this->form);
         $template->appendTemplate('content', $formRenderer->show());
+
+        // Autocomplete js
+        $js = <<<JS
+jQuery(function($) {
+
+    var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+    $('[name=category]').autocomplete({
+      source: availableTags,
+      minLength: 0  // Must be 0 for dropdown btn to work
+    });
+
+    // Show the dropdown on click
+    $('.fld-autocomplete button').on('click', function () {
+        $('[name=autocomplete]').autocomplete('search', $('[name=autocomplete]').val());
+    });
+
+});
+JS;
+        $template->appendJs($js);
+
 
         return $template;
     }

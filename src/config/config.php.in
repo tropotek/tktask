@@ -63,6 +63,8 @@ return function (Config $config) {
         $config['php.display_errors'] = 'On';
         $config['php.error_log']      = '/home/user/log/error.log';
         $config['log.logLevel']       = \Psr\Log\LogLevel::DEBUG;
+        // enable for NO_LOG and api calls, when needed
+        //$config['log.ignore.noLog']   = true;
 
         /*
          * This must be set for emails to be sent to a debug account in debug mode

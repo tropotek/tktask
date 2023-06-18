@@ -60,8 +60,13 @@ class User
         }
 
         if ($this->getUser()->isStaff() && $this->getFactory()->getAuthUser()->hasPermission(\App\Db\User::PERM_SYSADMIN)) {
-            $this->getForm()->appendField(new Checkbox('perm', array_flip(\App\Db\User::PERMISSION_LIST)))
+            $field = $this->getForm()->appendField(new Checkbox('perm', array_flip(\App\Db\User::PERMISSION_LIST)))
+                ->setLabel('Permissions')
                 ->setGroup($group);
+
+            if ($this->getUser()->getUsername() == 'admin') {
+                $field->setDisabled();
+            }
 
             $this->getForm()->appendField(new Checkbox('active', ['Enable User Login' => 'active']))
                 ->setGroup($group);
@@ -87,6 +92,10 @@ class User
 
     public function onSubmit(Form $form, Form\Action\ActionInterface $action)
     {
+        if ($this->getUser()->getUsername() == 'admin') {
+            $form->removeField('perm');
+        }
+
         $this->getUser()->getMapper()->getFormMap()->loadObject($this->user, $form->getFieldValues());
         if ($form->getField('perm')) {
             $this->getUser()->setPermissions(array_sum($form->getFieldValue('perm') ?? []));
