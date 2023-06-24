@@ -50,7 +50,7 @@ class User
         $msqUser = UserMap::create()->find($id);
         if ($msqUser && Masquerade::masqueradeLogin($this->getFactory()->getAuthUser(), $msqUser)) {
             Alert::addSuccess('You are now logged in as user ' . $msqUser->getUsername());
-            Uri::create('/dashboard')->redirect();
+            Uri::create('/')->redirect();
         }
 
         Alert::addWarning('You cannot login as user ' . $msqUser->getUsername() . ' invalid permissions');
@@ -66,7 +66,7 @@ class User
         if ($request->query->has(Masquerade::QUERY_MSQ)) {
             $this->doMsq($request->query->get(Masquerade::QUERY_MSQ));
         }
-        $editUrl = sprintf('/%sEdit', $this->type);
+        $editUrl = sprintf('/user/%sEdit', $this->type);
 
         $this->getTable()->appendCell(new Cell\Checkbox('id'));
         $this->getTable()->appendCell(new Cell\Text('actions'))

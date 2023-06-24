@@ -2,12 +2,12 @@
 namespace App\Db;
 
 use App\Factory;
+use App\Util\Masquerade;
 use Bs\Db\FileInterface;
 use Bs\Db\FileMap;
 use Bs\Db\Traits\HashTrait;
 use Bs\Db\Traits\TimestampTrait;
 use Bs\Db\UserInterface;
-use Tk\Date;
 use Tk\Db\Mapper\Model;
 use Tk\Db\Mapper\Result;
 use Tk\Encrypt;
@@ -92,6 +92,27 @@ class User extends Model implements UserInterface, FileInterface
         $this->timezone = $this->getConfig()->get('php.date.timezone');
     }
 
+    /**
+     * @param bool $cookie If true any stored login cookies will also be removed
+     */
+    public static function logout(bool $cookie = true): void
+    {
+        $user = Factory::instance()->getAuthUser();
+        if ($user) {
+            if (Masquerade::isMasquerading()) {
+                Masquerade::masqueradeLogout();
+                return;
+            }
+            Factory::instance()->getAuthController()->clearIdentity();
+            if ($cookie) {
+                $user->forgetMe();
+            }
+            $user->setSessionId('');
+            $user->save();
+            Uri::create()->redirect();
+        }
+    }
+
     public function getFileList(array $filter = [], ?\Tk\Db\Tool $tool = null): Result
     {
         $filter += ['model' => $this];
@@ -173,7 +194,7 @@ class User extends Model implements UserInterface, FileInterface
 
     /**
      * return a list of individual permission values
-     * Use for select lists or anywhere you need to list
+     * Use for select lists, or anywhere you need to list
      * the permissions and lookup their names
      */
     public function getPermissionList(): array
@@ -400,7 +421,7 @@ class User extends Model implements UserInterface, FileInterface
     /**
      * Remove the `remember me` cookie
      */
-    public function removeMe(): void
+    public function forgetMe(): void
     {
         $this->getMapper()->deleteToken($this->getId());
         setcookie(UserMap::REMEMBER_CID, '', -1);

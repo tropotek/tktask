@@ -58,14 +58,14 @@ class Masquerade
         $factory = Factory::instance();
         if (!self::isMasquerading()) return false;
         if (!$factory->getAuthController()->hasIdentity()) return false;
-        $msqArr = $factory->getSession()->get(static::SID);
+        $msqArr = $factory->getSession()->get(self::SID);
         if (!is_array($msqArr) || !count($msqArr)) return false;
 
         $userData = array_pop($msqArr);
         if (empty($userData['userId']) || empty($userData['url'])) return false;
 
         // Save the updated masquerade queue
-        $factory->getSession()->set(static::SID, $msqArr);
+        $factory->getSession()->set(self::SID, $msqArr);
         $factory->getAuthController()->getStorage()->write($userData['userId']);
 
         \Tk\Uri::create($userData['url'])->remove(self::QUERY_MSQ)->redirect();

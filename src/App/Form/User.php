@@ -77,7 +77,7 @@ class User
 
 
         $this->getForm()->appendField(new Form\Action\SubmitExit('save', [$this, 'onSubmit']));
-        $this->getForm()->appendField(new Form\Action\Link('back', Uri::create('/'.$this->getUser()->getType().'Manager')));
+        $this->getForm()->appendField(new Form\Action\Link('back', $this->getFactory()->getBackUrl()));
 
         $load = $this->getUser()->getMapper()->getFormMap()->getArray($this->getUser());
         $load['id'] = $this->getUser()->getId();
@@ -117,9 +117,9 @@ class User
         }
 
         Alert::addSuccess('Form save successfully.');
-        $action->setRedirect(Uri::create('/'.$this->type.'Edit')->set('id', $this->getUser()->getId()));
+        $action->setRedirect(Uri::create('/user/'.$this->type.'Edit')->set('id', $this->getUser()->getId()));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Uri::create('/'.$this->type.'Manager'));
+            $action->setRedirect($this->getFactory()->getBackUrl());
         }
     }
 

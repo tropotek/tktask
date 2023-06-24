@@ -102,7 +102,7 @@ class Recover
             Uri::create('/home')->redirect();
         }
 
-        if ((($arr['t'] ?? 0) + 60*60*1) < time()) { // submit before form token times out
+        if ((($arr['t'] ?? 0) + 60*60*2) < time()) { // submit before form token times out
             //if ((($arr['t'] ?? time()) + 60*1) < time()) { // submit before form token times out
             Alert::addError('Recovery URL has expired, please try again.');
             Uri::create('/home')->redirect();

@@ -17,6 +17,7 @@ class Manager extends PageController
     {
         parent::__construct($this->getFactory()->getPublicPage());
         $this->getPage()->setTitle('User Manager');
+        $this->getCrumbs()->reset();
     }
 
     public function doDefault(Request $request, string $type)
@@ -43,7 +44,7 @@ class Manager extends PageController
     {
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
-        $template->setAttr('create', 'href', Uri::create('/'.$this->type.'Edit'));
+        $template->setAttr('create', 'href', Uri::create('/user/'.$this->type.'Edit'));
 
         $template->appendTemplate('content', $this->table->show());
 
