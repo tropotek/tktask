@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Admin;
 
-use App\Db\User;
+use Bs\Db\User;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;

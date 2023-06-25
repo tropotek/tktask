@@ -17,9 +17,9 @@ if (!$config->isDebug()) {
 }
 //vd('running dev script');
 
-/** @var \App\Db\User $user */
-foreach (\App\Db\UserMap::create()->findAll() as $user) {
-    $user->setPassword(\App\Db\User::hashPassword('password', PASSWORD_DEFAULT));
+/** @var \Bs\Db\User $user */
+foreach (\Bs\Db\UserMap::create()->findAll() as $user) {
+    $user->setPassword(\Bs\Db\User::hashPassword('password', PASSWORD_DEFAULT));
     $user->save();
 }
 

@@ -1,7 +1,7 @@
 <?php
 namespace App\Api;
 
-use App\Db\UserMap;
+use Bs\Db\UserMap;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -19,33 +19,9 @@ return function (CollectionConfigurator $routes) {
     $routes->add('contact', '/contact')
         ->controller([\App\Controller\Contact::class, 'doDefault']);
 
-
-    // Auth pages Login, Logout, Register, Recover
-    $routes->add('login', '/login')
-        ->controller([\App\Controller\Login::class, 'doLogin']);
-    $routes->add('logout', '/logout')
-        ->controller([\App\Controller\Login::class, 'doLogout']);
-    $routes->add('recover', '/recover')
-        ->controller([\App\Controller\Recover::class, 'doDefault']);
-    $routes->add('recover-pass', '/recoverUpdate')
-        ->controller([\App\Controller\Recover::class, 'doRecover']);
-    $routes->add('register', '/register')
-        ->controller([\App\Controller\Register::class, 'doDefault']);
-    $routes->add('register-activate', '/registerActivate')
-        ->controller([\App\Controller\Register::class, 'doActivate']);
-
-
     $routes->add('settings-edit', '/settings')
         ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
-    $routes->add('user-profile', '/profile')
-        ->controller([\App\Controller\User\Profile::class, 'doDefault']);
 
-    $routes->add('user-manager', '/user/{type}Manager')
-        ->controller([\App\Controller\User\Manager::class, 'doDefault'])
-        ->defaults(['type' => \App\Db\User::TYPE_USER]);
-    $routes->add('user-edit', '/user/{type}Edit')
-        ->controller([\App\Controller\User\Edit::class, 'doDefault'])
-        ->defaults(['type' => \App\Db\User::TYPE_USER]);
 
 
     // API Endpoints

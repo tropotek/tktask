@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS example
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_SAFE_UPDATES = 0;
 
-TRUNCATE TABLE user;
-TRUNCATE TABLE user_tokens;
+# TRUNCATE TABLE user;
+# TRUNCATE TABLE user_tokens;
 TRUNCATE TABLE example;
 
 INSERT INTO user (type, username, email, name, timezone, permissions) VALUES
