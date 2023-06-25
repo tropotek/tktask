@@ -13,28 +13,35 @@ A base site using the Tk framework, use this as a starting point for your own si
 
 ## Installation
 
-1. First setup a database for the site and keep the login details handy.
+1. First set up a database for the site and keep the login details handy.
 2. Make sure you have the latest version of composer [https://getcomposer.org/download/] installed.
 3. Use the following commands:
-```bash
-$ git clone https://github.com/tropotek/tk8base.git
-$ cd tk8base
-$ composer install
-````
-4. You will be asked a number of questions to setup the environment settings.
+    ```bash
+    $ git clone https://github.com/tropotek/tk8base.git
+    $ cd tk8base
+    $ composer install
+    ````
+4. You will be asked a number of questions to set up the environment settings.
 5. Edit the `/src/App/config/config.php` file to your required settings.
 6. You may have to change the permissions of the `/data/` folder so PHP can read and write to it.
 7. To enable debug mode and logging edit the `/src/config/config.php` file to suit your server.
 8. Browse to the location that was shown at the end of install to see if it all worked.
-9. You should be able to login with the default admin (P: password) account. Be sure to change
-   that before release. From the command line in the site base path you can call, or in the user account profile page in the site:
-```bash
-$ ./bin/cmd password admin <password>
-```
+9. To log in with the default admin account, you will need to create a password.
+   To create the admin account password execute the `password [pwd]` command using the site's CLI tool:
+    ```bash
+    $ ./bin/cmd pwd admin
+    ```
 
 
 ## Upgrading
 
+Upgrade the site by the CLI command;
+```bash
+$ cd {siteroot}
+$ ./bin/cmd ug
+```
+
+Manual upgrade process if the above fails:
 ```bash
 $ git reset --hard
 $ git checkout master
@@ -125,7 +132,7 @@ By default, the registry stores the state of the site params like:
 __Task Scheduling__
 
 There are 2 type of task scheduling that are available to the Tk lib by default:
-- Setup a cron job in your host OS using the `./bin/cmd cron ...` command. You will
+- Set up a cron job in your host OS using the `./bin/cmd cron ...` command. You will
   have to update the `/App/Console/Cron` console command and add your scripts there.
   (You can also create a new command its just there for standardisation).
 - Another place to look for automated tasks is the `/config/sql/events.sql` file
