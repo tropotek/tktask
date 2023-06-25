@@ -11,6 +11,7 @@ jQuery(function ($) {
   tkbase.initTinymce();
   tkbase.initTkFormTabs();
   tkbase.initDatepicker();
+  tkbase.initPasswordToggle();
 
   app.initHtmxToasts();
 });
