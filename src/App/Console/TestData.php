@@ -33,7 +33,7 @@ class TestData extends \Tk\Console\Command\TestData
         for($i = 0; $i < 150; $i++) {
             $obj = $this->getFactory()->createUser();
             $obj->setUid('***');
-            $obj->setType((rand(1, 10) <= 5) ? User::TYPE_STAFF : User::TYPE_USER);
+            $obj->setType((rand(1, 10) <= 5) ? User::TYPE_STAFF : User::TYPE_MEMBER);
 
             // Add permissions
             if ($obj->isType(User::TYPE_STAFF)) {
@@ -48,7 +48,7 @@ class TestData extends \Tk\Console\Command\TestData
                         $perm |= User::PERM_MANAGE_STAFF;
                     }
                     if (rand(1, 10) <= 5) {
-                        $perm |= User::PERM_MANAGE_USER;
+                        $perm |= User::PERM_MANAGE_MEMBER;
                     }
                 }
                 $obj->setPermissions($perm);
