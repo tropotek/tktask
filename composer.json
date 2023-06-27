@@ -27,6 +27,11 @@
       "Tk\\Composer\\Installer::postUpdate"
     ]
   },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "8.0.x-dev"
+    }
+  },
 
   "require": {
     "php": "^8.2",
