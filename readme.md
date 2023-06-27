@@ -44,8 +44,7 @@ $ ./bin/cmd ug
 Manual upgrade process if the above fails:
 ```bash
 $ git reset --hard
-$ git checkout master
-$ git pull
+$ git checkout 8.0.0    // Use the latest tag version here
 $ composer update
 ```
 
