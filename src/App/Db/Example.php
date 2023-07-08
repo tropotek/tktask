@@ -11,7 +11,7 @@ class Example extends Model implements FileInterface
 {
     use TimestampTrait;
 
-    public int $id = 0;
+    public int $exampleId = 0;
 
     public string $name = '';
 
@@ -44,6 +44,18 @@ class Example extends Model implements FileInterface
     public function getDataPath(): string
     {
         return sprintf('/exampleFiles/%s', $this->getVolatileId());
+    }
+
+
+    public function getExampleId(): int
+    {
+        return $this->exampleId;
+    }
+
+    public function setExampleId(int $exampleId): Example
+    {
+        $this->exampleId = $exampleId;
+        return $this;
     }
 
     public function getName(): string

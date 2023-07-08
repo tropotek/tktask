@@ -18,7 +18,7 @@ class ExampleMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_DB)) {
             $map = new DataMap();
-            $map->addDataType(new Db\Integer('id'));
+            $map->addDataType(new Db\Integer('exampleId', 'example_id'));
             $map->addDataType(new Db\Text('name'));
             $map->addDataType(new Db\Text('nick'))->setNullable(true);
             $map->addDataType(new Db\Text('image'));
@@ -35,7 +35,7 @@ class ExampleMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
             $map = new DataMap();
-            $map->addDataType(new Form\Text('id'));
+            $map->addDataType(new Form\Text('exampleId'));
             $map->addDataType(new Form\Text('name'));
             $map->addDataType(new Form\Text('nick'))->setNullable(true);
             //$map->addDataType(new Form\Text('image'));        // No need for file types to be mapped
@@ -47,7 +47,7 @@ class ExampleMap extends Mapper
 
         if (!$this->getDataMappers()->has(self::DATA_MAP_TABLE)) {
             $map = new DataMap();
-            $map->addDataType(new Form\Text('id'));
+            $map->addDataType(new Form\Text('exampleId'));
             $map->addDataType(new Form\Text('name'));
             $map->addDataType(new Form\Text('nick'))->setNullable(true);
             $map->addDataType(new Form\Text('image'));
@@ -79,13 +79,16 @@ class ExampleMap extends Mapper
             $w .= sprintf('a.nick LIKE %s OR ', $this->quote($kw));
             if (is_numeric($filter['search'])) {
                 $id = (int)$filter['search'];
-                $w .= sprintf('a.id = %d OR ', $id);
+                $w .= sprintf('a.example_id = %d OR ', $id);
             }
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {
-            $w = $this->makeMultiQuery($filter['id'], 'a.id');
+            $filter['exampleId'] = $filter['id'];
+        }
+        if (!empty($filter['exampleId'])) {
+            $w = $this->makeMultiQuery($filter['exampleId'], 'a.example_id');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
@@ -102,7 +105,7 @@ class ExampleMap extends Mapper
         }
 
         if (!empty($filter['exclude'])) {
-            $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
+            $w = $this->makeMultiQuery($filter['exclude'], 'a.example_id', 'AND', '!=');
             if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
