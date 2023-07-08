@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Example;
 
+use App\Form\Example;
 use Bs\Db\User;
 use Bs\PageController;
 use Dom\Template;
@@ -8,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Edit extends PageController
 {
-    protected \App\Form\Example $form;
+    protected Example $form;
 
 
     public function __construct()
@@ -21,8 +22,8 @@ class Edit extends PageController
     public function doDefault(Request $request)
     {
         // Get the form template
-        $this->form = new \App\Form\Example();
-        $this->form->doDefault($request, $request->query->get('id'));
+        $this->form = new Example();
+        $this->form->doDefault($request, $request->query->get('exampleId'));
 
         return $this->getPage();
     }
@@ -31,8 +32,8 @@ class Edit extends PageController
     {
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
+        $template->setAttr('back', 'href', $this->getBackUrl());
 
-        //$template->appendTemplate('content', $this->form->getRenderer()->getTemplate());
         $template->appendTemplate('content', $this->form->show());
 
         return $template;
@@ -56,6 +57,5 @@ class Edit extends PageController
 HTML;
         return $this->loadTemplate($html);
     }
-
 
 }

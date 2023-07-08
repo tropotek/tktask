@@ -28,6 +28,7 @@ class Manager extends PageController
     {
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
+        $template->setAttr('back', 'href', $this->getBackUrl());
 
         $template->appendTemplate('content', $this->table->show());
 

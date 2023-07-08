@@ -47,7 +47,7 @@ class Example
             $this->doDelete($request->query->get('del'));
         }
 
-        $this->getTable()->appendCell(new Cell\Checkbox('id'));
+        $this->getTable()->appendCell(new Cell\Checkbox('exampleId'));
         $this->getTable()->appendCell(new Cell\Text('actions'))->addOnShow(function (Cell\Text $cell) {
             $cell->addCss('text-nowrap text-center');
             $obj = $cell->getRow()->getData();
@@ -57,8 +57,7 @@ class Example
             $btn->setText('');
             $btn->setIcon('fa fa-edit');
             $btn->addCss('btn btn-primary');
-            $btn->setUrl(Uri::create('/exampleEdit')->set('id', $obj->getId()));
-//            $btn->setUrl(Uri::create('/exampleEdit/' . $obj->getId()));
+            $btn->setUrl(Uri::create('/exampleEdit')->set('exampleId', $obj->getExampleId()));
             $template->appendTemplate('td', $btn->show());
             $template->appendHtml('td', '&nbsp;');
 
@@ -73,14 +72,18 @@ class Example
         });
 
         $this->getTable()->appendCell(new Cell\Text('name'))
-            ->setUrl(Uri::create('/exampleEdit'))->setAttr('style', 'width: 100%;')
+            ->setUrlProperty('exampleId')
+            ->setUrl(Uri::create('/exampleEdit'))
+            ->setAttr('style', 'width: 100%;')
             ->addOnShow(function (Cell\Text $cell) {
                 $obj = $cell->getRow()->getData();
 //                $cell->setUrlProperty('');  // Do this to disable the Url property
 //                $cell->setUrl('/exampleEdit/'.$obj->getId());
             });
 
-        $this->getTable()->appendCell(new Cell\Text('nick'))->setUrl(Uri::create('/exampleEdit'))
+        $this->getTable()->appendCell(new Cell\Text('nick'))
+            ->setUrlProperty('exampleId')
+            ->setUrl(Uri::create('/exampleEdit'))
             ->addOnShow(function (Cell\Text $cell) {
                 $obj = $cell->getRow()->getData();
                 if ($obj->getNick() === null) {
@@ -122,8 +125,8 @@ class Example
                 ->setAttr('title', 'Reset table filters and order to default.');
         }
         $this->getTable()->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/exampleEdit'));
-        $this->getTable()->appendAction(new Action\Delete());
-        $this->getTable()->appendAction(new Action\Csv())->addExcluded('actions');
+        $this->getTable()->appendAction(new Action\Delete('delete', 'exampleId'));
+        $this->getTable()->appendAction(new Action\Csv('csv', 'exampleId'))->addExcluded('actions');
 
         // Query
         $tool = $this->getTable()->getTool();

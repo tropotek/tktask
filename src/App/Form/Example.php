@@ -55,7 +55,7 @@ class Example
 //        }
 
         $group = 'left';
-        $this->getForm()->appendField(new Field\Hidden('id'))->setGroup($group);
+        $this->getForm()->appendField(new Field\Hidden('exampleId'))->setGroup($group);
         $this->getForm()->appendField(new Field\Input('name'))->setGroup($group)->setRequired();
 
         /** @var Form\Field\File $image */
@@ -75,7 +75,7 @@ class Example
         $this->getForm()->appendField(new Action\Link('cancel', Uri::create('/exampleManager')));
 
         $load = $this->ex->getMapper()->getFormMap()->getArray($this->ex);
-        $load['id'] = $this->ex->getId();
+        $load['exampleId'] = $this->ex->getExampleId();
         $this->getForm()->setFieldValues($load); // Use form data mapper if loading objects
 
         $this->getForm()->execute($request->request->all());
@@ -112,10 +112,9 @@ class Example
         $this->ex->save();
 
         Alert::addSuccess('Form save successfully.');
-        //$action->setRedirect(Uri::create('/exampleEdit/'.$this->ex->getId()));
-        $action->setRedirect(Uri::create());
+        $action->setRedirect(Uri::create()->set('exampleId', $this->ex->getExampleId()));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Uri::create('/exampleManager'));
+            $action->setRedirect($this->getFactory()->getBackUrl());
         }
 
 //        if (!$form->getRequest()->headers->has('HX-Request')) {
