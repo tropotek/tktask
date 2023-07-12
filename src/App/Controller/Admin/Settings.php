@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use Bs\Db\User;
+use Bs\Form\EditTrait;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,7 +10,7 @@ use Tk\Alert;
 
 class Settings extends PageController
 {
-    protected \App\Form\Settings $form;
+    use EditTrait;
 
 
     public function __construct()
@@ -23,9 +24,8 @@ class Settings extends PageController
     public function doDefault(Request $request)
     {
         // Get the form template
-        $this->form = new \App\Form\Settings();
-
-        $this->form->doDefault($request);
+        $this->setForm(new \App\Form\Settings());
+        $this->getForm()->execute($request->request->all());
 
         return $this->getPage();
     }

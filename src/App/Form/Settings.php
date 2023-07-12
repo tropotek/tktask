@@ -1,27 +1,17 @@
 <?php
 namespace App\Form;
 
+use Bs\Form\EditInterface;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Form\Field;
 use Tk\Form;
-use Tk\FormRenderer;
-use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
-class Settings
+class Settings extends EditInterface
 {
-    use SystemTrait;
-    use Form\FormTrait;
 
-
-    public function __construct()
-    {
-        $this->setForm(Form::create('settings'));
-    }
-
-    public function doDefault(Request $request)
+    public function init(): void
     {
         $tab = 'Site';
         $this->getForm()->appendField(new Field\Input('site.name'))
@@ -101,17 +91,16 @@ class Settings
         $this->getForm()->appendField(new Form\Action\SubmitExit('save', [$this, 'onSubmit']));
         $this->getForm()->appendField(new Form\Action\Link('back', Uri::create('/')));
 
-        $this->getForm()->setFieldValues($this->getRegistry()->all()); // Use form data mapper if loading objects
+    }
 
-        // Replace converted key from request
+    public function execute(array $values = []): void
+    {
+        $this->getForm()->setFieldValues($this->getRegistry()->all());
         $values = array_combine(
             array_map(fn($r) => str_replace('_', '.', $r), array_keys($this->getRequest()->request->all()) ),
             array_values($this->getRequest()->request->all())
         );
-        $this->getForm()->execute($values);
-
-        $this->setFormRenderer(new FormRenderer($this->getForm()));
-
+        parent::execute($values);
     }
 
     public function onSubmit(Form $form, Form\Action\ActionInterface $action)
