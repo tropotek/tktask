@@ -22,13 +22,7 @@ return function (CollectionConfigurator $routes) {
     $routes->add('settings-edit', '/settings')
         ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
 
-
-
     // API Endpoints
-
-
-
-
 
 
     // TODO: Examples - remove for productions sites...

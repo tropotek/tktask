@@ -1,29 +1,41 @@
 <?php
 namespace App\Controller\Example;
 
-use App\Form\Example;
+use App\Db\Example;
+use App\Db\ExampleMap;
 use Bs\Db\User;
+use Bs\Form\EditTrait;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Exception;
 
 class Edit extends PageController
 {
-    protected Example $form;
+    use EditTrait;
+
+    protected ?Example $example = null;
 
 
     public function __construct()
     {
         parent::__construct($this->getFactory()->getPublicPage());
-        $this->getPage()->setTitle('Edit Example');
+        $this->getPage()->setTitle('Edit Example 2');
         $this->setAccess(User::PERM_ADMIN);
     }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
     {
-        // Get the form template
-        $this->form = new Example();
-        $this->form->doDefault($request, $request->query->get('exampleId'));
+        $this->example = new Example();
+        if ($request->query->getInt('exampleId')) {
+            $this->example = ExampleMap::create()->find($request->query->getInt('exampleId'));
+        }
+        if (!$this->example) {
+            throw new Exception('Invalid Example ID: ' . $request->query->getInt('exampleId'));
+        }
+
+        $this->setForm(new \App\Form\Example($this->example));
+        $this->getForm()->execute($request->request->all());
 
         return $this->getPage();
     }
@@ -34,7 +46,7 @@ class Edit extends PageController
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        $template->appendTemplate('content', $this->form->show());
+        $template->appendTemplate('content', $this->getForm()->show());
 
         return $template;
     }

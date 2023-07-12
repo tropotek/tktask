@@ -2,12 +2,13 @@
 namespace App\Controller\Example;
 
 use Bs\PageController;
+use Bs\Table\ManagerTrait;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 class Manager extends PageController
 {
-    protected \App\Table\Example $table;
+    use ManagerTrait;
 
     public function __construct()
     {
@@ -18,8 +19,9 @@ class Manager extends PageController
     public function doDefault(Request $request)
     {
         // Get the form template
-        $this->table = new \App\Table\Example();
-        $this->table->doDefault($request);
+        $this->setTable(new \App\Table\Example());
+        $this->getTable()->findList([], $this->getTable()->getTool('name'));
+        $this->getTable()->execute($request);
 
         return $this->getPage();
     }
@@ -30,7 +32,7 @@ class Manager extends PageController
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        $template->appendTemplate('content', $this->table->show());
+        $template->appendTemplate('content', $this->getTable()->show());
 
         return $template;
     }

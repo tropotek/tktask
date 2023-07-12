@@ -1,99 +1,58 @@
 <?php
 namespace App\Form;
 
-use App\Db\ExampleMap;
+use Bs\Form\EditInterface;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
-use Tk\Exception;
+use Tk\Db\Mapper\Model;
 use Tk\Form;
+use Tk\Uri;
 use Tk\Form\Field;
 use Tk\Form\Action;
-use Tk\FormRenderer;
-use Tk\Traits\SystemTrait;
-use Tk\Uri;
 
-class Example
+class Example extends EditInterface
 {
-    use SystemTrait;
-    use Form\FormTrait;
 
-    protected ?\App\Db\Example $ex = null;
-
-
-    public function __construct()
+    public function init(): void
     {
-        $this->setForm(Form::create('example'));
-    }
-
-    public function doDefault(Request $request, $id)
-    {
-        $this->ex = new \App\Db\Example();
-        if ($id) {
-            $this->ex = ExampleMap::create()->find($id);
-            if (!$this->ex) {
-                throw new Exception('Invalid User ID: ' . $id);
-            }
-        }
-
-        if ($request->get('del-image')) {
-            $file = $this->getConfig()->getDataPath().$this->ex->getImage();
-            if ($this->ex->getImage()) {
-                if (is_file($file)) unlink($file);
-                $this->ex->setImage('');
-                $this->ex->save();
-                Alert::addSuccess('Image successfully deleted');
-            }
-            Uri::create()->remove('del-image')->redirect();
-        }
-
-//        // Enable HTMX
-//        if ($request->headers->has('HX-Request')) {
-//            $this->getForm()->setAttr('hx-post', Uri::create('/form/user/' . $id));
-//            $this->getForm()->setAttr('hx-target', 'this');
-//            $this->getForm()->setAttr('hx-swap', 'outerHTML');
-//        }
-
+        // init form fields
         $group = 'left';
         $this->getForm()->appendField(new Field\Hidden('exampleId'))->setGroup($group);
         $this->getForm()->appendField(new Field\Input('name'))->setGroup($group)->setRequired();
 
-        /** @var Form\Field\File $image */
-        $image = $this->getForm()->appendField(new Form\Field\File('image'))->setGroup($group);
-        if ($this->ex->getImage()) {
-            $image->setViewUrl($this->getConfig()->getDataUrl() . $this->ex->getImage());
-            $image->setDeleteUrl(Uri::create()->set('del-image', $this->ex->getId()));
+        /** @var Field\File $image */
+        $image = $this->getForm()->appendField(new Field\File('image'))->setGroup($group);
+        if ($this->getExample()->getImage()) {
+            $image->setViewUrl($this->getConfig()->getDataUrl() . $this->getExample()->getImage());
+            $image->setDeleteUrl(Uri::create()->set('del-image', $this->getExample()->getId()));
         }
 
-//        $fileList = $this->getForm()->appendField(new \Bs\Form\Field\File('fileList', $this->ex))->setGroup($group);
+        //$fileList = $this->getForm()->appendField(new \Bs\Form\Field\File('fileList', $this->ex))->setGroup($group);
 
         $this->getForm()->appendField(new Field\Checkbox('active', ['Enable Example' => 'active']))->setGroup($group);
-//        $this->getForm()->appendField(new Field\Textarea('content'))->setGroup($group);
+        //$this->getForm()->appendField(new Field\Textarea('content'))->setGroup($group);
         $this->getForm()->appendField(new Field\Textarea('notes'))->setGroup($group);
 
         $this->getForm()->appendField(new Action\SubmitExit('save', [$this, 'onSubmit']));
         $this->getForm()->appendField(new Action\Link('cancel', Uri::create('/exampleManager')));
 
-        $load = $this->ex->getMapper()->getFormMap()->getArray($this->ex);
-        $load['exampleId'] = $this->ex->getExampleId();
-        $this->getForm()->setFieldValues($load); // Use form data mapper if loading objects
-
-        $this->getForm()->execute($request->request->all());
-
-        $this->setFormRenderer(new FormRenderer($this->getForm()));
-
-//        if ($request->headers->has('HX-Request')) {
-//            return $this->show();
-//        }
     }
 
-    public function onSubmit(Form $form, Action\ActionInterface $action)
+    public function execute(array $values = []): void
     {
-        $this->ex->getMapper()->getFormMap()->loadObject($this->ex, $form->getFieldValues());
+        $load = $this->getExample()->getMapper()->getFormMap()->getArray($this->getExample());
+        $load['exampleId'] = $this->getExample()->getExampleId();
+        $this->getForm()->setFieldValues($load); // Use form data mapper if loading objects
+        parent::execute($values);
+    }
+
+    public function onSubmit(Form $form, Action\ActionInterface $action): void
+    {
+        $this->getExample()->getMapper()->getFormMap()->loadObject($this->getExample(), $form->getFieldValues());
 
         // TODO: validate file ???
 
-        $form->addFieldErrors($this->ex->validate());
+        $form->addFieldErrors($this->getExample()->validate());
         if ($form->hasErrors()) {
             return;
         }
@@ -101,45 +60,37 @@ class Example
         /** @var Form\Field\File $fileOne */
         $image = $form->getField('image');
         if ($image->hasFile()) {
-            if ($this->ex->getImage()) {    // Delete any existing file
-                unlink($this->getConfig()->getDataPath() . $this->ex->getImage());
+            if ($this->getExample()->getImage()) {    // Delete any existing file
+                unlink($this->getConfig()->getDataPath() . $this->getExample()->getImage());
             }
-            $filepath = $image->move($this->getConfig()->getDataPath() . $this->ex->getDataPath());
+            $filepath = $image->move($this->getConfig()->getDataPath() . $this->getExample()->getDataPath());
             $filepath = str_replace($this->getConfig()->getDataPath(), '', $filepath);
-            $this->ex->setImage($filepath);
+            $this->getExample()->setImage($filepath);
         }
 
-        $this->ex->save();
+        $this->getExample()->save();
 
         Alert::addSuccess('Form save successfully.');
-        $action->setRedirect(Uri::create()->set('exampleId', $this->ex->getExampleId()));
+        $action->setRedirect(Uri::create()->set('exampleId', $this->getExample()->getExampleId()));
         if ($form->getTriggeredAction()->isExit()) {
             $action->setRedirect($this->getFactory()->getBackUrl());
         }
 
 //        if (!$form->getRequest()->headers->has('HX-Request')) {
-//            $action->setRedirect(Uri::create('/exampleEdit/'.$this->ex->getId()));
+//            $action->setRedirect(Uri::create('/exampleEdit/'.$this->getExample()->getExampleId()));
 //        }
     }
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        //$this->getForm()->getField('type')->addFieldCss('col-6');
-        //$this->getForm()->getField('name')->addFieldCss('col-6');
-        //$this->getForm()->getField('username')->addFieldCss('col-6');
-        //$this->getForm()->getField('email')->addFieldCss('col-6');
-
         $renderer = $this->getFormRenderer();
         $renderer->addFieldCss('mb-3');
-//        $js = <<<JS
-//            jQuery(function ($) {
-//                $('[name=image]');
-//            });
-//        JS;
-//        $renderer->getTemplate()->appendJs($js);
-
         return $renderer->show();
+    }
+
+    public function getExample(): \App\Db\Example|Model
+    {
+        return $this->getModel();
     }
 
 }

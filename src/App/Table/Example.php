@@ -2,53 +2,25 @@
 namespace App\Table;
 
 use App\Db\ExampleMap;
+use Bs\Table\ManagerInterface;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
-use Tk\Traits\SystemTrait;
+use Tk\Db\Mapper\Result;
+use Tk\Db\Tool;
 use Tk\Ui\Link;
 use Tk\Uri;
-use Tk\Form;
 use Tk\Form\Field;
-use Tk\FormRenderer;
-use Tk\Table;
 use Tk\Table\Cell;
 use Tk\Table\Action;
-use Tk\TableRenderer;
 
-class Example
+class Example extends ManagerInterface
 {
-    use SystemTrait;
 
-    protected Table $table;
-
-    protected ?Form $filter = null;
-
-
-    public function __construct()
+    public function init(): void
     {
-        $this->table = new Table('example');
-        $this->filter = new Form($this->table->getId() . '-filters');
-    }
-
-    private function doDelete($id)
-    {
-        /** @var \App\Db\Example $ex */
-        $ex = ExampleMap::create()->find($id);
-        $ex?->delete();
-
-        Alert::addSuccess('Example removed successfully.');
-        Uri::create()->reset()->redirect();
-    }
-
-    public function doDefault(Request $request)
-    {
-        if ($request->query->has('del')) {
-            $this->doDelete($request->query->get('del'));
-        }
-
-        $this->getTable()->appendCell(new Cell\Checkbox('exampleId'));
-        $this->getTable()->appendCell(new Cell\Text('actions'))->addOnShow(function (Cell\Text $cell) {
+        $this->appendCell(new Cell\Checkbox('exampleId'));
+        $this->appendCell(new Cell\Text('actions'))->addOnShow(function (Cell\Text $cell) {
             $cell->addCss('text-nowrap text-center');
             $obj = $cell->getRow()->getData();
 
@@ -68,10 +40,9 @@ class Example
             $btn->setUrl(Uri::create()->set('del', $obj->getId()));
             $btn->setAttr('data-confirm', 'Are you sure you want to delete \''.$obj->getName().'\'');
             $template->appendTemplate('td', $btn->show());
-
         });
 
-        $this->getTable()->appendCell(new Cell\Text('name'))
+        $this->appendCell(new Cell\Text('name'))
             ->setUrlProperty('exampleId')
             ->setUrl(Uri::create('/exampleEdit'))
             ->setAttr('style', 'width: 100%;')
@@ -81,7 +52,7 @@ class Example
 //                $cell->setUrl('/exampleEdit/'.$obj->getId());
             });
 
-        $this->getTable()->appendCell(new Cell\Text('nick'))
+        $this->appendCell(new Cell\Text('nick'))
             ->setUrlProperty('exampleId')
             ->setUrl(Uri::create('/exampleEdit'))
             ->addOnShow(function (Cell\Text $cell) {
@@ -95,72 +66,49 @@ class Example
                     $cell->setValue('{null}');
                 }
             });
-        $this->getTable()->appendCell(new Cell\Text('image'));
-        $this->getTable()->appendCell(new Cell\Boolean('active'));
-        $this->getTable()->appendCell(new Cell\Text('modified'));
-        $this->getTable()->appendCell(new Cell\Text('created'));
 
+        $this->appendCell(new Cell\Text('image'));
+        $this->appendCell(new Cell\Boolean('active'));
+        $this->appendCell(new Cell\Text('modified'));
+        $this->appendCell(new Cell\Text('created'));
 
         // Table filters
-        $this->getFilter()->appendField(new Field\Input('search'))->setAttr('placeholder', 'Search');
-        // Load filter values
-        $this->getFilter()->setFieldValues($this->getTable()->getTableSession()->get($this->getFilter()->getId(), []));
-        $this->getFilter()->appendField(new Form\Action\Submit('Search', function (Form $form, Form\Action\ActionInterface $action) {
-            $this->getTable()->getTableSession()->set($this->getFilter()->getId(), $form->getFieldValues());
-            Uri::create()->redirect();
-        }))->setGroup('');
-        $this->getFilter()->appendField(new Form\Action\Submit('Clear', function (Form $form, Form\Action\ActionInterface $action) {
-            $this->getTable()->getTableSession()->set($this->getFilter()->getId(), []);
-            Uri::create()->redirect();
-        }))->setGroup('')->addCss('btn-outline-secondary');
-        // execute filter form
-        $this->getFilter()->execute($request->request->all());
-
+        $this->getFilterForm()->appendField(new Field\Input('search'))->setAttr('placeholder', 'Search');
 
         // Table Actions
-        if ($this->getConfig()->isDebug()) {
-            $this->getTable()->appendAction(new Action\Link('reset', Uri::create()->set(Table::RESET_TABLE, $this->getTable()->getId()), 'fa fa-retweet'))
-                ->setLabel('')
-                ->setAttr('data-confirm', 'Are you sure you want to reset the Table`s session?')
-                ->setAttr('title', 'Reset table filters and order to default.');
+        $this->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/exampleEdit'));
+        $this->appendAction(new Action\Delete('delete', 'exampleId'));
+        $this->appendAction(new Action\Csv('csv', 'exampleId'))->addExcluded('actions');
+    }
+
+    public function execute(Request $request): void
+    {
+        if ($request->query->has('del')) {
+            /** @var \App\Db\Example $ex */
+            $ex = ExampleMap::create()->find($request->query->getInt('del'));
+            $ex?->delete();
+            Alert::addSuccess('Example removed successfully.');
+            Uri::create()->reset()->redirect();
         }
-        $this->getTable()->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/exampleEdit'));
-        $this->getTable()->appendAction(new Action\Delete('delete', 'exampleId'));
-        $this->getTable()->appendAction(new Action\Csv('csv', 'exampleId'))->addExcluded('actions');
 
-        // Query
-        $tool = $this->getTable()->getTool();
-        $filter = $this->getFilter()->getFieldValues();
+        parent::execute($request);
+    }
+
+    public function findList(array $filter = [], ?Tool $tool = null): null|array|Result
+    {
+        if (!$tool) $tool = $this->getTool();
+        $filter = array_merge($this->getFilterForm()->getFieldValues(), $filter);
         $list = ExampleMap::create()->findFiltered($filter, $tool);
-        $this->getTable()->setList($list, $tool->getFoundRows());
-
-        $this->getTable()->execute($request);
+        $this->setList($list);
+        return $list;
     }
 
     public function show(): ?Template
     {
-        $renderer = new TableRenderer($this->getTable());
-        //$renderer->setFooterEnabled(false);
-        $this->getTable()->getRow()->addCss('text-nowrap');
-        $this->getTable()->addCss('table-hover');
-
-        if ($this->getFilter()) {
-            $this->getFilter()->addCss('row gy-2 gx-3 align-items-center');
-            $filterRenderer = FormRenderer::createInlineRenderer($this->getFilter());
-            $renderer->getTemplate()->appendTemplate('filters', $filterRenderer->show());
-            $renderer->getTemplate()->setVisible('filters');
-        }
-
+        $renderer = $this->getTableRenderer();
+        $this->getRow()->addCss('text-nowrap');
+        $this->showFilterForm();
         return $renderer->show();
     }
 
-    public function getTable(): Table
-    {
-        return $this->table;
-    }
-
-    public function getFilter(): ?Form
-    {
-        return $this->filter;
-    }
 }
