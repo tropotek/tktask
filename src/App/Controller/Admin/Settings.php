@@ -6,7 +6,6 @@ use Bs\Form\EditTrait;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Tk\Alert;
 
 class Settings extends PageController
 {
