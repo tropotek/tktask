@@ -16,12 +16,11 @@ class Manager extends PageController
         $this->getPage()->setTitle('Example Manager');
     }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
     {
-        // Get the form template
         $this->setTable(new \App\Table\Example());
         $this->getTable()->findList([], $this->getTable()->getTool('name'));
-        $this->getTable()->execute($request);
+        $this->getTable()->init()->execute($request);
 
         return $this->getPage();
     }

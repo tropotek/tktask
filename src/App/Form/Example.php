@@ -13,37 +13,38 @@ use Tk\Form\Action;
 class Example extends EditInterface
 {
 
-    public function init(): void
+    public function initFields(): void
     {
         // init form fields
         $group = 'left';
-        $this->getForm()->appendField(new Field\Hidden('exampleId'))->setGroup($group);
-        $this->getForm()->appendField(new Field\Input('name'))->setGroup($group)->setRequired();
+        $this->appendField(new Field\Hidden('exampleId'))->setGroup($group);
+        $this->appendField(new Field\Input('name'))->setGroup($group)->setRequired();
 
         /** @var Field\File $image */
-        $image = $this->getForm()->appendField(new Field\File('image'))->setGroup($group);
+        $image = $this->appendField(new Field\File('image'))->setGroup($group);
         if ($this->getExample()->getImage()) {
             $image->setViewUrl($this->getConfig()->getDataUrl() . $this->getExample()->getImage());
             $image->setDeleteUrl(Uri::create()->set('del-image', $this->getExample()->getId()));
         }
 
-        //$fileList = $this->getForm()->appendField(new \Bs\Form\Field\File('fileList', $this->ex))->setGroup($group);
+        //$fileList = $this->appendField(new \Bs\Form\Field\File('fileList', $this->ex))->setGroup($group);
 
-        $this->getForm()->appendField(new Field\Checkbox('active', ['Enable Example' => 'active']))->setGroup($group);
-        //$this->getForm()->appendField(new Field\Textarea('content'))->setGroup($group);
-        $this->getForm()->appendField(new Field\Textarea('notes'))->setGroup($group);
+        $this->appendField(new Field\Checkbox('active', ['Enable Example' => 'active']))->setGroup($group);
+        //$this->appendField(new Field\Textarea('content'))->setGroup($group);
+        $this->appendField(new Field\Textarea('notes'))->setGroup($group);
 
-        $this->getForm()->appendField(new Action\SubmitExit('save', [$this, 'onSubmit']));
-        $this->getForm()->appendField(new Action\Link('cancel', Uri::create('/exampleManager')));
+        $this->appendField(new Action\SubmitExit('save', [$this, 'onSubmit']));
+        $this->appendField(new Action\Link('cancel', Uri::create('/exampleManager')));
 
     }
 
-    public function execute(array $values = []): void
+    public function execute(array $values = []): static
     {
         $load = $this->getExample()->getMapper()->getFormMap()->getArray($this->getExample());
         $load['exampleId'] = $this->getExample()->getExampleId();
-        $this->getForm()->setFieldValues($load); // Use form data mapper if loading objects
+        $this->setFieldValues($load);
         parent::execute($values);
+        return $this;
     }
 
     public function onSubmit(Form $form, Action\ActionInterface $action): void

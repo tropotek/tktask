@@ -18,11 +18,11 @@ class Settings extends PageController
         $this->getPage()->setTitle('Edit Settings');
         $this->setAccess(User::PERM_SYSADMIN);
         $this->getRegistry()->save();
+        $this->getCrumbs()->reset();
     }
 
     public function doDefault(Request $request)
     {
-        // Get the form template
         $this->setForm(new \App\Form\Settings());
         $this->getForm()->execute($request->request->all());
 
@@ -34,7 +34,7 @@ class Settings extends PageController
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
 
-        $template->appendTemplate('content', $this->form->show());
+        $template->appendTemplate('content', $this->getForm()->show());
 
         return $template;
     }
@@ -57,6 +57,5 @@ class Settings extends PageController
 HTML;
         return $this->loadTemplate($html);
     }
-
 
 }

@@ -35,7 +35,7 @@ class Edit extends PageController
         }
 
         $this->setForm(new \App\Form\Example($this->example));
-        $this->getForm()->execute($request->request->all());
+        $this->getForm()->init()->execute($request->request->all());
 
         return $this->getPage();
     }

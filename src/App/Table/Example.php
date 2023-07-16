@@ -17,7 +17,7 @@ use Tk\Table\Action;
 class Example extends ManagerInterface
 {
 
-    public function init(): void
+    public function initCells(): void
     {
         $this->appendCell(new Cell\Checkbox('exampleId'));
         $this->appendCell(new Cell\Text('actions'))->addOnShow(function (Cell\Text $cell) {
@@ -81,7 +81,7 @@ class Example extends ManagerInterface
         $this->appendAction(new Action\Csv('csv', 'exampleId'))->addExcluded('actions');
     }
 
-    public function execute(Request $request): void
+    public function execute(Request $request): static
     {
         if ($request->query->has('del')) {
             /** @var \App\Db\Example $ex */
@@ -92,6 +92,7 @@ class Example extends ManagerInterface
         }
 
         parent::execute($request);
+        return $this;
     }
 
     public function findList(array $filter = [], ?Tool $tool = null): null|array|Result
