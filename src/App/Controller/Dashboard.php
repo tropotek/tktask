@@ -5,11 +5,12 @@ use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
+use Tk\Color;
+use Tk\Image;
 use Tk\Uri;
 
 class Dashboard extends PageController
 {
-
 
     public function __construct()
     {
@@ -35,8 +36,11 @@ class Dashboard extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
         if ($this->getFactory()->getAuthUser()) {
-            $template->appendHtml('content', "<p>My Username: <b>{$this->getFactory()->getAuthUser()->getUsername()}</b></p>");
+            $template->appendHtml('content', "<p><b>My Username:</b> {$this->getFactory()->getAuthUser()->getUsername()}</p>");
         }
+
+        $template->setAttr('img', 'src', $this->getAuthUser()->getImageUrl());
+        $template->setText('user-name', $this->getAuthUser()->getName());
 
         return $template;
     }
@@ -45,16 +49,17 @@ class Dashboard extends PageController
     {
         $html = <<<HTML
 <div>
-  <div class="card shadow mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-    </div>
-  </div>
+<!--  <div class="card shadow mb-3">-->
+<!--    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>-->
+<!--    <div class="card-body" var="actions">-->
+<!--      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>-->
+<!--    </div>-->
+<!--  </div>-->
   <div class="card mb-3">
     <div class="card-header"><i class="fas fa-cogs"></i> <span var="title"></span></div>
     <div class="card-body" var="content">
-        <p><a class="nav-link" href="/login">Login</a></p>
+        <p><img src="#" var="img" /></p>
+        <p><b>Name:</b> <span var="user-name"></span></p>
     </div>
   </div>
 </div>

@@ -30,20 +30,11 @@ class Page extends \Bs\Page
         $this->showAlert();
         //$this->showMaintenanceRibbon();
 
-        if ($this->getFactory()->getAuthUser()) {
-            $template->setText('username', $this->getFactory()->getAuthUser()->getUsername());
-        }
-
         return $template;
     }
 
     protected function showMintonParams(Template $template)
     {
-        $template->setText('site-name', $this->getRegistry()->getSiteName());
-        $template->setText('site-short-name', $this->getRegistry()->getSiteShortName());
-        $template->setText('site-name-letter', $this->getRegistry()->getSitename()[0]);
-
-        $template->setText('page-title', $this->getTitle());
         $this->getFactory()->getCrumbs()->setCssList()->addCss('m-0');
 
         $nav = new Nav();
@@ -54,7 +45,7 @@ class Page extends \Bs\Page
             $nav->setAttr('id', 'top-nav');
             $template->replaceHtml('top-nav', $nav->getTopNav());
         }
-
+        $template->replaceHtml('profile-nav', $nav->getProfileNav());
     }
 
 

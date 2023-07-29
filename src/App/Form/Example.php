@@ -85,6 +85,8 @@ class Example extends EditInterface
     public function show(): ?Template
     {
         $renderer = $this->getFormRenderer();
+        $this->getField('name')->addFieldCss('col-6');
+        $this->getField('image')->addFieldCss('col-6');
         $renderer->addFieldCss('mb-3');
         return $renderer->show();
     }

@@ -15,7 +15,7 @@ class FormEg extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getPublicPage());
+        parent::__construct($this->getFactory()->getAdminPage());
         $this->getPage()->setTitle('Form');
     }
 

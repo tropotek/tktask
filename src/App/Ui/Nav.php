@@ -16,88 +16,95 @@ class Nav
     protected function getNavList(): array
     {
         return [
-            'Home'        => ['url' => '/home'],
-            'Contact Us'  => ['url' => '/contact'],
-            'Dashboard'   => [
-                'icon' => 'ri-dashboard-line me-1',
+            'Dashboard' => [
+                'icon' => 'ri-dashboard-line',
                 'visible' => fn($i) => (bool)$this->getUser(),
-                'url' => '/dashboard'
+                'url' => '/dashboard',
             ],
-            'Examples' => [
-                'icon' => 'ri-apps-2-line me-1',
-                'DomTest' => ['url' => '/domTest'],
-                'HTMX'    => ['url' => '/htmx'],
-                'Form'    => ['url' => '/ui/form'],
-                'Info'    => ['url' => '/info'],
+            'Site Settings' => [
+                'icon' => 'ri-settings-2-line',
+                'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_SYSADMIN),
+                'url' => '/settings'
             ],
-            'User' => [
-                'icon' => 'ri-stack-line me-1',
-                'My Profile' => [
-                    'icon' => 'ri-stack-line me-1',
-                    'visible' => fn($i) => (bool)$this->getUser(),
-                    'url'     => '/profile'
-                ],
-                'Dropdown Level' => [
-                    'icon' => 'ri-stack-line me-1',
-                    'DomTest' => ['url' => '/domTest'],
-                    'HTMX'    => ['url' => '/htmx'],
-                    'Form'    => ['url' => '/ui/form'],
-                    'Info'    => ['url' => '/info'],
-                ],
-                'Site Settings' => [
-                    'icon' => 'ri-stack-line me-1',
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_SYSADMIN),
-                    'url'     => '/settings'
-                ],
-                'Users' => [
-                    'icon' => 'ri-stack-line me-1',
+            'Application' => [
+                'icon' => 'ri-apps-2-fill',
+                'Example Manager' => [
+                    'icon' => 'ri-file-list-3-line',
                     'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
-                    'url'  => '/user/manager'
-                ],
-                'Staff' => [
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_MANAGE_STAFF),
-                    'url'  => '/user/staffManager'
-                ],
-                'Members' => [
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_MANAGE_MEMBER | User::PERM_MANAGE_STAFF),
-                    'url'  => '/user/memberManager'
+                    'url' => '/exampleManager'
                 ],
                 'File Manager' => [
+                    'icon' => 'ri-archive-drawer-line',
                     'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
-                    'url'  => '/fileManager'
+                    'url' => '/fileManager'
                 ],
-                'Example Manager' => [
+            ],
+            'Users' => [
+                'icon' => 'ri-stack-line',
+                'Users' => [
+                    'icon' => 'ri-team-fill',
                     'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
-                    'url'  => '/exampleManager'
+                    'url' => '/user/manager'
+                ],
+                'Staff' => [
+                    'icon' => 'ri-team-fill',
+                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_MANAGE_STAFF),
+                    'url' => '/user/staffManager'
+                ],
+                'Members' => [
+                    'icon' => 'ri-team-fill',
+                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_MANAGE_MEMBER | User::PERM_MANAGE_STAFF),
+                    'url' => '/user/memberManager'
+                ]
+            ],
+            'Examples' => [
+                'icon' => 'ri-apps-2-line',
+                'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
+                'DomTest' => ['url' => '/domTest'],
+                'HTMX' => ['url' => '/htmx'],
+                'Form' => ['url' => '/ui/form'],
+            ],
+            'Dev' => [
+                'icon' => 'ri-bug-line',
+                'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
+                'PHP Info' => [
+                    'icon' => 'ri-information-line',
+                    'url' => '/info'
                 ],
                 'Tail Log' => [
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
-                    'url'  => '/tailLog'
+                    'icon' => 'ri-terminal-box-fill',
+                    'url' => '/tailLog'
                 ],
                 'List Events' => [
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
-                    'url'  => '/listEvents'
+                    'icon' => 'ri-timer-flash-line',
+                    'url' => '/listEvents'
                 ],
-            ],
-            'Login' => [
-                'visible' => fn($i) => !$this->getUser(),
-                'url'  => '/login'
-            ],
-            'Logout' => [
-                'visible' => fn($i) => (bool)$this->getUser(),
-                'url'  => '/logout'
             ],
         ];
     }
 
-
-    protected function isVisible(array $item): bool
+    public function getProfileNav()
     {
-        if (is_callable($item['visible'] ?? '')) {
-            return $item['visible']($item);
-        }
-        return true;
+        $html = <<<HTML
+<div>
+    <a href="/profile" class="dropdown-item notify-item">
+        <i class="fe-user me-1"></i>
+        <span>My Account</span>
+    </a>
+    <a href="/settings" class="dropdown-item notify-item" app-has-perm="PERM_SYSADMIN">
+        <i class="fe-settings me-1"></i>
+        <span>Settings</span>
+    </a>
+    <div class="dropdown-divider"></div>
+    <a href="/logout" class="dropdown-item notify-item">
+        <i class="fe-log-out me-1"></i>
+        <span>Logout</span>
+    </a>
+</div>
+HTML;
+        return $html;
     }
+
 
     public function getTopNav(): string
     {
@@ -110,7 +117,7 @@ class Nav
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
-                    $ico = sprintf('<i class="%s"></i>', $item['icon']);
+                    $ico = sprintf('<i class="%s me-1"></i>', $item['icon']);
                 }
                 $nav .= sprintf('<li class="nav-item"><a class="nav-link" href="%s">%s %s</a></li>', $item['url'], $ico, $name);
             }
@@ -122,6 +129,7 @@ class Nav
     protected function makeTopDropdown(string $name, string $icon, array $items): string
     {
         unset($items['icon']);
+        unset($items['visible']);
         $items = array_filter($items, fn($itm) => $this->isVisible($itm));
         $ico = '';
         if ($icon) {
@@ -131,13 +139,14 @@ class Nav
         $nav .= sprintf('<a class="nav-link dropdown-toggle arrow-none" href="javascript:;" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">%s %s <div class="arrow-down"></div></a>', $ico, $name);
         $nav .= '<div class="dropdown-menu">';
         foreach ($items as $sub_name => $item) {
+            if (!$this->isVisible($item)) continue;
             if (empty($item['url'])) {
                 if (!count($item)) continue;
                 $nav .= $this->makeTopSubDropdown($sub_name, $item['icon'] ?? '', $item);
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
-                    $ico = sprintf('<i class="%s"></i>', $item['icon']);
+                    $ico = sprintf('<i class="%s me-1"></i>', $item['icon']);
                 }
                 $nav .= sprintf('<a class="dropdown-item" href="%s">%s %s</a>', $item['url'], $ico, $sub_name);
             }
@@ -149,6 +158,7 @@ class Nav
     protected function makeTopSubDropdown(string $name, string $icon, array $items): string
     {
         unset($items['icon']);
+        unset($items['visible']);
         $items = array_filter($items, fn($itm) => $this->isVisible($itm));
         $ico = '';
         if ($icon) {
@@ -164,7 +174,7 @@ class Nav
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
-                    $ico = sprintf('<i class="%s"></i>', $item['icon']);
+                    $ico = sprintf('<i class="%s me-1"></i>', $item['icon']);
                 }
                 $nav .= sprintf('<a class="dropdown-item" href="%s">%s %s</a>', $item['url'], $ico, $sub_name);
             }
@@ -185,7 +195,7 @@ class Nav
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
-                    $ico = sprintf('<i class="%s"></i>', $item['icon']);
+                    $ico = sprintf('<i class="%s me-1"></i>', $item['icon']);
                 }
                 $nav .= sprintf('<li><a href="%s">%s <span>%s</span></a></li>', $item['url'], $ico, $name);
             }
@@ -197,6 +207,7 @@ class Nav
     protected function makeSideDropdown(string $name, string $icon, array $items): string
     {
         unset($items['icon']);
+        unset($items['visible']);
         $items = array_filter($items, fn($itm) => $this->isVisible($itm));
         $ico = '';
         if ($icon) {
@@ -213,7 +224,7 @@ class Nav
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
-                    $ico = sprintf('<i class="%s"></i>', $item['icon']);
+                    $ico = sprintf('<i class="%s me-1"></i>', $item['icon']);
                 }
                 $nav .= sprintf('<li><a href="%s">%s <span>%s</span></a></li>', $item['url'], $ico, $sub_name);
             }
@@ -222,6 +233,13 @@ class Nav
         return $nav;
     }
 
+    protected function isVisible(array $item): bool
+    {
+        if (is_callable($item['visible'] ?? '')) {
+            return $item['visible']($item);
+        }
+        return true;
+    }
 
     public function getUser(): User
     {

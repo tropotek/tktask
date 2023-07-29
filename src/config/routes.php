@@ -32,12 +32,12 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Example\Manager::class, 'doDefault']);
     $routes->add('example-edit', '/exampleEdit')
         ->controller([\App\Controller\Example\Edit::class, 'doDefault']);
+    $routes->add('phpinfo', '/info')
+        ->controller([\App\Controller\Admin\Info::class, 'doDefault']);
 
     // Htmx Examples
     $routes->add('ui-form', '/ui/form')
         ->controller([\App\Controller\Examples\FormEg::class, 'doDefault']);
-    $routes->add('phpinfo', '/info')
-        ->controller([\App\Controller\Examples\Info::class, 'doDefault']);
     $routes->add('test-dom', '/domTest')
         ->controller([\App\Controller\Examples\DomTest::class, 'doDefault']);
     $routes->add('test-htmx', '/htmx')

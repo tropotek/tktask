@@ -24,6 +24,9 @@ form label {
 form .form-check-label {
   font-weight: normal;
 }
+form .tk-form-fields.tab-content {
+  padding: 0px;
+}
 
 /***************** T A B L E ******************/
 
