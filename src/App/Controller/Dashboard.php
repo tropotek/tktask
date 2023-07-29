@@ -13,9 +13,9 @@ class Dashboard extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getUserPage());
+        parent::__construct($this->getFactory()->getAdminPage());
         $this->getPage()->setTitle('Dashboard');
-        $this->getPage()->getCrumbs()->reset();
+        //$this->getPage()->getCrumbs()->reset();
     }
 
     public function doDefault(Request $request)
@@ -35,7 +35,6 @@ class Dashboard extends PageController
         $template->setText('title', $this->getPage()->getTitle());
 
         if ($this->getFactory()->getAuthUser()) {
-
             $template->appendHtml('content', "<p>My Username: <b>{$this->getFactory()->getAuthUser()->getUsername()}</b></p>");
         }
 
@@ -46,14 +45,14 @@ class Dashboard extends PageController
     {
         $html = <<<HTML
 <div>
-<!--  <div class="card shadow mb-3">-->
-<!--    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>-->
-<!--    <div class="card-body" var="actions">-->
-<!--      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>-->
-<!--    </div>-->
-<!--  </div>-->
+  <div class="card shadow mb-3">
+    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
+    <div class="card-body" var="actions">
+      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
   <div class="card mb-3">
-    <div class="card-header" var="title"><i class="fa fa-cogs"></i> </div>
+    <div class="card-header"><i class="fas fa-cogs"></i> <span var="title"></span></div>
     <div class="card-body" var="content">
         <p><a class="nav-link" href="/login">Login</a></p>
     </div>

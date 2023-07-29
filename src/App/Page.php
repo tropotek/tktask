@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Ui\Nav;
 use Dom\Template;
 use Tk\Uri;
 
@@ -21,6 +22,10 @@ class Page extends \Bs\Page
         $template->appendJs($this->getRegistry()->get('system.global.js', ''));
         $template->appendCss($this->getRegistry()->get('system.global.css', ''));
 
+        if (str_contains($this->getTemplatePath(), '/minton/')) {
+            $this->showMintonParams($template);
+        }
+
         $this->showCrumbs();
         $this->showAlert();
         //$this->showMaintenanceRibbon();
@@ -30,6 +35,26 @@ class Page extends \Bs\Page
         }
 
         return $template;
+    }
+
+    protected function showMintonParams(Template $template)
+    {
+        $template->setText('site-name', $this->getRegistry()->getSiteName());
+        $template->setText('site-short-name', $this->getRegistry()->getSiteShortName());
+        $template->setText('site-name-letter', $this->getRegistry()->getSitename()[0]);
+
+        $template->setText('page-title', $this->getTitle());
+        $this->getFactory()->getCrumbs()->setCssList()->addCss('m-0');
+
+        $nav = new Nav();
+        if (basename($this->getTemplatePath()) == 'sn-admin.html') {
+            $nav->setAttr('id', 'side-nav');
+            $template->replaceHtml('side-nav', $nav->getSideNav());
+        } else {
+            $nav->setAttr('id', 'top-nav');
+            $template->replaceHtml('top-nav', $nav->getTopNav());
+        }
+
     }
 
 
@@ -83,8 +108,7 @@ HTML;
                 $r->appendRepeat();
             }
         }
-        // TODO: see how prepending to content goes, may need its
-        //       own div tag for easier placement of the alerts
+
         if ($this->getTemplate()->hasVar('alert')) {
             $this->getTemplate()->insertTemplate('alert', $template);
         } else {
@@ -96,7 +120,6 @@ HTML;
     // TODO: Show a maintenance ribbon on the site???
     protected function showMaintenanceRibbon()
     {
-
 //        if (!$this->getConfig()->get('system.maintenance.enabled')) return;
 //        $controller = \Tk\Event\Event::findControllerObject($event);
 //        if ($controller instanceof \Bs\Controller\Iface && !$controller instanceof \Bs\Controller\Maintenance) {

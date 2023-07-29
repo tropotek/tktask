@@ -10,8 +10,9 @@ use Tk\Uri;
 
 class Settings extends EditInterface
 {
+    protected bool $templateSelect = false;
 
-    public function init(): void
+    public function initFields(): void
     {
         $tab = 'Site';
         $this->appendField(new Field\Input('site.name'))
@@ -29,7 +30,16 @@ class Settings extends EditInterface
         $this->appendField(new Field\Checkbox('site.account.registration'))
             ->setLabel('Account Registration')
             ->setNotes('Enable public user registrations for this site. (Default user type is `user`)')
+            //->setSwitch(true)
             ->setGroup($tab);
+
+        if ($this->isTemplateSelect()) {
+            $list = ['Default' => '', 'Side Menu' => '/html/minton/sn-admin.html', 'Top Menu' => '/html/minton/tn-admin.html'];
+            $this->appendField(new Field\Select('minton.template', $list))
+                ->setLabel('Template Layout')
+                ->setNotes('Select Side-menu or top-menu template layout')
+                ->setGroup($tab);
+        }
 
         $tab = 'Email';
         $this->appendField(new Field\Input('site.email'))
@@ -93,7 +103,7 @@ class Settings extends EditInterface
 
     }
 
-    public function execute(array $values = []): void
+    public function execute(array $values = []): static
     {
         $this->setFieldValues($this->getRegistry()->all());
         $values = array_combine(
@@ -101,9 +111,10 @@ class Settings extends EditInterface
             array_values($this->getRequest()->request->all())
         );
         parent::execute($values);
+        return $this;
     }
 
-    public function onSubmit(Form $form, Form\Action\ActionInterface $action)
+    public function onSubmit(Form $form, Form\Action\ActionInterface $action): void
     {
         $values = $form->getFieldValues();
         $this->getRegistry()->replace($values);
@@ -134,4 +145,18 @@ class Settings extends EditInterface
         $renderer->addFieldCss('mb-3');
         return $renderer->show();
     }
+
+    public function isTemplateSelect(): bool
+    {
+        return $this->templateSelect;
+    }
+
+    public function enableTemplateSelect(bool $templateSelect): Settings
+    {
+        $this->templateSelect = $templateSelect;
+        return $this;
+    }
+
+
+
 }

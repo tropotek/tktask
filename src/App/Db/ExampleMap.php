@@ -33,6 +33,18 @@ class ExampleMap extends Mapper
             $this->addDataMap(self::DATA_MAP_DB, $map);
         }
 
+        // TODO: Refactor the form and table mapper out...
+        //       - I think we should stick to adding field formatting to the
+        //       fields and cells??? Need to re-think how this is done,
+        //       - I feel all these extra mappers are a little cumbersome
+        //       and do not add any real value???
+        //       - Have a think about including views to present table data
+        //       and what affect that would have on the mappers and queries
+        //       - Maybe we need to refactor the findFiltered()/makeQuery()
+        //       methods to accommodate view names?
+        //
+        //       Plenty of things to consider here so have a think about it
+
         if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
             $map = new DataMap();
             $map->addDataType(new Form\Text('exampleId'));

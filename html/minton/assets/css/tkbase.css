@@ -1,0 +1,90 @@
+
+
+/* TINY-MCE */
+/* Remove promotion button */
+.tox .tox-promotion {
+  display: none;
+}
+/* Add disabled state */
+.mce .disabled,
+.mce-min .disabled {
+  background-color: #E9ECEF;
+}
+
+
+
+/***************** F O R M ******************/
+
+form textarea {
+  height: 150px;
+}
+form label {
+  font-weight: 500;
+}
+form .form-check-label {
+  font-weight: normal;
+}
+
+/***************** T A B L E ******************/
+
+
+.tk-form-inline {
+  margin-bottom: .5rem;
+}
+/* position submit buttons for filter form */
+.tk-form-inline .tk-inline-btn {
+  padding-bottom: 0.3rem;
+}
+.tk-form-inline .tk-inline-btn .btn {
+  --bs-btn-padding-y: .2rem;
+  --bs-btn-padding-x: .4rem;
+  --bs-btn-font-size: .75rem;
+}
+.tk-table .tk-actions {
+  padding-bottom: 0.75rem;
+}
+.tk-table .tk-actions .btn {
+  --bs-btn-padding-y: .2rem;
+  --bs-btn-padding-x: .4rem;
+  --bs-btn-font-size: .7rem;
+}
+.tk-table table td a.btn {
+  display: inline;
+  --bs-btn-padding-y: .2rem;
+  --bs-btn-padding-x: .4rem;
+  --bs-btn-font-size: .75rem;
+}
+
+/* Header OrderBy Arrows */
+th
+{
+  text-align: center;
+}
+th a,
+td a {
+  display: block;
+  width: 100%;
+}
+th a {
+  padding-right: 18px;
+  position: relative;
+}
+th a:before,
+th a:after {
+  border: 4px solid transparent;
+  content: "";
+  display: block;
+  height: 0;
+  right: 5px;
+  top: 50%;
+  position: absolute;
+  width: 0;
+}
+th a.desc:before {
+  border-bottom-color: #666;
+  margin-top: -9px;
+}
+th a.asc:after {
+  border-top-color: #666;
+  margin-top: 1px;
+}

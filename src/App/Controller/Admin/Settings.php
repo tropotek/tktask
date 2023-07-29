@@ -14,7 +14,7 @@ class Settings extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getPublicPage());
+        parent::__construct($this->getFactory()->getAdminPage());
         $this->getPage()->setTitle('Edit Settings');
         $this->setAccess(User::PERM_SYSADMIN);
         $this->getRegistry()->save();
@@ -24,7 +24,8 @@ class Settings extends PageController
     public function doDefault(Request $request)
     {
         $this->setForm(new \App\Form\Settings());
-        $this->getForm()->execute($request->request->all());
+        $this->getForm()->enableTemplateSelect(str_contains($this->getPage()->getTemplatePath(), '/minton/'));
+        $this->getForm()->init()->execute($request->request->all());
 
         return $this->getPage();
     }

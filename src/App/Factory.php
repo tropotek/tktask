@@ -24,4 +24,13 @@ class Factory extends \Bs\Factory implements FactoryInterface
         return $page;
     }
 
+    public function getAdminPage(): Page
+    {
+        $path = $this->getConfig()->get('path.template.admin');
+        if (str_contains($path, '/minton/')) {
+            $path = $this->getRegistry()->get('minton.template', $path);
+        }
+        return $this->createPage($this->getSystem()->makePath($path));
+    }
+
 }
