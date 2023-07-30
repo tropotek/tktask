@@ -15,22 +15,12 @@ class Factory extends \Bs\Factory implements FactoryInterface
         return $this->getEventDispatcher();
     }
 
-    public function createPage($templatePath = '', callable $onCreate = null): Page
+    public function createPage(string $templatePath = ''): Page
     {
-        $page = Page::create($templatePath);
-        if ($onCreate) {
-            call_user_func_array($onCreate, [$page]);
+        if (str_contains($templatePath, '/minton/')) {
+            $templatePath = $this->makePath($this->getRegistry()->get('minton.template', $templatePath));
         }
-        return $page;
-    }
-
-    public function getAdminPage(): Page
-    {
-        $path = $this->getConfig()->get('path.template.admin');
-        if (str_contains($path, '/minton/')) {
-            $path = $this->getRegistry()->get('minton.template', $path);
-        }
-        return $this->createPage($this->getSystem()->makePath($path));
+        return Page::create($templatePath);
     }
 
 }
