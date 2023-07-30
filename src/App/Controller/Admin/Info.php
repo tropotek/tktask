@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Admin;
 
-use Dom\Mvc\PageController;
+use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -10,7 +10,7 @@ class Info extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getAdminPage());
+        parent::__construct();
         $this->getPage()->setTitle('PHP Info');
     }
 
@@ -22,6 +22,7 @@ class Info extends PageController
     public function show(): ?Template
     {
         $template = $this->getTemplate();
+        $template->setAttr('back', 'href', $this->getBackUrl());
 
         ob_start();
         phpinfo();
@@ -43,7 +44,7 @@ class Info extends PageController
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header" var="title"><i class="fa fa-cogs"></i> PHPinfo</div>
+    <div class="card-header" var="title"><i class="fa fa-cogs"></i> PHP Info</div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

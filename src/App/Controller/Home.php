@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use Dom\Mvc\PageController;
+use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
@@ -13,11 +13,11 @@ class Home extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getPublicPage());
+        parent::__construct();
         $this->getPage()->setTitle('Home');
     }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
     {
         if ($request->query->has('e')) {
             throw new Exception('This is a test exception...', 500);
@@ -50,21 +50,26 @@ class Home extends PageController
     {
         $html = <<<HTML
 <div>
-    <h3 var="title">Welcome Home</h3>
-    <p var="content"></p>
+  <div class="card mb-3">
+    <div class="card-header" var="title"><i class="fa fa-envelope"></i> </div>
+    <div class="card-body" var="content">
+        <div>
+            <h3 var="title">Welcome Home</h3>
+            <p var="content"></p>
 
-    <p app-is-user="true">Status: You are logged in!</p>
-    <p app-is-user="false">Status You are not logged in</p>
+            <p app-is-user="true">Status: You are logged in!</p>
+            <p app-is-user="false">Status You are not logged in</p>
 
-    <ul>
-      <li><a href="#?e" var="eurl">Test Exception</a></li>
-      <li><a href="/info" title="Confirmation Dialog Test" data-confirm="<p><em>Are you sure?</em></p>" data-cancel="Nuh!!">Confirm Test</a></li>
-      <li><a href="#?a" var="aurl">Alert Test</a></li>
-<!--      <li><a href="/install">Install Page</a></li>-->
-    </ul>
-    <p>&nbsp;</p>
-
-
+            <ul>
+              <li><a href="#?e" var="eurl">Test Exception</a></li>
+              <li><a href="/info" title="Confirmation Dialog Test" data-confirm="<p><em>Are you sure?</em></p>" data-cancel="Nuh!!">Confirm Test</a></li>
+              <li><a href="#?a" var="aurl">Alert Test</a></li>
+        <!--      <li><a href="/install">Install Page</a></li>-->
+            </ul>
+            <p>&nbsp;</p>
+        </div>
+    </div>
+  </div>
 </div>
 HTML;
         return $this->loadTemplate($html);

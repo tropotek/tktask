@@ -83,7 +83,7 @@ class Nav
         ];
     }
 
-    public function getProfileNav()
+    public function getProfileNav(): string
     {
         $html = <<<HTML
 <div>
@@ -96,6 +96,10 @@ class Nav
         <span>Settings</span>
     </a>
     <div class="dropdown-divider"></div>
+    <a class="dropdown-item notify-item" data-bs-toggle="offcanvas" href="#theme-settings-offcanvas" app-has-perm="PERM_SYSADMIN">
+        <i class="ri-palette-line me-1"></i>
+        <span>Customizer</span>
+    </a>
     <a href="/logout" class="dropdown-item notify-item">
         <i class="fe-log-out me-1"></i>
         <span>Logout</span>

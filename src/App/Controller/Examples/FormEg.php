@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Examples;
 
-use Dom\Mvc\PageController;
+use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Form;
@@ -15,7 +15,7 @@ class FormEg extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getAdminPage());
+        parent::__construct();
         $this->getPage()->setTitle('Form');
     }
 
@@ -55,7 +55,7 @@ class FormEg extends PageController
             'Checkbox 2' => 'cb_2',
             'Checkbox 3' => 'cb_3',
             'Checkbox 4' => 'cb_4'
-        ]));
+        ]))->setSwitch(true);
 //        $this->form->appendField(new Form\Field\Radio('radio', [
 //            'Radio 1' => 'rb_1',
 //            'Radio 2' => 'rb_2',
@@ -170,9 +170,15 @@ JS;
     {
         $html = <<<HTML
 <div>
-  <h3 var="title"></h3>
-  <div var="content">
-
+  <div class="card mb-3">
+    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
+    <div class="card-body" var="actions">
+      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <div class="card-header" var="title"><i class="fa fa-cogs"></i> </div>
+    <div class="card-body" var="content"></div>
   </div>
 </div>
 HTML;

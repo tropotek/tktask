@@ -1,19 +1,16 @@
 <?php
 namespace App\Controller\Examples;
 
-use Dom\Mvc\PageController;
+use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class DomTest extends PageController
 {
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getAdminPage());
+        parent::__construct();
         $this->getPage()->setTitle('Dom Test');
     }
 
@@ -37,23 +34,33 @@ class DomTest extends PageController
     {
         $html = <<<HTML
 <div>
-    <h3 var="title"></h3>
-    <p var="content">
-      This is a DomTemplate test controller
-    </p>
+  <div class="card mb-3">
+    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
+    <div class="card-body" var="actions">
+      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <div class="card-header" var="title"><i class="fa fa-cogs"></i> </div>
+    <div class="card-body" var="content">
+        <h3 var="title"></h3>
+        <p var="content">
+            This is a DomTemplate test controller
+        </p>
 
-    <ul>
-      <li><a href="#" var="link1">Link 1</a></li>
-      <li choice="link2"><a href="#" var="link2">Link 2</a></li>
-      <li><a href="#" var="link3">Link 3</a></li>
-      <li><a href="#" var="link4">Link 4</a></li>
-      <li><a href="#" var="link5">Link 5</a></li>
-    </ul>
+        <ul>
+            <li><a href="#" var="link1">Link 1</a></li>
+            <li choice="link2"><a href="#" var="link2">Link 2</a></li>
+            <li><a href="#" var="link3">Link 3</a></li>
+            <li><a href="#" var="link4">Link 4</a></li>
+            <li><a href="#" var="link5">Link 5</a></li>
+        </ul>
 
-    <ul repeat="link">
-      <li var="item"><a href="#" var="link"></a></li>
-    </ul>
-
+        <ul repeat="link">
+            <li var="item"><a href="#" var="link"></a></li>
+        </ul>
+    </div>
+  </div>
 </div>
 HTML;
         return $this->loadTemplate($html);

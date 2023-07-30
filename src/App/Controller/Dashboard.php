@@ -12,15 +12,10 @@ use Tk\Uri;
 class Dashboard extends PageController
 {
 
-    public function __construct()
-    {
-        parent::__construct($this->getFactory()->getAdminPage());
-        $this->getPage()->setTitle('Dashboard');
-        //$this->getPage()->getCrumbs()->reset();
-    }
 
     public function doDefault(Request $request)
     {
+        $this->getPage()->setTitle('Dashboard');
         if (!$this->getFactory()->getAuthUser()) {
             Alert::addWarning('You do not have permission to access the page: <b>' . Uri::create()->getRelativePath() . '</b>');
             // TODO: get the user homepage from somewhere ???

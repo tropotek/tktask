@@ -19,7 +19,7 @@ class Edit extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getAdminPage());
+        parent::__construct();
         $this->getPage()->setTitle('Edit Example 2');
         $this->setAccess(User::PERM_ADMIN);
     }

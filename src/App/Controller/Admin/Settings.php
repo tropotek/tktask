@@ -14,7 +14,7 @@ class Settings extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getAdminPage());
+        parent::__construct();
         $this->getPage()->setTitle('Edit Settings');
         $this->setAccess(User::PERM_SYSADMIN);
         $this->getRegistry()->save();
@@ -34,6 +34,7 @@ class Settings extends PageController
     {
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
+        $template->setAttr('back', 'href', $this->getBackUrl());
 
         $template->appendTemplate('content', $this->getForm()->show());
 

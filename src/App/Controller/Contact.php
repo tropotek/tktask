@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use Dom\Mvc\PageController;
+use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
@@ -28,12 +28,12 @@ class Contact extends PageController
 
     public function __construct()
     {
-        parent::__construct($this->getFactory()->getPublicPage());
+        parent::__construct();
         $this->getPage()->setTitle('Contact Us');
         $this->setForm(Form::create('contact'));
     }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
     {
         $hash = $this->getSession()->get($this->getForm()->getId() . '-nc');
         if (!$hash) {
@@ -60,7 +60,7 @@ class Contact extends PageController
         return $this->getPage();
     }
 
-    public function onSubmit(Form $form, Form\Action\ActionInterface $action)
+    public function onSubmit(Form $form, Form\Action\ActionInterface $action): void
     {
         $hash = $this->getSession()->get($this->getForm()->getId() . '-nc');
         if ($form->getFieldValue('nc') != $hash) {
@@ -114,7 +114,7 @@ HTML;
         return $template;
     }
 
-    public function __makeTemplate()
+    public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
 <div>

@@ -13,6 +13,9 @@ return function (Config $config) {
      */
     $config['hostname'] = 'localhost';
 
+    $config->set('path.template.admin', '/html/minton/sn-admin.html');
+    $config->set('path.template.user', $config->get('path.template.admin'));
+
     // Default System DB
     $config['db.default.type'] = 'mysql';
     $config['db.default.host'] = 'localhost';
