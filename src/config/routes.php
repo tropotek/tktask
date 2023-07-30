@@ -35,7 +35,6 @@ return function (CollectionConfigurator $routes) {
 
     // API Endpoints
 
-
     // TODO: Examples - remove for productions sites...
 
     // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
