@@ -24,6 +24,7 @@ class Htmx extends PageController
     {
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
+        $template->setAttr('back', 'href', $this->getBackUrl());
 
         $btnRes = $this->forward([\App\Api\HtmxExamples::class, 'doButton'], null, null, null);
         $template->insertHtml('btn', $btnRes->getContent());
