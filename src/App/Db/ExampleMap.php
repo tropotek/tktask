@@ -96,7 +96,6 @@ class ExampleMap extends Mapper
             $filter['exampleId'] = $filter['id'];
         }
         if (!empty($filter['exampleId'])) {
-            if (!is_array($filter['exampleId'])) $filter['exampleId'] = array($filter['exampleId']);
             $filter->appendWhere('(a.example_id IN (:exampleId)) AND ');
         }
 
@@ -113,7 +112,6 @@ class ExampleMap extends Mapper
         }
 
         if (!empty($filter['exclude'])) {
-            if (!is_array($filter['exclude'])) $filter['exclude'] = array($filter['exclude']);
             $filter->appendWhere('(a.example_id NOT IN (:exclude)) AND ');
         }
         return $filter;
