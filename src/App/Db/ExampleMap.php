@@ -88,7 +88,7 @@ class ExampleMap extends Mapper
             $filter['search'] = '%' . $this->getDb()->escapeString($filter['search']) . '%';
             $w  = 'a.name LIKE :search OR ';
             $w .= 'a.nick LIKE :search OR ';
-            $w .= 'a.example_id = :search OR ';
+            $w .= 'a.example_id LIKE :search OR ';
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
