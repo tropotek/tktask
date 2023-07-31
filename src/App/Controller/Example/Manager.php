@@ -19,8 +19,10 @@ class Manager extends PageController
     public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
     {
         $this->setTable(new \App\Table\Example());
+        //$this->getTable()->resetTableSession();
+        $this->getTable()->init();
         $this->getTable()->findList([], $this->getTable()->getTool('name'));
-        $this->getTable()->init()->execute($request);
+        $this->getTable()->execute($request);
 
         return $this->getPage();
     }

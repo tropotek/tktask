@@ -77,7 +77,7 @@ class ExampleMap extends Mapper
      */
     public function findFiltered(array|Filter $filter, ?Tool $tool = null): Result
     {
-        return $this->selectFromFilter($this->makeQuery(Filter::create($filter)), $tool);
+        return $this->prepareFromFilter($this->makeQuery(Filter::create($filter)), $tool);
     }
 
     public function makeQuery(Filter $filter): Filter
@@ -85,14 +85,10 @@ class ExampleMap extends Mapper
         $filter->appendFrom('%s a ', $this->quoteParameter($this->getTable()));
 
         if (!empty($filter['search'])) {
-            $kw = '%' . $this->getDb()->escapeString($filter['search']) . '%';
-            $w = '';
-            $w .= sprintf('a.name LIKE %s OR ', $this->quote($kw));
-            $w .= sprintf('a.nick LIKE %s OR ', $this->quote($kw));
-            if (is_numeric($filter['search'])) {
-                $id = (int)$filter['search'];
-                $w .= sprintf('a.example_id = %d OR ', $id);
-            }
+            $filter['search'] = '%' . $this->getDb()->escapeString($filter['search']) . '%';
+            $w  = 'a.name LIKE :search OR ';
+            $w .= 'a.nick LIKE :search OR ';
+            $w .= 'a.example_id = :search OR ';
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
@@ -100,27 +96,26 @@ class ExampleMap extends Mapper
             $filter['exampleId'] = $filter['id'];
         }
         if (!empty($filter['exampleId'])) {
-            $w = $this->makeMultiQuery($filter['exampleId'], 'a.example_id');
-            if ($w) $filter->appendWhere('(%s) AND ', $w);
+            if (!is_array($filter['exampleId'])) $filter['exampleId'] = array($filter['exampleId']);
+            $filter->appendWhere('(a.example_id IN (:exampleId)) AND ');
         }
 
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = %s AND ', $this->quote($filter['name']));
+            $filter->appendWhere('a.name = :name AND ');
         }
 
         if (!empty($filter['nick'])) {
-            $filter->appendWhere('a.nick = %s AND ', $this->quote($filter['nick']));
+            $filter->appendWhere('a.nick = :nick AND ');
         }
 
-        if (is_bool($filter['active'] ?? '')) {
-            $filter->appendWhere('a.active = %s AND ', (int)$filter['active']);
+        if (!$this->isEmpty($filter['active'])) {
+            $filter->appendWhere('a.active = :active AND ');
         }
 
         if (!empty($filter['exclude'])) {
-            $w = $this->makeMultiQuery($filter['exclude'], 'a.example_id', 'AND', '!=');
-            if ($w) $filter->appendWhere('(%s) AND ', $w);
+            if (!is_array($filter['exclude'])) $filter['exclude'] = array($filter['exclude']);
+            $filter->appendWhere('(a.example_id NOT IN (:exclude)) AND ');
         }
-
         return $filter;
     }
 

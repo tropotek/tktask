@@ -40,7 +40,7 @@ class Nav
                 ],
             ],
             'Users' => [
-                'icon' => 'ri-stack-line',
+                'icon' => 'ri-team-fill',
                 'Users' => [
                     'icon' => 'ri-team-fill',
                     'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),

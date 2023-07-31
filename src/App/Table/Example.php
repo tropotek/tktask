@@ -60,10 +60,10 @@ class Example extends ManagerInterface
                 if ($obj->getNick() === null) {
                     // How to change the HTML display
                     $t = $cell->getTemplate();
-                    $html = sprintf('<b>{{NULL}</b>');
+                    $html = '{null}';
                     $t->insertHtml('td', $html);
                     // How to set the css value
-                    $cell->setValue('{null}');
+                    $cell->setValue($html);
                 }
             });
 
@@ -74,6 +74,8 @@ class Example extends ManagerInterface
 
         // Table filters
         $this->getFilterForm()->appendField(new Field\Input('search'))->setAttr('placeholder', 'Search');
+        $list = ['-- Active --' => '', 'Yes' => '1', 'No' => '0'];
+        $this->getFilterForm()->appendField(new Field\Select('active', $list))->setStrict(true);
 
         // Table Actions
         $this->appendAction(new Action\Button('Create'))->setUrl(Uri::create('/exampleEdit'));
