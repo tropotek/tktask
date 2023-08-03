@@ -19,7 +19,7 @@ class Example extends ManagerInterface
 
     public function initCells(): void
     {
-        $this->appendCell(new Cell\Checkbox('exampleId'));
+        $this->appendCell(new Cell\RowSelect('exampleId'));
         $this->appendCell(new Cell\Text('actions'))->addOnShow(function (Cell\Text $cell) {
             $cell->addCss('text-nowrap text-center');
             $obj = $cell->getRow()->getData();
@@ -69,8 +69,8 @@ class Example extends ManagerInterface
 
         $this->appendCell(new Cell\Text('image'));
         $this->appendCell(new Cell\Boolean('active'));
-        $this->appendCell(new Cell\Text('modified'));
-        $this->appendCell(new Cell\Text('created'));
+        $this->appendCell(new Cell\Date('modified'));
+        $this->appendCell(new Cell\Date('created'));
 
         // Table filters
         $this->getFilterForm()->appendField(new Field\Input('search'))->setAttr('placeholder', 'Search');
