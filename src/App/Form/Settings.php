@@ -34,7 +34,7 @@ class Settings extends EditInterface
             ->setGroup($tab);
 
         if ($this->isTemplateSelect()) {
-            $list = ['Default' => '', 'Side Menu' => '/html/minton/sn-admin.html', 'Top Menu' => '/html/minton/tn-admin.html'];
+            $list = ['Side Menu' => '/html/minton/sn-admin.html', 'Top Menu' => '/html/minton/tn-admin.html'];
             $this->appendField(new Field\Select('minton.template', $list))
                 ->setLabel('Template Layout')
                 ->setNotes('Select Side-menu or top-menu template layout')

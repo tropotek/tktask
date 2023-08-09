@@ -20,7 +20,7 @@ class ExampleMap extends Mapper
             $map = new DataMap();
             $map->addDataType(new Db\Integer('exampleId', 'example_id'));
             $map->addDataType(new Db\Text('name'));
-            $map->addDataType(new Db\Text('nick'))->setNullable(true);
+            $map->addDataType(new Db\Text('nick'));
             $map->addDataType(new Db\Text('image'));
             $map->addDataType(new Db\Text('content'));
             $map->addDataType(new Db\Text('notes'));
@@ -33,23 +33,11 @@ class ExampleMap extends Mapper
             $this->addDataMap(self::DATA_MAP_DB, $map);
         }
 
-        // TODO: Refactor the form and table mapper out...
-        //       - I think we should stick to adding field formatting to the
-        //       fields and cells??? Need to re-think how this is done,
-        //       - I feel all these extra mappers are a little cumbersome
-        //       and do not add any real value???
-        //       - Have a think about including views to present table data
-        //       and what affect that would have on the mappers and queries
-        //       - Maybe we need to refactor the findFiltered()/makeQuery()
-        //       methods to accommodate view names?
-        //
-        //       Plenty of things to consider here so have a think about it
-
         if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
             $map = new DataMap();
             $map->addDataType(new Form\Text('exampleId'));
             $map->addDataType(new Form\Text('name'));
-            $map->addDataType(new Form\Text('nick'))->setNullable(true);
+            $map->addDataType(new Form\Text('nick'));
             //$map->addDataType(new Form\Text('image'));        // No need for file types to be mapped
             $map->addDataType(new Form\Text('content'));
             $map->addDataType(new Form\Text('notes'));

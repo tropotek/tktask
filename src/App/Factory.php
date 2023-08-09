@@ -18,7 +18,7 @@ class Factory extends \Bs\Factory implements FactoryInterface
     public function createPage(string $templatePath = ''): Page
     {
         if (str_contains($templatePath, '/minton/')) {
-            $templatePath = $this->makePath($this->getRegistry()->get('minton.template', $templatePath));
+            $templatePath = $this->makePath($this->getRegistry()->get('minton.template', '/html/minton/sn-admin.html'));
         }
         return Page::create($templatePath);
     }
