@@ -16,6 +16,7 @@ class ExampleMap extends Mapper
     public function makeDataMaps(): void
     {
 
+        // Map data from DB col types to type data for objects
         if (!$this->getDataMappers()->has(self::DATA_MAP_DB)) {
             $map = new DataMap();
             $map->addDataType(new Db\Integer('exampleId', 'example_id'));
@@ -25,14 +26,16 @@ class ExampleMap extends Mapper
             $map->addDataType(new Db\Text('content'));
             $map->addDataType(new Db\Text('notes'));
             $map->addDataType(new Db\Boolean('active'));
-            //$map->addDataType(new Db\Boolean('del'));
             $map->addDataType(new Db\Date('modified'));
             $map->addDataType(new Db\Date('created'));
+            // Use del col field for rows that should not be deleted physically
+//            $map->addDataType(new Db\Boolean('del'));
 //            $del = $map->addDataType(new Db\Boolean('del'));
 //            $this->setDeleteType($del);
             $this->addDataMap(self::DATA_MAP_DB, $map);
         }
 
+        // Map string data from forms to type data for objects
         if (!$this->getDataMappers()->has(self::DATA_MAP_FORM)) {
             $map = new DataMap();
             $map->addDataType(new Form\Text('exampleId'));
