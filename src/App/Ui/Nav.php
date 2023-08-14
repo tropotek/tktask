@@ -115,7 +115,7 @@ HTML;
         $nav = sprintf('<ul class="navbar-nav %s" %s>', $this->getCssString(), $this->getAttrString());
         foreach ($this->getNavList() as $name => $item) {
             if (!$this->isVisible($item)) continue;
-            if (empty($item['url'])) {
+            if (empty($item['url'])) {  // is dropdown item
                 if (!count($item)) continue;
                 $nav .= $this->makeTopDropdown($name, $item['icon'] ?? '', $item);
             } else {
@@ -135,6 +135,7 @@ HTML;
         unset($items['icon']);
         unset($items['visible']);
         $items = array_filter($items, fn($itm) => $this->isVisible($itm));
+        if (!count($items)) return '';
         $ico = '';
         if ($icon) {
             $ico = sprintf('<i class="%s"></i>', $icon);
@@ -144,7 +145,7 @@ HTML;
         $nav .= '<div class="dropdown-menu">';
         foreach ($items as $sub_name => $item) {
             if (!$this->isVisible($item)) continue;
-            if (empty($item['url'])) {
+            if (empty($item['url'])) {  // is dropdown item
                 if (!count($item)) continue;
                 $nav .= $this->makeTopSubDropdown($sub_name, $item['icon'] ?? '', $item);
             } else {
@@ -164,6 +165,7 @@ HTML;
         unset($items['icon']);
         unset($items['visible']);
         $items = array_filter($items, fn($itm) => $this->isVisible($itm));
+        if (!count($items)) return '';
         $ico = '';
         if ($icon) {
             $ico = sprintf('<i class="%s"></i>', $icon);
@@ -172,7 +174,7 @@ HTML;
         $nav .= sprintf('<a class="dropdown-item dropdown-toggle arrow-none" href="javascript:;" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">%s %s <div class="arrow-down"></div></a>', $ico, $name);
         $nav .= '<div class="dropdown-menu">';
         foreach ($items as $sub_name => $item) {
-            if (empty($item['url'])) {
+            if (empty($item['url'])) {  // is dropdown item
                 if (!count($item)) continue;
                 $nav .= $this->makeTopSubDropdown($sub_name, $item['icon'] ?? '', $item);
             } else {
@@ -193,7 +195,7 @@ HTML;
         $nav = sprintf('<ul class="%s" %s>', $this->getCssString(), $this->getAttrString());
         foreach ($this->getNavList() as $name => $item) {
             if (!$this->isVisible($item)) continue;
-            if (empty($item['url'])) {
+            if (empty($item['url'])) {  // is dropdown item
                 if (!count($item)) continue;
                 $nav .= $this->makeSideDropdown($name, $item['icon'] ?? '', $item);
             } else {
@@ -213,6 +215,7 @@ HTML;
         unset($items['icon']);
         unset($items['visible']);
         $items = array_filter($items, fn($itm) => $this->isVisible($itm));
+        if (!count($items)) return '';
         $ico = '';
         if ($icon) {
             $ico = sprintf('<i class="%s"></i>', $icon);
@@ -222,7 +225,7 @@ HTML;
         $nav .= sprintf('<a href="#%s" class="waves-effect" data-bs-toggle="collapse" aria-expanded="false">%s <span>%s</span> <span class="menu-arrow"></span></a>', $id, $ico, $name);
         $nav .= sprintf('<div class="collapse" id="%s"><ul class="nav-second-level">', $id);
         foreach ($items as $sub_name => $item) {
-            if (empty($item['url'])) {
+            if (empty($item['url'])) {  // is dropdown item
                 if (!count($item)) continue;
                 $nav .= $this->makeSideDropdown($sub_name, $item['icon'] ?? '', $item);
             } else {

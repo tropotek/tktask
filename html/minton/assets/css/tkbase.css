@@ -21,7 +21,10 @@ form textarea {
 form label {
   font-weight: 500;
 }
-form .form-check-label {
+form .tk-form-group .form-check-label:first-child {
+  margin-bottom: .5rem;
+}
+form .form-check .form-check-label {
   font-weight: normal;
 }
 form .tk-form-fields.tab-content {
