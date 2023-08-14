@@ -6,7 +6,6 @@
 try {
 
     require_once __DIR__ . '/_prepend.php';
-
     $factory  = \Tk\System::instance()->getFactory();
     $response = $factory->getFrontController()->handle($factory->getRequest());
     $response->send();

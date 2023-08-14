@@ -26,7 +26,7 @@ SET SQL_SAFE_UPDATES = 0;
 # TRUNCATE TABLE user_token;
 TRUNCATE TABLE example;
 
-INSERT INTO user (type, username, email, name, timezone, permissions) VALUES
+INSERT INTO user (type, username, email, name_first, timezone, permissions) VALUES
   ('staff', 'admin', 'admin@example.com', 'Administrator', NULL, 1),
   ('staff', 'dev', 'dev@example.com', 'Developer', 'Australia/Melbourne', 1),
   ('staff', 'design', 'design@example.com', 'Designer', 'Australia/Melbourne', 1),
@@ -34,7 +34,7 @@ INSERT INTO user (type, username, email, name, timezone, permissions) VALUES
   ('user', 'member', 'user@example.com', 'User', 'Australia/Brisbane', 0)
 ;
 
-UPDATE `user` SET `hash` = MD5(CONCAT(username, id)) WHERE 1;
+UPDATE `user` SET `hash` = MD5(CONCAT(username, user_id)) WHERE 1;
 
 
 SET SQL_SAFE_UPDATES = 1;
