@@ -52,6 +52,9 @@ return function (CollectionConfigurator $routes) {
     $routes->add('ui-form', '/ui/form')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Examples\FormEg::class, 'doDefault']);
+    $routes->add('test', '/test')
+        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
+        ->controller([\App\Controller\Examples\Test::class, 'doDefault']);
     $routes->add('test-dom', '/domTest')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Examples\DomTest::class, 'doDefault']);

@@ -15,13 +15,13 @@ class Example extends Model implements FileInterface
 
     public string $name = '';
 
-    public ?string $nick = null;
+    //public ?string $nick = null;
 
     public string $image = '';
 
-    public string $content = '';
+    //public string $content = '';
 
-    public string $notes = '';
+    //public string $notes = '';
 
     public bool $active = true;
 
@@ -69,16 +69,16 @@ class Example extends Model implements FileInterface
         return $this;
     }
 
-    public function getNick(): ?string
-    {
-        return $this->nick;
-    }
-
-    public function setNick(?string $nick): static
-    {
-        $this->nick = $nick;
-        return $this;
-    }
+//    public function getNick(): ?string
+//    {
+//        return $this->nick;
+//    }
+//
+//    public function setNick(?string $nick): static
+//    {
+//        $this->nick = $nick;
+//        return $this;
+//    }
 
     public function getImage(): string
     {
@@ -91,27 +91,27 @@ class Example extends Model implements FileInterface
         return $this;
     }
 
-    public function getContent(): string
-    {
-        return $this->content;
-    }
-
-    public function setContent(string $content): static
-    {
-        $this->content = $content;
-        return $this;
-    }
-
-    public function getNotes(): string
-    {
-        return $this->notes;
-    }
-
-    public function setNotes(string $notes): static
-    {
-        $this->notes = $notes;
-        return $this;
-    }
+//    public function getContent(): string
+//    {
+//        return $this->content;
+//    }
+//
+//    public function setContent(string $content): static
+//    {
+//        $this->content = $content;
+//        return $this;
+//    }
+//
+//    public function getNotes(): string
+//    {
+//        return $this->notes;
+//    }
+//
+//    public function setNotes(string $notes): static
+//    {
+//        $this->notes = $notes;
+//        return $this;
+//    }
 
     public function isActive(): bool
     {

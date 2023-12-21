@@ -1,45 +1,34 @@
 <?php
-namespace App\Controller\Admin;
+namespace App\Controller\Examples;
 
-use Bs\Db\User;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class Info extends PageController
+class Test extends PageController
 {
 
     public function __construct()
     {
         parent::__construct();
-        $this->getPage()->setTitle('PHP Info');
-        $this->setAccess(User::PERM_SYSADMIN);
+        $this->getPage()->setTitle('Test');
     }
 
     public function doDefault(Request $request)
     {
+
+
+
         return $this->getPage();
     }
 
     public function show(): ?Template
     {
         $template = $this->getTemplate();
+
+        $template->appendText('title', 'Test Page');
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        ob_start();
-        phpinfo();
-        $ob = ob_get_clean();
-        $ob1 = tidy_repair_string($ob, ['output-xhtml' => true, 'show-body-only' => true], 'utf8');
-        $template->appendHtml('content', $ob1);
-
-        $js = <<<JS
-jQuery(function($) {
-    $('.php-info table').addClass('table table-striped');
-    $('.php-info table td:not(:first-child)').addClass('text-center');
-    $('.php-info table td:first-child').addClass('fw-bold text-nowrap');
-});
-JS;
-        $template->appendJs($js);
 
         return $template;
     }
@@ -55,14 +44,18 @@ JS;
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header" var="title"><i class="fa fa-cogs"></i> PHP Info</div>
-    <div class="card-body php-info" var="content"></div>
+    <div class="card-header" var="title"><i class="fa fa-cogs"></i> </div>
+    <div class="card-body" var="content">
+        <h3 var="title"></h3>
+        
+        
+        
+    </div>
   </div>
 </div>
 HTML;
         return $this->loadTemplate($html);
     }
-
 }
 
 

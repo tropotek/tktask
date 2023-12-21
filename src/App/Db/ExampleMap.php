@@ -13,6 +13,37 @@ use Tk\DataMap\Table;
 class ExampleMap extends Mapper
 {
 
+//    public function save($model): bool
+//    {
+//        return true;
+//    }
+//
+//    public function insert($model): bool
+//    {
+//        return true;
+//    }
+//
+//    public function update($model): bool
+//    {
+//        return true;
+//    }
+//
+//    public function find($id): ?Example
+//    {
+//        return null;
+//    }
+//
+//    public function find_all(?Tool $tool): array
+//    {
+//        return [];
+//    }
+
+
+
+
+
+    // ------------------------------
+
     public function makeDataMaps(): void
     {
 
@@ -21,11 +52,11 @@ class ExampleMap extends Mapper
             $map = new DataMap();
             $map->addDataType(new Db\Integer('exampleId', 'example_id'));
             $map->addDataType(new Db\Text('name'));
-            $map->addDataType(new Db\Text('nick'));
+            //$map->addDataType(new Db\Text('nick'));
             $map->addDataType(new Db\Text('image'));
-            $map->addDataType(new Db\Text('content'));
-            $map->addDataType(new Db\Text('notes'));
-            $map->addDataType(new Db\Boolean('active'));
+            //$map->addDataType(new Db\Text('content'));
+            //$map->addDataType(new Db\Text('notes'));
+            $map->addDataType(new Db\Boolean('active', 'is_active'));
             $map->addDataType(new Db\Date('modified'));
             $map->addDataType(new Db\Date('created'));
             // Use del col field for rows that should not be deleted physically
@@ -40,10 +71,10 @@ class ExampleMap extends Mapper
             $map = new DataMap();
             $map->addDataType(new Form\Text('exampleId'));
             $map->addDataType(new Form\Text('name'));
-            $map->addDataType(new Form\Text('nick'));
-            //$map->addDataType(new Form\Text('image'));        // No need for file types to be mapped
-            $map->addDataType(new Form\Text('content'));
-            $map->addDataType(new Form\Text('notes'));
+            //$map->addDataType(new Form\Text('nick'));
+            $map->addDataType(new Form\Text('image'));        // No need for file types to be mapped
+            //$map->addDataType(new Form\Text('content'));
+            //$map->addDataType(new Form\Text('notes'));
             $map->addDataType(new Form\Boolean('active'));
             $this->addDataMap(self::DATA_MAP_FORM, $map);
         }
@@ -54,7 +85,8 @@ class ExampleMap extends Mapper
      */
     public function findFiltered(array|Filter $filter, ?Tool $tool = null): Result
     {
-        return $this->prepareFromFilter($this->makeQuery(Filter::create($filter)), $tool);
+        $r = $this->prepareFromFilter($this->makeQuery(Filter::create($filter)), $tool);
+        return $r;
     }
 
     public function makeQuery(Filter $filter): Filter

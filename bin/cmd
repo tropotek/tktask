@@ -21,7 +21,7 @@ try {
     $app->add(new \Bs\Console\Password());
     if (\Tk\Config::instance()->isDebug()) {
         $app->add(new \App\Console\TestData());
-        //$app->add(new \App\Console\Test());
+        $app->add(new \App\Console\Test());
     }
 
     $app->run($input, $output);

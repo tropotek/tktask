@@ -23,19 +23,19 @@ class Nav
             ],
             'Site Settings' => [
                 'icon' => 'ri-settings-2-line',
-                'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_SYSADMIN),
+                'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
                 'url' => '/settings'
             ],
             'Application' => [
                 'icon' => 'ri-apps-2-fill',
                 'Example Manager' => [
                     'icon' => 'ri-file-list-3-line',
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/exampleManager'
                 ],
                 'File Manager' => [
                     'icon' => 'ri-archive-drawer-line',
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/fileManager'
                 ],
             ],
@@ -43,30 +43,33 @@ class Nav
                 'icon' => 'ri-team-fill',
                 'Users' => [
                     'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/user/manager'
                 ],
                 'Staff' => [
                     'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_MANAGE_STAFF),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_MANAGE_STAFF),
                     'url' => '/user/staffManager'
                 ],
                 'Members' => [
                     'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_MANAGE_MEMBER | User::PERM_MANAGE_STAFF),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_MANAGE_MEMBER | User::PERM_MANAGE_STAFF),
                     'url' => '/user/memberManager'
                 ]
             ],
+
+            // Visible in Debug mode only
             'Examples' => [
                 'icon' => 'ri-apps-2-line',
-                'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
+                'visible' => fn($i) => $this->getConfig()->isDebug(),
+                'Test' => ['url' => '/test'],
                 'DomTest' => ['url' => '/domTest'],
                 'HTMX' => ['url' => '/htmx'],
-                'Form' => ['url' => '/ui/form'],
+                'Form Elements' => ['url' => '/ui/form'],
             ],
             'Dev' => [
                 'icon' => 'ri-bug-line',
-                'visible' => fn($i) => $this->getUser()->hasPermission(User::PERM_ADMIN),
+                'visible' => fn($i) => $this->getConfig()->isDebug(),
                 'PHP Info' => [
                     'icon' => 'ri-information-line',
                     'url' => '/info'
@@ -80,6 +83,7 @@ class Nav
                     'url' => '/listEvents'
                 ],
             ],
+
         ];
     }
 
@@ -242,13 +246,13 @@ HTML;
 
     protected function isVisible(array $item): bool
     {
-        if (is_callable($item['visible'] ?? '')) {
+        if (isset($item['visible']) && is_callable($item['visible'])) {
             return $item['visible']($item);
         }
         return true;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->getFactory()->getAuthUser();
     }

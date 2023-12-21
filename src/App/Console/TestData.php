@@ -1,6 +1,7 @@
 <?php
 namespace App\Console;
 
+use App\Db\Example;
 use Bs\Db\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,8 +30,32 @@ class TestData extends \Tk\Console\Command\TestData
         $this->clearData();
         if ($input->getOption('clear')) return self::SUCCESS;
 
+        $this->createUsers();
+
+        $this->createExamples();
+
+        return self::SUCCESS;
+    }
+
+    public function createExamples()
+    {
+        $db = $this->getFactory()->getDb();
+
+        for($i = 0; $i < 73; $i++) {
+            $obj = new Example();
+            $obj->setName($this->createName());
+            $obj->setImage('***');
+            $obj->setActive((bool)rand(0,1));
+            $obj->save();
+        }
+    }
+
+    public function createUsers()
+    {
+        $db = $this->getFactory()->getDb();
+
         // Generate new users
-        for($i = 0; $i < 150; $i++) {
+        for($i = 0; $i < 50; $i++) {
             $obj = $this->getFactory()->createUser();
             $obj->setUid('***');
             $obj->setType((rand(1, 10) <= 5) ? User::TYPE_STAFF : User::TYPE_MEMBER);
@@ -62,14 +87,14 @@ class TestData extends \Tk\Console\Command\TestData
             $obj->save();
         }
 
-        return self::SUCCESS;
     }
 
     private function clearData()
     {
         $db = $this->getFactory()->getDb();
 
-        $db->exec('DELETE FROM `user` WHERE `uid` = \'***\' ');
+        $db->exec('DELETE FROM user WHERE uid = \'***\' ');
+        $db->exec('DELETE FROM example WHERE image = \'***\' ');
     }
 
 

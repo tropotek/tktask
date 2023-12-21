@@ -10,6 +10,32 @@
 --
 -- ------------------------------------------------------
 
+-- Set all words first letter to uppercase
+# DROP FUNCTION IF EXISTS ucwords;
+# CREATE FUNCTION ucwords(s VARCHAR(255)) RETURNS VARCHAR(255)
+# BEGIN
+#   declare c int;
+#   declare x VARCHAR(255);
+#   declare y VARCHAR(255);
+#   declare z VARCHAR(255);
+#
+#   set x = UPPER( SUBSTRING( s, 1, 1));
+#   set y = SUBSTR( s, 2);
+#   set c = instr( y, ' ');
+#
+#   while c > 0
+#     do
+#       set z = SUBSTR( y, 1, c);
+#       set x = CONCAT( x, z);
+#       set z = UPPER( SUBSTR( y, c+1, 1));
+#       set x = CONCAT( x, z);
+#       set y = SUBSTR( y, c+2);
+#       set c = INSTR( y, ' ');
+#   end while;
+#   set x = CONCAT(x, y);
+#   return x;
+# END;
+
 -- compares two date ranges and checks for overlap (inclusive)
 -- start dates must be before end date
 # DROP FUNCTION IF EXISTS dates_overlap;
@@ -25,7 +51,6 @@
 
 -- Create a temporary date table for count queries that have no data on every date required
 # DROP PROCEDURE IF EXISTS procFillCal;
-# DELIMITER //
 # CREATE PROCEDURE procFillCal(pTableName VARCHAR(32), pStartDate DATE, pEndDate DATE, pInterval VARCHAR(8), pIntervalUnit INTEGER)
 # BEGIN
 #   DECLARE pDate DATE;
@@ -42,14 +67,12 @@
 #       WHEN 'YEAR' THEN SET pDate = ADDDATE(pDate, INTERVAL pIntervalUnit YEAR);
 #     END CASE;
 #   END WHILE;
-#  END //
-# DELIMITER ;
+#  END;
 
 
 -- return extension given a filename
 -- returns extension lower-cased, null if no extension found
 # DROP FUNCTION IF EXISTS filename_ext;
-# DELIMITER //
 # CREATE FUNCTION filename_ext(filename VARCHAR(400))
 #   RETURNS VARCHAR(4) DETERMINISTIC
 # BEGIN
@@ -59,5 +82,4 @@
 #     SET @ext = NULL;
 #   END IF;
 #   RETURN LOWER(@ext);
-# END //
-# DELIMITER ;
+# END;

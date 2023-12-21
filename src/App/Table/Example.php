@@ -52,20 +52,20 @@ class Example extends ManagerInterface
 //                $cell->setUrl('/exampleEdit/'.$obj->getId());
             });
 
-        $this->appendCell(new Cell\Text('nick'))
-            ->setUrlProperty('exampleId')
-            ->setUrl(Uri::create('/exampleEdit'))
-            ->addOnShow(function (Cell\Text $cell) {
-                $obj = $cell->getRow()->getData();
-                if ($obj->getNick() === null) {
-                    // How to change the HTML display
-                    $t = $cell->getTemplate();
-                    $html = '{null}';
-                    $t->insertHtml('td', $html);
-                    // How to set the css value
-                    $cell->setValue($html);
-                }
-            });
+//        $this->appendCell(new Cell\Text('nick'))
+//            ->setUrlProperty('exampleId')
+//            ->setUrl(Uri::create('/exampleEdit'))
+//            ->addOnShow(function (Cell\Text $cell) {
+//                $obj = $cell->getRow()->getData();
+//                if ($obj->getNick() === null) {
+//                    // How to change the HTML display
+//                    $t = $cell->getTemplate();
+//                    $html = '{null}';
+//                    $t->insertHtml('td', $html);
+//                    // How to set the css value
+//                    $cell->setValue($html);
+//                }
+//            });
 
         $this->appendCell(new Cell\Text('image'));
         $this->appendCell(new Cell\Boolean('active'));
@@ -99,7 +99,7 @@ class Example extends ManagerInterface
 
     public function findList(array $filter = [], ?Tool $tool = null): null|array|Result
     {
-        if (!$tool) $tool = $this->getTool();
+        if (!$tool) $tool = $this->getTool('');
         $filter = array_merge($this->getFilterForm()->getFieldValues(), $filter);
         $list = ExampleMap::create()->findFiltered($filter, $tool);
         $this->setList($list);
