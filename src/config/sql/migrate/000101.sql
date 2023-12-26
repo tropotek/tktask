@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS example
   example_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(128) NOT NULL DEFAULT '',
   image VARCHAR(255) NOT NULL DEFAULT '',
-  is_active BOOL NOT NULL DEFAULT TRUE,
+  active BOOL NOT NULL DEFAULT TRUE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS example_microsoft
   example_id INT UNSIGNED NOT NULL,
   username VARCHAR(128) NOT NULL DEFAULT '',
   microsoft_id VARCHAR(128) NOT NULL DEFAULT '',
-  is_active BOOL NOT NULL DEFAULT TRUE,
+  active BOOL NOT NULL DEFAULT TRUE,
   CONSTRAINT fk_example_microsoft__example_id FOREIGN KEY (example_id) REFERENCES example (example_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -58,7 +58,7 @@ SELECT
     e.example_id,
     e.name,
     e.image,
-    e.is_active,
+    e.active,
     ed.nickname,
     ed.mobile,
     ed.address1,
@@ -70,7 +70,7 @@ SELECT
     ed.notes,
     em.username,
     em.microsoft_id,
-    em.is_active AS microsoft_is_active,
+    em.active AS microsoft_is_active,
     e.modified,
     e.created
 FROM example e

@@ -30,6 +30,9 @@ form .form-check .form-check-label {
 form .tk-form-fields.tab-content {
   padding: 0px;
 }
+.tk-form .fld .invalid-feedback {
+  color: var(--bs-danger);
+}
 
 /***************** T A B L E ******************/
 

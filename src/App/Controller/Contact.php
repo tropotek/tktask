@@ -9,7 +9,6 @@ use Tk\Form;
 use Tk\Form\Field;
 use Tk\Form\Action;
 use Tk\Form\FormTrait;
-use Tk\FormRenderer;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
@@ -54,7 +53,7 @@ class Contact extends PageController
 
         $this->getForm()->execute($request->request->all());
 
-        $this->setFormRenderer(new FormRenderer($this->getForm()));
+        $this->setFormRenderer(new Form\Renderer\Dom\Renderer($this->getForm()));
 
 
         return $this->getPage();

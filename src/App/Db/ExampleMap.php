@@ -56,7 +56,7 @@ class ExampleMap extends Mapper
             $map->addDataType(new Db\Text('image'));
             //$map->addDataType(new Db\Text('content'));
             //$map->addDataType(new Db\Text('notes'));
-            $map->addDataType(new Db\Boolean('active', 'is_active'));
+            $map->addDataType(new Db\Boolean('active'));
             $map->addDataType(new Db\Date('modified'));
             $map->addDataType(new Db\Date('created'));
             // Use del col field for rows that should not be deleted physically

@@ -33,6 +33,10 @@ form label {
 form .form-check-label {
   font-weight: normal;
 }
+.tk-form .fld .invalid-feedback {
+  color: var(--bs-danger);
+}
+
 
 /***************** T A B L E ******************/
 

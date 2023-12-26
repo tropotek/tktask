@@ -19,6 +19,8 @@ class Example extends ManagerInterface
 
     public function initCells(): void
     {
+        //$this->resetTableSession();
+
         $this->appendCell(new Cell\RowSelect('exampleId'));
         $this->appendCell(new Cell\Text('actions'))->addOnShow(function (Cell\Text $cell) {
             $cell->addCss('text-nowrap text-center');

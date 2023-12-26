@@ -30,8 +30,14 @@ class Example extends EditInterface
         //$fileList = $this->appendField(new \Bs\Form\Field\File('fileList', $this->ex))->setGroup($group);
 
         $this->appendField(new Field\Checkbox('active', ['Enable Example' => 'active']))->setGroup($group);
-        //$this->appendField(new Field\Textarea('content'))->setGroup($group);
-        $this->appendField(new Field\Textarea('notes'))->setGroup($group);
+        $this->appendField(new Field\Textarea('testTextarea'))->setGroup($group)->setValue('This is a test');
+
+        $list = ['-- Select --' => '', 'Test 1' => 'test1', 'Test2' => 'test2'];
+        $this->appendField(new Field\Select('testSelect', $list))->setGroup($group);
+
+        $this->appendField(new Field\Radio('testSelect2', $list))->setGroup($group);
+
+        $this->appendField(new Field\Checkbox('testSelect3', $list))->setGroup($group);
 
         $this->appendField(new Action\SubmitExit('save', [$this, 'onSubmit']));
         $this->appendField(new Action\Link('cancel', Uri::create('/exampleManager')));

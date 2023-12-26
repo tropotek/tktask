@@ -4,8 +4,8 @@ namespace App\Controller\Examples;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
 use Tk\Form;
-use Tk\FormRenderer;
 use Tk\Uri;
 
 class FormEg extends PageController
@@ -23,7 +23,7 @@ class FormEg extends PageController
     {
 
         $this->form = Form::create('test');
-        $this->form->appendField(new Form\Field\Hidden('hidden'))->setLabel('Hide Me!');
+        $this->form->appendField(new Form\Field\Hidden('action'))->setValue('testAction')->setLabel('Hide Me!');
 
         $this->form->appendField(new Form\Field\Input('email'))->setType('email');
         $this->form->appendField(new Form\Field\Input('test'));
@@ -33,7 +33,7 @@ class FormEg extends PageController
             ->setNotes('This is a select box');
 
         $this->form->appendField(new Form\Field\Input('date1'))
-            ->setRequired()
+            //->setRequired()
             ->addCss('date')->setAttr('data-max-date', '+1w');
         // Native HTML datepicker has issues with unsupported browsers and required input:
         // See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
@@ -50,38 +50,34 @@ class FormEg extends PageController
         $files = $this->form->appendField(new Form\Field\File('attach'))->setNotes('Only upload valid files'); //->setMultiple(true);
 
         $this->form->appendField(new Form\Field\Checkbox('active'));
+
         $this->form->appendField(new Form\Field\Checkbox('checkbox', [
             'Checkbox 1' => 'cb_1',
             'Checkbox 2' => 'cb_2',
             'Checkbox 3' => 'cb_3',
             'Checkbox 4' => 'cb_4'
+        ]));
+        $this->form->appendField(new Form\Field\Radio('radio', [
+            'Radio 1' => 'rb_1',
+            'Radio 2' => 'rb_2',
+            'Radio 3' => 'rb_3',
+            'Radio 4' => 'rb_4'
+        ]));
+        $this->form->appendField(new Form\Field\Checkbox('switch', [
+            'Switch 1' => 'sw_1',
+            'Switch 2' => 'sw_2',
+            'Switch 3' => 'sw_3',
+            'Switch 4' => 'sw_4'
         ]))->setSwitch(true);
-//        $this->form->appendField(new Form\Field\Radio('radio', [
-//            'Radio 1' => 'rb_1',
-//            'Radio 2' => 'rb_2',
-//            'Radio 3' => 'rb_3',
-//            'Radio 4' => 'rb_4'
-//        ]));
-//        $this->form->appendField(new Form\Field\Checkbox('switch', [
-//            'Switch 1' => 'sw_1',
-//            'Switch 2' => 'sw_2',
-//            'Switch 3' => 'sw_3',
-//            'Switch 4' => 'sw_4'
-//        ]))->setType('switch');
 
         $this->form->appendField(new Form\Field\Textarea('notes'));
-
-        //$this->form->appendField(new Form\Field\Textarea('tinyMceMin'))->addCss('mce-min');
 
         $this->form->appendField(new Form\Field\Textarea('tinyMce'))->addCss('mce');
 
 
         $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
-        $this->form->appendField(new Form\Action\Submit('save', function (Form $form, Form\Action\ActionInterface $action) use ($files) {
-//            vd($this->form->getFieldValues());
-//            vd($files->getValue());
-            $action->setRedirect(Uri::create());
-        }));
+        $this->form->appendField(new Form\Action\SubmitExit('save2', [$this, 'onSubmit']));
+        $this->form->appendField(new Form\Action\Submit('save', [$this, 'onSubmit']));
 
 
         $load = [
@@ -101,6 +97,25 @@ class FormEg extends PageController
         return $this->getPage();
     }
 
+    public function onSubmit(Form $form, Form\Action\ActionInterface $action): void
+    {
+        $form->addFieldError('test', 'this is a test error');
+vd($form->getAllErrors());
+
+        if ($form->hasErrors()) {
+            return;
+        }
+
+        vd($form->getFieldValues());
+        // ...
+
+        Alert::addSuccess('Form save successfully.');
+        $action->setRedirect(Uri::create());
+        if ($form->getTriggeredAction()->isExit()) {
+            $action->setRedirect($this->getFactory()->getBackUrl());
+        }
+    }
+
     public function show(): ?Template
     {
         $template = $this->getTemplate();
@@ -118,8 +133,11 @@ class FormEg extends PageController
         $this->form->getField('date3')->addFieldCss('col-3');
         $this->form->getField('date4')->addFieldCss('col-3');
 
-        $formRenderer = new FormRenderer($this->form);
-        $template->appendTemplate('content', $formRenderer->show());
+
+//        $formRenderer = new Form\Renderer\Dom\Renderer($this->form);
+//        $template->appendTemplate('content', $formRenderer->show());
+        $formRenderer = new Form\Renderer\Std\Renderer($this->form);
+        $template->appendHtml('content', $formRenderer->show());
 
         // Autocomplete js
         $js = <<<JS
@@ -149,15 +167,15 @@ jQuery(function($) {
       "Scala",
       "Scheme"
     ];
-    $('[name=category]').autocomplete({
-      source: availableTags,
-      minLength: 0  // Must be 0 for dropdown btn to work
-    });
+    // $('[name=category]').autocomplete({
+    //   source: availableTags,
+    //   minLength: 0  // Must be 0 for dropdown btn to work
+    // });
 
     // Show the dropdown on click
-    $('.fld-autocomplete button').on('click', function () {
-        $('[name=autocomplete]').autocomplete('search', $('[name=autocomplete]').val());
-    });
+    // $('.fld-autocomplete button').on('click', function () {
+    //     $('[name=autocomplete]').autocomplete('search', $('[name=autocomplete]').val());
+    // });
 
 });
 JS;
