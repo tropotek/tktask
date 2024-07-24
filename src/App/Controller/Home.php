@@ -1,10 +1,13 @@
 <?php
 namespace App\Controller;
 
+use App\Db\Widget;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
+use Tk\Db\Db;
+use Tk\Db\DbModel;
 use Tk\Exception;
 use Tk\Uri;
 
@@ -31,6 +34,18 @@ class Home extends PageController
         }
         $reg = $this->getFactory()->getRegistry();
         $reg->save();
+
+
+
+        $db = $this->getFactory()->getDbNew();
+
+        $w = Widget::get(2);
+        vd($w);
+        $w->save();
+
+
+
+
 
         return $this->getPage();
     }

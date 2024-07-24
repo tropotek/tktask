@@ -2,94 +2,39 @@
 -- @version 0.0.0
 -- --------------------------------------------
 
-# CREATE TABLE IF NOT EXISTS example
-# (
-#   example_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-#   name VARCHAR(128) NOT NULL DEFAULT '',
-#   image VARCHAR(255) NOT NULL DEFAULT '',
-#   nick VARCHAR(64) NULL,
-#   content TEXT DEFAULT '',
-#   notes TEXT DEFAULT '',
-#   active BOOL NOT NULL DEFAULT TRUE,
-#   del BOOL NOT NULL DEFAULT FALSE,
-#   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-#   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-# );
-
-
 CREATE TABLE IF NOT EXISTS example
 (
   example_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(128) NOT NULL DEFAULT '',
   image VARCHAR(255) NOT NULL DEFAULT '',
   active BOOL NOT NULL DEFAULT TRUE,
+  notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS example_details
-(
-  example_id INT UNSIGNED NOT NULL,
-  nickname VARCHAR(64) NULL,
-  mobile VARCHAR(128) NOT NULL DEFAULT '',
-  address1 VARCHAR(255) NOT NULL DEFAULT '',
-  address2 VARCHAR(255) NOT NULL DEFAULT '',
-  city VARCHAR(255) NOT NULL DEFAULT '',
-  state VARCHAR(255) NOT NULL DEFAULT '',
-  country VARCHAR(255) NOT NULL DEFAULT '',
-  content TEXT DEFAULT '',
-  notes TEXT DEFAULT '',
-  CONSTRAINT fk_example_details__example_id FOREIGN KEY (example_id) REFERENCES example (example_id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 
-CREATE TABLE IF NOT EXISTS example_microsoft
+CREATE TABLE IF NOT EXISTS widget
 (
-  example_id INT UNSIGNED NOT NULL,
-  username VARCHAR(128) NOT NULL DEFAULT '',
-  microsoft_id VARCHAR(128) NOT NULL DEFAULT '',
+  widget_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL DEFAULT '',
   active BOOL NOT NULL DEFAULT TRUE,
-  CONSTRAINT fk_example_microsoft__example_id FOREIGN KEY (example_id) REFERENCES example (example_id) ON DELETE CASCADE ON UPDATE CASCADE
+  enabled TINYINT(1) NOT NULL DEFAULT 0,
+  notes TEXT,
+  blob_data BLOB,
+  time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- timezone enabled
+  date_time DATETIME DEFAULT NULL,
+  date DATE DEFAULT NULL,
+  time TIME DEFAULT NULL,
+  json_str JSON DEFAULT NULL,
+  modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-
--- TODO: This goes into views.php
-CREATE OR REPLACE VIEW v_example AS
-SELECT
-    e.example_id,
-    e.name,
-    e.image,
-    e.active,
-    ed.nickname,
-    ed.mobile,
-    ed.address1,
-    ed.address2,
-    ed.city,
-    ed.state,
-    ed.country,
-    ed.content,
-    ed.notes,
-    em.username,
-    em.microsoft_id,
-    em.active AS microsoft_is_active,
-    e.modified,
-    e.created
-FROM example e
-LEFT JOIN example_details ed USING (example_id)
-LEFT JOIN example_microsoft em USING (example_id)
-;
-
-
-
-
-
-
-
-
-
-
-
-
-
+INSERT INTO widget (name, active, enabled, notes, blob_data, time_stamp, date_time, date, time, json_str) VALUES
+  ('Widget 1', TRUE, FALSE, 'Notes Field', 'Blob field', NOW(), NOW(), CURRENT_DATE, CURRENT_TIME, '{"test":"this is a test str"}'),
+  ('Widget 2', TRUE, TRUE, 'Notes Field', 'Blob field', NOW(), '2023-12-01 10:20:30', '2023-12-01', '10:20:30', '{"test":"this is a test str"}'),
+  ('Widget 3', FALSE, FALSE, 'Notes Field', 'Blob field', NULL, NOW(), NULL, CURRENT_TIME, NULL),
+  ('Widget 4', TRUE, TRUE, 'Notes Field', 'Blob field', NOW(), NULL, CURRENT_DATE, NULL, NULL);
 
 
 
@@ -113,6 +58,12 @@ UPDATE `user` SET `hash` = MD5(CONCAT(username, user_id)) WHERE 1;
 
 SET SQL_SAFE_UPDATES = 1;
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+
+
+
 
 
 

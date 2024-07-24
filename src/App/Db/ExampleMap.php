@@ -13,35 +13,6 @@ use Tk\DataMap\Table;
 class ExampleMap extends Mapper
 {
 
-//    public function save($model): bool
-//    {
-//        return true;
-//    }
-//
-//    public function insert($model): bool
-//    {
-//        return true;
-//    }
-//
-//    public function update($model): bool
-//    {
-//        return true;
-//    }
-//
-//    public function find($id): ?Example
-//    {
-//        return null;
-//    }
-//
-//    public function find_all(?Tool $tool): array
-//    {
-//        return [];
-//    }
-
-
-
-
-
     // ------------------------------
 
     public function makeDataMaps(): void
@@ -112,9 +83,9 @@ class ExampleMap extends Mapper
             $filter->appendWhere('a.name = :name AND ');
         }
 
-        if (!empty($filter['nick'])) {
-            $filter->appendWhere('a.nick = :nick AND ');
-        }
+//        if (!empty($filter['nick'])) {
+//            $filter->appendWhere('a.nick = :nick AND ');
+//        }
 
         if (!$this->isEmpty($filter['active'])) {
             $filter->appendWhere('a.active = :active AND ');
