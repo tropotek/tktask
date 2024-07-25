@@ -2,7 +2,6 @@
 namespace App\Db;
 
 use Bs\Db\Traits\TimestampTrait;
-use Tt\DataMap\DataMap;
 use Tt\DbModel;
 
 class Widget extends DbModel
@@ -19,6 +18,7 @@ class Widget extends DbModel
     public ?\DateTime $dateTime  = null;
     public ?\DateTime $date      = null;
     public ?\DateTime $time      = null;
+    public ?\DateTime $year      = null;
     public ?\stdClass $jsonStr   = null;
     public ?\DateTime $modified  = null;
     public ?\DateTime $created   = null;
@@ -29,59 +29,50 @@ class Widget extends DbModel
 
     public function __construct()
     {
-
-        $this->_primaryKey = 'widgetId';
+        // todo: need to simplify this
+        $this->_primaryKey = self::getDataMap()->getPrimaryKey()->getProperty();
+        // example of mapper with custom table/view
+        //self::getDataMap('test', 'v_test');
         $this->_TimestampTrait();
     }
 
-
-//    public static function createDataMap(array $dbMeta = []): DataMap
+    // example of mapper with custom map
+//    public static function getDataMap(string $table = '', string $view = ''): DataMap
 //    {
+//        $map = self::$_MAPS[static::class] ?? null;
+//        if (!is_null($map)) return $map;
+//
 //        $map = new DataMap();
-//        $map->addDataType(new Db\Integer('widgetId', 'widget_id'))->setAttribute(DataMap::ATTR_PRIMARY_KEY);
-//        $map->addDataType(new Db\Text('name'));
-//        $map->addDataType(new Db\Boolean('active'));
-//        $map->addDataType(new Db\Boolean('enabled'));
-//        $map->addDataType(new Db\Text('notes'));
-//        $map->addDataType(new Db\Text('blobData', 'blob_data'));
-//        $map->addDataType(new Db\DateTime('timeStamp', 'time_stamp'));
-//        $map->addDataType(new Db\DateTime('dateTime', 'date_time'));
-//        $map->addDataType(new Db\Date('date'));
-//        $map->addDataType(new Db\Time('time'));
-//        $map->addDataType(new Db\Json('json_str'));
-//        $map->addDataType(new Db\Date('modified'));
-//        $map->addDataType(new Db\Date('created'));
+//        $map->addType(new Db\Integer('widgetId', 'widget_id'))->setFlag(DataMap::PRI);
+//        $map->addType(new Db\Text('name'));
+//        $map->addType(new Db\Boolean('active'));
+//        $map->addType(new Db\Boolean('enabled'));
+//        $map->addType(new Db\Text('notes'));
+//        $map->addType(new Db\Json('json_str'));
+//        $map->addType(new Db\Date('modified'));
+//        $map->addType(new Db\Date('created'));
 //
 //        // view fields are read only
-//        $map->addDataType(new Db\Boolean('isWorking', 'is_working'), DataMap::READ);
-//        $map->addDataType(new Db\Date('today'), DataMap::READ);
-//        $map->addDataType(new Db\Text('hash'), DataMap::READ);
+//        $map->addType(new Db\Boolean('isWorking', 'is_working'), DataMap::READ);
+//        $map->addType(new Db\Date('today'), DataMap::READ);
+//        $map->addType(new Db\Text('hash'), DataMap::READ);
 //
+//        self::$_MAPS[static::class] = $map;
 //        return $map;
 //    }
 
 
     public function save(): void
     {
-        $vals = $this->__unmap([
-            'name'      => 'trim',
-            'active'    => 'boolval',
-            'enabled'   => 'boolval',
-            'notes'     => 'trim',
-            'blobData'  => '',
-            'timeStamp' => '\Tk\Db\Db::mysqlDateTime',
-            'dateTime'  => '\Tk\Db\Db::mysqlDateTime',
-            'date'      => '\Tk\Db\Db::mysqlDate',
-            'time'      => '\Tk\Db\Db::mysqlTime',
-            'jsonStr'   => 'json_encode',
-        ]);
+        $map = static::getDataMap();
+        $values = $map->getArray($this);
 
         if ($this->getId()) {
-            $vals['widget_id'] = $this->widgetId;
-            self::getDb()->update('widget', 'widget_id', $vals);
+            $values['widget_id'] = $this->widgetId;
+            self::getDb()->update('widget', 'widget_id', $values);
         } else {
-            unset($vals['widget_id']);
-            self::getDb()->insert('widget', $vals);
+            unset($values['widget_id']);
+            self::getDb()->insert('widget', $values);
             $this->widgetId = self::getDb()->lastInsertId();
         }
 

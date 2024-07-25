@@ -6,8 +6,6 @@ use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
-use Tk\Db\Db;
-use Tk\Db\DbModel;
 use Tk\Exception;
 use Tk\Uri;
 
@@ -38,14 +36,22 @@ class Home extends PageController
 
 
         $db = $this->getFactory()->getDbNew();
-
         $w = Widget::get(2);
         vd($w);
+        //$w->save();
+
+        $w = new Widget();
+        $w->name = 'My test widget';
+        $w->active = true;
+        $w->enabled = false;
+        $w->jsonStr = (object)[
+            'my' => 'Test object',
+            'with' => 'Extra properties',
+            'but' => 'just some more for fun',
+        ];
         $w->save();
 
-
-
-
+        vd($w);
 
         return $this->getPage();
     }

@@ -2180,16 +2180,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.4.2",
+            "version": "7.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "6a37da4822eebcd2706793454b07bd891c5277a8"
+                "reference": "db05d34dd0964dd241045cfc319c3a1bd45773e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/6a37da4822eebcd2706793454b07bd891c5277a8",
-                "reference": "6a37da4822eebcd2706793454b07bd891c5277a8",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/db05d34dd0964dd241045cfc319c3a1bd45773e8",
+                "reference": "db05d34dd0964dd241045cfc319c3a1bd45773e8",
                 "shasum": ""
             },
             "type": "component",
@@ -2214,7 +2214,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT-only"
+                "GPL-2.0-or-later"
             ],
             "description": "Web based JavaScript HTML WYSIWYG editor control.",
             "homepage": "https://www.tiny.cloud/",
@@ -2233,9 +2233,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.4.2"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.2.1"
             },
-            "time": "2023-04-26T10:48:15+00:00"
+            "time": "2024-07-03T05:25:26+00:00"
         },
         {
             "name": "ttek/tk-auth",
@@ -2289,17 +2289,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "5162a3e8eed1d3524ea3cea78589d33557462a1b"
+                "reference": "ca085dfbbf69450caa6a696746e1fc5092132411"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/5162a3e8eed1d3524ea3cea78589d33557462a1b",
-                "reference": "5162a3e8eed1d3524ea3cea78589d33557462a1b",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/ca085dfbbf69450caa6a696746e1fc5092132411",
+                "reference": "ca085dfbbf69450caa6a696746e1fc5092132411",
                 "shasum": ""
             },
             "require": {
                 "studio-42/elfinder": "~2.1.0",
-                "tinymce/tinymce": "~6.4.0",
+                "tinymce/tinymce": "~7.0",
                 "ttek/tk-auth": "~8.0.0",
                 "ttek/tk-domtemplate": "~8.0.0",
                 "ttek/tk-form": "~8.0.0",

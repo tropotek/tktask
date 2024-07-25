@@ -26,7 +26,15 @@ CREATE TABLE IF NOT EXISTS widget
   date_time DATETIME DEFAULT NULL,
   date DATE DEFAULT NULL,
   time TIME DEFAULT NULL,
+  year YEAR DEFAULT NULL,
   json_str JSON DEFAULT NULL,
+  -- A SET value must be the empty string or a value consisting only of the values listed in the column definition separated by commas.
+  set_type SET('Applicant','Student','Mentor','Physician','Staff') DEFAULT 'Applicant,Staff',
+  -- An ENUM value must be one of those listed in the column definition, or the internal numeric equivalent thereof
+  enum_type ENUM('core','elective_hospital','elective_online','csc') NOT NULL DEFAULT 'core',
+  rate decimal(10,4) NOT NULL DEFAULT '1.0000',
+  amount FLOAT NOT NULL DEFAULT '1.0',
+
   modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
