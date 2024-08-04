@@ -34,7 +34,7 @@ class Page extends \Bs\Page
         return $template;
     }
 
-    protected function showMintonParams(Template $template)
+    protected function showMintonParams(Template $template): void
     {
         $this->getFactory()->getCrumbs()->setCssList()->addCss('m-0');
 
@@ -51,7 +51,7 @@ class Page extends \Bs\Page
     }
 
 
-    protected function showCrumbs()
+    protected function showCrumbs(): void
     {
         $crumbs = $this->getFactory()->getCrumbs();
         if (!($crumbs && $crumbs->isVisible())) return;
@@ -68,7 +68,7 @@ class Page extends \Bs\Page
     }
 
 
-    protected function showAlert()
+    protected function showAlert(): void
     {
         if (!count($this->getFactory()->getSession()->getFlashBag()->peekAll())) return;
 
@@ -93,7 +93,7 @@ HTML;
                 if ($css == 'error') $css = 'danger';
                 $r->addCss('alert', 'alert-' . $css);
                 //$r->setText('title', ucfirst(strtolower($type)));
-                $r->insertHtml('message', $a->message);
+                $r->setHtml('message', $a->message);
                 if ($a->icon) {
                     $r->addCss('icon', $a->icon);
                     $r->setVisible('icon');
@@ -111,7 +111,7 @@ HTML;
 
 
     // TODO: Show a maintenance ribbon on the site???
-    protected function showMaintenanceRibbon()
+    protected function showMaintenanceRibbon(): void
     {
 //        if (!$this->getConfig()->get('system.maintenance.enabled')) return;
 //        $controller = \Tk\Event\Event::findControllerObject($event);

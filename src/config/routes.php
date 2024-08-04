@@ -20,10 +20,13 @@ use Symfony\Component\Routing\Loader\Configurator\CollectionConfigurator;
 return function (CollectionConfigurator $routes) {
 
     $routes->add('home-base', '/')
+        ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Home::class, 'doDefault']);
     $routes->add('home', '/home')
+        ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Home::class, 'doDefault']);
     $routes->add('contact', '/contact')
+        ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Contact::class, 'doDefault']);
     $routes->add('user-dashboard', '/dashboard')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
@@ -38,6 +41,18 @@ return function (CollectionConfigurator $routes) {
     // TODO: Examples - remove for productions sites...
 
     // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
+    $routes->add('widget-manager', '/widgetManager')
+        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
+        ->controller([\App\Controller\Widget\Manager::class, 'doDefault']);
+    $routes->add('widget-edit', '/widgetEdit')
+        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
+        ->controller('\App\Controller\Widget\Edit::doDefault');
+
+    // php page route example
+    // $routes->add('widget-test', '/widgetTest')
+    //     ->defaults(['path' => '/page/widgetManager.php'])
+    //     ->controller([\Tk\Mvc\PhpController::class, 'doDefault']);
+
     $routes->add('example-manager', '/exampleManager')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Example\Manager::class, 'doDefault']);
@@ -62,30 +77,25 @@ return function (CollectionConfigurator $routes) {
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Examples\Htmx::class, 'doDefault']);
 
+    // Note no page template param for API calls
     $routes->add('api-htmx-test', '/api/htmx/test')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Api\HtmxExamples::class, 'doTest'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
     $routes->add('api-htmx-users', '/api/htmx/users')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Api\HtmxExamples::class, 'doFindUsers'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
     $routes->add('api-htmx-button', '/api/htmx/button')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Api\HtmxExamples::class, 'doButton'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
     $routes->add('api-htmx-tabs', '/api/htmx/tabs')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Api\HtmxExamples::class, 'doGetTabs'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
 
     $routes->add('api-htmx-upload', '/api/htmx/upload')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Api\HtmxExamples::class, 'doUpload'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_POST]);
 
     $routes->add('api-htmx-toast', '/api/htmx/toast')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Api\HtmxExamples::class, 'doToast'])
         ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
 

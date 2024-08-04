@@ -17,10 +17,13 @@ class Factory extends \Bs\Factory implements FactoryInterface
 
     public function createPage(string $templatePath = ''): Page
     {
+        // So we can change the mintion template from the settings page
         if (str_contains($templatePath, '/minton/')) {
             $templatePath = $this->makePath($this->getRegistry()->get('minton.template', '/html/minton/sn-admin.html'));
         }
-        return Page::create($templatePath);
+        $page = new Page($templatePath);
+        $page->setDomModifier($this->getTemplateModifier());
+        return $page;
     }
 
 }

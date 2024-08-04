@@ -1,24 +1,21 @@
 <?php
 namespace App\Controller\Admin;
 
+use Bs\ControllerDomInterface;
 use Bs\Db\User;
-use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class Info extends PageController
+class Info extends ControllerDomInterface
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->getPage()->setTitle('PHP Info');
-        $this->setAccess(User::PERM_SYSADMIN);
-    }
 
     public function doDefault(Request $request)
     {
-        return $this->getPage();
+        $this->getPage()->setTitle('PHP Info');
+        $this->setAccess(User::PERM_SYSADMIN);
+
+
     }
 
     public function show(): ?Template

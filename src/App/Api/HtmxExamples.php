@@ -15,6 +15,7 @@ class HtmxExamples
 {
     use SystemTrait;
 
+
     /**
      * Markup to be placed in the page:
      * <div aria-live="polite" aria-atomic="true" class="toastPanel position-relative"
@@ -98,7 +99,7 @@ HTML;
         $list = UserMap::create()->findFiltered(['type' => $request->query->get('type')]);
         $html = '';
         foreach ($list as $user) {
-            $html .= sprintf('<option value="%s">%s</option>', $user->getId(), $user->getName());
+            $html .= sprintf('<option value="%s">%s</option>', $user->getId(), htmlentities($user->getName()));
         }
         return $html;
     }

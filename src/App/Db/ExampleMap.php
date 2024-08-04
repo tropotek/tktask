@@ -62,10 +62,10 @@ class ExampleMap extends Mapper
 
     public function makeQuery(Filter $filter): Filter
     {
-        $filter->appendFrom('%s a ', $this->quoteParameter($this->getTable()));
+        $filter->appendFrom('%s a ', \Tt\Db::escapeTable($this->getTable()));
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $this->getDb()->escapeString($filter['search']) . '%';
+            $filter['search'] = '%' . $filter['search'] . '%';
             $w  = 'a.name LIKE :search OR ';
             $w .= 'a.nick LIKE :search OR ';
             $w .= 'a.example_id LIKE :search OR ';

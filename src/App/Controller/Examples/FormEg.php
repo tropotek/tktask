@@ -1,26 +1,22 @@
 <?php
 namespace App\Controller\Examples;
 
-use Bs\PageController;
+use Bs\ControllerDomInterface;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Form;
 use Tk\Uri;
 
-class FormEg extends PageController
+class FormEg extends ControllerDomInterface
 {
 
     protected Form $form;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->getPage()->setTitle('Form');
-    }
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request): void
     {
+        $this->getPage()->setTitle('Form');
 
         $this->form = Form::create('test');
         $this->form->appendField(new Form\Field\Hidden('action'))->setValue('testAction')->setLabel('Hide Me!');
@@ -35,6 +31,7 @@ class FormEg extends PageController
         $this->form->appendField(new Form\Field\Input('date1'))
             //->setRequired()
             ->addCss('date')->setAttr('data-max-date', '+1w');
+
         // Native HTML datepicker has issues with unsupported browsers and required input:
         // See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
         $this->form->appendField(new Form\Field\Input('date2'))
@@ -94,19 +91,18 @@ class FormEg extends PageController
 
         $this->form->execute($request->request->all());
 
-        return $this->getPage();
     }
 
     public function onSubmit(Form $form, Form\Action\ActionInterface $action): void
     {
         $form->addFieldError('test', 'this is a test error');
-vd($form->getAllErrors());
+        //vd($form->getAllErrors());
 
         if ($form->hasErrors()) {
             return;
         }
 
-        vd($form->getFieldValues());
+        //vd($form->getFieldValues());
         // ...
 
         Alert::addSuccess('Form save successfully.');

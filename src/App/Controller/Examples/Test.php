@@ -1,25 +1,19 @@
 <?php
 namespace App\Controller\Examples;
 
-use Bs\PageController;
+use Bs\ControllerDomInterface;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class Test extends PageController
+class Test extends ControllerDomInterface
 {
 
-    public function __construct()
+    public function doDefault(Request $request): void
     {
-        parent::__construct();
         $this->getPage()->setTitle('Test');
-    }
-
-    public function doDefault(Request $request)
-    {
 
 
 
-        return $this->getPage();
     }
 
     public function show(): ?Template
@@ -47,9 +41,9 @@ class Test extends PageController
     <div class="card-header" var="title"><i class="fa fa-cogs"></i> </div>
     <div class="card-body" var="content">
         <h3 var="title"></h3>
-        
-        
-        
+
+
+
     </div>
   </div>
 </div>

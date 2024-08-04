@@ -57,11 +57,14 @@ form .tk-form-fields.tab-content {
   --bs-btn-padding-x: .4rem;
   --bs-btn-font-size: .7rem;
 }
-.tk-table table td a.btn {
+.tk-table td a.btn {
   display: inline;
   --bs-btn-padding-y: .2rem;
   --bs-btn-padding-x: .4rem;
   --bs-btn-font-size: .75rem;
+}
+.tk-table td.max-width {
+  width: 100%;
 }
 
 /* Header OrderBy Arrows */
@@ -75,7 +78,6 @@ td a {
   width: 100%;
 }
 th a {
-  padding-right: 18px;
   position: relative;
 }
 th a:before,
@@ -88,6 +90,7 @@ th a:after {
   top: 50%;
   position: absolute;
   width: 0;
+  padding-right: 18px;
 }
 th a.desc:before {
   border-bottom-color: #666;

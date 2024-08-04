@@ -10,7 +10,6 @@ use Tk\Ui\Traits\CssTrait;
 class Nav
 {
     use SystemTrait;
-    use CssTrait;
     use AttributesTrait;
 
     protected function getNavList(): array
@@ -28,6 +27,16 @@ class Nav
             ],
             'Application' => [
                 'icon' => 'ri-apps-2-fill',
+                'Widget Manager' => [
+                    'icon' => 'ri-file-list-3-line',
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                    'url' => '/widgetManager'
+                ],
+                'Widget Edit' => [
+                    'icon' => 'ri-file-list-3-line',
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                    'url' => '/widgetEdit'
+                ],
                 'Example Manager' => [
                     'icon' => 'ri-file-list-3-line',
                     'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
@@ -246,8 +255,8 @@ HTML;
 
     protected function isVisible(array $item): bool
     {
-        if (isset($item['visible']) && is_callable($item['visible'])) {
-            return $item['visible']($item);
+        if (is_callable($item['visible'] ?? '')) {
+            return $item['visible']($item) ?? false;
         }
         return true;
     }

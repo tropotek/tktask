@@ -7,6 +7,7 @@
  *
  * It can be executed from the cli command
  *   `./bin/cmd debug`
+ *
  */
 
 $config = \Tk\Config::instance();

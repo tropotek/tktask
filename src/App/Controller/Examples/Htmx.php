@@ -1,23 +1,19 @@
 <?php
 namespace App\Controller\Examples;
 
-use Bs\PageController;
+use Bs\ControllerDomInterface;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class Htmx extends PageController
+class Htmx extends ControllerDomInterface
 {
 
-    public function __construct()
+
+    public function doDefault(Request $request): void
     {
-        parent::__construct();
         $this->getPage()->setTitle('Htmx Examples');
-    }
 
-    public function doDefault(Request $request)
-    {
 
-        return $this->getPage();
     }
 
     public function show(): ?Template
@@ -91,17 +87,17 @@ CSS;
           <label>User Type</label>
           <select class="form-select" name="type"
             hx-get="api/htmx/users"
-            hx-target="#users"
+            hx-target="#users-sel"
             hx-indicator=".select-loader"
             hx-trigger="change, load"
           >
-            <option value="admin">Admin</option>
+            <option value="staff">Staff</option>
             <option value="member">Member</option>
           </select>
         </div>
         <div class="mb-3">
           <label>Users</label>
-          <select class="form-select" id="users" name="userId"></select>
+          <select class="form-select" id="users-sel" name="userId"></select>
         </div>
 
         <span class="spinner-border tk-loading select-loader" role="status">
@@ -132,7 +128,7 @@ CSS;
                 <input type="file" name="file" class="form-control" />
               </div>
               <div class="col-1">
-                <button>Upload</button>
+                <button class="btn btn-outline-secondary">Upload</button>
               </div>
               <div class="col-4">
                   <div class="progress">

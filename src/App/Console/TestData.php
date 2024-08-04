@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TestData extends \Tk\Console\Command\TestData
 {
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('testData')
             ->setAliases(['td'])
@@ -18,14 +18,12 @@ class TestData extends \Tk\Console\Command\TestData
             ->setDescription('Fill the database with test data');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->getConfig()->isDebug()) {
             $this->writeError('Error: Only run this command in a debug environment.');
             return self::FAILURE;
         }
-
-        $db = $this->getFactory()->getDb();
 
         $this->clearData();
         if ($input->getOption('clear')) return self::SUCCESS;
@@ -37,10 +35,8 @@ class TestData extends \Tk\Console\Command\TestData
         return self::SUCCESS;
     }
 
-    public function createExamples()
+    public function createExamples(): void
     {
-        $db = $this->getFactory()->getDb();
-
         for($i = 0; $i < 73; $i++) {
             $obj = new Example();
             $obj->setName($this->createName());
@@ -50,10 +46,8 @@ class TestData extends \Tk\Console\Command\TestData
         }
     }
 
-    public function createUsers()
+    public function createUsers(): void
     {
-        $db = $this->getFactory()->getDb();
-
         // Generate new users
         for($i = 0; $i < 50; $i++) {
             $obj = $this->getFactory()->createUser();
@@ -89,12 +83,12 @@ class TestData extends \Tk\Console\Command\TestData
 
     }
 
-    private function clearData()
+    private function clearData(): void
     {
-        $db = $this->getFactory()->getDb();
+        $db = $this->getFactory()->getDb()->getPdo();
 
-        $db->exec('DELETE FROM user WHERE uid = \'***\' ');
-        $db->exec('DELETE FROM example WHERE image = \'***\' ');
+        $db->exec("DELETE FROM user WHERE uid = '***'");
+        $db->exec("DELETE FROM example WHERE image = '***'");
     }
 
 

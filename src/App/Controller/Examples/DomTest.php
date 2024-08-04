@@ -1,23 +1,19 @@
 <?php
 namespace App\Controller\Examples;
 
-use Bs\PageController;
+use Bs\ControllerDomInterface;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class DomTest extends PageController
+class DomTest extends ControllerDomInterface
 {
 
-    public function __construct()
+
+    public function doDefault(Request $request): void
     {
-        parent::__construct();
         $this->getPage()->setTitle('Dom Test');
-    }
 
-    public function doDefault(Request $request)
-    {
 
-        return $this->getPage();
     }
 
     public function show(): ?Template

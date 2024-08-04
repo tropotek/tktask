@@ -1,33 +1,31 @@
 <?php
 namespace App\Controller\Admin;
 
+use Bs\ControllerDomInterface;
 use Bs\Db\User;
 use Bs\Form\EditTrait;
-use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class Settings extends PageController
+class Settings extends ControllerDomInterface
 {
     use EditTrait;
 
 
-    public function __construct()
+    public function doDefault(Request $request): void
     {
-        parent::__construct();
         $this->getPage()->setTitle('Edit Settings');
         $this->setAccess(User::PERM_SYSADMIN);
+
         $this->getRegistry()->save();
         $this->getCrumbs()->reset();
-    }
 
-    public function doDefault(Request $request)
-    {
+
         $this->setForm(new \App\Form\Settings());
         $this->getForm()->enableTemplateSelect(str_contains($this->getPage()->getTemplatePath(), '/minton/'));
         $this->getForm()->init()->execute($request->request->all());
 
-        return $this->getPage();
+
     }
 
     public function show(): ?Template

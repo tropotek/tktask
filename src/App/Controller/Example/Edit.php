@@ -3,6 +3,7 @@ namespace App\Controller\Example;
 
 use App\Db\Example;
 use App\Db\ExampleMap;
+use Bs\ControllerDomInterface;
 use Bs\Db\User;
 use Bs\Form\EditTrait;
 use Bs\PageController;
@@ -10,22 +11,17 @@ use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Exception;
 
-class Edit extends PageController
+class Edit extends ControllerDomInterface
 {
     use EditTrait;
 
     protected ?Example $example = null;
 
-
-    public function __construct()
+    public function doDefault(Request $request)
     {
-        parent::__construct();
         $this->getPage()->setTitle('Edit Example 2');
         $this->setAccess(User::PERM_ADMIN);
-    }
 
-    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
-    {
         $this->example = new Example();
         if ($request->query->getInt('exampleId')) {
             $this->example = ExampleMap::create()->find($request->query->getInt('exampleId'));
@@ -37,7 +33,7 @@ class Edit extends PageController
         $this->setForm(new \App\Form\Example($this->example));
         $this->getForm()->init()->execute($request->request->all());
 
-        return $this->getPage();
+
     }
 
     public function show(): ?Template

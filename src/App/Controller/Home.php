@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Db\Widget;
+use Bs\ControllerDomInterface;
 use Bs\PageController;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,17 +10,14 @@ use Tk\Alert;
 use Tk\Exception;
 use Tk\Uri;
 
-class Home extends PageController
+class Home extends ControllerDomInterface
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->getPage()->setTitle('Home');
-    }
 
-    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
+    public function doDefault(Request $request)
     {
+        $this->getPage()->setTitle('Home');
+
         if ($request->query->has('e')) {
             throw new Exception('This is a test exception...', 500);
         }
@@ -34,26 +32,6 @@ class Home extends PageController
         $reg->save();
 
 
-
-        $db = $this->getFactory()->getDbNew();
-        $w = Widget::get(2);
-        vd($w);
-        //$w->save();
-
-        $w = new Widget();
-        $w->name = 'My test widget';
-        $w->active = true;
-        $w->enabled = false;
-        $w->jsonStr = (object)[
-            'my' => 'Test object',
-            'with' => 'Extra properties',
-            'but' => 'just some more for fun',
-        ];
-        $w->save();
-
-        vd($w);
-
-        return $this->getPage();
     }
 
     public function show(): ?Template

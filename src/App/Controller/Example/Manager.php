@@ -1,30 +1,27 @@
 <?php
 namespace App\Controller\Example;
 
-use Bs\PageController;
+use Bs\ControllerDomInterface;
 use Bs\Table\ManagerTrait;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class Manager extends PageController
+class Manager extends ControllerDomInterface
 {
     use ManagerTrait;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->getPage()->setTitle('Example Manager');
-    }
 
-    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
+    public function doDefault(Request $request)
     {
+        $this->getPage()->setTitle('Example Manager');
+        $this->getCrumbs()->reset();
+
         $this->setTable(new \App\Table\Example());
         //$this->getTable()->resetTableSession();
         $this->getTable()->init();
         $this->getTable()->findList([], $this->getTable()->getTool('name'));
         $this->getTable()->execute($request);
 
-        return $this->getPage();
     }
 
     public function show(): ?Template

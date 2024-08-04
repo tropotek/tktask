@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use Bs\PageController;
+use Bs\ControllerDomInterface;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
@@ -20,20 +20,17 @@ use Tk\Uri;
  * Most clients prefer this type of
  *
  */
-class Contact extends PageController
+class Contact extends ControllerDomInterface
 {
     use SystemTrait;
     use FormTrait;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->getPage()->setTitle('Contact Us');
-        $this->setForm(Form::create('contact'));
-    }
 
     public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
     {
+        $this->getPage()->setTitle('Contact Us');
+        $this->setForm(Form::create('contact'));
+
         $hash = $this->getSession()->get($this->getForm()->getId() . '-nc');
         if (!$hash) {
             $hash = md5(time());
@@ -56,7 +53,6 @@ class Contact extends PageController
         $this->setFormRenderer(new Form\Renderer\Dom\Renderer($this->getForm()));
 
 
-        return $this->getPage();
     }
 
     public function onSubmit(Form $form, Form\Action\ActionInterface $action): void

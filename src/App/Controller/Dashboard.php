@@ -1,28 +1,27 @@
 <?php
 namespace App\Controller;
 
-use Bs\PageController;
+use Bs\ControllerDomInterface;
+use Bs\Db\User;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
-use Tk\Color;
-use Tk\Image;
 use Tk\Uri;
 
-class Dashboard extends PageController
+class Dashboard extends ControllerDomInterface
 {
 
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request): void
     {
         $this->getPage()->setTitle('Dashboard');
+
         if (!$this->getFactory()->getAuthUser()) {
             Alert::addWarning('You do not have permission to access the page: <b>' . Uri::create()->getRelativePath() . '</b>');
-            // TODO: get the user homepage from somewhere ???
-            Uri::create('/')->redirect();
+            Uri::create('/home')->redirect();
+            // $this->getBackUrl()->redirect();
         }
 
-        return $this->getPage();
     }
 
     public function show(): ?Template
