@@ -24,7 +24,10 @@ class Manager extends ControllerDomInterface
         $this->getCrumbs()->reset();
 
         // create table
-        $this->table = new Table('widget');
+        $this->table = new Table();
+        $this->table->setLimit($request->get($this->table->makeInstanceKey(Table::PARAM_LIMIT), 25));
+        $this->table->setPage($request->get($this->table->makeInstanceKey(Table::PARAM_PAGE), 1));
+        $this->table->setOrderBy($request->get($this->table->makeInstanceKey(Table::PARAM_ORDERBY), 'name'));
 
         $this->table->appendCell('widgetId')
             ->setSortable(true)
@@ -36,18 +39,18 @@ class Manager extends ControllerDomInterface
                 $url = Uri::create('/widgetEdit', ['widgetId' => $row->widgetId]);
                 $del = Uri::create('/widgetEdit', ['del' => $row->widgetId]);
                 return <<<HTML
-                    <a class="btn btn-primary" href="$url" title="Edit"><i class="fa fa-edit"></i></a> &nbsp;
-                    <a class="btn btn-danger" href="$del" title="Delete" data-confirm="Are you sure you want to delete 'Zuly'"><i class="fa fa-trash"></i></a>
+                    <a class="btn btn-primary" href="$url" title="Edit"><i class="fa fa-fw fa-edit"></i></a> &nbsp;
+                    <a class="btn btn-danger" href="$del" title="Delete" data-confirm="Are you sure you want to delete 'Zuly'"><i class="fa fa-fw fa-trash"></i></a>
                 HTML;
             });
 
         $this->table->appendCell('name')
-            ->addCss('max-width')
             ->setSortable(true)
             ->addOnValue(function(Widget $row, Cell $cell) {
                 $url = Uri::create('/widgetEdit', ['widgetId' => $row->widgetId]);
                 return sprintf('<a href="%s">%s</a>', $url, $row->name);
-            });
+            })
+            ->getHeaderAttrs()->addCss('max-width');
 
         $this->table->appendCell('dateTime')
             ->addCss('text-nowrap text-center')
@@ -71,13 +74,19 @@ class Manager extends ControllerDomInterface
         $template->setAttr('back', 'href', $this->getBackUrl());
 
         $rows = Widget::getAll();
+        $this->table->setTotalRows(count($rows));
 
-        $renderer = new Table\PhpRenderer($this->table, __DIR__.'/tableRenderer.php');
-        $template->appendHtml('content', $renderer->getHtml($rows));
+        $rows = array_slice($rows, $this->table->getOffset(), $this->table->getLimit() ?: null);
+
+        //$renderer = new Table\PhpRenderer($this->table, __DIR__.'/tableRenderer.php');
+//        $path = $this->getConfig()->makePath($this->getConfig()->get('path.vendor.org').'/tk-framework/Tt/Table/templates/bs5_php.php');
+//        $renderer = new Table\PhpRenderer($this->table, $rows, $path);
+//        $template->appendHtml('content', $renderer->getHtml());
 
         // TODO: DomRenderer
-
-        //$template->appendTemplate('content', $tableRenderer->show());
+        $path = $this->getConfig()->makePath($this->getConfig()->get('path.vendor.org').'/tk-framework/Tt/Table/templates/bs5_dom.html');
+        $renderer = new Table\DomRenderer($this->table, $rows, $path);
+        $template->appendTemplate('content', $renderer->show());
 
         return $template;
     }

@@ -63,7 +63,7 @@ form .tk-form-fields.tab-content {
   --bs-btn-padding-x: .4rem;
   --bs-btn-font-size: .75rem;
 }
-.tk-table td.max-width {
+.tk-table .max-width {
   width: 100%;
 }
 
@@ -71,6 +71,7 @@ form .tk-form-fields.tab-content {
 th
 {
   text-align: center;
+  white-space: nowrap;
 }
 th a,
 td a {
