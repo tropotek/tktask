@@ -33,8 +33,8 @@ class Manager extends ControllerDomInterface
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(Widget $row, Cell $cell) {
-                $url = Uri::create('/widgetEdit')->set('widgetId', $row->widgetId);
-                $del = Uri::create('/widgetEdit')->set('del', $row->widgetId);
+                $url = Uri::create('/widgetEdit', ['widgetId' => $row->widgetId]);
+                $del = Uri::create('/widgetEdit', ['del' => $row->widgetId]);
                 return <<<HTML
                     <a class="btn btn-primary" href="$url" title="Edit"><i class="fa fa-edit"></i></a> &nbsp;
                     <a class="btn btn-danger" href="$del" title="Delete" data-confirm="Are you sure you want to delete 'Zuly'"><i class="fa fa-trash"></i></a>
@@ -45,7 +45,7 @@ class Manager extends ControllerDomInterface
             ->addCss('max-width')
             ->setSortable(true)
             ->addOnValue(function(Widget $row, Cell $cell) {
-                $url = Uri::create('/widgetEdit')->set('widgetId', $row->widgetId);
+                $url = Uri::create('/widgetEdit', ['widgetId' => $row->widgetId]);
                 return sprintf('<a href="%s">%s</a>', $url, $row->name);
             });
 

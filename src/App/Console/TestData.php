@@ -6,6 +6,7 @@ use Bs\Db\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tt\Db;
 
 class TestData extends \Tk\Console\Command\TestData
 {
@@ -85,11 +86,9 @@ class TestData extends \Tk\Console\Command\TestData
 
     private function clearData(): void
     {
-        $db = $this->getFactory()->getDb()->getPdo();
-
+        $db = Db::getPdo();
         $db->exec("DELETE FROM user WHERE uid = '***'");
         $db->exec("DELETE FROM example WHERE image = '***'");
     }
-
 
 }

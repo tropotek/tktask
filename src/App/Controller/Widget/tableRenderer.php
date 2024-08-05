@@ -9,12 +9,6 @@ $table = $this->table;
 
 
 
-function e(mixed $s): string
-{
-    if (is_numeric($s)) return strval($s);
-    if (empty($s)) return '';
-    return htmlentities($s, ENT_QUOTES | ENT_HTML401, "UTF-8", false);
-}
 
 ?>
 <table class="tk-table table table-bordered table-hover <?= $table->getCssString() ?>" <?= $table->getAttrString() ?>>

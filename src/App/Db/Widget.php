@@ -2,6 +2,7 @@
 namespace App\Db;
 
 use Bs\Db\Traits\TimestampTrait;
+use Tt\Db;
 use Tt\DbModel;
 
 class Widget extends DbModel
@@ -43,18 +44,18 @@ class Widget extends DbModel
         $values = $map->getArray($this);
         if ($this->getId()) {
             $values['widget_id'] = $this->widgetId;
-            self::getDb()->update('widget', 'widget_id', $values);
+            Db::update('widget', 'widget_id', $values);
         } else {
             unset($values['widget_id']);
-            self::getDb()->insert('widget', $values);
-            $this->widgetId = self::getDb()->lastInsertId();
+            Db::insert('widget', $values);
+            $this->widgetId = Db::lastInsertId();
         }
         $this->reload();
     }
 
     public static function get(int $id): ?static
     {
-        return self::getDb()->queryOne("
+        return Db::queryOne("
                 SELECT *
                 FROM v_widget
                 WHERE widget_id = :id",
@@ -65,7 +66,7 @@ class Widget extends DbModel
 
     public static function getSome(array $ids): array
     {
-        return self::getDb()->query("
+        return Db::query("
                 SELECT *
                 FROM v_widget
                 WHERE widget_id IN :ids",
@@ -76,7 +77,7 @@ class Widget extends DbModel
 
     public static function getAll(): array
     {
-        return self::getDb()->query(
+        return Db::query(
             "SELECT * FROM v_widget",
             null,
             self::class
