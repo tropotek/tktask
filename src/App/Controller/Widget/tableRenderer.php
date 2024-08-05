@@ -8,8 +8,6 @@
 $table = $this->table;
 
 
-
-
 ?>
 <table class="tk-table table table-bordered table-hover <?= $table->getCssString() ?>" <?= $table->getAttrString() ?>>
     <thead class="table-light">
