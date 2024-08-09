@@ -3,6 +3,7 @@ namespace App\Db;
 
 use Bs\Db\Traits\TimestampTrait;
 use Tt\Db;
+use Tt\DbFilter;
 use Tt\DbModel;
 
 class Widget extends DbModel
@@ -48,9 +49,47 @@ class Widget extends DbModel
         } else {
             unset($values['widget_id']);
             Db::insert('widget', $values);
-            $this->widgetId = Db::lastInsertId();
+            $this->widgetId = Db::getLastInsertId();
         }
         $this->reload();
+    }
+
+    public static function getFiltered(DbFilter $filter): array
+    {
+
+        if (!empty($filter['search'])) {
+            $filter['search'] = '%' . $filter['search'] . '%';
+            $w  = 'name LIKE :search OR ';
+            $w .= 'widget_id LIKE :search OR ';
+            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+        }
+
+        if (!empty($filter['id'])) {
+            $filter['widgetId'] = $filter['id'];
+        }
+        if (!empty($filter['widgetId'])) {
+            $filter->appendWhere('(widget_id IN :widgetId) AND ');
+        }
+
+        if (!empty($filter['name'])) {
+            $filter->appendWhere('name = :name AND ');
+        }
+
+        if (is_bool($filter['active'] ?? null)) {
+            $filter->appendWhere('active = :active AND ');
+        }
+
+        if (!empty($filter['exclude'])) {
+            $filter->appendWhere('(widget_id NOT IN :exclude) AND ');
+        }
+
+        return Db::query("
+            SELECT *
+            FROM v_widget
+            {$filter->getSql()}",
+            $filter->all(),
+            self::class
+        );
     }
 
     public static function get(int $id): ?static
@@ -64,7 +103,7 @@ class Widget extends DbModel
         );
     }
 
-    public static function getSome(array $ids): array
+    public static function getSelected(array $ids): array
     {
         return Db::query("
                 SELECT *

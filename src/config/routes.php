@@ -44,6 +44,9 @@ return function (CollectionConfigurator $routes) {
     $routes->add('widget-manager', '/widgetManager')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Widget\Manager::class, 'doDefault']);
+    $routes->add('widget-manager-php', '/widgetManagerPhp')
+        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
+        ->controller([\App\Controller\Widget\ManagerPhp::class, 'doDefault']);
     $routes->add('widget-edit', '/widgetEdit')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller('\App\Controller\Widget\Edit::doDefault');

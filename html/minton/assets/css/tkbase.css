@@ -56,6 +56,7 @@ form .tk-form-fields.tab-content {
   --bs-btn-padding-y: .2rem;
   --bs-btn-padding-x: .4rem;
   --bs-btn-font-size: .7rem;
+  margin-right: 1em;
 }
 .tk-table td a.btn {
   display: inline;
@@ -67,6 +68,14 @@ form .tk-form-fields.tab-content {
   width: 100%;
 }
 
+.tk-table th {
+  white-space: nowrap;
+}
+.tk-table th .fa {
+  color: #999999;
+  margin-left: 5px;
+}
+
 /* Header OrderBy Arrows */
 th
 {
@@ -75,11 +84,13 @@ th
 }
 th a,
 td a {
+  position: relative;
   display: block;
   width: 100%;
 }
-th a {
-  position: relative;
+th a.desc,
+th a.asc {
+  padding-right: 10px;
 }
 th a:before,
 th a:after {
@@ -87,11 +98,10 @@ th a:after {
   content: "";
   display: block;
   height: 0;
-  right: 5px;
+  right: 0;
   top: 50%;
   position: absolute;
   width: 0;
-  padding-right: 18px;
 }
 th a.desc:before {
   border-bottom-color: #666;

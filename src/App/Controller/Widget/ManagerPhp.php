@@ -13,13 +13,13 @@ use Tt\DbFilter;
 use Tt\Table;
 use Tt\Table\Cell;
 
-class Manager extends ControllerDomInterface
+class ManagerPhp extends ControllerDomInterface
 {
     use SystemTrait;
 
     protected ?Form $form = null;
     protected ?Table $table = null;
-    protected ?Table\DomRenderer $renderer = null;
+    protected ?Table\PhpRenderer $renderer = null;
 
     public function doDefault(Request $request): void
     {
@@ -30,14 +30,7 @@ class Manager extends ControllerDomInterface
         $this->table = new Table();
         $this->table->setLimit($request->get($this->table->makeInstanceKey(Table::PARAM_LIMIT), 10));
         $this->table->setPage($request->get($this->table->makeInstanceKey(Table::PARAM_PAGE), 1));
-        // Set default table orderby
         //$this->table->setOrderBy($request->get($this->table->makeInstanceKey(Table::PARAM_ORDERBY), 'name'));
-        //$this->table->setOrderBy($request->get($this->table->makeInstanceKey(Table::PARAM_ORDERBY), '-name,widgetId'));
-
-
-        // create DbFilter for csv export
-        // no need to create this here if not using the CSV action (could be created when getting rows)
-        $filter = DbFilter::createFromTable([], $this->table);
 
 
         $rowSelect = Cell\RowSelect::create('id', 'widgetId');
@@ -45,7 +38,7 @@ class Manager extends ControllerDomInterface
 
         $this->table->appendCell('widgetId')
             ->setSortable(true)
-            ->addCss('text-center')->setHeader('#');
+            ->addCss('text-center')->setHeader('ID');
 
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
@@ -78,6 +71,10 @@ class Manager extends ControllerDomInterface
             ->addOnValue('\Tt\Table\Type\Time::onValue');
 
 
+        $filter = DbFilter::create([], $this->table->getOrderBy(), $this->table->getLimit(), $this->table->getOffset());
+        $rows = Widget::getFiltered($filter);
+        $this->table->setTotalRows(Db::getLastStatement()->getTotalRows());
+
         // Table actions
         $this->table->appendAction(Table\Action\Delete::create($rowSelect))
             ->addOnDelete(function(Table\Action\Delete $action, array $selected) {
@@ -99,19 +96,12 @@ class Manager extends ControllerDomInterface
             });
 
 
-        // execute actions and set table orderBy from request
         $this->table->execute($request);
 
-        // get rows using the DbFilter created above
-        $rows = Widget::getFiltered($filter);
-        $this->table->setTotalRows(Db::getLastStatement()->getTotalRows());
-
-
         $path = $this->getConfig()->makePath(
-            $this->getConfig()->get('path.vendor.org').'/tk-framework/Tt/Table/templates/bs5_dom.html'
+            $this->getConfig()->get('path.vendor.org').'/tk-framework/Tt/Table/templates/bs5_php.php'
         );
-        $this->renderer = new Table\DomRenderer($this->table, $rows, $path);
-
+        $this->renderer = new Table\PhpRenderer($this->table, $rows, $path);
     }
 
     public function show(): ?Template
@@ -120,8 +110,8 @@ class Manager extends ControllerDomInterface
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        // Dom Renderer
-        $template->appendTemplate('content', $this->renderer->show());
+        // PHP Renderer
+        $template->appendHtml('content', $this->renderer->getHtml());
 
         return $template;
     }
