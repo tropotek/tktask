@@ -30,7 +30,7 @@ class Dashboard extends ControllerDomInterface
         $template->setText('title', $this->getPage()->getTitle());
 
         if ($this->getFactory()->getAuthUser()) {
-            $template->appendHtml('content', "<p><b>My Username:</b> {$this->getFactory()->getAuthUser()->getUsername()}</p>");
+            $template->appendHtml('content', "<p><b>My Username:</b> {$this->getFactory()->getAuthUser()->username}</p>");
         }
 
         $template->setAttr('img', 'src', $this->getAuthUser()->getImageUrl());

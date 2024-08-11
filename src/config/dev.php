@@ -20,7 +20,7 @@ if (!$config->isDebug()) {
 
 /** @var \Bs\Db\User $user */
 foreach (\Bs\Db\UserMap::create()->findAll() as $user) {
-    $user->setPassword(\Bs\Db\User::hashPassword('password'));
+    $user->password = \Bs\Db\User::hashPassword('password');
     $user->save();
 }
 

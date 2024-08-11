@@ -52,8 +52,8 @@ class TestData extends \Tk\Console\Command\TestData
         // Generate new users
         for($i = 0; $i < 50; $i++) {
             $obj = $this->getFactory()->createUser();
-            $obj->setUid('***');
-            $obj->setType((rand(1, 10) <= 5) ? User::TYPE_STAFF : User::TYPE_MEMBER);
+            $obj->uid ='***';
+            $obj->type = (rand(1, 10) <= 5 ? User::TYPE_STAFF : User::TYPE_MEMBER);
 
             // Add permissions
             if ($obj->isType(User::TYPE_STAFF)) {
@@ -71,14 +71,15 @@ class TestData extends \Tk\Console\Command\TestData
                         $perm |= User::PERM_MANAGE_MEMBER;
                     }
                 }
-                $obj->setPermissions($perm);
+                $obj->permissions = $perm;
             }
-            $obj->setName($this->createName() . ' ' . $this->createName());
+            $obj->nameFirst = $this->createName();
+            $obj->nameLast = $this->createName();
             do {
-                $obj->setUsername(strtolower($this->createName()) . '.' . rand(1000, 10000000));
-            } while(\Bs\Db\UserMap::create()->findByUsername($obj->getUsername()) != null);
-            $obj->setPassword(\Bs\Db\User::hashPassword('password'));
-            $obj->setEmail($this->createUniqueEmail($obj->getUsername()));
+                $obj->username = strtolower($this->createName()) . '.' . rand(1000, 10000000);
+            } while(\Bs\Db\UserMap::create()->findByUsername($obj->username) != null);
+            $obj->password = \Bs\Db\User::hashPassword('password');
+            $obj->email = $this->createUniqueEmail($obj->username);
             $obj->save();
         }
 
