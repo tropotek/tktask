@@ -54,8 +54,9 @@ class Widget extends DbModel
         $this->reload();
     }
 
-    public static function getFiltered(DbFilter $filter): array
+    public static function findFiltered(array|DbFilter $filter): array
     {
+        $filter = DbFilter::create($filter);
 
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';
@@ -103,6 +104,15 @@ class Widget extends DbModel
         );
     }
 
+    public static function getAll(): array
+    {
+        return Db::query(
+            "SELECT * FROM v_widget",
+            null,
+            self::class
+        );
+    }
+
     public static function getSelected(array $ids): array
     {
         return Db::query("
@@ -110,15 +120,6 @@ class Widget extends DbModel
                 FROM v_widget
                 WHERE widget_id IN :ids",
             compact('ids'),
-            self::class
-        );
-    }
-
-    public static function getAll(): array
-    {
-        return Db::query(
-            "SELECT * FROM v_widget",
-            null,
             self::class
         );
     }

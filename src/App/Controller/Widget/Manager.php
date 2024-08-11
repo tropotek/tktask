@@ -26,20 +26,43 @@ class Manager extends ControllerDomInterface
         $this->getPage()->setTitle('Widget Manager');
         $this->getCrumbs()->reset();
 
+
         // create table
         $this->table = new Table();
-        $this->table->setLimit($request->get($this->table->makeInstanceKey(Table::PARAM_LIMIT), 10));
-        $this->table->setPage($request->get($this->table->makeInstanceKey(Table::PARAM_PAGE), 1));
-        // Set default table orderby
-        //$this->table->setOrderBy($request->get($this->table->makeInstanceKey(Table::PARAM_ORDERBY), 'name'));
-        //$this->table->setOrderBy($request->get($this->table->makeInstanceKey(Table::PARAM_ORDERBY), '-name,widgetId'));
+        $this->table->setLimit($request->query->get($this->table->makeRequestKey(Table::PARAM_LIMIT), 10));
+        $this->table->setPage($request->query->get($this->table->makeRequestKey(Table::PARAM_PAGE), 1));
+        $this->table->setOrderBy($request->query->get($this->table->makeRequestKey(Table::PARAM_ORDERBY), 'name'));
 
+
+        // create Form filter
+        $this->form = new Form($this->table->getId().'f');
+        $this->form->addCss('tk-table-filter');
+
+        $this->form->appendField(new Form\Field\Input('search'))->setAttr('placeholder', 'Search name, id');
+
+        $list = array_flip(\Bs\Db\User::TYPE_LIST);
+        $this->form->appendField(new Form\Field\Select('type', $list))->prependOption('-- Type --', '');
+
+        $this->form->appendField(new Form\Action\Submit('filter', function (Form $form, Form\Action\ActionInterface $action) {
+            $values = $form->getFieldValues();
+            $_SESSION[$this->table->makeRequestKey('filter')] = $values;
+            Uri::create()->redirect();
+        }))->setLabel('Search');
+        $this->form->appendField(new Form\Action\Submit('clear', function (Form $form, Form\Action\ActionInterface $action) {
+            unset($_SESSION[$this->table->makeRequestKey('filter')]);
+            Uri::create()->redirect();
+        }))->addCss('btn-outline-secondary');
+
+        $this->form->execute($request->request->all());
+        if (!$this->form->isSubmitted() && isset($_SESSION[$this->table->makeRequestKey('filter')])) {
+            $this->form->setFieldValues($_SESSION[$this->table->makeRequestKey('filter')]);
+        }
 
         // create DbFilter for csv export
         // no need to create this here if not using the CSV action (could be created when getting rows)
-        $filter = DbFilter::createFromTable([], $this->table);
+        $filter = DbFilter::createFromTable($this->form->getFieldValues(), $this->table);
 
-
+        // Add cells
         $rowSelect = Cell\RowSelect::create('id', 'widgetId');
         $this->table->appendCell($rowSelect);
 
@@ -91,9 +114,9 @@ class Manager extends ControllerDomInterface
                 $action->setExcluded(['id', 'actions']);
                 $action->getTable()->getCell('name')->getOnValue()->reset();    // remove html from cell
                 if (count($selected)) {
-                    $rows = Widget::getFiltered(DbFilter::create(['id' => $selected]));
+                    $rows = Widget::findFiltered($filter);
                 } else {
-                    $rows = Widget::getFiltered($filter->resetLimits());
+                    $rows = Widget::findFiltered($filter->resetLimits());
                 }
                 return $rows;
             });
@@ -102,15 +125,19 @@ class Manager extends ControllerDomInterface
         // execute actions and set table orderBy from request
         $this->table->execute($request);
 
-        // get rows using the DbFilter created above
-        $rows = Widget::getFiltered($filter);
-        $this->table->setTotalRows(Db::getLastStatement()->getTotalRows());
 
 
         $path = $this->getConfig()->makePath(
             $this->getConfig()->get('path.vendor.org').'/tk-framework/Tt/Table/templates/bs5_dom.html'
         );
-        $this->renderer = new Table\DomRenderer($this->table, $rows, $path);
+        $this->renderer = new Table\DomRenderer($this->table, $path);
+        // get rows using the DbFilter created above
+//        $rows = Widget::getFiltered($filter);
+//        $this->table->setTotalRows(Db::getLastStatement()->getTotalRows());
+        $this->renderer->setRows(
+            Widget::findFiltered($filter),
+            Db::getLastStatement()->getTotalRows()
+        );
 
     }
 
@@ -121,6 +148,10 @@ class Manager extends ControllerDomInterface
         $template->setAttr('back', 'href', $this->getBackUrl());
 
         // Dom Renderer
+        $tplFile = $this->makePath($this->getConfig()->get('path.template.form.dom.inline'));
+        $formRenderer = new Form\Renderer\Dom\Renderer($this->form, $tplFile);
+        $template->appendTemplate('content', $formRenderer->show());
+
         $template->appendTemplate('content', $this->renderer->show());
 
         return $template;
