@@ -35,7 +35,6 @@ class Widget extends DbModel
 
     public function __construct()
     {
-        parent::__construct();
         $this->_TimestampTrait();
     }
 
@@ -43,7 +42,7 @@ class Widget extends DbModel
     {
         $map = static::getDataMap();
         $values = $map->getArray($this);
-        if ($this->getId()) {
+        if ($this->widgetId) {
             $values['widget_id'] = $this->widgetId;
             Db::update('widget', 'widget_id', $values);
         } else {
@@ -51,6 +50,7 @@ class Widget extends DbModel
             Db::insert('widget', $values);
             $this->widgetId = Db::getLastInsertId();
         }
+
         $this->reload();
     }
 
@@ -93,7 +93,7 @@ class Widget extends DbModel
         );
     }
 
-    public static function get(int $id): ?static
+    public static function get(int $id): ?Widget
     {
         return Db::queryOne("
                 SELECT *

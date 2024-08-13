@@ -1,8 +1,7 @@
 <?php
 namespace App\Api;
 
-use Bs\Db\UserMap;
-use Dom\Template;
+use Bs\Db\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Tk\Traits\SystemTrait;
@@ -96,10 +95,10 @@ HTML;
     public function doFindUsers(Request $request)
     {
         sleep(1);
-        $list = UserMap::create()->findFiltered(['type' => $request->query->get('type')]);
+        $list = User::findFiltered(['type' => $request->query->get('type')]);
         $html = '';
         foreach ($list as $user) {
-            $html .= sprintf('<option value="%s">%s</option>', $user->getId(), htmlentities($user->getName()));
+            $html .= sprintf('<option value="%s">%s</option>', $user->userId, htmlentities($user->getName()));
         }
         return $html;
     }

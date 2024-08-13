@@ -77,8 +77,8 @@ class TestData extends \Tk\Console\Command\TestData
             $obj->nameLast = $this->createName();
             do {
                 $obj->username = strtolower($this->createName()) . '.' . rand(1000, 10000000);
-            } while(\Bs\Db\UserMap::create()->findByUsername($obj->username) != null);
-            $obj->password = \Bs\Db\User::hashPassword('password');
+            } while(User::findByUsername($obj->username) != null);
+            $obj->password = User::hashPassword('password');
             $obj->email = $this->createUniqueEmail($obj->username);
             $obj->save();
         }

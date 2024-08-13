@@ -19,7 +19,7 @@ if (!$config->isDebug()) {
 //vd('running dev script');
 
 /** @var \Bs\Db\User $user */
-foreach (\Bs\Db\UserMap::create()->findAll() as $user) {
+foreach (\Bs\Db\User::findAll() as $user) {
     $user->password = \Bs\Db\User::hashPassword('password');
     $user->save();
 }

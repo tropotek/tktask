@@ -32,6 +32,11 @@ class Nav
                     'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/widgetManager'
                 ],
+                'Widget Manager Plain' => [
+                    'icon' => 'ri-file-list-3-line',
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                    'url' => '/widgetManagerPlain'
+                ],
                 'Widget Manager PHP' => [
                     'icon' => 'ri-file-list-3-line',
                     'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
