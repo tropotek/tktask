@@ -1,13 +1,11 @@
 <?php
 namespace App\Db;
 
-use Bs\Db\FileInterface;
-use Bs\Db\FileMap;
+use Bs\Db\File;
 use Bs\Db\Traits\TimestampTrait;
 use Tk\Db\Mapper\Model;
-use Tk\Db\Mapper\Result;
 
-class Example extends Model implements FileInterface
+class Example extends Model
 {
     use TimestampTrait;
 
@@ -35,10 +33,10 @@ class Example extends Model implements FileInterface
         $this->_TimestampTrait();
     }
 
-    public function getFileList(array $filter = [], ?\Tk\Db\Tool $tool = null): Result
+    public function getFileList(array $filter = []): array
     {
         $filter += ['model' => $this];
-        return FileMap::create()->findFiltered($filter, $tool);
+        return File::findFiltered($filter);
     }
 
     public function getDataPath(): string
