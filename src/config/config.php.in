@@ -87,7 +87,7 @@ return function (Config $config) {
         $config['php.error_log']      = '/home/user/log/error.log';
         $config['log.logLevel']       = \Psr\Log\LogLevel::DEBUG;
         // force logging with NO_LOG, when needed
-        //$config['log.ignore.noLog']   = true;
+        //$config['log.enableNoLog']   = true;
     }
 
 };
