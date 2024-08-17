@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-use App\Ui\RightSidebar;
+use App\Ui\Customizer;
 use App\Ui\Nav;
 use Dom\Template;
 use Tk\Uri;
@@ -47,7 +47,7 @@ class Page extends \Bs\Page
             $template->replaceHtml('top-nav', $nav->getTopNav());
         }
         $template->replaceHtml('profile-nav', $nav->getProfileNav());
-        $template->replaceHtml('right-sidebar', RightSidebar::getHtml());
+        $template->replaceHtml('right-sidebar', Customizer::getHtml());
     }
 
 

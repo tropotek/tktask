@@ -22,12 +22,15 @@ return function (CollectionConfigurator $routes) {
     $routes->add('home-base', '/')
         ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Home::class, 'doDefault']);
+
     $routes->add('home', '/home')
         ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Home::class, 'doDefault']);
+
     $routes->add('contact', '/contact')
         ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Contact::class, 'doDefault']);
+
     $routes->add('user-dashboard', '/dashboard')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
@@ -38,21 +41,10 @@ return function (CollectionConfigurator $routes) {
 
     // API Endpoints
 
-    // TODO: Examples - remove for productions sites...
 
-    // Test routes (Remove for production sites and delete /src/Controller/Examples folder)
-    $routes->add('widget-manager', '/widgetManager')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
-        ->controller([\App\Controller\Widget\Manager::class, 'doDefault']);
-    $routes->add('widget-manager-plain', '/widgetManagerPlain')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
-        ->controller([\App\Controller\Widget\ManagerPlain::class, 'doDefault']);
-    $routes->add('widget-manager-php', '/widgetManagerPhp')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
-        ->controller([\App\Controller\Widget\ManagerPhp::class, 'doDefault']);
-    $routes->add('widget-edit', '/widgetEdit')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
-        ->controller('\App\Controller\Widget\Edit::doDefault');
+
+
+    // Example routes, remove for production
 
     // php page route example
     // $routes->add('widget-test', '/widgetTest')
@@ -62,9 +54,11 @@ return function (CollectionConfigurator $routes) {
     $routes->add('example-manager', '/exampleManager')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Example\Manager::class, 'doDefault']);
+
     $routes->add('example-edit', '/exampleEdit')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Example\Edit::class, 'doDefault']);
+
     $routes->add('phpinfo', '/info')
         ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Admin\Info::class, 'doDefault']);

@@ -9,12 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 class Info extends ControllerDomInterface
 {
 
-
     public function doDefault(Request $request)
     {
         $this->getPage()->setTitle('PHP Info');
         $this->setAccess(User::PERM_SYSADMIN);
-
 
     }
 

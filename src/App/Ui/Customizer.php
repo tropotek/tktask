@@ -4,7 +4,7 @@ namespace App\Ui;
 
 use Tk\Traits\SystemTrait;
 
-class RightSidebar
+class Customizer
 {
     use SystemTrait;
 

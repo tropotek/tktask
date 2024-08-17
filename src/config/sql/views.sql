@@ -32,30 +32,4 @@ SELECT
 FROM example e;
 
 
-CREATE OR REPLACE VIEW v_widget AS
-SELECT
-  w.widget_id,
-  w.name,
-  w.active,
-  w.enabled,
-  w.notes,
-  w.blob_data,
-  w.time_stamp,
-  w.date_time,
-  w.date,
-  w.time,
-  w.year,
-  w.json_str,
-  w.set_type,
-  w.enum_type,
-  w.rate,
-  w.amount,
-  w.modified,
-  w.created,
-  w.enabled AND w.active AS is_working,
-  NOW() AS today,
-  MD5(w.widget_id) AS hash
-FROM widget w;
-
-
 

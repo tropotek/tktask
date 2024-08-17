@@ -3,34 +3,46 @@ namespace App\Db;
 
 use Bs\Db\File;
 use Bs\Db\Traits\TimestampTrait;
-use Tk\Db\Mapper\Model;
+use Tt\Db;
+use Tt\DbFilter;
+use Tt\DbModel;
 
-class Example extends Model
+class Example extends DbModel
 {
     use TimestampTrait;
 
-    public int $exampleId = 0;
-
-    public string $name = '';
-
-    //public ?string $nick = null;
-
-    public string $image = '';
-
-    //public string $content = '';
-
-    //public string $notes = '';
-
-    public bool $active = true;
-
+    public int       $exampleId = 0;
+    public string     $name     = '';
+    public string     $image    = '';
+    public bool       $active   = true;
     public ?\DateTime $modified = null;
-
-    public ?\DateTime $created = null;
+    public ?\DateTime $created  = null;
 
 
     public function __construct()
     {
         $this->_TimestampTrait();
+    }
+
+    public function save(): void
+    {
+        $map = static::getDataMap();
+        $values = $map->getArray($this);
+        if ($this->exampleId) {
+            $values['example_id'] = $this->exampleId;
+            Db::update('example', 'example_id', $values);
+        } else {
+            unset($values['example_id']);
+            Db::insert('example', $values);
+            $this->exampleId = Db::getLastInsertId();
+        }
+
+        $this->reload();
+    }
+
+    public function delete(): bool
+    {
+        return (false !== Db::delete('example', ['example_id' => $this->exampleId]));
     }
 
     public function getFileList(array $filter = []): array
@@ -41,85 +53,68 @@ class Example extends Model
 
     public function getDataPath(): string
     {
-        return sprintf('/exampleFiles/%s', $this->getVolatileId());
+        return sprintf('/exampleFiles/%s', $this->exampleId);
     }
 
-
-    public function getExampleId(): int
+    public static function find(int $id): ?static
     {
-        return $this->exampleId;
+        return Db::queryOne("
+                SELECT *
+                FROM example
+                WHERE example_id = :id",
+            compact('id'),
+            self::class
+        );
     }
 
-    public function setExampleId(int $exampleId): Example
+    public static function findAll(): array
     {
-        $this->exampleId = $exampleId;
-        return $this;
+        return Db::query(
+            "SELECT * FROM example",
+            null,
+            self::class
+        );
     }
 
-    public function getName(): string
+    public static function findFiltered(array|DbFilter $filter): array
     {
-        return $this->name;
-    }
+        $filter = DbFilter::create($filter);
 
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-        return $this;
-    }
+        if (!empty($filter['search'])) {
+            $filter['search'] = '%' . $filter['search'] . '%';
+            $w  = 'name LIKE :search OR ';
+            $w .= 'image LIKE :search OR ';
+            $w .= 'example_id LIKE :search OR ';
+            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+        }
 
-//    public function getNick(): ?string
-//    {
-//        return $this->nick;
-//    }
-//
-//    public function setNick(?string $nick): static
-//    {
-//        $this->nick = $nick;
-//        return $this;
-//    }
+        if (!empty($filter['id'])) {
+            $filter['exampleId'] = $filter['id'];
+        }
+        if (!empty($filter['exampleId'])) {
+            $filter->appendWhere('(example_id IN :exampleId) AND ');
+        }
 
-    public function getImage(): string
-    {
-        return $this->image;
-    }
+        if (!empty($filter['name'])) {
+            $filter->appendWhere('name = :name AND ');
+        }
 
-    public function setImage(string $image = ''): static
-    {
-        $this->image = $image;
-        return $this;
-    }
+        if (isset($filter['active'])) {
+            $filter['active'] = truefalse($filter['active']);
+            $filter->appendWhere('active = :active AND ');
+        }
 
-//    public function getContent(): string
-//    {
-//        return $this->content;
-//    }
-//
-//    public function setContent(string $content): static
-//    {
-//        $this->content = $content;
-//        return $this;
-//    }
-//
-//    public function getNotes(): string
-//    {
-//        return $this->notes;
-//    }
-//
-//    public function setNotes(string $notes): static
-//    {
-//        $this->notes = $notes;
-//        return $this;
-//    }
+        if (!empty($filter['exclude'])) {
+            $filter->appendWhere('(example_id NOT IN :exclude) AND ');
+        }
 
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): static
-    {
-        $this->active = $active;
-        return $this;
+        return Db::query("
+            SELECT *
+            FROM example
+            {$filter->getSql()}",
+            $filter->all(),
+            self::class
+        );
     }
 
     /**
@@ -131,7 +126,7 @@ class Example extends Model
     {
         $errors = [];
 
-        if (!$this->getName()) {
+        if (!$this->name) {
             $errors['name'] = 'Invalid field value';
         }
         return $errors;

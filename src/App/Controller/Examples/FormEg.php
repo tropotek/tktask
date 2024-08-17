@@ -2,10 +2,21 @@
 namespace App\Controller\Examples;
 
 use Bs\ControllerDomInterface;
+use Bs\Form;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
-use Tk\Form;
+use Tk\Form\Action\Link;
+use Tk\Form\Action\Submit;
+use Tk\Form\Action\SubmitExit;
+use Tk\Form\Field\Checkbox;
+use Tk\Form\Field\File;
+use Tk\Form\Field\Hidden;
+use Tk\Form\Field\Input;
+use Tk\Form\Field\InputButton;
+use Tk\Form\Field\Radio;
+use Tk\Form\Field\Select;
+use Tk\Form\Field\Textarea;
 use Tk\Uri;
 
 class FormEg extends ControllerDomInterface
@@ -18,63 +29,63 @@ class FormEg extends ControllerDomInterface
     {
         $this->getPage()->setTitle('Form');
 
-        $this->form = Form::create('test');
-        $this->form->appendField(new Form\Field\Hidden('action'))->setValue('testAction')->setLabel('Hide Me!');
+        $this->form = new Form;
+        $this->form->appendField(new Hidden('action'))->setValue('testAction')->setLabel('Hide Me!');
 
-        $this->form->appendField(new Form\Field\Input('email'))->setType('email');
-        $this->form->appendField(new Form\Field\Input('test'));
-        $this->form->appendField(new Form\Field\Input('address'))->setNotes('Only upload valid addresses');
+        $this->form->appendField(new Input('email'))->setType('email');
+        $this->form->appendField(new Input('test'));
+        $this->form->appendField(new Input('address'))->setNotes('Only upload valid addresses');
         $list = ['-- Select --' => '', 'VIC' => 'Victoria', 'NSW' => 'New South Wales', 'WA' => 'Western Australia'];
-        $this->form->appendField(new Form\Field\Select('state', $list))
+        $this->form->appendField(new Select('state', $list))
             ->setNotes('This is a select box');
 
-        $this->form->appendField(new Form\Field\Input('date1'))
+        $this->form->appendField(new Input('date1'))
             //->setRequired()
             ->addCss('date')->setAttr('data-max-date', '+1w');
 
         // Native HTML datepicker has issues with unsupported browsers and required input:
         // See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
-        $this->form->appendField(new Form\Field\Input('date2'))
+        $this->form->appendField(new Input('date2'))
             ->setRequired()
             ->setType('date')->setAttr('pattern', '\d{4}-\d{2}-\d{2}');
 
-        $this->form->appendField(new Form\Field\Input('date3'));
-        $this->form->appendField(new Form\Field\Input('date4'));
+        $this->form->appendField(new Input('date3'));
+        $this->form->appendField(new Input('date4'));
 
-        $this->form->appendField(new Form\Field\InputButton('autocomplete'))
+        $this->form->appendField(new InputButton('autocomplete'))
             ->addBtnCss('fa fa-chevron-down');
 
-        $files = $this->form->appendField(new Form\Field\File('attach'))->setNotes('Only upload valid files'); //->setMultiple(true);
+        $files = $this->form->appendField(new File('attach'))->setNotes('Only upload valid files'); //->setMultiple(true);
 
-        $this->form->appendField(new Form\Field\Checkbox('active'));
+        $this->form->appendField(new Checkbox('active'));
 
-        $this->form->appendField(new Form\Field\Checkbox('checkbox', [
+        $this->form->appendField(new Checkbox('checkbox', [
             'Checkbox 1' => 'cb_1',
             'Checkbox 2' => 'cb_2',
             'Checkbox 3' => 'cb_3',
             'Checkbox 4' => 'cb_4'
         ]));
-        $this->form->appendField(new Form\Field\Radio('radio', [
+        $this->form->appendField(new Radio('radio', [
             'Radio 1' => 'rb_1',
             'Radio 2' => 'rb_2',
             'Radio 3' => 'rb_3',
             'Radio 4' => 'rb_4'
         ]));
-        $this->form->appendField(new Form\Field\Checkbox('switch', [
+        $this->form->appendField(new Checkbox('switch', [
             'Switch 1' => 'sw_1',
             'Switch 2' => 'sw_2',
             'Switch 3' => 'sw_3',
             'Switch 4' => 'sw_4'
         ]))->setSwitch(true);
 
-        $this->form->appendField(new Form\Field\Textarea('notes'));
+        $this->form->appendField(new Textarea('notes'));
 
-        $this->form->appendField(new Form\Field\Textarea('tinyMce'))->addCss('mce');
+        $this->form->appendField(new Textarea('tinyMce'))->addCss('mce');
 
 
-        $this->form->appendField(new Form\Action\Link('cancel', Uri::create('/home')));
-        $this->form->appendField(new Form\Action\SubmitExit('save2', [$this, 'onSubmit']));
-        $this->form->appendField(new Form\Action\Submit('save', [$this, 'onSubmit']));
+        $this->form->appendField(new Link('cancel', Uri::create('/home')));
+        $this->form->appendField(new SubmitExit('save2', [$this, 'onSubmit']));
+        $this->form->appendField(new Submit('save', [$this, 'onSubmit']));
 
 
         $load = [
@@ -93,7 +104,7 @@ class FormEg extends ControllerDomInterface
 
     }
 
-    public function onSubmit(Form $form, Form\Action\ActionInterface $action): void
+    public function onSubmit(Form $form, Submit $action): void
     {
         $form->addFieldError('test', 'this is a test error');
         //vd($form->getAllErrors());
@@ -129,16 +140,11 @@ class FormEg extends ControllerDomInterface
         $this->form->getField('date3')->addFieldCss('col-3');
         $this->form->getField('date4')->addFieldCss('col-3');
 
-
-//        $formRenderer = new Form\Renderer\Dom\Renderer($this->form);
-//        $template->appendTemplate('content', $formRenderer->show());
-        $formRenderer = new Form\Renderer\Std\Renderer($this->form);
-        $template->appendHtml('content', $formRenderer->show());
+        $template->appendHtml('content', $this->form->show());
 
         // Autocomplete js
         $js = <<<JS
 jQuery(function($) {
-
     var availableTags = [
       "ActionScript",
       "AppleScript",

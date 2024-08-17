@@ -32,7 +32,6 @@ let app = function () {
   };
 
 
-
   return {
     initHtmxToasts: initHtmxToasts
   }

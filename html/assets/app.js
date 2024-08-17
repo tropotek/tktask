@@ -29,8 +29,8 @@ let app = function () {
     $(document).on('htmx:afterSettle', '.toastPanel', function () {
       $('.toast', this).toast('show');
     });
-  };
 
+  };
 
 
   return {

@@ -13,19 +13,27 @@ return function (Config $config) {
      */
     $config['hostname'] = 'localhost';
 
+    /**
+     * Set environment type to prevent destructive functions on production sites
+     */
+    $config['env.type'] = 'dev';
+    //$config['env.type'] = 'prod';
+
+    /**
+     * Enable to view more verbose log messages
+     */
+    $config['debug'] = true;
+
     $config->set('path.template.admin', '/html/minton/sn-admin.html');
     $config->set('path.template.user', $config->get('path.template.admin'));
 
     // Default System DB
     $config['db.mysql'] = 'localhost:3306/user/pass/dbName';
 
-    // Default System DB (deprecated)
-    // $config['db.default.type'] = 'mysql';
-    // $config['db.default.host'] = 'localhost';
-    // $config['db.default.port'] = '3306';
-    // $config['db.default.name'] = '';
-    // $config['db.default.user'] = '';
-    // $config['db.default.pass'] = '';
+    /*
+     * mail template path
+     */
+    $config['system.mail.template'] = '/html/templates/mail.default.tpl';
 
     /*
      * Encrypt function secret seed
@@ -55,32 +63,31 @@ return function (Config $config) {
      */
     //$config['session.db_enable']    = true;
 
+    /**
+     * Set the site timezone for PHP and MySQL
+     */
+    $config['php.date.timezone'] = 'Australia/Melbourne';
+
     /*
      * The default log level
      */
     $config['log.logLevel'] = \Psr\Log\LogLevel::ERROR;
 
-
-
     // Setup dev environment
-    $config['debug'] = true;
+    if ($config->isDev()) {
+        $config['system.debug.email'] = 'admin@email.com';
+        // Used for the Mirror command
+        //$config['db.mirror.url']    = 'https://example.com/util/mirror';
+    }
+
+    // setup debug log levels
     if ($config->isDebug()) {
         error_reporting(-1);
         $config['php.display_errors'] = 'On';
         $config['php.error_log']      = '/home/user/log/error.log';
         $config['log.logLevel']       = \Psr\Log\LogLevel::DEBUG;
-        // enable for NO_LOG and api calls, when needed
+        // force logging with NO_LOG, when needed
         //$config['log.ignore.noLog']   = true;
-
-        /*
-         * This must be set for emails to be sent to a debug account in debug mode
-         */
-        $config['system.debug.email'] = 'admin@email.com';
-
-        /*
-         * Used for the Mirror command
-         */
-        //$config['db.mirror.url']    = 'https://example.com/util/mirror';
     }
 
 };

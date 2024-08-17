@@ -1,26 +1,125 @@
 <?php
 namespace App\Controller\Example;
 
+use App\Db\Example;
 use Bs\ControllerDomInterface;
-use Bs\Table\ManagerTrait;
+use Bs\Table;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Alert;
+use Tk\Form\Field\Input;
+use Tk\Form\Field\Select;
+use Tk\Traits\SystemTrait;
+use Tk\Uri;
+use Tt\Db;
+use Tt\Table\Action\Csv;
+use Tt\Table\Action\Delete;
+use Tt\Table\Cell;
+use Tt\Table\Cell\RowSelect;
 
 class Manager extends ControllerDomInterface
 {
-    use ManagerTrait;
+    use SystemTrait;
+
+    protected ?Table $table = null;
 
 
-    public function doDefault(Request $request)
+    public function doDefault(Request $request): void
     {
         $this->getPage()->setTitle('Example Manager');
         $this->getCrumbs()->reset();
 
-        $this->setTable(new \App\Table\Example());
-        //$this->getTable()->resetTableSession();
-        $this->getTable()->init();
-        $this->getTable()->findList([], $this->getTable()->getTool('name'));
-        $this->getTable()->execute($request);
+        if ($request->query->has('del')) {
+            $ex = Example::find(intval($_GET['del'] ?? 0));
+            if ($ex) {
+                $ex->delete();
+                Alert::addSuccess('Example removed successfully.');
+            }
+            Uri::create()->remove('del')->redirect();
+        }
+
+        // Create table
+        $this->table = new Table('eg', 'name');
+
+        // Add cells
+        $rowSelect = RowSelect::create('id', 'exampleId');
+        $this->table->appendCell($rowSelect);
+
+        $this->table->appendCell('actions')
+            ->addCss('text-nowrap text-center')
+            ->addOnValue(function(Example $row, Cell $cell) {
+                $ed = Uri::create('/exampleEdit', ['exampleId' => $row->exampleId]);
+                $del = Uri::create()->set('del', $row->exampleId);
+                return <<<HTML
+                    <a class="btn btn-primary" href="$ed" title="Edit"><i class="fa fa-fw fa-edit"></i></a> &nbsp;
+                    <a class="btn btn-danger" href="$del" title="Delete" data-confirm="Are you sure you want to delete this record"><i class="fa fa-fw fa-trash"></i></a>
+                HTML;
+            });
+
+        $this->table->appendCell('name')
+            ->addHeaderCss('max-width')
+            ->setSortable(true)
+            ->addOnValue(function(Example $row, Cell $cell) {
+                $url = Uri::create('/exampleEdit', ['exampleId' => $row->exampleId]);
+                return sprintf('<a href="%s">%s</a>', $url, $row->name);
+            });
+
+        $this->table->appendCell('image')
+            ->setSortable(true);
+//            ->addOnValue(function(Example $row, Cell $cell) {
+//                $url = Uri::create('/exampleEdit', ['exampleId' => $row->exampleId]);
+//                return sprintf('<a href="%s">%s</a>', $url, $row->name);
+//            });
+
+        $this->table->appendCell('active')
+            ->setSortable(true)
+            ->addOnValue('\Tt\Table\Type\Boolean::onValue');
+
+        $this->table->appendCell('modified')
+            ->setSortable(true)
+            ->addCss('text-nowrap text-center')
+            ->addOnValue('\Tt\Table\Type\DateFmt::onValue');
+
+        $this->table->appendCell('created')
+            ->setSortable(true)
+            ->addCss('text-nowrap text-center')
+            ->addOnValue('\Tt\Table\Type\DateFmt::onValue');
+
+        // Add Filter Fields
+        $this->table->getForm()->appendField(new Input('search'))->setAttr('placeholder', 'Search name, id');
+
+        $list = ['-- Active --' => '', 'Yes' => '1', 'No' => '0'];
+        $this->table->getForm()->appendField(new Select('active', $list))->setStrict(true);
+
+        // init filter fields for actions to access to the filter values
+        $this->table->initForm($request);
+
+        // Add Table actions
+        $this->table->appendAction(Delete::create($rowSelect))
+            ->addOnDelete(function(Delete $action, array $selected) {
+                foreach ($selected as $widget_id) {
+                    Db::delete('widget', compact('widget_id'));
+                }
+            });
+
+        $this->table->appendAction(Csv::create($rowSelect))
+            ->addOnCsv(function(Csv $action, array $selected) {
+                $action->setExcluded(['id', 'actions']);
+                $action->getTable()->getCell('name')->getOnValue()->reset();    // remove html from cell
+                $filter = $action->getTable()->getDbFilter();
+                if (count($selected)) {
+                    $rows = Example::findFiltered($filter);
+                } else {
+                    $rows = Example::findFiltered($filter->resetLimits());
+                }
+                return $rows;
+            });
+
+        // execute actions and set table orderBy from request
+        $this->table->execute($request);
+
+        $rows = Example::findFiltered($this->table->getDbFilter());
+        $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
     }
 
@@ -30,7 +129,7 @@ class Manager extends ControllerDomInterface
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        $template->appendTemplate('content', $this->getTable()->show());
+        $template->appendTemplate('content', $this->table->show());
 
         return $template;
     }
