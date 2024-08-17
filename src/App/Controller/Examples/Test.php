@@ -3,16 +3,13 @@ namespace App\Controller\Examples;
 
 use Bs\ControllerDomInterface;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 
 class Test extends ControllerDomInterface
 {
 
-    public function doDefault(Request $request): void
+    public function doDefault(): void
     {
         $this->getPage()->setTitle('Test');
-
-
 
     }
 

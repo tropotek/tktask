@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use Bs\ControllerDomInterface;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Form;
 use Tk\Form\Field;
@@ -26,7 +25,7 @@ class Contact extends ControllerDomInterface
     use FormTrait;
 
 
-    public function doDefault(Request $request): \App\Page|\Dom\Mvc\Page
+    public function doDefault(): void
     {
         $this->getPage()->setTitle('Contact Us');
         $this->setForm(Form::create('contact'));
@@ -48,7 +47,7 @@ class Contact extends ControllerDomInterface
 
         $this->getForm()->setFieldValues($this->getRegistry()->all()); // Use form data mapper if loading objects
 
-        $this->getForm()->execute($request->request->all());
+        $this->getForm()->execute($_POST);
 
         $this->setFormRenderer(new Form\Renderer\Dom\Renderer($this->getForm()));
 

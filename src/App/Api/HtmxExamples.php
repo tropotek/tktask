@@ -2,7 +2,6 @@
 namespace App\Api;
 
 use Bs\Db\User;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Tk\Alert;
 use Tk\Traits\SystemTrait;
@@ -23,7 +22,7 @@ class HtmxExamples
      * ></div>
      *
      */
-    public function doToast(Request $request): string
+    public function doToast(): string
     {
 
         //hx-get="/api/htmx/toast" hx-trigger="submit from:form" hx-sync="form:queue last" hx-target="this" hx-swap="outerHTML"
@@ -84,18 +83,18 @@ HTML;
         return $template->toString();
     }
 
-    public function doTest(Request $request)
+    public function doTest()
     {
         sleep(1);
         //vd(apache_request_headers());
-        $q = $request->request->get('q');
+        $q = trim($_POST['q'] ?? '');
         return "<p>The search string was: <b>$q</b></p>";
     }
 
-    public function doFindUsers(Request $request)
+    public function doFindUsers()
     {
         sleep(1);
-        $list = User::findFiltered(['type' => $request->query->get('type')]);
+        $list = User::findFiltered(['type' => trim($_POST['type'] ?? '')]);
         $html = '';
         foreach ($list as $user) {
             $html .= sprintf('<option value="%s">%s</option>', $user->userId, htmlentities($user->getName()));
@@ -103,9 +102,10 @@ HTML;
         return $html;
     }
 
-    public function doGetTabs(Request $request)
+    public function doGetTabs()
     {
-        $tab = $request->query->get('tab');
+        $tab = trim($_POST['tab'] ?? '');
+
         $tabContent = [
             'Commodo normcore truffaut VHS % & duis gluten-free keffiyeh iPhone taxidermy godard ramps anim pour-over. Pitchfork vegan mollit umami quinoa aute aliquip kinfolk eiusmod live-edge cardigan ipsum locavore. Polaroid duis occaecat narwhal small batch food truck.',
             'Kitsch fanny pack yr, farm-to-table cardigan cillum commodo reprehenderit plaid dolore cronut meditation. Tattooed polaroid veniam, anim id cornhole hashtag sed forage. Microdosing pug kitsch enim, kombucha pour-over sed irony forage live-edge. Vexillologist eu nulla trust fund, street art blue bottle selvage raw denim.',
@@ -126,30 +126,27 @@ HTML;
         return sprintf('%s %s', $tabs, $html);
     }
 
-    public function doButton(Request $request)
+    public function doButton()
     {
         $idx = $_SESSION['btn-test'] ?? 0;
         $idx++;
         if ($idx > 9) $idx = 0;
         $_SESSION['btn-test'] =  $idx;
-        $text = $request->request->get('text', 'Click ' . $idx);
-        if ($request->query->get('text')) {
-            $text = $request->query->get('text');
+        $text = trim($_POST['text'] ?? '') . 'Click ' . $idx;
+        if (isset($_POST['text'])) {
+            $text = $_POST['text'];
         }
         $html = <<<HTML
 <button class="btn btn-sm btn-primary" hx-get="api/htmx/button" hx-target="this" hx-trigger="click" hx-swap="outerHTML" >$text</button>
 HTML;
-        $response = new Response($html, Response::HTTP_OK, []);
-        return $response;
+        return new Response($html, Response::HTTP_OK, []);
     }
 
-    public function doUpload(Request $request)
+    public function doUpload()
     {
         //sleep(1);
-        //vd('Upload: ', $request->request->all());
-        if ($request->files->count()) {
-            //vd($request->files->all());
-
+        if (count($_FILES)) {
+            //vd($_FILES);
         }
         return new Response('', Response::HTTP_NO_CONTENT);
     }

@@ -4,7 +4,6 @@ namespace App\Controller\Examples;
 use Bs\ControllerDomInterface;
 use Bs\Form;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
@@ -25,7 +24,7 @@ class FormEg extends ControllerDomInterface
     protected Form $form;
 
 
-    public function doDefault(Request $request): void
+    public function doDefault(): void
     {
         $this->getPage()->setTitle('Form');
 
@@ -100,7 +99,7 @@ class FormEg extends ControllerDomInterface
         ];
         $this->form->setFieldValues($load); // Use form data mapper if loading objects
 
-        $this->form->execute($request->request->all());
+        $this->form->execute($_POST);
 
     }
 

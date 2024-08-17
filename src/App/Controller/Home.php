@@ -1,11 +1,8 @@
 <?php
 namespace App\Controller;
 
-use App\Db\Widget;
 use Bs\ControllerDomInterface;
-use Bs\PageController;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Exception;
 use Tk\Uri;
@@ -13,15 +10,14 @@ use Tk\Uri;
 class Home extends ControllerDomInterface
 {
 
-
-    public function doDefault(Request $request)
+    public function doDefault()
     {
         $this->getPage()->setTitle('Home');
 
-        if ($request->query->has('e')) {
+        if (isset($_GET['e'])){
             throw new Exception('This is a test exception...', 500);
         }
-        if ($request->query->has('a')) {
+        if (isset($_GET['a'])) {
             Alert::addSuccess('This is a success alert', '', 'fa-solid fa-circle-check');
             Alert::addInfo('This is a info alert', '', 'fa-solid fa-circle-info');
             Alert::addWarning('This is a warning alert', '', 'fa-solid fa-triangle-exclamation');
@@ -63,7 +59,6 @@ class Home extends ControllerDomInterface
               <li><a href="#?e" var="eurl">Test Exception</a></li>
               <li><a href="/info" title="Confirmation Dialog Test" data-confirm="<p><em>Are you sure?</em></p>" data-cancel="Nuh!!">Confirm Test</a></li>
               <li><a href="#?a" var="aurl">Alert Test</a></li>
-        <!--      <li><a href="/install">Install Page</a></li>-->
             </ul>
             <p>&nbsp;</p>
         </div>

@@ -2,9 +2,7 @@
 namespace App\Controller;
 
 use Bs\ControllerDomInterface;
-use Bs\Db\User;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Uri;
 
@@ -12,7 +10,7 @@ class Dashboard extends ControllerDomInterface
 {
 
 
-    public function doDefault(Request $request): void
+    public function doDefault(): void
     {
         $this->getPage()->setTitle('Dashboard');
 

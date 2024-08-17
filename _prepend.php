@@ -12,7 +12,7 @@ $composer = include __DIR__ . '/vendor/autoload.php';
 // Update these calls here if you want to override them...
 //$config  = \Tk\Config::instance();
 $factory = \App\Factory::instance();
-$factory->set('classLoader', $composer);
+$factory->set('composerLoader', $composer);
 //$system  = \App\System::instance();
 //$registry  = \App\Registry::instance();
 
