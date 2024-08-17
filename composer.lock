@@ -184,108 +184,6 @@
             "time": "2016-09-16T05:47:55+00:00"
         },
         {
-            "name": "monolog/monolog",
-            "version": "2.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "884aa47a055ea3e8e351ceaf4dfc67f52fff44c0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/884aa47a055ea3e8e351ceaf4dfc67f52fff44c0",
-                "reference": "884aa47a055ea3e8e351ceaf4dfc67f52fff44c0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2",
-                "psr/log": "^1.0.1 || ^2.0 || ^3.0"
-            },
-            "provide": {
-                "psr/log-implementation": "1.0.0 || 2.0.0 || 3.0.0"
-            },
-            "require-dev": {
-                "aws/aws-sdk-php": "^2.4.9 || ^3.0",
-                "doctrine/couchdb": "~1.0@dev",
-                "elasticsearch/elasticsearch": "^7 || ^8",
-                "ext-json": "*",
-                "graylog2/gelf-php": "^1.4.2 || ^2@dev",
-                "guzzlehttp/guzzle": "^7.4",
-                "guzzlehttp/psr7": "^2.2",
-                "mongodb/mongodb": "^1.8",
-                "php-amqplib/php-amqplib": "~2.4 || ^3",
-                "phpspec/prophecy": "^1.15",
-                "phpstan/phpstan": "^1.10",
-                "phpunit/phpunit": "^8.5.38 || ^9.6.19",
-                "predis/predis": "^1.1 || ^2.0",
-                "rollbar/rollbar": "^1.3 || ^2 || ^3",
-                "ruflin/elastica": "^7",
-                "swiftmailer/swiftmailer": "^5.3|^6.0",
-                "symfony/mailer": "^5.4 || ^6",
-                "symfony/mime": "^5.4 || ^6"
-            },
-            "suggest": {
-                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
-                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
-                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
-                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
-                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
-                "ext-mbstring": "Allow to work properly with unicode symbols",
-                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
-                "ext-openssl": "Required to send log messages using SSL",
-                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
-                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
-                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
-                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
-                "rollbar/rollbar": "Allow sending log messages to Rollbar",
-                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Monolog\\": "src/Monolog"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be",
-                    "homepage": "https://seld.be"
-                }
-            ],
-            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
-            "homepage": "https://github.com/Seldaek/monolog",
-            "keywords": [
-                "log",
-                "logging",
-                "psr-3"
-            ],
-            "support": {
-                "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/2.x"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/Seldaek",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2024-04-15T08:56:50+00:00"
-        },
-        {
             "name": "phpmailer/phpmailer",
             "version": "v6.9.1",
             "source": {
@@ -529,12 +427,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/scssphp/scssphp.git",
-                "reference": "4f7f778b633d40559f20630110d244577fe59a8f"
+                "reference": "63d1157457e5554edf00b0c1fabab4c1511d2520"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/4f7f778b633d40559f20630110d244577fe59a8f",
-                "reference": "4f7f778b633d40559f20630110d244577fe59a8f",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/63d1157457e5554edf00b0c1fabab4c1511d2520",
+                "reference": "63d1157457e5554edf00b0c1fabab4c1511d2520",
                 "shasum": ""
             },
             "require": {
@@ -601,7 +499,7 @@
                 "issues": "https://github.com/scssphp/scssphp/issues",
                 "source": "https://github.com/scssphp/scssphp/tree/1.x"
             },
-            "time": "2024-08-16T18:13:24+00:00"
+            "time": "2024-08-17T21:02:11+00:00"
         },
         {
             "name": "select2/select2",
@@ -2243,12 +2141,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-auth.git",
-                "reference": "e35943fd1fa726b81f249eb26e91fa32715bb22d"
+                "reference": "ebd1adf8a4645e08038c96cb42d73d994da54da8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-auth/zipball/e35943fd1fa726b81f249eb26e91fa32715bb22d",
-                "reference": "e35943fd1fa726b81f249eb26e91fa32715bb22d",
+                "url": "https://api.github.com/repos/tropotek/tk-auth/zipball/ebd1adf8a4645e08038c96cb42d73d994da54da8",
+                "reference": "ebd1adf8a4645e08038c96cb42d73d994da54da8",
                 "shasum": ""
             },
             "type": "library",
@@ -2289,12 +2187,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "732a1358f1ca899323c160f1b0eb861a31316c82"
+                "reference": "3f6a13fed66d957181eeae50082e52f88b905c5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/732a1358f1ca899323c160f1b0eb861a31316c82",
-                "reference": "732a1358f1ca899323c160f1b0eb861a31316c82",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/3f6a13fed66d957181eeae50082e52f88b905c5f",
+                "reference": "3f6a13fed66d957181eeae50082e52f88b905c5f",
                 "shasum": ""
             },
             "require": {
@@ -2344,12 +2242,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-domtemplate.git",
-                "reference": "e7f8bfdf19af2ed17cf5ff89cc5830a11e876e1a"
+                "reference": "01bb1954691ccfba04cfa841dc428b05b1a3d6e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/e7f8bfdf19af2ed17cf5ff89cc5830a11e876e1a",
-                "reference": "e7f8bfdf19af2ed17cf5ff89cc5830a11e876e1a",
+                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/01bb1954691ccfba04cfa841dc428b05b1a3d6e4",
+                "reference": "01bb1954691ccfba04cfa841dc428b05b1a3d6e4",
                 "shasum": ""
             },
             "require": {
@@ -2403,12 +2301,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-form.git",
-                "reference": "39728e4e808c945f5c4807fb8d4d13e42a7ea29c"
+                "reference": "c310a68fd60109fda6753c6caf6cdc5496d13cea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/39728e4e808c945f5c4807fb8d4d13e42a7ea29c",
-                "reference": "39728e4e808c945f5c4807fb8d4d13e42a7ea29c",
+                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/c310a68fd60109fda6753c6caf6cdc5496d13cea",
+                "reference": "c310a68fd60109fda6753c6caf6cdc5496d13cea",
                 "shasum": ""
             },
             "require": {
@@ -2452,12 +2350,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "3d22859f5f81ec8adbaf250904002530d8b4caa7"
+                "reference": "d7249e84a576354d801472323ed2d2d3daa09de7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/3d22859f5f81ec8adbaf250904002530d8b4caa7",
-                "reference": "3d22859f5f81ec8adbaf250904002530d8b4caa7",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/d7249e84a576354d801472323ed2d2d3daa09de7",
+                "reference": "d7249e84a576354d801472323ed2d2d3daa09de7",
                 "shasum": ""
             },
             "require": {
@@ -2465,7 +2363,6 @@
                 "ext-fileinfo": "*",
                 "ext-json": "*",
                 "ext-pdo": "*",
-                "monolog/monolog": "^2.0",
                 "php": "^8.2",
                 "psr/log": "^1.0",
                 "sensiolabs/ansi-to-html": "~1.0",
@@ -2635,12 +2532,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-table.git",
-                "reference": "fc33247802cdcb9a514de3254659855767d9aed4"
+                "reference": "7dd01ebb1b682a16b28f409c639dcaa946e54be2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/fc33247802cdcb9a514de3254659855767d9aed4",
-                "reference": "fc33247802cdcb9a514de3254659855767d9aed4",
+                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/7dd01ebb1b682a16b28f409c639dcaa946e54be2",
+                "reference": "7dd01ebb1b682a16b28f409c639dcaa946e54be2",
                 "shasum": ""
             },
             "require": {

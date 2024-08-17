@@ -5,7 +5,6 @@ use App\Db\Example;
 use Bs\ControllerDomInterface;
 use Bs\Table;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
@@ -24,12 +23,12 @@ class Manager extends ControllerDomInterface
     protected ?Table $table = null;
 
 
-    public function doDefault(Request $request): void
+    public function doDefault(): void
     {
         $this->getPage()->setTitle('Example Manager');
         $this->getCrumbs()->reset();
 
-        if ($request->query->has('del')) {
+        if (isset($_GET['del'])) {
             $ex = Example::find(intval($_GET['del'] ?? 0));
             if ($ex) {
                 $ex->delete();
@@ -92,7 +91,7 @@ class Manager extends ControllerDomInterface
         $this->table->getForm()->appendField(new Select('active', $list))->setStrict(true);
 
         // init filter fields for actions to access to the filter values
-        $this->table->initForm($request);
+        $this->table->initForm();
 
         // Add Table actions
         $this->table->appendAction(Delete::create($rowSelect))
@@ -116,7 +115,7 @@ class Manager extends ControllerDomInterface
             });
 
         // execute actions and set table orderBy from request
-        $this->table->execute($request);
+        $this->table->execute();
 
         $rows = Example::findFiltered($this->table->getDbFilter());
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
