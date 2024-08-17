@@ -16,22 +16,9 @@ if (!$config->isDebug()) {
     error_log(__FILE__ . ': Do not execute this file in a production environment!');
     return;
 }
-//vd('running dev script');
 
 /** @var \Bs\Db\User $user */
 foreach (\Bs\Db\User::findAll() as $user) {
     $user->password = \Bs\Db\User::hashPassword('password');
     $user->save();
 }
-
-/*
--- --------------------------------------
--- Change all passwords to 'password' for debug mode
--- --------------------------------------
-
--- Salted
--- UPDATE `user` SET `password` = MD5(CONCAT('password', `hash`));
-
--- Unsalted
--- UPDATE `user` SET `password` = MD5('password');
-*/

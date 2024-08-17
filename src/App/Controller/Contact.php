@@ -31,10 +31,10 @@ class Contact extends ControllerDomInterface
         $this->getPage()->setTitle('Contact Us');
         $this->setForm(Form::create('contact'));
 
-        $hash = $this->getSession()->get($this->getForm()->getId() . '-nc');
+        $hash = $_SESSION[$this->getForm()->getId() . '-nc'] ?? '';
         if (!$hash) {
             $hash = md5(time());
-            $this->getSession()->set($this->getForm()->getId() . '-nc', $hash);
+            $_SESSION[$this->getForm()->getId() . '-nc'] = $hash;
         }
         $this->getForm()->appendField(new Field\Hidden('nc'))->setValue($hash);
         $this->getForm()->appendField(new Field\Input('name'));
@@ -57,7 +57,7 @@ class Contact extends ControllerDomInterface
 
     public function onSubmit(Form $form, Form\Action\ActionInterface $action): void
     {
-        $hash = $this->getSession()->get($this->getForm()->getId() . '-nc');
+        $hash = $_SESSION[$this->getForm()->getId() . '-nc'] ?? '';
         if ($form->getFieldValue('nc') != $hash) {
             $form->addError('Form system error, please try again.');
         }
@@ -72,7 +72,8 @@ class Contact extends ControllerDomInterface
         }
 
         if ($form->hasErrors()) return;
-        $this->getSession()->remove($this->getForm()->getId() . '-nc');
+
+        unset($_SESSION[$this->getForm()->getId() . '-nc']);
 
         $message = $this->getFactory()->createMessage();
         $message->addTo($form->getFieldValue('email'));

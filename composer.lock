@@ -2289,12 +2289,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "e63dafca1954d0cde533af7db93a65aadbc926f4"
+                "reference": "732a1358f1ca899323c160f1b0eb861a31316c82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/e63dafca1954d0cde533af7db93a65aadbc926f4",
-                "reference": "e63dafca1954d0cde533af7db93a65aadbc926f4",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/732a1358f1ca899323c160f1b0eb861a31316c82",
+                "reference": "732a1358f1ca899323c160f1b0eb861a31316c82",
                 "shasum": ""
             },
             "require": {
@@ -2344,12 +2344,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-domtemplate.git",
-                "reference": "e4eb791b83e116413b76933d9eee359b0fb6ed16"
+                "reference": "e7f8bfdf19af2ed17cf5ff89cc5830a11e876e1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/e4eb791b83e116413b76933d9eee359b0fb6ed16",
-                "reference": "e4eb791b83e116413b76933d9eee359b0fb6ed16",
+                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/e7f8bfdf19af2ed17cf5ff89cc5830a11e876e1a",
+                "reference": "e7f8bfdf19af2ed17cf5ff89cc5830a11e876e1a",
                 "shasum": ""
             },
             "require": {
@@ -2403,12 +2403,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-form.git",
-                "reference": "89fde865974ed99bd8aa7b69df4618be2175ee6f"
+                "reference": "39728e4e808c945f5c4807fb8d4d13e42a7ea29c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/89fde865974ed99bd8aa7b69df4618be2175ee6f",
-                "reference": "89fde865974ed99bd8aa7b69df4618be2175ee6f",
+                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/39728e4e808c945f5c4807fb8d4d13e42a7ea29c",
+                "reference": "39728e4e808c945f5c4807fb8d4d13e42a7ea29c",
                 "shasum": ""
             },
             "require": {
@@ -2452,12 +2452,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "2ad2bc26dc03ad2bafb1a48a3735454f8c4641e0"
+                "reference": "3d22859f5f81ec8adbaf250904002530d8b4caa7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/2ad2bc26dc03ad2bafb1a48a3735454f8c4641e0",
-                "reference": "2ad2bc26dc03ad2bafb1a48a3735454f8c4641e0",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/3d22859f5f81ec8adbaf250904002530d8b4caa7",
+                "reference": "3d22859f5f81ec8adbaf250904002530d8b4caa7",
                 "shasum": ""
             },
             "require": {
@@ -2527,12 +2527,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "6ac4205d64d33422b0e7551ee303a247c503c995"
+                "reference": "f095ad6204db14a657bd19ec645a60734247f966"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/6ac4205d64d33422b0e7551ee303a247c503c995",
-                "reference": "6ac4205d64d33422b0e7551ee303a247c503c995",
+                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/f095ad6204db14a657bd19ec645a60734247f966",
+                "reference": "f095ad6204db14a657bd19ec645a60734247f966",
                 "shasum": ""
             },
             "require": {

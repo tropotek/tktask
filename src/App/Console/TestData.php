@@ -2,6 +2,7 @@
 namespace App\Console;
 
 use App\Db\Example;
+use Bs\Db\Permissions;
 use Bs\Db\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,16 +60,16 @@ class TestData extends \Tk\Console\Command\TestData
             if ($obj->isType(User::TYPE_STAFF)) {
                 $perm = 0;
                 if (rand(1, 10) <= 5) {
-                    $perm = User::PERM_ADMIN;
+                    $perm = Permissions::PERM_ADMIN;
                 } else {
                     if (rand(1, 10) <= 5) {
-                        $perm |= User::PERM_SYSADMIN;
+                        $perm |= Permissions::PERM_SYSADMIN;
                     }
                     if (rand(1, 10) <= 5) {
-                        $perm |= User::PERM_MANAGE_STAFF;
+                        $perm |= Permissions::PERM_MANAGE_STAFF;
                     }
                     if (rand(1, 10) <= 5) {
-                        $perm |= User::PERM_MANAGE_MEMBER;
+                        $perm |= Permissions::PERM_MANAGE_MEMBER;
                     }
                 }
                 $obj->permissions = $perm;

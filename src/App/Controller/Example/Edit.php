@@ -3,6 +3,7 @@ namespace App\Controller\Example;
 
 use App\Db\Example;
 use Bs\ControllerDomInterface;
+use Bs\Db\Permissions;
 use Bs\Db\User;
 use Bs\Form;
 use Dom\Template;
@@ -28,7 +29,7 @@ class Edit extends ControllerDomInterface
     public function doDefault(Request $request)
     {
         $this->getPage()->setTitle('Edit Example');
-        $this->setAccess(User::PERM_ADMIN);
+        $this->setAccess(Permissions::PERM_ADMIN);
 
 
         $exampleId = intval($_GET['exampleId'] ?? 0);

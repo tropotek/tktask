@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use Bs\ControllerDomInterface;
+use Bs\Db\Permissions;
 use Bs\Db\User;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +13,7 @@ class Info extends ControllerDomInterface
     public function doDefault(Request $request)
     {
         $this->getPage()->setTitle('PHP Info');
-        $this->setAccess(User::PERM_SYSADMIN);
+        $this->setAccess(Permissions::PERM_SYSADMIN);
 
     }
 

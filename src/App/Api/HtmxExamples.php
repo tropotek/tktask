@@ -4,6 +4,7 @@ namespace App\Api;
 use Bs\Db\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tk\Alert;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
@@ -47,9 +48,8 @@ HTML;
         $template = $this->loadTemplate($toasts);
 
         $template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/toast'));
-        foreach ($this->getFactory()->getSession()->getFlashBag()->all() as $type => $flash) {
+        foreach (Alert::getAlerts() as $type => $flash) {
             foreach ($flash as $a) {
-                $a = unserialize($a);
                 $r = $template->getRepeat('panel');
                 if ($a->icon) {
                     $r->addCss('icon', $a->icon);
@@ -128,10 +128,10 @@ HTML;
 
     public function doButton(Request $request)
     {
-        $idx = $this->getSession()->get('btn-test', 0);
+        $idx = $_SESSION['btn-test'] ?? 0;
         $idx++;
         if ($idx > 9) $idx = 0;
-        $this->getSession()->set('btn-test', $idx);
+        $_SESSION['btn-test'] =  $idx;
         $text = $request->request->get('text', 'Click ' . $idx);
         if ($request->query->get('text')) {
             $text = $request->query->get('text');

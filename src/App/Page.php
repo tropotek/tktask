@@ -4,6 +4,7 @@ namespace App;
 use App\Ui\Customizer;
 use App\Ui\Nav;
 use Dom\Template;
+use Tk\Alert;
 use Tk\Uri;
 
 class Page extends \Bs\Page
@@ -29,6 +30,7 @@ class Page extends \Bs\Page
 
         $this->showCrumbs();
         $this->showAlert();
+
         //$this->showMaintenanceRibbon();
 
         return $template;
@@ -70,7 +72,7 @@ class Page extends \Bs\Page
 
     protected function showAlert(): void
     {
-        if (!count($this->getFactory()->getSession()->getFlashBag()->peekAll())) return;
+        if (!Alert::hasAlerts()) return;
 
         $html = <<<HTML
 <div var="alertPanel">
@@ -85,9 +87,9 @@ HTML;
         $template = $this->loadTemplate($html);
 
         $template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/alert'));
-        foreach ($this->getFactory()->getSession()->getFlashBag()->all() as $type => $flash) {
+
+        foreach (Alert::getAlerts() as $type => $flash) {
             foreach ($flash as $a) {
-                $a = unserialize($a);
                 $r = $template->getRepeat('alert');
                 $css = strtolower($type);
                 if ($css == 'error') $css = 'danger';

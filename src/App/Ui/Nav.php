@@ -2,6 +2,7 @@
 
 namespace App\Ui;
 
+use Bs\Db\Permissions;
 use Bs\Db\User;
 use Tk\Traits\SystemTrait;
 use Tk\Ui\Traits\AttributesTrait;
@@ -22,19 +23,19 @@ class Nav
             ],
             'Site Settings' => [
                 'icon' => 'ri-settings-2-line',
-                'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
+                'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_SYSADMIN),
                 'url' => '/settings'
             ],
             'Application' => [
                 'icon' => 'ri-apps-2-fill',
                 'Example Manager' => [
                     'icon' => 'ri-file-list-3-line',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_ADMIN),
                     'url' => '/exampleManager'
                 ],
                 'File Manager' => [
                     'icon' => 'ri-archive-drawer-line',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_ADMIN),
                     'url' => '/fileManager'
                 ],
             ],
@@ -42,17 +43,17 @@ class Nav
                 'icon' => 'ri-team-fill',
                 'Users' => [
                     'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_ADMIN),
                     'url' => '/user/manager'
                 ],
                 'Staff' => [
                     'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_MANAGE_STAFF),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_MANAGE_STAFF),
                     'url' => '/user/staffManager'
                 ],
                 'Members' => [
                     'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_MANAGE_MEMBER | User::PERM_MANAGE_STAFF),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_MANAGE_MEMBER | Permissions::PERM_MANAGE_STAFF),
                     'url' => '/user/memberManager'
                 ]
             ],

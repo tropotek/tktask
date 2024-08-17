@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use Bs\ControllerDomInterface;
+use Bs\Db\Permissions;
 use Bs\Db\User;
 use Bs\Form;
 use Dom\Form\Select;
@@ -25,7 +26,7 @@ class Settings extends ControllerDomInterface
     {
         $this->getPage()->setTitle('Edit Settings');
 
-        $this->setAccess(User::PERM_SYSADMIN);
+        $this->setAccess(Permissions::PERM_SYSADMIN);
 
         $this->getRegistry()->save();
         $this->getCrumbs()->reset();
