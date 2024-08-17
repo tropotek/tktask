@@ -11,25 +11,11 @@
 -- ------------------------------------------------------
 
 -- Show only active users
-# CREATE OR REPLACE VIEW v_user AS
-# SELECT *
-# FROM
-#   user u
-# WHERE
-#   u.active
-# ;
-
-CREATE OR REPLACE VIEW v_example AS
-SELECT
-  e.example_id,
-  e.name,
-  e.image,
-  e.active,
-  e.modified,
-  e.created,
-  NOW() AS today,
-  MD5(e.example_id) AS hash
-FROM example e;
-
-
+CREATE OR REPLACE VIEW v_user AS
+SELECT *
+FROM
+  user u
+WHERE
+  u.active
+;
 

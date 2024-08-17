@@ -21,6 +21,7 @@ SET SQL_SAFE_UPDATES = 0;
 # TRUNCATE TABLE user_token;
 TRUNCATE TABLE example;
 
+-- Test user data, remove for production
 INSERT INTO user (type, username, email, name_first, timezone, permissions) VALUES
   ('staff', 'admin', 'admin@example.com', 'Administrator', NULL, 1),
   ('staff', 'dev', 'dev@example.com', 'Developer', 'Australia/Melbourne', 1),
