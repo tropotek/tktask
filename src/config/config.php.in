@@ -8,6 +8,11 @@ use Tk\Config;
 
 return function (Config $config) {
 
+    /**
+     * Default System DB
+     */
+    $config['db.mysql'] = 'localhost:3306/user/pass/dbName';
+
     /*
      * Site hostname
      */
@@ -15,9 +20,9 @@ return function (Config $config) {
 
     /**
      * Set environment type to prevent destructive functions on production sites
+     * options are 'dev' | 'prod'
      */
     $config['env.type'] = 'dev';
-    //$config['env.type'] = 'prod';
 
     /**
      * Enable to view more verbose log messages
@@ -27,8 +32,6 @@ return function (Config $config) {
     $config->set('path.template.admin', '/html/minton/sn-admin.html');
     $config->set('path.template.user', $config->get('path.template.admin'));
 
-    // Default System DB
-    $config['db.mysql'] = 'localhost:3306/user/pass/dbName';
 
     /*
      * mail template path
@@ -36,8 +39,7 @@ return function (Config $config) {
     $config['system.mail.template'] = '/html/templates/mail.default.tpl';
 
     /*
-     * Encrypt function secret seed
-     * Change this on your production systems
+     * \Tk\Encrypt function secret seed
      */
     $config['system.encrypt'] = '';
 
@@ -53,15 +55,22 @@ return function (Config $config) {
 
     /*
      * DB secret API key
-     * Use this  key for the mirror command in a dev environment.
-     * Keep this key secret. Access to the sites DB can be gained with it.
+     * Use this key for the mirror command in a dev environment.
+     * Default: empty, and disabled
      */
     //$config['db.mirror.secret'] = '';
 
     /**
-     * Enable DB sessions
+     * Enable/disable users to change password from their profile page
+     * Default: true
      */
-    //$config['session.db_enable']    = true;
+    //$config['user.profile.password']    = false;
+
+    /*
+     * Enable DB sessions
+     * Default: false
+     */
+    $config['session.db_enable']    = true;
 
     /**
      * Set the site timezone for PHP and MySQL
@@ -69,12 +78,20 @@ return function (Config $config) {
     $config['php.date.timezone'] = 'Australia/Melbourne';
 
     /*
-     * The default log level
+     * Set the location of the site log file
+     * Default: uses the system PHP log file
      */
-    $config['log.logLevel'] = \Psr\Log\LogLevel::ERROR;
+     //$config['php.error_log']      = '/home/user/log/error.log';
+
+    /*
+     * The default log level
+     * Default: LogLevel::ERROR
+     */
+    //$config['log.logLevel'] = \Psr\Log\LogLevel::DEBUG;
 
     // Setup dev environment
     if ($config->isDev()) {
+        // Send all emails to the debug address
         $config['system.debug.email'] = 'admin@email.com';
         // Used for the Mirror command
         //$config['db.mirror.url']    = 'https://example.com/util/mirror';
@@ -86,7 +103,7 @@ return function (Config $config) {
         $config['php.display_errors'] = 'On';
         $config['php.error_log']      = '/home/user/log/error.log';
         $config['log.logLevel']       = \Psr\Log\LogLevel::DEBUG;
-        // force logging with NO_LOG, when needed
+        // force logging with NO_LOG
         //$config['log.enableNoLog']   = true;
     }
 

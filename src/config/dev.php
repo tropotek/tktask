@@ -17,7 +17,6 @@ if (!$config->isDebug()) {
     return;
 }
 
-/** @var \Bs\Db\User $user */
 foreach (\Bs\Db\User::findAll() as $user) {
     $user->password = \Bs\Db\User::hashPassword('password');
     $user->save();

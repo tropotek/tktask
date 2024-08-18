@@ -82,9 +82,9 @@ class Example extends DbModel
 
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';
-            $w  = 'name LIKE :search OR ';
-            $w .= 'image LIKE :search OR ';
-            $w .= 'example_id LIKE :search OR ';
+            $w  = 'a.name LIKE :search OR ';
+            $w .= 'a.image LIKE :search OR ';
+            $w .= 'a.example_id LIKE :search OR ';
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
@@ -92,25 +92,27 @@ class Example extends DbModel
             $filter['exampleId'] = $filter['id'];
         }
         if (!empty($filter['exampleId'])) {
-            $filter->appendWhere('(example_id IN :exampleId) AND ');
+            if (!is_array($filter['exampleId'])) $filter['exampleId'] = [$filter['exampleId']];
+            $filter->appendWhere('a.example_id IN :exampleId AND ');
+        }
+
+        if (!empty($filter['exclude'])) {
+            if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
+            $filter->appendWhere('a.example_id NOT IN :exclude AND ');
         }
 
         if (!empty($filter['name'])) {
-            $filter->appendWhere('name = :name AND ');
+            $filter->appendWhere('a.name = :name AND ');
         }
 
         if (isset($filter['active'])) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('active = :active AND ');
-        }
-
-        if (!empty($filter['exclude'])) {
-            $filter->appendWhere('(example_id NOT IN :exclude) AND ');
+            $filter->appendWhere('a.active = :active AND ');
         }
 
         return Db::query("
             SELECT *
-            FROM example
+            FROM example a
             {$filter->getSql()}",
             $filter->all(),
             self::class

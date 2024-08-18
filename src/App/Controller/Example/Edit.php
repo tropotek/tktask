@@ -4,10 +4,8 @@ namespace App\Controller\Example;
 use App\Db\Example;
 use Bs\ControllerDomInterface;
 use Bs\Db\Permissions;
-use Bs\Db\User;
 use Bs\Form;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Exception;
 use Tk\Form\Action\Link;
@@ -26,7 +24,7 @@ class Edit extends ControllerDomInterface
     protected ?Example $example = null;
     protected ?Form    $form    = null;
 
-    public function doDefault(Request $request)
+    public function doDefault()
     {
         $this->getPage()->setTitle('Edit Example');
         $this->setAccess(Permissions::PERM_ADMIN);
@@ -70,7 +68,7 @@ class Edit extends ControllerDomInterface
         $this->form->setFieldValues($values);
 
         // Execute form with request values
-        $this->form->execute($request->request->all());
+        $this->form->execute($_POST);
 
     }
 
