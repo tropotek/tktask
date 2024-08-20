@@ -2,7 +2,7 @@
 namespace App\Controller\Example;
 
 use App\Db\Example;
-use Bs\ControllerDomInterface;
+use Bs\ControllerAdmin;
 use Bs\Db\Permissions;
 use Bs\Form;
 use Dom\Template;
@@ -18,7 +18,7 @@ use Tk\Form\Field\Textarea;
 use Tk\Uri;
 use Tt\DataMap\Form\Boolean;
 
-class Edit extends ControllerDomInterface
+class Edit extends ControllerAdmin
 {
 
     protected ?Example $example = null;

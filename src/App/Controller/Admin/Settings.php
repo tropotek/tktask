@@ -1,11 +1,9 @@
 <?php
 namespace App\Controller\Admin;
 
-use Bs\ControllerDomInterface;
+use Bs\ControllerAdmin;
 use Bs\Db\Permissions;
-use Bs\Db\User;
 use Bs\Form;
-use Dom\Form\Select;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
@@ -16,10 +14,10 @@ use Tk\Form\Field\Input;
 use Tk\Form\Field\Textarea;
 use Tk\Uri;
 
-class Settings extends ControllerDomInterface
+class Settings extends ControllerAdmin
 {
-    protected ?Form   $form   = null;
-    protected bool    $templateSelect = false;
+    protected ?Form $form   = null;
+    protected bool  $templateSelect = false;
 
 
     public function doDefault(Request $request): void

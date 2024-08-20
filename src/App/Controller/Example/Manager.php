@@ -2,7 +2,7 @@
 namespace App\Controller\Example;
 
 use App\Db\Example;
-use Bs\ControllerDomInterface;
+use Bs\ControllerAdmin;
 use Bs\Table;
 use Dom\Template;
 use Tk\Alert;
@@ -16,7 +16,7 @@ use Tt\Table\Action\Delete;
 use Tt\Table\Cell;
 use Tt\Table\Cell\RowSelect;
 
-class Manager extends ControllerDomInterface
+class Manager extends ControllerAdmin
 {
     use SystemTrait;
 

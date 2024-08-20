@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use Bs\PageDomInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Auth\FactoryInterface;
 
@@ -15,15 +16,13 @@ class Factory extends \Bs\Factory implements FactoryInterface
         return $this->getEventDispatcher();
     }
 
-    public function createPage(string $templatePath = ''): Page
+    public function createDomPage(string $templatePath = ''): PageDomInterface
     {
         // So we can change the mintion template from the settings page
         if (str_contains($templatePath, '/minton/')) {
             $templatePath = $this->makePath($this->getRegistry()->get('minton.template', '/html/minton/sn-admin.html'));
         }
-        $page = new Page($templatePath);
-        $page->setDomModifier($this->getTemplateModifier());
-        return $page;
+        return new Page($templatePath);
     }
 
 }

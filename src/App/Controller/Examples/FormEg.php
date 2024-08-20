@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Examples;
 
-use Bs\ControllerDomInterface;
+use Bs\ControllerAdmin;
 use Bs\Form;
 use Dom\Template;
 use Tk\Alert;
@@ -18,7 +18,7 @@ use Tk\Form\Field\Select;
 use Tk\Form\Field\Textarea;
 use Tk\Uri;
 
-class FormEg extends ControllerDomInterface
+class FormEg extends ControllerAdmin
 {
 
     protected Form $form;

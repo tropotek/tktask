@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Examples;
 
-use Bs\ControllerDomInterface;
+use Bs\ControllerAdmin;
 use Dom\Template;
 
-class Test extends ControllerDomInterface
+class Test extends ControllerAdmin
 {
 
     public function doDefault(): void

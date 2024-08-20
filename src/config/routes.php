@@ -20,23 +20,18 @@ use Symfony\Component\Routing\Loader\Configurator\CollectionConfigurator;
 return function (CollectionConfigurator $routes) {
 
     $routes->add('home-base', '/')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Home::class, 'doDefault']);
 
     $routes->add('home', '/home')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Home::class, 'doDefault']);
 
     $routes->add('contact', '/contact')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_PUBLIC])
         ->controller([\App\Controller\Contact::class, 'doDefault']);
 
     $routes->add('user-dashboard', '/dashboard')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
 
     $routes->add('settings-edit', '/settings')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
 
     // API Endpoints
@@ -52,29 +47,22 @@ return function (CollectionConfigurator $routes) {
     //     ->controller([\Tk\Mvc\PhpController::class, 'doDefault']);
 
     $routes->add('example-manager', '/exampleManager')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Example\Manager::class, 'doDefault']);
 
     $routes->add('example-edit', '/exampleEdit')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Example\Edit::class, 'doDefault']);
 
     $routes->add('phpinfo', '/info')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Admin\Info::class, 'doDefault']);
 
     // Htmx Examples
     $routes->add('ui-form', '/ui/form')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Examples\FormEg::class, 'doDefault']);
     $routes->add('test', '/test')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Examples\Test::class, 'doDefault']);
     $routes->add('test-dom', '/domTest')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Examples\DomTest::class, 'doDefault']);
     $routes->add('test-htmx', '/htmx')
-        ->defaults(['template' => \Bs\Page::TEMPLATE_ADMIN])
         ->controller([\App\Controller\Examples\Htmx::class, 'doDefault']);
 
     // Note no page template param for API calls

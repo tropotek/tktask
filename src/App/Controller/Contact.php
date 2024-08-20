@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use Bs\ControllerDomInterface;
+use Bs\ControllerPublic;
 use Bs\Form;
 use Dom\Template;
 use Tk\Alert;
@@ -21,7 +21,7 @@ use Tk\Uri;
  * Most clients prefer this type of
  *
  */
-class Contact extends ControllerDomInterface
+class Contact extends ControllerPublic
 {
     use SystemTrait;
 

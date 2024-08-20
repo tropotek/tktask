@@ -1,13 +1,13 @@
 <?php
 namespace App\Controller;
 
-use Bs\ControllerDomInterface;
+use Bs\ControllerPublic;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Exception;
 use Tk\Uri;
 
-class Home extends ControllerDomInterface
+class Home extends ControllerPublic
 {
 
     public function doDefault()

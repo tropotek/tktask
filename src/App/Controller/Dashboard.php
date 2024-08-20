@@ -1,14 +1,13 @@
 <?php
 namespace App\Controller;
 
-use Bs\ControllerDomInterface;
+use Bs\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Uri;
 
-class Dashboard extends ControllerDomInterface
+class Dashboard extends ControllerAdmin
 {
-
 
     public function doDefault(): void
     {
