@@ -1999,12 +1999,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "122ba59267fc82caa8f1f509332d4b94a223013b"
+                "reference": "a9f7f10b27d1a056930e0d68a37e14061ac94afb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/122ba59267fc82caa8f1f509332d4b94a223013b",
-                "reference": "122ba59267fc82caa8f1f509332d4b94a223013b",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/a9f7f10b27d1a056930e0d68a37e14061ac94afb",
+                "reference": "a9f7f10b27d1a056930e0d68a37e14061ac94afb",
                 "shasum": ""
             },
             "require": {
@@ -2074,7 +2074,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-13T14:29:53+00:00"
+            "time": "2024-08-16T15:52:02+00:00"
         },
         {
             "name": "tinymce/tinymce",
@@ -2187,12 +2187,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "f6c470d1869c5f0065cc8f17f09e67494bb4d5b3"
+                "reference": "da7491e0f88ea1b96aed32d565db348668a0fba5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/f6c470d1869c5f0065cc8f17f09e67494bb4d5b3",
-                "reference": "f6c470d1869c5f0065cc8f17f09e67494bb4d5b3",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/da7491e0f88ea1b96aed32d565db348668a0fba5",
+                "reference": "da7491e0f88ea1b96aed32d565db348668a0fba5",
                 "shasum": ""
             },
             "require": {
@@ -2424,12 +2424,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "f095ad6204db14a657bd19ec645a60734247f966"
+                "reference": "c8b33fd2d65b81e54baaae35eb5a3263720da974"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/f095ad6204db14a657bd19ec645a60734247f966",
-                "reference": "f095ad6204db14a657bd19ec645a60734247f966",
+                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/c8b33fd2d65b81e54baaae35eb5a3263720da974",
+                "reference": "c8b33fd2d65b81e54baaae35eb5a3263720da974",
                 "shasum": ""
             },
             "require": {
@@ -2784,12 +2784,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "d3d378184bf1ae88abb1c3c9f8d0c26de5ea2744"
+                "reference": "3ba58ea3eb651dafa06bb69b2c6cb3a708d9b762"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/d3d378184bf1ae88abb1c3c9f8d0c26de5ea2744",
-                "reference": "d3d378184bf1ae88abb1c3c9f8d0c26de5ea2744",
+                "url": "https://api.github.com/repos/composer/composer/zipball/3ba58ea3eb651dafa06bb69b2c6cb3a708d9b762",
+                "reference": "3ba58ea3eb651dafa06bb69b2c6cb3a708d9b762",
                 "shasum": ""
             },
             "require": {
@@ -2891,7 +2891,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-26T14:21:02+00:00"
+            "time": "2024-08-19T11:52:44+00:00"
         },
         {
             "name": "composer/metadata-minifier",
@@ -2969,22 +2969,22 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "ea4ab6f9580a4fd221e0418f2c357cdd39102a90"
+                "reference": "1637e067347a0c40bbb1e3cd786b20dcab556a81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/ea4ab6f9580a4fd221e0418f2c357cdd39102a90",
-                "reference": "ea4ab6f9580a4fd221e0418f2c357cdd39102a90",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/1637e067347a0c40bbb1e3cd786b20dcab556a81",
+                "reference": "1637e067347a0c40bbb1e3cd786b20dcab556a81",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4 || ^8.0"
             },
             "conflict": {
-                "phpstan/phpstan": "<1.11.8"
+                "phpstan/phpstan": "<1.11.10"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.11.8",
+                "phpstan/phpstan": "^1.11.10",
                 "phpstan/phpstan-strict-rules": "^1.1",
                 "phpunit/phpunit": "^8 || ^9"
             },
@@ -3025,7 +3025,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.2.0"
+                "source": "https://github.com/composer/pcre/tree/3.3.0"
             },
             "funding": [
                 {
@@ -3041,7 +3041,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-25T09:36:02+00:00"
+            "time": "2024-08-19T19:43:53+00:00"
         },
         {
             "name": "composer/semver",
@@ -3343,12 +3343,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "f7fca4ae9aa2230cf12779e1f6fe01720c01069f"
+                "reference": "6c4477c9c0f73509f528c9de4de89b1c67b01753"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f7fca4ae9aa2230cf12779e1f6fe01720c01069f",
-                "reference": "f7fca4ae9aa2230cf12779e1f6fe01720c01069f",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6c4477c9c0f73509f528c9de4de89b1c67b01753",
+                "reference": "6c4477c9c0f73509f528c9de4de89b1c67b01753",
                 "shasum": ""
             },
             "require": {
@@ -3393,7 +3393,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-08-15T06:50:48+00:00"
+            "time": "2024-08-19T20:16:49+00:00"
         },
         {
             "name": "react/promise",
