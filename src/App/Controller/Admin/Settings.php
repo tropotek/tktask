@@ -12,6 +12,7 @@ use Tk\Form\Action\SubmitExit;
 use Tk\Form\Field\Checkbox;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Textarea;
+use Tk\Ui\Button;
 use Tk\Uri;
 
 class Settings extends ControllerAdmin
@@ -167,6 +168,13 @@ class Settings extends ControllerAdmin
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
+        if ($this->getAuthUser()->hasPermission(Permissions::ACCESS_EDIT_USERS)) {
+            $btn = new Button(' Users', Uri::create('/user/manager'));
+            $btn->addCss('btn btn-white');
+            $btn->setIcon('fa fa-fw fa-users');
+            $template->appendTemplate('actions', $btn->show());
+        }
+
 
         $this->form->getField('site.name')->addFieldCss('col-6');
         $this->form->getField('site.name.short')->addFieldCss('col-6');
@@ -184,7 +192,7 @@ class Settings extends ControllerAdmin
   <div class="card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-white" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+      <a href="/" title="Back" class="btn btn-white" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
     </div>
   </div>
   <div class="card mb-3">

@@ -69,7 +69,7 @@ class TestData extends \Tk\Console\Command\TestData
                         $perm |= Permissions::PERM_MANAGE_STAFF;
                     }
                     if (rand(1, 10) <= 5) {
-                        $perm |= Permissions::PERM_MANAGE_MEMBER;
+                        $perm |= Permissions::PERM_MANAGE_MEMBERS;
                     }
                 }
                 $obj->permissions = $perm;
