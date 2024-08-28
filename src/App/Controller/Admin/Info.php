@@ -4,16 +4,14 @@ namespace App\Controller\Admin;
 use Bs\ControllerAdmin;
 use Bs\Db\Permissions;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 
 class Info extends ControllerAdmin
 {
 
-    public function doDefault(Request $request)
+    public function doDefault()
     {
         $this->getPage()->setTitle('PHP Info');
         $this->setAccess(Permissions::PERM_SYSADMIN);
-
     }
 
     public function show(): ?Template
@@ -43,7 +41,7 @@ JS;
     {
         $html = <<<HTML
 <div>
-  <div class="card mb-3">
+  <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>

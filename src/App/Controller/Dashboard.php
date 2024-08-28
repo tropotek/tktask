@@ -40,12 +40,6 @@ class Dashboard extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-<!--  <div class="card shadow mb-3">-->
-<!--    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>-->
-<!--    <div class="card-body" var="actions">-->
-<!--      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>-->
-<!--    </div>-->
-<!--  </div>-->
   <div class="card mb-3">
     <div class="card-header"><i class="fas fa-cogs"></i> <span var="title"></span></div>
     <div class="card-body" var="content">

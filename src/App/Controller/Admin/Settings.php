@@ -5,7 +5,6 @@ use Bs\ControllerAdmin;
 use Bs\Db\Permissions;
 use Bs\Form;
 use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Tk\Alert;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
@@ -21,7 +20,7 @@ class Settings extends ControllerAdmin
     protected bool  $templateSelect = false;
 
 
-    public function doDefault(Request $request): void
+    public function doDefault(): void
     {
         $this->getPage()->setTitle('Edit Settings');
 
@@ -168,13 +167,9 @@ class Settings extends ControllerAdmin
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
-        if ($this->getAuthUser()->hasPermission(Permissions::ACCESS_EDIT_USERS)) {
-            $btn = new Button(' Users', Uri::create('/user/manager'));
-            $btn->addCss('btn btn-white');
-            $btn->setIcon('fa fa-fw fa-users');
-            $template->appendTemplate('actions', $btn->show());
-        }
 
+        $template->setVisible('staff', $this->getAuthUser()->hasPermission(Permissions::PERM_MANAGE_STAFF));
+        $template->setVisible('member', $this->getAuthUser()->hasPermission(Permissions::PERM_MANAGE_MEMBERS));
 
         $this->form->getField('site.name')->addFieldCss('col-6');
         $this->form->getField('site.name.short')->addFieldCss('col-6');
@@ -189,10 +184,12 @@ class Settings extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="card mb-3">
+  <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-white" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
+      <a href="/user/staffManager" title="Manage Staff" class="btn btn-white"><i class="fa fa-fw fa-users" choice="staff"></i> Staff</a>
+      <a href="/user/memberManager" title="Manage Members" class="btn btn-white"><i class="fa fa-fw fa-users" choice="member"></i> Members</a>
     </div>
   </div>
   <div class="card mb-3">
