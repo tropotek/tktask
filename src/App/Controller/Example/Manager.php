@@ -11,10 +11,10 @@ use Tk\Form\Field\Select;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
 use Tk\Db;
-use Tt\Table\Action\Csv;
-use Tt\Table\Action\Delete;
-use Tt\Table\Cell;
-use Tt\Table\Cell\RowSelect;
+use Tk\Table\Action\Csv;
+use Tk\Table\Action\Delete;
+use Tk\Table\Cell;
+use Tk\Table\Cell\RowSelect;
 
 class Manager extends ControllerAdmin
 {
@@ -72,17 +72,17 @@ class Manager extends ControllerAdmin
 
         $this->table->appendCell('active')
             ->setSortable(true)
-            ->addOnValue('\Tt\Table\Type\Boolean::onValue');
+            ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->table->appendCell('modified')
             ->setSortable(true)
             ->addCss('text-nowrap text-center')
-            ->addOnValue('\Tt\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
         $this->table->appendCell('created')
             ->setSortable(true)
             ->addCss('text-nowrap text-center')
-            ->addOnValue('\Tt\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
         // Add Filter Fields
         $this->table->getForm()->appendField(new Input('search'))->setAttr('placeholder', 'Search name, id');
