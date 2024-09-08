@@ -41,11 +41,6 @@ class Nav
             ],
             'Users' => [
                 'icon' => 'ri-team-fill',
-                'Users' => [
-                    'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_ADMIN),
-                    'url' => '/user/manager'
-                ],
                 'Staff' => [
                     'icon' => 'ri-team-fill',
                     'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_MANAGE_STAFF),

@@ -16,7 +16,7 @@ use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Textarea;
 use Tk\Uri;
-use Tt\DataMap\Form\Boolean;
+use Tk\DataMap\Form\Boolean;
 
 class Edit extends ControllerAdmin
 {

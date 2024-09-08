@@ -3,11 +3,11 @@ namespace App\Db;
 
 use Bs\Db\File;
 use Bs\Db\Traits\TimestampTrait;
-use Tt\Db;
-use Tt\DbFilter;
-use Tt\DbModel;
+use Tk\Db;
+use Tk\Db\Filter;
+use Tk\Db\Model;
 
-class Example extends DbModel
+class Example extends Model
 {
     use TimestampTrait;
 
@@ -76,9 +76,9 @@ class Example extends DbModel
         );
     }
 
-    public static function findFiltered(array|DbFilter $filter): array
+    public static function findFiltered(array|Filter $filter): array
     {
-        $filter = DbFilter::create($filter);
+        $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';

@@ -7,7 +7,7 @@ use Bs\Db\User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Tt\Db;
+use Tk\Db;
 
 class TestData extends \Tk\Console\Command\TestData
 {
