@@ -1,0 +1,26 @@
+<?php
+/**
+ * Site Config
+ * Copy this to config.php and edit with your server settings
+ */
+use Tk\Config;
+
+return function (Config $config) {
+
+    /**
+     * System DB DSN: hostname[:port]/username/password/dbname
+     */
+    $config['db.mysql'] = '{db.mysql}';
+
+    /**
+     * System string encrypt secret
+     * Do not change this after site install
+     */
+    $config['system.encrypt'] = '{system.encrypt}';
+
+    /**
+     * Set the site timezone for PHP and MySQL
+     */
+    $config['php.date.timezone'] = 'Australia/Melbourne';
+
+};
