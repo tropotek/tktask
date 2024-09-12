@@ -6,7 +6,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Auth\FactoryInterface;
 use Tk\System;
 
-class Factory extends \Bs\Factory implements FactoryInterface
+class Factory extends \Bs\Factory
 {
 
     public function initEventDispatcher(): ?EventDispatcher
