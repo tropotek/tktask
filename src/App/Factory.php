@@ -4,6 +4,7 @@ namespace App;
 use Bs\PageDomInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Auth\FactoryInterface;
+use Tk\System;
 
 class Factory extends \Bs\Factory implements FactoryInterface
 {
@@ -20,7 +21,7 @@ class Factory extends \Bs\Factory implements FactoryInterface
     {
         // So we can change the mintion template from the settings page
         if (str_contains($templatePath, '/minton/')) {
-            $templatePath = $this->makePath($this->getRegistry()->get('minton.template', '/html/minton/sn-admin.html'));
+            $templatePath = System::makePath($this->getRegistry()->get('minton.template', '/html/minton/sn-admin.html'));
         }
         return new Page($templatePath);
     }

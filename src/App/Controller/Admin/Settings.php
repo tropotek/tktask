@@ -1,9 +1,11 @@
 <?php
 namespace App\Controller\Admin;
 
+use App\Factory;
 use Bs\ControllerAdmin;
 use Bs\Db\Permissions;
 use Bs\Form;
+use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Action\Link;
@@ -26,7 +28,7 @@ class Settings extends ControllerAdmin
 
         $this->setAccess(Permissions::PERM_SYSADMIN);
 
-        $this->getRegistry()->save();
+        Factory::instance()->getRegistry()->save();
         $this->getCrumbs()->reset();
 
         $this->templateSelect = str_contains($this->getPage()->getTemplatePath(), '/minton/');
@@ -124,10 +126,10 @@ class Settings extends ControllerAdmin
 
         // Form Actions
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
-        $this->form->appendField(new Link('back', $this->getFactory()->getBackUrl()));
+        $this->form->appendField(new Link('back', \Bs\Factory::instance()->getBackUrl()));
 
         // Load form with object values
-        $this->form->setFieldValues($this->getRegistry()->all());
+        $this->form->setFieldValues(Registry::instance()->all());
 
         // Execute form with request values
         $values = array_combine(
@@ -142,7 +144,7 @@ class Settings extends ControllerAdmin
     public function onSubmit(Form $form, SubmitExit $action): void
     {
         $values = $form->getFieldValues();
-        $this->getRegistry()->replace($values);
+        Registry::instance()->replace($values);
 
         if (strlen($values['site.name'] ?? '') < 3) {
             $form->addFieldError('site.name', 'Please enter your name');
@@ -153,7 +155,7 @@ class Settings extends ControllerAdmin
 
         if ($form->hasErrors()) return;
 
-        $this->getRegistry()->save();
+        Registry::instance()->save();
 
         Alert::addSuccess('Site settings saved successfully.');
         $action->setRedirect(Uri::create());

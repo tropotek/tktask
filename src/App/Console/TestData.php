@@ -4,6 +4,7 @@ namespace App\Console;
 use App\Db\Example;
 use Bs\Db\Permissions;
 use Bs\Db\User;
+use Bs\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -41,9 +42,9 @@ class TestData extends \Tk\Console\Command\TestData
     {
         for($i = 0; $i < 73; $i++) {
             $obj = new Example();
-            $obj->setName($this->createName());
-            $obj->setImage('***');
-            $obj->setActive((bool)rand(0,1));
+            $obj->name = $this->createName();
+            $obj->image = '***';
+            $obj->active = (bool)rand(0,1);
             $obj->save();
         }
     }
@@ -52,7 +53,7 @@ class TestData extends \Tk\Console\Command\TestData
     {
         // Generate new users
         for($i = 0; $i < 50; $i++) {
-            $obj = $this->getFactory()->createUser();
+            $obj = new User::$USER_CLASS();
             $obj->uid ='***';
             $obj->type = (rand(1, 10) <= 5 ? User::TYPE_STAFF : User::TYPE_MEMBER);
 

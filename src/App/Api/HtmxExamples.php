@@ -1,19 +1,14 @@
 <?php
 namespace App\Api;
 
+use App\Factory;
 use Bs\Db\User;
 use Symfony\Component\HttpFoundation\Response;
 use Tk\Alert;
-use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class HtmxExamples
 {
-    use SystemTrait;
-
 
     /**
      * Markup to be placed in the page:
@@ -24,14 +19,11 @@ class HtmxExamples
      */
     public function doToast(): string
     {
-
-        //hx-get="/api/htmx/toast" hx-trigger="submit from:form" hx-sync="form:queue last" hx-target="this" hx-swap="outerHTML"
         $toasts = <<<HTML
 <div aria-live="polite" aria-atomic="true" class="toastPanel position-relative" var="alertPanel">
   <div class="toast-container top-0 end-0 p-3">
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" repeat="panel">
       <div class="toast-header">
-        <!--<img src="..." class="rounded mr-2" alt="...">-->
         <svg choice="svg" class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect fill="#007aff" width="100%" height="100%" var="svg" /></svg>&nbsp;
         <i class="bd-placeholder-img rounded mr-2" style="width: 20px;height: 20px; line-height: 1.5em;" choice="icon"></i>
         <strong class="me-auto" var="title"> Alert</strong>
@@ -44,7 +36,7 @@ class HtmxExamples
 </div>
 HTML;
 
-        $template = $this->loadTemplate($toasts);
+        $template = Factory::instance()->getTemplateLoader()->load($toasts);
 
         $template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/toast'));
         foreach (Alert::getAlerts() as $type => $flash) {
@@ -86,7 +78,6 @@ HTML;
     public function doTest()
     {
         sleep(1);
-        //vd(apache_request_headers());
         $q = trim($_POST['q'] ?? '');
         return "<p>The search string was: <b>$q</b></p>";
     }
@@ -144,10 +135,6 @@ HTML;
 
     public function doUpload()
     {
-        //sleep(1);
-        if (count($_FILES)) {
-            //vd($_FILES);
-        }
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 

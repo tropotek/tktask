@@ -1,16 +1,12 @@
 <?php
-
 namespace App\Ui;
-
-use Tk\Traits\SystemTrait;
 
 class Customizer
 {
-    use SystemTrait;
 
     public static function getHtml(): string
     {
-        $html = <<<HTML
+        return <<<HTML
 <div>
   <div class="offcanvas offcanvas-end right-bar" tabindex="-1" id="theme-settings-offcanvas" data-bs-scroll="true" data-bs-backdrop="true">
     <div data-simplebar class="h-100">
@@ -141,7 +137,6 @@ class Customizer
   <div class="rightbar-overlay"></div>
 </div>
 HTML;
-        return $html;
     }
 
 }

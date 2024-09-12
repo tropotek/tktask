@@ -13,16 +13,7 @@ try {
 
     $app = \App\Factory::instance()->getConsole();
     //Determine Environment
-    $env = $input->getParameterOption(array('--env', '-e'), getenv('MYAPP_ENV') ?: 'prod');
-    //$app->environment = $env;
-
-    // Setup Local Console Commands
-    $app->add(new \App\Console\Cron());
-    $app->add(new \Bs\Console\Password());
-    if (\Tk\Config::instance()->isDebug()) {
-        $app->add(new \App\Console\TestData());
-        $app->add(new \App\Console\Test());
-    }
+    $env = $input->getParameterOption(array('--env', '-e'), \Tk\Config::instance()->get('env.type', 'prod'));
 
     $app->run($input, $output);
 } catch (Exception $e) {

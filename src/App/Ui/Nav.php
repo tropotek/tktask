@@ -4,13 +4,12 @@ namespace App\Ui;
 
 use Bs\Db\Permissions;
 use Bs\Db\User;
-use Tk\Traits\SystemTrait;
+use Bs\Factory;
+use Tk\Config;
 use Tk\Ui\Traits\AttributesTrait;
-use Tk\Ui\Traits\CssTrait;
 
 class Nav
 {
-    use SystemTrait;
     use AttributesTrait;
 
     protected function getNavList(): array
@@ -56,7 +55,7 @@ class Nav
             // Visible in Debug mode only
             'Examples' => [
                 'icon' => 'ri-apps-2-line',
-                'visible' => fn($i) => $this->getConfig()->isDebug(),
+                'visible' => fn($i) => Config::instance()->isDev(),
                 'Test' => ['url' => '/test'],
                 'DomTest' => ['url' => '/domTest'],
                 'HTMX' => ['url' => '/htmx'],
@@ -64,7 +63,7 @@ class Nav
             ],
             'Dev' => [
                 'icon' => 'ri-bug-line',
-                'visible' => fn($i) => $this->getConfig()->isDebug(),
+                'visible' => fn($i) => Config::instance()->isDev(),
                 'PHP Info' => [
                     'icon' => 'ri-information-line',
                     'url' => '/info'
@@ -249,6 +248,6 @@ HTML;
 
     public function getUser(): ?User
     {
-        return $this->getFactory()->getAuthUser();
+        return Factory::instance()->getAuthUser();
     }
 }

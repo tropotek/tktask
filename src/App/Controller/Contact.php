@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use Bs\ControllerPublic;
 use Bs\Form;
+use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Action\Link;
@@ -10,7 +11,6 @@ use Tk\Form\Action\Submit;
 use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Textarea;
-use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
 /**
@@ -23,7 +23,6 @@ use Tk\Uri;
  */
 class Contact extends ControllerPublic
 {
-    use SystemTrait;
 
     protected ?Form $form = null;
 
@@ -49,7 +48,7 @@ class Contact extends ControllerPublic
         $this->form->appendField(new Submit('send', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create()));
 
-        $this->form->setFieldValues($this->getRegistry()->all());
+        $this->form->setFieldValues(Registry::instance()->all());
 
         $this->form->execute($_POST);
 
@@ -77,7 +76,7 @@ class Contact extends ControllerPublic
 
         $message = $this->getFactory()->createMessage();
         $message->addTo($form->getFieldValue('email'));
-        $message->setSubject($this->getRegistry()->getSiteName() . ' Contact Request');
+        $message->setSubject(Registry::instance()->getSiteName() . ' Contact Request');
         $content = <<<HTML
 <p>
 Dear {name},

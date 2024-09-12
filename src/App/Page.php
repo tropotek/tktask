@@ -3,6 +3,7 @@ namespace App;
 
 use App\Ui\Customizer;
 use App\Ui\Nav;
+use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Uri;
@@ -14,15 +15,15 @@ class Page extends \Bs\Page
     {
         $template = parent::show();
 
-        if ($this->getRegistry()->get('system.meta.keywords')) {
-            $template->appendMetaTag('keywords', $this->getRegistry()->get('system.meta.keywords', ''));
+        if (Registry::instance()->get('system.meta.keywords')) {
+            $template->appendMetaTag('keywords', Registry::instance()->get('system.meta.keywords', ''));
         }
-        if ($this->getRegistry()->get('system.meta.description')) {
-            $template->appendMetaTag('description', $this->getRegistry()->get('system.meta.description', ''));
+        if (Registry::instance()->get('system.meta.description')) {
+            $template->appendMetaTag('description', Registry::instance()->get('system.meta.description', ''));
         }
 
-        $template->appendJs($this->getRegistry()->get('system.global.js', ''));
-        $template->appendCss($this->getRegistry()->get('system.global.css', ''));
+        $template->appendJs(Registry::instance()->get('system.global.js', ''));
+        $template->appendCss(Registry::instance()->get('system.global.css', ''));
 
         if (str_contains($this->getTemplatePath(), '/minton/')) {
             $this->showMintonParams($template);

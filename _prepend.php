@@ -16,4 +16,4 @@ $factory->set('composerLoader', $composer);
 //$system  = \App\System::instance();
 //$registry  = \App\Registry::instance();
 
-\Tk\Factory::instance()->getBootstrap()->init();
+\Bs\Factory::instance()->getBootstrap()->init();

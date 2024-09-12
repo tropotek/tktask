@@ -8,7 +8,6 @@ use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
-use Tk\Traits\SystemTrait;
 use Tk\Uri;
 use Tk\Db;
 use Tk\Table\Action\Csv;
@@ -18,7 +17,6 @@ use Tk\Table\Cell\RowSelect;
 
 class Manager extends ControllerAdmin
 {
-    use SystemTrait;
 
     protected ?Table $table = null;
 
@@ -65,10 +63,6 @@ class Manager extends ControllerAdmin
 
         $this->table->appendCell('image')
             ->setSortable(true);
-//            ->addOnValue(function(Example $row, Cell $cell) {
-//                $url = Uri::create('/exampleEdit', ['exampleId' => $row->exampleId]);
-//                return sprintf('<a href="%s">%s</a>', $url, $row->name);
-//            });
 
         $this->table->appendCell('active')
             ->setSortable(true)

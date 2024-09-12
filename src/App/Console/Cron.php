@@ -32,13 +32,9 @@ class Cron extends Console
         }
 
 
-//        for($i = 0; $i < 599999999; $i++) {
-//            echo '';
-//        }
+
         $this->writeComment('Completed!!!');
-
-
-        $this->release();
+        $this->release();   // release lock
         return self::SUCCESS;
     }
 
