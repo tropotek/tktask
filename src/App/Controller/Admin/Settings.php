@@ -164,6 +164,7 @@ class Settings extends ControllerAdmin
 
         $template->setVisible('staff', $this->getAuthUser()->hasPermission(Permissions::PERM_MANAGE_STAFF));
         $template->setVisible('member', $this->getAuthUser()->hasPermission(Permissions::PERM_MANAGE_MEMBERS));
+        $template->setVisible('admin', $this->getAuthUser()->hasPermission(Permissions::PERM_ADMIN));
 
         $this->form->getField('site.name')->addFieldCss('col-6');
         $this->form->getField('site.name.short')->addFieldCss('col-6');
@@ -182,9 +183,9 @@ class Settings extends ControllerAdmin
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
-      <a href="/sessions" title="View Active Sessions" class="btn btn-outline-secondary"><i class="fa fa-fw fa-server" choice="member"></i> Sessions</a>
-      <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary"><i class="fa fa-fw fa-users" choice="staff"></i> Staff</a>
-      <a href="/user/memberManager" title="Manage Members" class="btn btn-outline-secondary"><i class="fa fa-fw fa-users" choice="member"></i> Members</a>
+      <a href="/sessions" title="View Active Sessions" class="btn btn-outline-secondary" choice="admin"><i class="fa fa-fw fa-server"></i> Sessions</a>
+      <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary" choice="staff"><i class="fa fa-fw fa-users"></i> Staff</a>
+      <a href="/user/memberManager" title="Manage Members" class="btn btn-outline-secondary" choice="members"><i class="fa fa-fw fa-users"></i> Members</a>
     </div>
   </div>
   <div class="card mb-3">
