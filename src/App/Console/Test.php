@@ -3,7 +3,7 @@ namespace App\Console;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Tk\Console\Console;
+use Bs\Console\Console;
 
 class Test extends Console
 {

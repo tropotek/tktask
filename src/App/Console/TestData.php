@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tk\Db;
 
-class TestData extends \Tk\Console\Command\TestData
+class TestData extends \Bs\Console\Command\TestData
 {
 
     protected function configure(): void

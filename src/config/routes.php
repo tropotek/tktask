@@ -44,7 +44,7 @@ return function (CollectionConfigurator $routes) {
     // php page route example
     // $routes->add('widget-test', '/widgetTest')
     //     ->defaults(['path' => '/page/widgetManager.php'])
-    //     ->controller([\Tk\Mvc\PhpController::class, 'doDefault']);
+    //     ->controller([\Bs\Mvc\PhpController::class, 'doDefault']);
 
     $routes->add('example-manager', '/exampleManager')
         ->controller([\App\Controller\Example\Manager::class, 'doDefault']);
