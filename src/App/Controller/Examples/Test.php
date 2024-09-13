@@ -3,6 +3,9 @@ namespace App\Controller\Examples;
 
 use Bs\ControllerAdmin;
 use Dom\Template;
+use Tk\Cache\Adapter\PhpFile;
+use Tk\Cache\Cache;
+use Tk\System;
 
 class Test extends ControllerAdmin
 {
@@ -19,6 +22,8 @@ class Test extends ControllerAdmin
 
         $template->appendText('title', 'Test Page');
         $template->setAttr('back', 'href', $this->getBackUrl());
+
+
 
 
         return $template;
