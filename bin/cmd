@@ -12,7 +12,6 @@ try {
     $output = new ConsoleOutput();
 
     $app = \App\Factory::instance()->getConsole();
-    //Determine Environment
     $env = $input->getParameterOption(array('--env', '-e'), \Tk\Config::instance()->get('env.type', 'prod'));
 
     $app->run($input, $output);
