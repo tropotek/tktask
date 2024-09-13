@@ -554,61 +554,6 @@
             "time": "2021-01-23T04:36:25+00:00"
         },
         {
-            "name": "sensiolabs/ansi-to-html",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sensiolabs/ansi-to-html.git",
-                "reference": "de80a16abecc833840e21c036fbbd55f74b1db98"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/ansi-to-html/zipball/de80a16abecc833840e21c036fbbd55f74b1db98",
-                "reference": "de80a16abecc833840e21c036fbbd55f74b1db98",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2.5"
-            },
-            "conflict": {
-                "twig/twig": "< 2.4.0"
-            },
-            "require-dev": {
-                "twig/twig": "^2.4 || ^3.0"
-            },
-            "suggest": {
-                "twig/twig": "Provides nice templating features"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.2-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "SensioLabs\\AnsiConverter\\": "SensioLabs/AnsiConverter"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "A library to convert a text with ANSI codes to HTML",
-            "support": {
-                "issues": "https://github.com/sensiolabs/ansi-to-html/issues",
-                "source": "https://github.com/sensiolabs/ansi-to-html/tree/master"
-            },
-            "time": "2022-09-30T07:50:44+00:00"
-        },
-        {
             "name": "studio-42/elfinder",
             "version": "2.1.x-dev",
             "source": {
@@ -2141,20 +2086,27 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "2215bbb4801e05cdbbffb14ceb5e41b1899803ce"
+                "reference": "ce250c1d44b19fcbdaa1eec6b59f05b1f5eee168"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/2215bbb4801e05cdbbffb14ceb5e41b1899803ce",
-                "reference": "2215bbb4801e05cdbbffb14ceb5e41b1899803ce",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/ce250c1d44b19fcbdaa1eec6b59f05b1f5eee168",
+                "reference": "ce250c1d44b19fcbdaa1eec6b59f05b1f5eee168",
                 "shasum": ""
             },
             "require": {
                 "studio-42/elfinder": "~2.1.0",
+                "symfony/console": "^6.2",
+                "symfony/event-dispatcher": "^6.2",
+                "symfony/http-foundation": "^6.2",
+                "symfony/http-kernel": "^6.2",
+                "symfony/lock": "^6.2",
+                "symfony/routing": "^6.2",
                 "tinymce/tinymce": "~7.0",
                 "ttek/tk-domtemplate": "~8.0.0",
                 "ttek/tk-form": "~8.0.0",
                 "ttek/tk-framework": "~8.0.0",
+                "ttek/tk-installers": "~8.0.0",
                 "ttek/tk-table": "~8.0.0"
             },
             "type": "library",
@@ -2194,12 +2146,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-domtemplate.git",
-                "reference": "67916cc0aa026ec50eaf399c4d5a39ee8f8fbae6"
+                "reference": "e856efd74dfb8a3a2a67a2002fc9bb6511ffab41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/67916cc0aa026ec50eaf399c4d5a39ee8f8fbae6",
-                "reference": "67916cc0aa026ec50eaf399c4d5a39ee8f8fbae6",
+                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/e856efd74dfb8a3a2a67a2002fc9bb6511ffab41",
+                "reference": "e856efd74dfb8a3a2a67a2002fc9bb6511ffab41",
                 "shasum": ""
             },
             "require": {
@@ -2302,12 +2254,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "6519755eac56cbeff4e31e6ba1a6dc6902642839"
+                "reference": "8f5a8057387985519c46492dd22984f775f41e6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/6519755eac56cbeff4e31e6ba1a6dc6902642839",
-                "reference": "6519755eac56cbeff4e31e6ba1a6dc6902642839",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/8f5a8057387985519c46492dd22984f775f41e6f",
+                "reference": "8f5a8057387985519c46492dd22984f775f41e6f",
                 "shasum": ""
             },
             "require": {
@@ -2317,15 +2269,7 @@
                 "ext-pdo": "*",
                 "php": "^8.2",
                 "phpmailer/phpmailer": "~6.0",
-                "psr/log": "^1.0",
-                "sensiolabs/ansi-to-html": "~1.0",
-                "symfony/console": "^6.2",
-                "symfony/event-dispatcher": "^6.2",
-                "symfony/http-foundation": "^6.2",
-                "symfony/http-kernel": "^6.2",
-                "symfony/lock": "^6.2",
-                "symfony/routing": "^6.2",
-                "ttek/tk-installers": "~8.0.0"
+                "psr/log": "^1.0"
             },
             "type": "library",
             "extra": {
@@ -2376,12 +2320,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "22749f3f633896c4b6bdeaa19aaa9c9e05937a35"
+                "reference": "cffb39a05a373c6ad10f4efea4135128b81c9125"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/22749f3f633896c4b6bdeaa19aaa9c9e05937a35",
-                "reference": "22749f3f633896c4b6bdeaa19aaa9c9e05937a35",
+                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/cffb39a05a373c6ad10f4efea4135128b81c9125",
+                "reference": "cffb39a05a373c6ad10f4efea4135128b81c9125",
                 "shasum": ""
             },
             "require": {

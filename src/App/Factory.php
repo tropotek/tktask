@@ -4,7 +4,6 @@ namespace App;
 use Bs\PageDomInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Tk\Auth\FactoryInterface;
 use Tk\System;
 
 class Factory extends \Bs\Factory
