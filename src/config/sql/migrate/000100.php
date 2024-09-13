@@ -11,7 +11,6 @@ $registry->set('system.global.css', '');
 $registry->set('system.global.js', '');
 $registry->set('system.meta.description', 'A base development project site for the TK libs');
 $registry->set('system.meta.keywords', '');
-$registry->set('site.account.registration', 'site.account.registration');
 
 // TODO: Set your projects registry defaults here
 // ...

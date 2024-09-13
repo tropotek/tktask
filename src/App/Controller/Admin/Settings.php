@@ -48,12 +48,6 @@ class Settings extends ControllerAdmin
             ->setRequired(true)
             ->setGroup($tab);
 
-        $this->form->appendField(new Checkbox('site.account.registration'))
-            ->setLabel('Account Registration')
-            ->setNotes('Enable public user registrations for this site. (Default user type is `user`)')
-            //->setSwitch(true)
-            ->setGroup($tab);
-
         if ($this->templateSelect) {
             $list = ['Side Menu' => '/html/minton/sn-admin.html', 'Top Menu' => '/html/minton/tn-admin.html'];
             $this->form->appendField(new \Tk\Form\Field\Select('minton.template', $list))
@@ -62,8 +56,6 @@ class Settings extends ControllerAdmin
                 ->setGroup($tab);
         }
 
-
-        $tab = 'Email';
         $this->form->appendField(new Input('site.email'))
             ->setLabel('Site Email')
             ->setRequired(true)
