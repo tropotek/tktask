@@ -13,6 +13,11 @@ return function (Config $config) {
     $config['db.mysql'] = '{db.mysql}';
 
     /**
+     * Enable error email notifications
+     */
+    $config['system.email.exception'] = ['user@example.net'];
+
+    /**
      * System string encrypt secret
      * Do not change this after site install
      */

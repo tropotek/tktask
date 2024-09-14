@@ -45,10 +45,4 @@ return function (Config $config) {
 
 
 
-    /*
-     * Enable exception emails
-     */
-    $config['system.email.exception'] = ['godar@dev.ttek.org']; // todo: re-implement this (only enable in prod env)
-
-
 };
