@@ -43,4 +43,12 @@ return function (Config $config) {
      */
     $config['log.logLevel'] = \Psr\Log\LogLevel::ERROR;
 
+
+
+    /*
+     * Enable exception emails
+     */
+    $config['system.email.exception'] = ['godar@dev.ttek.org']; // todo: re-implement this (only enable in prod env)
+
+
 };
