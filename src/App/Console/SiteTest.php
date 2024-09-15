@@ -5,13 +5,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Bs\Console\Console;
 
-class Test extends Console
+class SiteTest extends Console
 {
 
     protected function configure()
     {
         $this->setName('test')
-            ->setDescription('This is a test script');
+            ->setAliases(['ts'])
+            ->setDescription('Run this script to execute site test scripts');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -21,7 +22,10 @@ class Test extends Console
             return self::FAILURE;
         }
 
-        // TODO
+        // TODO:
+        //   - create a test site against a standard list of bot requests, see if anything weird comes up
+        //     mose should be 404, list incomming...
+        //
 
 
 

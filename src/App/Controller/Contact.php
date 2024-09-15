@@ -59,12 +59,14 @@ class Contact extends ControllerPublic
         $hash = $_SESSION[$form->getId() . '-nc'];
 
         if ($form->getFieldValue('nc') != $hash) {
+            $form->setFieldValue('nc', $hash);
             $form->addError('Form system error, please try again.');
         }
         if (!$form->getFieldValue('name')) {
             $form->addFieldError('name', 'Please enter a valid name.');
         }
         if (!filter_var($form->getFieldValue('email'), FILTER_VALIDATE_EMAIL)) {
+            $form->setFieldValue('email', '');
             $form->addFieldError('email', 'Please enter a valid email.');
         }
         if (!$form->getFieldValue('message')) {
