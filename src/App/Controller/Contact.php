@@ -32,14 +32,7 @@ class Contact extends ControllerPublic
         $this->getPage()->setTitle('Contact Us');
 
         $this->form = new Form();
-
-        $hash = $_SESSION[$this->form->getId() . '-nc'] ?? '';
-        if (!$hash) {
-            $hash = md5(time());
-            $_SESSION[$this->form->getId() . '-nc'] = $hash;
-        }
-
-        $this->form->appendField(new Hidden('nc'))->setValue($hash);
+        
         $this->form->appendField(new Input('name'));
         $this->form->appendField(new Input('email'))->setType('email');
         $this->form->appendField(new Input('phone'));
@@ -56,12 +49,6 @@ class Contact extends ControllerPublic
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $hash = $_SESSION[$form->getId() . '-nc'];
-
-        if ($form->getFieldValue('nc') != $hash) {
-            $form->setFieldValue('nc', $hash);
-            $form->addError('Form system error, please try again.');
-        }
         if (!$form->getFieldValue('name')) {
             $form->addFieldError('name', 'Please enter a valid name.');
         }
@@ -74,7 +61,6 @@ class Contact extends ControllerPublic
         }
 
         if ($form->hasErrors()) return;
-        unset($_SESSION[$form->getId() . '-nc']);
 
         $message = $this->getFactory()->createMessage();
         $message->addTo($form->getFieldValue('email'));
