@@ -478,6 +478,19 @@ AddDefaultCharset utf-8
 </IfModule>
 
 # ----------------------------------------------------------------------
+# | Same site cookies                                                  |
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+
+    Header edit Set-Cookie ^(.*)$ "$1;HttpOnly;Secure;SameSite=None"
+
+#    <FilesMatch "\.(appcache|atom|bbaw|bmp|crx|css|cur|eot|f4[abpv]|flv|geojson|gif|htc|ico|jpe?g|js|json(ld)?|m4[av]|manifest|map|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz|svgz?|swf|topojson|tt[cf]|txt|vcard|vcf|vtt|webapp|web[mp]|webmanifest|woff2?|xloc|xml|xpi)$">
+#        Header unset Set-Cookie
+#    </FilesMatch>
+
+</IfModule>
+
+# ----------------------------------------------------------------------
 # | Content Security Policy (CSP)                                      |
 # ----------------------------------------------------------------------
 
@@ -500,7 +513,10 @@ AddDefaultCharset utf-8
 
 <IfModule mod_headers.c>
 
-    Header set Content-Security-Policy "script-src 'self'; object-src 'self'"
+    #Header set Content-Security-Policy "script-src 'self'; object-src 'self'; style-src 'self'"
+
+    # TODO: this needs testing before we implement it in production
+#    Header set Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' blob:; img-src 'self' data: blob:; font-src 'self'; style-src 'self' 'unsafe-inline';"
 
     # `mod_headers` cannot match based on the content-type, however,
     # the `Content-Security-Policy` response header should be send
