@@ -43,7 +43,7 @@ class Edit extends ControllerAdmin
 
         // init form fields
         $group = 'left';
-        $this->form->appendField(new Hidden('exampleId'))->setGroup($group);
+        $this->form->appendField(new Hidden('exampleId'))->setReadonly();
         $this->form->appendField(new Input('name'))->setGroup($group)->setRequired();
 
         /** @var File $image */
@@ -64,7 +64,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Link('cancel', $this->getFactory()->getBackUrl()));
 
         // Load form with object values
-        $values = $this->form->unmapValues($this->example);
+        $values = $this->form->unmapObject($this->example);
         $this->form->setFieldValues($values);
 
         // Execute form with request values
@@ -74,7 +74,7 @@ class Edit extends ControllerAdmin
 
     public function onSubmit(Form $form, SubmitExit $action): void
     {
-        $form->mapValues($this->example);      // set object values from fields
+        $form->mapObject($this->example);      // set object values from fields
 
         $form->addFieldErrors($this->example->validate());
         if ($form->hasErrors()) {

@@ -32,7 +32,7 @@ class Contact extends ControllerPublic
         $this->getPage()->setTitle('Contact Us');
 
         $this->form = new Form();
-        
+
         $this->form->appendField(new Input('name'));
         $this->form->appendField(new Input('email'))->setType('email');
         $this->form->appendField(new Input('phone'));
