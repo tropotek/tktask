@@ -1,7 +1,6 @@
 <?php
 namespace App;
 
-
 use Bs\Listener\RememberMeHandler;
 use Bs\Listener\CrumbsHandler;
 use Bs\Listener\MaintenanceHandler;
