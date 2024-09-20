@@ -64,11 +64,6 @@ return function (CollectionConfigurator $routes) {
         $routes->add('api-htmx-toast', '/api/htmx/toast')
             ->controller([\App\Api\HtmxExamples::class, 'doToast'])
             ->methods([\Symfony\Component\HttpFoundation\Request::METHOD_GET]);
-
-        // Example php route
-        // $routes->add('widget-test', '/widgetTest')
-        //     ->defaults(['path' => '/page/widgetManager.php'])
-        //     ->controller([\Bs\Mvc\PhpController::class, 'doDefault']);
     }
 
 };

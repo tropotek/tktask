@@ -2,6 +2,10 @@
 namespace App;
 
 
+use Bs\Listener\RememberMeHandler;
+use Bs\Listener\CrumbsHandler;
+use Bs\Listener\MaintenanceHandler;
+
 class Dispatch extends \Bs\Dispatch
 {
 
@@ -19,6 +23,10 @@ class Dispatch extends \Bs\Dispatch
     protected function httpInit(): void
     {
         parent::httpInit();
+
+        $this->getDispatcher()->addSubscriber(new CrumbsHandler());
+        $this->getDispatcher()->addSubscriber(new MaintenanceHandler());
+        $this->getDispatcher()->addSubscriber(new RememberMeHandler());
     }
 
     /**
