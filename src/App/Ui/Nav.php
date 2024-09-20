@@ -5,6 +5,7 @@ namespace App\Ui;
 use Bs\Db\Permissions;
 use Bs\Db\User;
 use Bs\Factory;
+use Dom\Template;
 use Tk\Config;
 use Tk\Ui\Traits\AttributesTrait;
 
@@ -81,7 +82,7 @@ class Nav
         ];
     }
 
-    public function getProfileNav(): string
+    public function getProfileNav(): Template
     {
         $html = <<<HTML
 <div>
@@ -89,12 +90,12 @@ class Nav
         <i class="fe-user me-1"></i>
         <span>My Account</span>
     </a>
-    <a href="/settings" class="dropdown-item notify-item" app-has-perm="PERM_SYSADMIN">
+    <a href="/settings" class="dropdown-item notify-item" choice="sysadmin">
         <i class="fe-settings me-1"></i>
         <span>Settings</span>
     </a>
     <div class="dropdown-divider"></div>
-    <a class="dropdown-item notify-item" data-bs-toggle="offcanvas" href="#theme-settings-offcanvas" app-has-perm="PERM_SYSADMIN">
+    <a class="dropdown-item notify-item" data-bs-toggle="offcanvas" href="#theme-settings-offcanvas" choice="sysadmin">
         <i class="ri-palette-line me-1"></i>
         <span>Customizer</span>
     </a>
@@ -104,7 +105,10 @@ class Nav
     </a>
 </div>
 HTML;
-        return $html;
+        $template = Template::load($html);
+        $template->setVisible('sysadmin', $this->getUser()->hasPermission(Permissions::PERM_SYSADMIN));
+
+        return $template;
     }
 
 

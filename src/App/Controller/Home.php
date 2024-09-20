@@ -38,6 +38,12 @@ class Home extends ControllerPublic
         $template->setAttr('eurl', 'href', Uri::create()->set('e', true));
         $template->setAttr('aurl', 'href', Uri::create()->set('a', true));
 
+        if ($this->getAuthUser()) {
+            $template->setVisible('auth');
+        } else {
+            $template->setVisible('no-auth');
+        }
+
         return $template;
     }
 
@@ -52,8 +58,8 @@ class Home extends ControllerPublic
             <h3 var="title">Welcome Home</h3>
             <p var="content"></p>
 
-            <p app-is-user="true">Status: You are logged in!</p>
-            <p app-is-user="false">Status You are not logged in</p>
+            <p choice="auth">Status: You are logged in!</p>
+            <p  choice="no-auth">Status You are not logged in</p>
 
             <ul>
               <li><a href="#?e" var="eurl">Test Exception</a></li>

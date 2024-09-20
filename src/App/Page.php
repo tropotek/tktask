@@ -29,6 +29,12 @@ class Page extends \Bs\Page
             $this->showMintonParams($template);
         }
 
+        if ($this->getAuthUser()) {
+            $template->setVisible('auth');
+        } else {
+            $template->setVisible('no-auth');
+        }
+
         $this->showCrumbs();
         $this->showAlert();
 
@@ -49,7 +55,7 @@ class Page extends \Bs\Page
             $nav->setAttr('id', 'top-nav');
             $template->replaceHtml('top-nav', $nav->getTopNav());
         }
-        $template->replaceHtml('profile-nav', $nav->getProfileNav());
+        $template->replaceTemplate('profile-nav', $nav->getProfileNav());
         $template->replaceHtml('right-sidebar', Customizer::getHtml());
     }
 
