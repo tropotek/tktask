@@ -24,7 +24,7 @@ class Test extends ControllerAdmin
         $template->setAttr('back', 'href', $this->getBackUrl());
 
 
-
+        $t = new \Auth\Test();
 
         return $template;
     }
