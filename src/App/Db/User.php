@@ -2,7 +2,7 @@
 namespace App\Db;
 
 use Au\Auth;
-use Au\Db\Traits\AuthTrait;
+use Au\Traits\AuthTrait;
 use Au\UserInterface;
 use Bs\Db\Traits\TimestampTrait;
 use Tk\Color;
@@ -95,7 +95,7 @@ class User extends Model implements UserInterface
         $map = static::getDataMap();
 
         // Remove permissions for non-staff users
-        if ($this->getAuth() && $this->isType(self::TYPE_MEMBER)) {
+        if ($this->userId && $this->isType(self::TYPE_MEMBER)) {
             $this->getAuth()->permissions = Auth::PERM_NONE;
             $this->getAuth()->save();
         }
@@ -134,7 +134,7 @@ class User extends Model implements UserInterface
 
     public function getHomeUrl(): Uri
     {
-        return $this->getAuth()->getHomeUrl();
+        return Uri::create('/dashboard');
     }
 
     public function isAdmin(): bool
@@ -181,10 +181,6 @@ class User extends Model implements UserInterface
             $errors['givenName'] = 'Invalid field value';
         }
 
-        if (!$this->familyName) {
-            $errors['familyName'] = 'Invalid field value';
-        }
-
         return $errors;
     }
 
@@ -208,6 +204,34 @@ class User extends Model implements UserInterface
             SELECT *
             FROM v_user",
             [],
+            self::class
+        );
+    }
+
+    public static function findByUsername(string $username): ?static
+    {
+        $username = trim($username);
+        if(empty($username)) return null;
+
+        return Db::queryOne("
+            SELECT *
+            FROM v_user
+            WHERE username = :username",
+            compact('username'),
+            self::class
+        );
+    }
+
+    public static function findByEmail(string $email): ?static
+    {
+        $email = trim($email);
+        if(empty($email)) return null;
+
+        return Db::queryOne("
+            SELECT *
+            FROM v_user
+            WHERE email = :email",
+            compact('email'),
             self::class
         );
     }

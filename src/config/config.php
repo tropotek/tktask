@@ -44,5 +44,28 @@ return function (Config $config) {
     $config['log.logLevel'] = \Psr\Log\LogLevel::ERROR;
 
 
+    /**
+     * Can users update their password from their profile page
+     * (default: false)
+     */
+    $config['auth.profile.password'] = false;
 
+    /**
+     * Can users register an account
+     * (default: false)
+     */
+    $config['auth.registration.enable'] = false;
+
+    /**
+     * Validate user passwords on input
+     * - Must include at least one number
+     * - Must include at least one letter
+     * - Must include at least one capital
+     * - Must include at least one symbol
+     * - must >= 8 characters
+     *
+     * Note: validation disabled in dev environments
+     * (default: true)
+     */
+    //$config['auth.password.strict'] = false;
 };

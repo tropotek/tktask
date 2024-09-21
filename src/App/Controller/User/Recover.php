@@ -43,7 +43,7 @@ class Recover extends ControllerDomInterface
         $html = <<<HTML
             <a href="/login">Login</a>
         HTML;
-        if ($this->getConfig()->get('user.registration.enable', false)) {
+        if ($this->getConfig()->get('auth.registration.enable', false)) {
             $html = <<<HTML
                 <a href="/register">Register</a> | <a href="/login">Login</a>
             HTML;

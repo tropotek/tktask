@@ -28,7 +28,7 @@ class Register extends ControllerDomInterface
     {
         $this->getPage()->setTitle('Register');
 
-        if (!$this->getConfig()->get('user.registration.enable', false)) {
+        if (!$this->getConfig()->get('auth.registration.enable', false)) {
             Alert::addError('User registrations are closed for this account');
             Uri::create('/')->redirect();
         }
@@ -74,19 +74,41 @@ class Register extends ControllerDomInterface
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        if (!$this->getConfig()->get('user.registration.enable', false)) {
+        if (!$this->getConfig()->get('auth.registration.enable', false)) {
             Alert::addError('New user registrations are closed for this account');
             Uri::create('/')->redirect();
         }
 
         $user = new User();
-        $auth = $user->getAuth();
-        $auth->active = false;
-        $user->type   = User::TYPE_MEMBER;
+        $user->type = User::TYPE_MEMBER;
 
         // set object values from fields
         $form->mapModel($user);
-        $form->mapModel($auth);
+
+        if (!$form->getFieldValue('name')) {
+            $form->addFieldError('name', 'Please enter a valid name');
+        }
+        if (!filter_var($form->getFieldValue('email'), FILTER_VALIDATE_EMAIL)) {
+            $form->addFieldError('email', 'Please enter a valid email');
+        }
+
+        if (!$form->getFieldValue('username')) {
+            $form->addFieldError('username', 'Invalid field username value');
+        } else {
+            $dup = Auth::findByUsername($form->getFieldValue('username'));
+            if ($dup instanceof Auth) {
+                $form->addFieldError('username', 'This username is unavailable');
+            }
+        }
+
+        if (!filter_var($form->getFieldValue('email'), FILTER_VALIDATE_EMAIL)) {
+            $form->addFieldError('email', 'Please enter a valid email address');
+        } else {
+            $dup = Auth::findByEmail($form->getFieldValue('email'));
+            if ($dup instanceof Auth) {
+                $form->addFieldError('email', 'This email is unavailable');
+            }
+        }
 
         if (!$form->getFieldValue('password')  || $form->getFieldValue('password') != $form->getFieldValue('confPassword')) {
             $form->addFieldError('password');
@@ -105,9 +127,17 @@ class Register extends ControllerDomInterface
             return;
         }
 
-        $auth->password = Auth::hashPassword($user->password);
+        [$user->givenName, $user->familyName] = explode(' ', $form->getFieldValue('name'));
         $user->save();
+
+        $auth = $user->getAuth();
+        $form->mapModel($auth);
+        $auth->password = Auth::hashPassword($auth->password);
+        $auth->active = false;
         $auth->save();
+
+        // reload user
+        $user->reload();
 
         \App\Email\User::sendRegister($user);
 
@@ -115,11 +145,15 @@ class Register extends ControllerDomInterface
         Uri::create('/')->redirect();
     }
 
+    /**
+     * @todo: This is just not secure enough. When activating that`s when they need to add their pass
+     *        A simple click can cause issues if a spider/hacker hists the page and does nothing.
+     */
     public function doActivate(): void
     {
         $this->getPage()->setTitle('Register');
 
-        if (!$this->getConfig()->get('user.registration.enable', false)) {
+        if (!$this->getConfig()->get('auth.registration.enable', false)) {
             Alert::addError('New user registrations are closed for this account');
             Uri::create('/')->redirect();
         }
@@ -133,15 +167,13 @@ class Register extends ControllerDomInterface
         }
 
         $auth = Auth::findByHash($arr['h'] ?? '');
-        $user = $auth->getDbModel();
-
-        if (!$user) {
+        if (!$auth) {
             Alert::addError('Invalid user registration');
             Uri::create('/')->redirect();
         }
 
         $auth->active = true;
-        $user->save();
+        $auth->save();
 
         Alert::addSuccess('You account has been successfully activated, please login.');
         Uri::create('/login')->redirect();

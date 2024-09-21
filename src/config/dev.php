@@ -17,7 +17,7 @@ if (!$config->isDebug() || $config->isProd()) {
     return;
 }
 
-foreach (\Bs\Db\User::findAll() as $user) {
-    $user->password = \Bs\Db\User::hashPassword('password');
+foreach (\Au\Auth::findAll() as $user) {
+    $user->password = \Au\Auth::hashPassword('password');
     $user->save();
 }

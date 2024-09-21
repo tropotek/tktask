@@ -1,8 +1,10 @@
 <?php
 namespace App;
 
+use App\Db\User;
 use App\Ui\Customizer;
 use App\Ui\Nav;
+use Au\Auth;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;
@@ -29,9 +31,25 @@ class Page extends \Bs\Page
             $this->showMintonParams($template);
         }
 
+        $auth = Auth::getAuthUser();
+        if (is_null($auth)) {
+            $template->setVisible('no-auth');
+            $template->setVisible('loggedOut');
+        } else {
+            /** @var User $user */
+            $user = $auth->getDbModel();
+            $template->setText('username', $user->username);
+            $template->setText('user-name', $user->nameShort);
+            $template->setText('user-type', ucfirst($user->type));
+            $template->setAttr('user-image', 'src', $user->getImageUrl());
+            $template->setAttr('user-home-url', 'href', $user->getHomeUrl());
+
+            $template->setVisible('loggedIn');
+            $template->setVisible('auth');
+        }
+
         $this->showCrumbs();
         $this->showAlert();
-
         //$this->showMaintenanceRibbon();
 
         return $template;

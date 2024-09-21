@@ -30,10 +30,9 @@ class Factory extends \Bs\Factory
     {
         if (!$this->has('console')) {
             $app = parent::getConsole();
-            // Setup App Console Commands
+
             $app->add(new \App\Console\Cron());
             if ($this->getConfig()->isDev()) {
-                $app->add(new \App\Console\TestData());
                 $app->add(new \App\Console\Test());
             }
         }

@@ -33,10 +33,10 @@ class Contact extends ControllerPublic
 
         $this->form = new Form();
 
-        $this->form->appendField(new Input('name'));
-        $this->form->appendField(new Input('email'))->setType('email');
+        $this->form->appendField(new Input('name'))->setRequired();
+        $this->form->appendField(new Input('email'))->setRequired()->setType('email');
         $this->form->appendField(new Input('phone'));
-        $this->form->appendField(new Textarea('message'));
+        $this->form->appendField(new Textarea('message'))->setRequired();
 
         $this->form->appendField(new Submit('send', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create()));

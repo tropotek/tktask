@@ -6,10 +6,7 @@ body {
   background-color: #FFF;
 }
 
-
-
-
-/* TINY-MCE */
+/*********** T I N Y M C E *************/
 /* Remove promotion button */
 .tox .tox-promotion {
   display: none;
@@ -21,9 +18,7 @@ body {
 }
 
 
-
 /***************** F O R M ******************/
-
 form textarea {
   height: 150px;
 }
@@ -36,11 +31,18 @@ form .form-check-label {
 .tk-form .fld .invalid-feedback {
   color: var(--bs-danger);
 }
+.form-control:disabled, .form-control:read-only {
+  pointer-events: none;
+  background-color: #EEE;
+}
+.tk-form input:invalid,
+.tk-form textarea:invalid,
+.tk-form select:invalid {
+  background: #FDFDDA !important;
+}
 
 
 /***************** T A B L E ******************/
-
-
 .tk-form-inline {
   margin-bottom: .5rem;
 }
@@ -63,6 +65,7 @@ form .form-check-label {
   --bs-btn-padding-x: .4rem;
   --bs-btn-font-size: .75rem;
 }
+
 
 /* Header OrderBy Arrows */
 th

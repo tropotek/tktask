@@ -21,7 +21,7 @@ use Tk\Uri;
 class Profile extends ControllerAdmin
 {
 
-    protected ?\Bs\Form $form = null;
+    protected ?Form $form = null;
     protected ?User $user = null;
 
 
@@ -29,7 +29,7 @@ class Profile extends ControllerAdmin
     {
         $this->getPage()->setTitle('My Profile');
 
-        if (!$this->getAuthUser()) {
+        if (!Auth::getAuthUser()) {
             Alert::addError('You do not have access to this page.');
             Uri::create('/')->redirect();
         }
@@ -37,7 +37,7 @@ class Profile extends ControllerAdmin
         // Get the form template
         /** @var User $user */
         $this->user = Auth::getAuthUser()->getDbModel();
-        $this->form = new \Bs\Form($this->user);
+        $this->form = new Form($this->user);
 
         $tab = 'Details';
         $this->form->appendField(new Hidden('userId'))->setReadonly();
@@ -63,7 +63,7 @@ class Profile extends ControllerAdmin
             ->addCss('tk-input-lock')
             ->setRequired();
 
-        if ($user->isType(\Bs\Db\User::TYPE_STAFF)) {
+        if ($this->user->isType(User::TYPE_STAFF)) {
             $list = array_flip(User::PERMISSION_LIST);
             $this->form->appendField(new Checkbox('perm', $list))
                 ->setGroup('Permissions')
@@ -89,8 +89,8 @@ class Profile extends ControllerAdmin
 
         // Load form with object values
         $load = $this->form->unmapModel($this->user);
-        $load = array_merge($load, $this->form->unmapModel($this->user->getAuth()));
-        if ($user->getAuth()) {
+        //$load = array_merge($load, $this->form->unmapModel($this->user->getAuth()));
+        if ($this->user->getAuth()) {
             $load['perm'] = array_keys(array_filter(User::PERMISSION_LIST,
                     fn($k) => ($k & $this->user->getAuth()->permissions), ARRAY_FILTER_USE_KEY)
             );

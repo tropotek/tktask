@@ -2,9 +2,8 @@
 
 namespace App\Ui;
 
-use Bs\Db\Permissions;
-use Bs\Db\User;
-use Bs\Factory;
+use Au\Auth;
+use App\Db\User;
 use Dom\Template;
 use Tk\Config;
 use Tk\Ui\Traits\AttributesTrait;
@@ -23,44 +22,16 @@ class Nav
             ],
             'Site Settings' => [
                 'icon' => 'ri-settings-2-line',
-                'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_SYSADMIN),
+                'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
                 'url' => '/settings'
             ],
             'Application' => [
                 'icon' => 'ri-apps-2-fill',
-                'Example Manager' => [
-                    'icon' => 'ri-file-list-3-line',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_ADMIN),
-                    'url' => '/exampleManager'
-                ],
                 'File Manager' => [
                     'icon' => 'ri-archive-drawer-line',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_ADMIN),
+                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/fileManager'
                 ],
-            ],
-            'Users' => [
-                'icon' => 'ri-team-fill',
-                'Staff' => [
-                    'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_MANAGE_STAFF),
-                    'url' => '/user/staffManager'
-                ],
-                'Members' => [
-                    'icon' => 'ri-team-fill',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(Permissions::PERM_MANAGE_MEMBERS | Permissions::PERM_MANAGE_STAFF),
-                    'url' => '/user/memberManager'
-                ]
-            ],
-
-            // Visible in Debug mode only
-            'Examples' => [
-                'icon' => 'ri-apps-2-line',
-                'visible' => fn($i) => Config::instance()->isDev(),
-                'Test' => ['url' => '/test'],
-                'DomTest' => ['url' => '/domTest'],
-                'HTMX' => ['url' => '/htmx'],
-                'Form Elements' => ['url' => '/ui/form'],
             ],
             'Dev' => [
                 'icon' => 'ri-bug-line',
@@ -72,10 +43,6 @@ class Nav
                 'Tail Log' => [
                     'icon' => 'ri-terminal-box-fill',
                     'url' => '/tailLog'
-                ],
-                'List Events' => [
-                    'icon' => 'ri-timer-flash-line',
-                    'url' => '/listEvents'
                 ],
             ],
 
@@ -106,7 +73,7 @@ class Nav
 </div>
 HTML;
         $template = Template::load($html);
-        $template->setVisible('sysadmin', $this->getUser()->hasPermission(Permissions::PERM_SYSADMIN));
+        $template->setVisible('sysadmin', $this->getUser()->hasPermission(User::PERM_SYSADMIN));
 
         return $template;
     }
@@ -252,6 +219,8 @@ HTML;
 
     public function getUser(): ?User
     {
-        return Factory::instance()->getAuthUser();
+        /** @var User $obj */
+        $obj = Auth::getAuthUser()?->getDbModel();
+        return $obj;
     }
 }

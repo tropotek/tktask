@@ -38,6 +38,8 @@ class Login extends ControllerAdmin
             Uri::create('/')->redirect();
         }
 
+        $this->form = new Form();
+
         $this->form->appendField(new Input('username'))
             ->setRequired()
             ->setAttr('placeholder', 'Username');
@@ -52,7 +54,7 @@ class Login extends ControllerAdmin
         $html = <<<HTML
             <a href="/recover">Recover</a>
         HTML;
-        if ($this->getConfig()->get('user.registration.enable', false)) {
+        if ($this->getConfig()->get('auth.registration.enable', false)) {
             $html = <<<HTML
                 <a href="/recover">Recover</a> | <a href="/register">Register</a>
             HTML;

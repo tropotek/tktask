@@ -3,6 +3,7 @@ namespace App\Controller\User;
 
 use App\Db\User;
 use Au\Auth;
+use Au\Masquerade;
 use Bs\ControllerAdmin;
 use Bs\Factory;
 use Bs\Form;
@@ -15,7 +16,6 @@ use Tk\Form\Field\Checkbox;
 use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
-use Tk\Form\Field\Textarea;
 use Tk\Uri;
 
 /**
@@ -25,6 +25,7 @@ use Tk\Uri;
 class Edit extends ControllerAdmin
 {
     protected ?User  $user = null;
+    protected ?Auth  $auth = null;
     protected ?Form  $form = null;
     protected string $type = User::TYPE_MEMBER;
 
@@ -36,6 +37,10 @@ class Edit extends ControllerAdmin
         $userId  = intval($_GET['userId'] ?? 0);
         $newType = trim($_GET['cv'] ?? '');
 
+        if (isset($_GET[Masquerade::QUERY_MSQ])) {
+            $this->doMsq(intval($_GET[Masquerade::QUERY_MSQ] ?? 0));
+        }
+
         $this->type = $type;
         $this->user = new User();
         $this->user->type = $type;
@@ -45,6 +50,7 @@ class Edit extends ControllerAdmin
                 throw new Exception('Invalid User ID: ' . $userId);
             }
         }
+        $this->auth = $this->user->getAuth();
 
         if ($this->type == User::TYPE_STAFF) {
             $this->setAccess(User::PERM_MANAGE_STAFF);
@@ -59,7 +65,7 @@ class Edit extends ControllerAdmin
         $group = 'Details';
         $this->form->appendField(new Hidden('userId'))->setReadonly();
 
-        $list = \Bs\Db\User::getTitleList();
+        $list = User::TITLE_LIST;
         $this->form->appendField(new Select('title', $list))
             ->setGroup($group)
             ->prependOption('', '');
@@ -81,20 +87,19 @@ class Edit extends ControllerAdmin
             ->setRequired();
 
         // Only input lock existing user
-        if ($this->getUser()->userId) {
+        if ($this->user->userId) {
             $l1->addCss('tk-input-lock');
             $l2->addCss('tk-input-lock');
         }
 
-        $factory = Factory::instance();
-        $auth = Auth::getAuthUser();
-        if ($this->getUser()->isStaff() && $auth->hasPermission(User::PERM_SYSADMIN)) {
-            $list = array_flip($factory->getAvailablePermissions($this->getUser()));
+        if ($this->type == User::TYPE_STAFF) {
+            $list = array_flip(User::PERMISSION_LIST);
             $field = $this->form->appendField(new Checkbox('perm', $list))
                 ->setLabel('Permissions')
-                ->setGroup('Permissions')
-                ->setNotes('Only admin users can modify permissions');
-            if (!$auth->isAdmin()) {   // disable permission change for admin user
+                ->setGroup('Permissions');
+
+            if (!Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF)) {
+                $field->setNotes('You require "Manage Staff" to modify permissions');
                 $field->setDisabled();
             }
 
@@ -102,20 +107,14 @@ class Edit extends ControllerAdmin
                 ->setGroup($group);
         }
 
-        $this->form->appendField(new Textarea('notes'))
-            ->setGroup($group);
-
-
         // Form Actions
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', $this->getBackUrl()));
 
-
-        $load = $this->form->unmapModel($this->getUser());
-        $load = array_merge($load, $this->form->unmapModel($this->getUser()->getAuth()));
-        if ($this->getUser()->getAuth()) {
+        $load = $this->form->unmapModel($this->user);
+        if ($this->type == User::TYPE_STAFF) {
             $load['perm'] = array_keys(array_filter(User::PERMISSION_LIST,
-                    fn($k) => ($k & $this->getUser()->getAuth()->permissions), ARRAY_FILTER_USE_KEY)
+                    fn($k) => ($k & $this->auth->permissions), ARRAY_FILTER_USE_KEY)
             );
         }
         $this->form->setFieldValues($load);
@@ -124,13 +123,13 @@ class Edit extends ControllerAdmin
 
         if ($this->getAuthUser()->hasPermission(User::PERM_ADMIN) && !empty($newType)) {
             if ($newType == User::TYPE_STAFF) {
-                $this->getUser()->type = User::TYPE_STAFF;
+                $this->user->type = User::TYPE_STAFF;
                 Alert::addSuccess('User now set to type STAFF, please select and save the users new permissions.');
             } else if ($newType == User::TYPE_MEMBER) {
-                $this->getUser()->type = User::TYPE_MEMBER;
+                $this->user->type = User::TYPE_MEMBER;
                 Alert::addSuccess('User now set to type MEMBER.');
             }
-            $this->getUser()->save();
+            $this->user->save();
             Uri::create()->remove('cv')->redirect();
         }
 
@@ -139,41 +138,44 @@ class Edit extends ControllerAdmin
     public function onSubmit(Form $form, SubmitExit $action): void
     {
         // non admin cannot change permissions
-        if (!Factory::instance()->getAuthUser()->isAdmin()) {
+        if (!Auth::getAuthUser()->isAdmin()) {
             $form->removeField('perm');
         }
 
         // set object values from fields
-        $form->mapModel($this->getUser());
-        $form->mapModel($this->getUser()->getAuth());
+        vd($this->auth);
+        $form->mapModel($this->user);
+        $form->mapModel($this->auth);
+        vd($this->auth);
 
         if ($form->getField('perm')) {
-            $this->getUser()->permissions = array_sum($form->getFieldValue('perm') ?? []);
+            $this->auth->permissions = array_sum($form->getFieldValue('perm') ?? []);
         }
 
-        $form->addFieldErrors($this->getUser()->validate());
-        $form->addFieldErrors($this->getUser()->getAuth()->validate());
+        $form->addFieldErrors($this->user->validate());
+        $form->addFieldErrors($this->auth->validate());
+
         if ($form->hasErrors()) {
             Alert::addError('Form contains errors.');
             return;
         }
 
-        $isNew = $this->getUser()->userId == 0;
+        $isNew = $this->user->userId == 0;
 
-        $this->getUser()->save();
-        $this->getUser()->getAuth()->save();
+        $this->user->save();
+        $this->auth->save();
 
         // Send email to update password
         if ($isNew) {
-            if (\App\Email\User::sendRecovery($this->getUser())) {
-                Alert::addSuccess('An email has been sent to ' . $this->getUser()->email . ' to create their password.');
+            if (\App\Email\User::sendRecovery($this->user)) {
+                Alert::addSuccess('An email has been sent to ' . $this->user->email . ' to create their password.');
             } else {
-                Alert::addError('Failed to send email to ' . $this->getUser()->email . ' to create their password.');
+                Alert::addError('Failed to send email to ' . $this->user->email . ' to create their password.');
             }
         }
 
         Alert::addSuccess('Form save successfully.');
-        $action->setRedirect(Uri::create('/user/'.$this->type.'Edit')->set('userId', $this->getUser()->userId));
+        $action->setRedirect(Uri::create('/user/'.$this->type.'Edit')->set('userId', $this->user->userId));
         if ($form->getTriggeredAction()->isExit()) {
             $action->setRedirect(Factory::instance()->getBackUrl());
         }
@@ -184,12 +186,12 @@ class Edit extends ControllerAdmin
         $template = $this->getTemplate();
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        if ($this->getAuthUser()->hasPermission(User::PERM_ADMIN)) {
-            if ($this->getUser()->isType(User::TYPE_MEMBER)) {
+        if ($this->user->hasPermission(User::PERM_ADMIN)) {
+            if ($this->user->isType(User::TYPE_MEMBER)) {
                 $url = Uri::create()->set('cv', User::TYPE_STAFF);
                 $template->setAttr('to-staff', 'href', $url);
                 $template->setVisible('to-staff');
-            } else if ($this->getUser()->isType(User::TYPE_STAFF)) {
+            } else if ($this->user->isType(User::TYPE_STAFF)) {
                 $url = Uri::create()->set('cv', User::TYPE_MEMBER);
                 $template->setAttr('to-member', 'href', $url);
                 $template->setVisible('to-member');
@@ -197,8 +199,13 @@ class Edit extends ControllerAdmin
         }
 
         $template->appendText('title', $this->getPage()->getTitle());
-        if (!$this->getUser()->userId) {
+        if (!$this->user->userId) {
             $template->setVisible('new-user');
+        }
+        if (Masquerade::canMasqueradeAs(Auth::getAuthUser(), $this->user->getAuth())) {
+            $msqUrl = Uri::create()->set(Masquerade::QUERY_MSQ, $this->user->userId);
+            $template->setAttr('msq', 'href', $msqUrl);
+            $template->setVisible('msq');
         }
 
         $this->form->getField('title')->addFieldCss('col-1');
@@ -216,6 +223,18 @@ class Edit extends ControllerAdmin
         return $template;
     }
 
+    private function doMsq(int $userId): void
+    {
+        $msqUser = Auth::findByModelId(User::class, $userId);
+        if ($msqUser && Masquerade::masqueradeLogin(Auth::getAuthUser(), $msqUser)) {
+            Alert::addSuccess('You are now logged in as user ' . $msqUser->username);
+            $msqUser->getHomeUrl()->redirect();
+        }
+
+        Alert::addWarning('You cannot login as user ' . $msqUser->username . ' invalid permissions');
+        Uri::create()->remove(Masquerade::QUERY_MSQ)->redirect();
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -229,6 +248,7 @@ class Edit extends ControllerAdmin
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+      <a href="/" title="Masquerade" data-confirm="Masquerade as this user" class="btn btn-outline-secondary" choice="msq"><i class="fa fa-user-secret"></i> Masquerade</a>
       <a href="/" title="Convert user to staff" data-confirm="Convert this user to staff" class="btn btn-outline-secondary" choice="to-staff"><i class="fa fa-retweet"></i> Convert To Staff</a>
       <a href="/" title="Convert user to member" data-confirm="Convert this user to member" class="btn btn-outline-secondary" choice="to-member"><i class="fa fa-retweet"></i> Convert To Member</a>
     </div>

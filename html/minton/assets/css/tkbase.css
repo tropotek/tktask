@@ -34,6 +34,17 @@ form .tk-form-fields.tab-content {
   color: var(--bs-danger);
 }
 
+.form-control:disabled, .form-control:read-only {
+  pointer-events: none;
+  background-color: #EEE;
+}
+
+.tk-form input:invalid,
+.tk-form textarea:invalid,
+.tk-form select:invalid {
+  background: #FDFDDA !important;
+}
+
 /***************** T A B L E ******************/
 
 

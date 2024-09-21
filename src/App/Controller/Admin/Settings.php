@@ -1,9 +1,9 @@
 <?php
 namespace App\Controller\Admin;
 
+use App\Db\User;
 use App\Factory;
 use Bs\ControllerAdmin;
-use Bs\Db\Permissions;
 use Bs\Form;
 use Bs\Registry;
 use Dom\Template;
@@ -13,7 +13,6 @@ use Tk\Form\Action\SubmitExit;
 use Tk\Form\Field\Checkbox;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Textarea;
-use Tk\Ui\Button;
 use Tk\Uri;
 
 class Settings extends ControllerAdmin
@@ -26,7 +25,7 @@ class Settings extends ControllerAdmin
     {
         $this->getPage()->setTitle('Edit Settings');
 
-        $this->setAccess(Permissions::PERM_SYSADMIN);
+        $this->setAccess(User::PERM_SYSADMIN);
 
         Factory::instance()->getRegistry()->save();
         $this->getCrumbs()->reset();
@@ -94,14 +93,6 @@ class Settings extends ControllerAdmin
             ->addCss('code')->setAttr('data-mode', 'css')
             ->setGroup($tab);
 
-
-//        $tab = 'API Keys';
-//        $this->form->appendField(new Input('google.map.apikey'))
-//            ->setGroup($tab)->setLabel('Google API Key')
-//            ->setNotes('<a href="https://cloud.google.com/maps-platform/" target="_blank">Get Google Maps Api Key</a> And be sure to enable `Maps Javascript API`, `Maps Embed API` and `Places API for Web` for this site.')
-//            ->setGroup($tab);
-
-
         $tab = 'Maintenance';
         $this->form->appendField(new Checkbox('system.maintenance.enabled'))
             ->addCss('check-enable')
@@ -162,9 +153,9 @@ class Settings extends ControllerAdmin
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        $template->setVisible('staff', $this->getAuthUser()->hasPermission(Permissions::PERM_MANAGE_STAFF));
-        $template->setVisible('member', $this->getAuthUser()->hasPermission(Permissions::PERM_MANAGE_MEMBERS));
-        $template->setVisible('admin', $this->getAuthUser()->hasPermission(Permissions::PERM_ADMIN));
+        $template->setVisible('staff', $this->getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF));
+        $template->setVisible('member', $this->getAuthUser()->hasPermission(User::PERM_MANAGE_MEMBERS));
+        $template->setVisible('admin', $this->getAuthUser()->hasPermission(User::PERM_ADMIN));
 
         $this->form->getField('site.name')->addFieldCss('col-6');
         $this->form->getField('site.name.short')->addFieldCss('col-6');

@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+use App\Db\User;
+use Au\Auth;
 use Bs\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
@@ -13,6 +15,7 @@ class Dashboard extends ControllerAdmin
     public function doDefault(): void
     {
         $this->getPage()->setTitle('Dashboard');
+        $this->getCrumbs()->reset();
 
         if (isset($_GET['e'])){
             throw new Exception('This is a test exception...', 500);
@@ -42,8 +45,10 @@ class Dashboard extends ControllerAdmin
             $template->appendHtml('content', "<p><b>My Username:</b> {$this->getFactory()->getAuthUser()->username}</p>");
         }
 
-        $template->setAttr('img', 'src', $this->getAuthUser()->getImageUrl());
-        $template->setText('user-name', $this->getAuthUser()->getName());
+        /** @var User $user */
+        $user = Auth::getAuthUser()->getDbModel();
+        $template->setAttr('img', 'src', $user->getImageUrl());
+        $template->setText('user-name', $user->nameShort);
 
         $template->setAttr('eurl', 'href', Uri::create()->set('e', true));
         $template->setAttr('aurl', 'href', Uri::create()->set('a', true));

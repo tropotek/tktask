@@ -4,8 +4,6 @@ namespace App\Controller\User;
 use App\Db\User;
 use Au\Auth;
 use Bs\ControllerAdmin;
-use Bs\Db\Permissions;
-use Bs\Factory;
 use Bs\Table;
 use Au\Masquerade;
 use Dom\Template;
@@ -56,9 +54,10 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(User $user, Cell $cell) {
-                $msq  = Uri::create()->set(Masquerade::QUERY_MSQ, $user->userId);
+                $msq = Uri::create()->set(Masquerade::QUERY_MSQ, $user->userId);
+                $disabled = !Masquerade::canMasqueradeAs(Auth::getAuthUser(), $user->getAuth()) ? 'disabled' : '';
                 return <<<HTML
-                    <a class="btn btn-outline-dark" href="$msq" title="Masquerade" data-confirm="Are you sure you want to log-in as user {$user->nameShort}"><i class="fa fa-fw fa-user-secret"></i></a>
+                    <a class="btn btn-outline-dark {$disabled}" href="$msq" title="Masquerade" data-confirm="Are you sure you want to log-in as user {$user->nameShort}" {$disabled}><i class="fa fa-fw fa-user-secret"></i></a>
                 HTML;
             });
 
@@ -66,7 +65,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
             ->setSortable(true)
-            ->addOnValue(function(\Bs\Db\User $user, Cell $cell) {
+            ->addOnValue(function(User $user, Cell $cell) {
                 $url = Uri::create('/user/'.$user->type.'Edit', ['userId' => $user->userId]);
                 return sprintf('<a href="%s">%s</a>', $url, $user->username);
             });
@@ -81,18 +80,18 @@ class Manager extends ControllerAdmin
 
         $this->table->appendCell('email')
             ->setSortable(true)
-            ->addOnValue(function(\Bs\Db\User $user, Cell $cell) {
+            ->addOnValue(function(User $user, Cell $cell) {
                 return sprintf('<a href="mailto:%s">%s</a>', $user->email, $user->email);
             });
 
-        if ($this->getAuthUser()->hasPermission(Permissions::PERM_ADMIN)) {
+        if ($this->getAuthUser()->hasPermission(User::PERM_ADMIN) && $this->type == User::TYPE_STAFF) {
             $this->table->appendCell('permissions')
-                ->addOnValue(function (\Bs\Db\User $user, Cell $cell) {
-                    if ($user->hasPermission(Permissions::PERM_ADMIN)) {
-                        $list = Factory::instance()->getAvailablePermissions($user);
-                        return $list[Permissions::PERM_ADMIN];
+                ->addOnValue(function (User $user, Cell $cell) {
+                    if ($user->hasPermission(User::PERM_ADMIN)) {
+                        $list = User::PERMISSION_LIST;
+                        return $list[User::PERM_ADMIN];
                     }
-                    $list = array_filter(Factory::instance()->getAvailablePermissions($user), function ($k) use ($user) {
+                    $list = array_filter(User::PERMISSION_LIST, function ($k) use ($user) {
                         return $user->hasPermission($k);
                     }, ARRAY_FILTER_USE_KEY);
                     return implode(', <br/>', $list);
@@ -129,9 +128,10 @@ class Manager extends ControllerAdmin
             ->setConfirmStr('Disable the selected users?')
             ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected) {
                 foreach ($selected as $userId) {
-                    $u = \Bs\Db\User::find($userId);
-                    $u->active = false;
-                    $u->save();
+                    $u = User::find($userId);
+                    $a = $u->getAuth();
+                    $a->active = false;
+                    $a->save();
                 }
             });
 
