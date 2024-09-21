@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-use Bs\Listener\RememberMeHandler;
+use Au\Listener\RememberHandler;
 use Bs\Listener\CrumbsHandler;
 use Bs\Listener\MaintenanceHandler;
 
@@ -25,7 +25,7 @@ class Dispatch extends \Bs\Dispatch
 
         $this->getDispatcher()->addSubscriber(new CrumbsHandler());
         $this->getDispatcher()->addSubscriber(new MaintenanceHandler());
-        $this->getDispatcher()->addSubscriber(new RememberMeHandler());
+        $this->getDispatcher()->addSubscriber(new RememberHandler());
     }
 
     /**

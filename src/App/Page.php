@@ -29,12 +29,6 @@ class Page extends \Bs\Page
             $this->showMintonParams($template);
         }
 
-        if ($this->getAuthUser()) {
-            $template->setVisible('auth');
-        } else {
-            $template->setVisible('no-auth');
-        }
-
         $this->showCrumbs();
         $this->showAlert();
 

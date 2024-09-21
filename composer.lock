@@ -2086,12 +2086,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "31aa4ec865a6fcd75038ad3fbf9bb5f1d14e51bd"
+                "reference": "203e76159fff610a9359e0a8234acbee37ebef99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/31aa4ec865a6fcd75038ad3fbf9bb5f1d14e51bd",
-                "reference": "31aa4ec865a6fcd75038ad3fbf9bb5f1d14e51bd",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/203e76159fff610a9359e0a8234acbee37ebef99",
+                "reference": "203e76159fff610a9359e0a8234acbee37ebef99",
                 "shasum": ""
             },
             "require": {
@@ -2117,8 +2117,8 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Bs\\": "Bs/",
-                    "Auth\\": "Auth/"
+                    "Au\\": "Au/",
+                    "Bs\\": "Bs/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2131,7 +2131,7 @@
                     "homepage": "http://www.tropotek.com/"
                 }
             ],
-            "description": "Base site library for the Tk lib",
+            "description": "Base site library for the Au lib",
             "keywords": [
                 "tropotek"
             ],
@@ -2255,12 +2255,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "287b5bae208ec1b679b18eb9a79d1bb39dce48fd"
+                "reference": "cf8d1fbf21234b4bd53cef3a5bbed7c77a568bf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/287b5bae208ec1b679b18eb9a79d1bb39dce48fd",
-                "reference": "287b5bae208ec1b679b18eb9a79d1bb39dce48fd",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/cf8d1fbf21234b4bd53cef3a5bbed7c77a568bf7",
+                "reference": "cf8d1fbf21234b4bd53cef3a5bbed7c77a568bf7",
                 "shasum": ""
             },
             "require": {
