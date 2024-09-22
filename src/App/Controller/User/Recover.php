@@ -4,6 +4,7 @@ namespace App\Controller\User;
 use Au\Auth;
 use Bs\ControllerDomInterface;
 use App\Db\User;
+use Bs\Db\GuestToken;
 use Bs\Form;
 use Dom\Template;
 use Tk\Alert;
@@ -19,6 +20,7 @@ class Recover extends ControllerDomInterface
 {
     protected ?Form $form = null;
     protected ?Auth $auth = null;
+    protected ?GuestToken $token = null;
 
     public function __construct()
     {
@@ -90,23 +92,20 @@ class Recover extends ControllerDomInterface
         // logout any existing user
         Auth::logout();
 
-        $token = $_REQUEST['t'] ?? '';
-        $arr = Encrypt::create($this->getConfig()->get('system.encrypt'))->decrypt($token);
-        $arr = unserialize($arr);
-        if (!is_array($arr)) {
+        $this->token = GuestToken::find($_SESSION[GuestToken::TOKEN_SID] ?? '');
+        if (is_null($this->token)) {
             Alert::addError('Unknown account recovery error, please try again.');
             Uri::create('/')->redirect();
         }
 
-        $this->auth = Auth::findByHash($arr['h'] ?? '');
-        if (!$this->auth || !$this->auth->active) {
+        $this->auth = Auth::findByHash($this->token->payload['h'] ?? '');
+        if (is_null($this->auth) || !$this->auth->active) {
             Alert::addError('Invalid user token');
-            Uri::create('/home')->redirect();
+            Uri::create('/')->redirect();
         }
 
         $this->form = new Form();
 
-        $this->form->appendField(new Hidden('t'));
         $this->form->appendField(new Password('newPassword'))->setLabel('Password')
             ->setAttr('placeholder', 'Password')
             ->setAttr('autocomplete', 'off')->setRequired();
@@ -116,9 +115,7 @@ class Recover extends ControllerDomInterface
 
         $this->form->appendField(new Submit('recover', [$this, 'onRecover']));
 
-        $load = [
-            't' => $_REQUEST['t'] ?? ''
-        ];
+        $load = [];
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -143,6 +140,8 @@ class Recover extends ControllerDomInterface
 
         $this->auth->password = Auth::hashPassword($form->getFieldValue('newPassword'));
         $this->auth->save();
+
+        GuestToken::delete($this->token->token);
 
         Alert::addSuccess('Successfully account recovery. Please login.');
         Uri::create('/login')->redirect();

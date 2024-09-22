@@ -1,9 +1,9 @@
 <?php
 namespace App\Email;
 
+use Bs\Db\GuestToken;
 use Bs\Factory;
 use Tk\Config;
-use Tk\Encrypt;
 use Bs\Registry;
 use Tk\Uri;
 
@@ -32,10 +32,12 @@ class User
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
 
-        $hashToken = Encrypt::create($config->get('system.encrypt'))
-            ->encrypt(serialize(['h' => $user->hash, 't' => time()]));
-        $url = Uri::create('/registerActivate')->set('t', $hashToken);
-        $message->set('activate-url', $url->toString());
+        $gt = GuestToken::create([
+            Uri::create('/registerActivate')->getPath(),
+        ], [
+            'h' => $user->hash
+        ], 60);
+        $message->set('activate-url', $gt->getUrl()->toString());
 
         return Factory::instance()->getMailGateway()->send($message);
     }
@@ -62,9 +64,16 @@ class User
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
 
-        $hashToken = Encrypt::create($config->get('system.encrypt'))->encrypt(serialize(['h' => $user->hash, 't' => time()]));
-        $url = Uri::create('/recoverUpdate')->set('t', $hashToken);
-        $message->set('activate-url', $url->toString());
+        $gt = GuestToken::create([
+            Uri::create('/recoverUpdate')->getPath(),
+        ], [
+            'h' => $user->hash
+        ], 20);
+        $message->set('activate-url', $gt->getUrl()->toString());
+
+//        $hashToken = Encrypt::create($config->get('system.encrypt'))->encrypt(serialize(['h' => $user->hash, 't' => time()]));
+//        $url = Uri::create('/recoverUpdate')->set('t', $hashToken);
+//        $message->set('activate-url', $url->toString());
 
         return Factory::instance()->getMailGateway()->send($message);
     }

@@ -4,10 +4,10 @@ namespace App\Controller\User;
 use Au\Auth;
 use Bs\ControllerDomInterface;
 use App\Db\User;
+use Bs\Db\GuestToken;
 use Bs\Form;
 use Dom\Template;
 use Tk\Alert;
-use Tk\Encrypt;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Html;
 use Tk\Form\Field\Input;
@@ -20,6 +20,7 @@ class Register extends ControllerDomInterface
     protected ?Form $form  = null;
     protected ?Auth $auth  = null;
     protected bool  $isReg = true;
+    protected ?GuestToken $token = null;
 
 
     public function __construct()
@@ -137,18 +138,18 @@ class Register extends ControllerDomInterface
             Uri::create('/')->redirect();
         }
 
-        // todo: use a guest token with ttl for this link hash
-        $token = $_GET['t'] ?? '';
-        $arr = Encrypt::create($this->getConfig()->get('system.encrypt'))->decrypt($token);
-        $arr = unserialize($arr);
-        if (!is_array($arr)) {
-            Alert::addError('Unknown account registration error, please try again.');
+        // logout any existing user
+        Auth::logout();
+
+        $this->token = GuestToken::find($_SESSION[GuestToken::TOKEN_SID] ?? '');
+        if (is_null($this->token)) {
+            Alert::addError('Unknown account recovery error, please try again.');
             Uri::create('/')->redirect();
         }
 
-        $this->auth = Auth::findByHash($arr['h'] ?? '');
-        if (!$this->auth) {
-            Alert::addError('Invalid user registration');
+        $this->auth = Auth::findByHash($this->token->payload['h'] ?? '');
+        if (is_null($this->auth) || $this->auth->active) {
+            Alert::addError('Invalid user token');
             Uri::create('/')->redirect();
         }
 
@@ -173,6 +174,7 @@ class Register extends ControllerDomInterface
 
         $load = [];
         $this->form->setFieldValues($load);
+
         $this->form->execute($_POST);
 
     }

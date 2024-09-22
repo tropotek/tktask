@@ -1,6 +1,7 @@
 <?php
 namespace App\Console;
 
+use Bs\Db\GuestToken;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Bs\Console\Console;
@@ -22,6 +23,24 @@ class Test extends Console
             return self::FAILURE;
         }
 
+        Uri::$SITE_HOSTNAME = 'godar.ttek.org';
+        Uri::$BASE_URL = '/Projects/tk8base';
+
+        $gt = GuestToken::create([
+            Uri::create('/login')->getPath()
+        ],
+        [
+            'hash' => md5('test'),
+            'fooId' => 22,
+            'text' => 'Just a blank message'
+        ], 15);
+
+        return self::SUCCESS;
+    }
+
+    public function testUrl()
+    {
+
         // TODO
         Uri::$BASE_URL = '/Projects/tk8base';
         $list = [
@@ -38,15 +57,10 @@ class Test extends Console
             Uri::create('https://user:pass@godar.ttek.org/?test=another+test'),
             Uri::create('/register', ['queryparam' => 'test']),
         ];
-
-
         foreach ($list as $url) {
-            $output->writeln($url->__toString());
+            $this->output->writeln($url->__toString());
         }
 
-
-        $output->writeln('Complete!!!');
-        return self::SUCCESS;
     }
 
 
