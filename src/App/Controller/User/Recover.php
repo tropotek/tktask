@@ -18,7 +18,7 @@ use Tk\Uri;
 class Recover extends ControllerDomInterface
 {
     protected ?Form $form = null;
-    protected ?User $user = null;
+    protected ?Auth $auth = null;
 
     public function __construct()
     {
@@ -32,7 +32,7 @@ class Recover extends ControllerDomInterface
         // logout any existing user
         Auth::logout();
 
-        $this->form = new \Bs\Form();
+        $this->form = new Form();
 
         $this->form->appendField(new Input('username'))
             ->setAttr('autocomplete', 'off')
@@ -98,13 +98,13 @@ class Recover extends ControllerDomInterface
             Uri::create('/')->redirect();
         }
 
-        $this->user = User::findByHash($arr['h'] ?? '');
-        if (!$this->user || !$this->user->active) {
+        $this->auth = Auth::findByHash($arr['h'] ?? '');
+        if (!$this->auth || !$this->auth->active) {
             Alert::addError('Invalid user token');
             Uri::create('/home')->redirect();
         }
 
-        $this->form = new \Bs\Form();
+        $this->form = new Form();
 
         $this->form->appendField(new Hidden('t'));
         $this->form->appendField(new Password('newPassword'))->setLabel('Password')
@@ -114,7 +114,7 @@ class Recover extends ControllerDomInterface
             ->setAttr('placeholder', 'Password Confirm')
             ->setAttr('autocomplete', 'off')->setRequired();
 
-        $this->form->appendField(new Submit('recover-update', [$this, 'onRecover']));
+        $this->form->appendField(new Submit('recover', [$this, 'onRecover']));
 
         $load = [
             't' => $_REQUEST['t'] ?? ''
@@ -127,12 +127,12 @@ class Recover extends ControllerDomInterface
     public function onRecover(Form $form, Submit $action): void
     {
         if (!$form->getFieldValue('newPassword')  || $form->getFieldValue('newPassword') != $form->getFieldValue('confPassword')) {
-            $form->addFieldError('newPassword');
-            $form->addFieldError('confPassword');
+            $form->addFieldError('newPassword', 'Invalid Password');
             $form->addFieldError('confPassword', 'Passwords do not match');
         } else {
             $errors = Auth::validatePassword($form->getFieldValue('newPassword'));
             if (count($errors)) {
+                $form->addFieldError('newPassword', 'Invalid Password');
                 $form->addFieldError('confPassword', implode('<br/>', $errors));
             }
         }
@@ -141,8 +141,8 @@ class Recover extends ControllerDomInterface
             return;
         }
 
-        $this->user->getAuth()->password = Auth::hashPassword($form->getFieldValue('newPassword'));
-        $this->user->getAuth()->save();
+        $this->auth->password = Auth::hashPassword($form->getFieldValue('newPassword'));
+        $this->auth->save();
 
         Alert::addSuccess('Successfully account recovery. Please login.');
         Uri::create('/login')->redirect();
@@ -163,7 +163,7 @@ class Recover extends ControllerDomInterface
     {
         $html = <<<HTML
 <div>
-    <h1 class="h3 mb-3 fw-normal text-center">Recover Account</h1>
+    <h1 class="h3 mb-3 fw-normal text-center">Recover Account Password</h1>
     <div class="" var="content"></div>
 </div>
 HTML;
