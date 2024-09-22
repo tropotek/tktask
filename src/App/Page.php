@@ -31,6 +31,9 @@ class Page extends \Bs\Page
             $this->showMintonParams($template);
         }
 
+        $template->setText('year', date('Y'));
+        $template->setAttr('home', 'href', Uri::create('/')->toString());
+
         $auth = Auth::getAuthUser();
         if (is_null($auth)) {
             $template->setVisible('no-auth');
