@@ -53,14 +53,17 @@ class Profile extends ControllerAdmin
             ->setRequired();
 
         $this->form->appendField(new Input('familyName'))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->setRequired();
 
         $this->form->appendField(new Input('username'))->setGroup($tab)
             ->setDisabled()
-            ->setReadonly();
+            ->setReadonly()
+            ->setRequired();
 
         $this->form->appendField(new Input('email'))->setGroup($tab)
             ->addCss('tk-input-lock')
+            ->setRequired()
             ->setRequired();
 
         if ($this->user->isType(User::TYPE_STAFF)) {
@@ -89,7 +92,6 @@ class Profile extends ControllerAdmin
 
         // Load form with object values
         $load = $this->form->unmapModel($this->user);
-        //$load = array_merge($load, $this->form->unmapModel($this->user->getAuth()));
         if ($this->user->getAuth()) {
             $load['perm'] = array_keys(array_filter(User::PERMISSION_LIST,
                     fn($k) => ($k & $this->user->getAuth()->permissions), ARRAY_FILTER_USE_KEY)

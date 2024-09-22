@@ -143,10 +143,8 @@ class Edit extends ControllerAdmin
         }
 
         // set object values from fields
-        vd($this->auth);
         $form->mapModel($this->user);
         $form->mapModel($this->auth);
-        vd($this->auth);
 
         if ($form->getField('perm')) {
             $this->auth->permissions = array_sum($form->getFieldValue('perm') ?? []);

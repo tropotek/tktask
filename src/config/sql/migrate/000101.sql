@@ -27,8 +27,9 @@ CREATE TABLE IF NOT EXISTS user
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_SAFE_UPDATES = 0;
 
-TRUNCATE TABLE user;
-TRUNCATE TABLE user_remember;
+# TRUNCATE TABLE user;
+# TRUNCATE TABLE auth;
+# TRUNCATE TABLE auth_remember;
 
 INSERT INTO user (type, given_name) VALUES ('staff', 'Developer');
 INSERT INTO auth (fkey, fid, permissions, username, email, timezone) VALUES
