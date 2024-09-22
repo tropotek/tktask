@@ -141,9 +141,9 @@ class Register extends ControllerDomInterface
         // logout any existing user
         Auth::logout();
 
-        $this->token = GuestToken::find($_SESSION[GuestToken::TOKEN_SID] ?? '');
+        $this->token = GuestToken::getSessionToken();
         if (is_null($this->token)) {
-            Alert::addError('Unknown account recovery error, please try again.');
+            Alert::addError('You do not have permission to access this page.');
             Uri::create('/')->redirect();
         }
 
@@ -204,6 +204,8 @@ class Register extends ControllerDomInterface
         $this->auth->password = Auth::hashPassword($form->getFieldValue('password'));
         $this->auth->active = true;
         $this->auth->save();
+
+        $this->token->delete();
 
         Alert::addSuccess('You account has been successfully activated, please login.');
         Uri::create('/login')->redirect();

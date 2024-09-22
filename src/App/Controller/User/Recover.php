@@ -92,9 +92,9 @@ class Recover extends ControllerDomInterface
         // logout any existing user
         Auth::logout();
 
-        $this->token = GuestToken::find($_SESSION[GuestToken::TOKEN_SID] ?? '');
+        $this->token = GuestToken::getSessionToken();
         if (is_null($this->token)) {
-            Alert::addError('Unknown account recovery error, please try again.');
+            Alert::addError('You do not have permission to access this page.');
             Uri::create('/')->redirect();
         }
 
@@ -141,7 +141,7 @@ class Recover extends ControllerDomInterface
         $this->auth->password = Auth::hashPassword($form->getFieldValue('newPassword'));
         $this->auth->save();
 
-        GuestToken::delete($this->token->token);
+        $this->token->delete();
 
         Alert::addSuccess('Successfully account recovery. Please login.');
         Uri::create('/login')->redirect();
