@@ -4,6 +4,7 @@ namespace App\Db;
 use Au\Auth;
 use Au\Traits\AuthTrait;
 use Au\UserInterface;
+use Bs\Db\File;
 use Bs\Db\Traits\TimestampTrait;
 use Tk\Color;
 use Tk\Config;
@@ -41,11 +42,6 @@ class User extends Model implements UserInterface
 
     const TYPE_STAFF = 'staff';
     const TYPE_MEMBER = 'member';
-
-    const TYPE_LIST = [
-        self::TYPE_STAFF            => "Staff",
-        self::TYPE_MEMBER           => "Member",
-    ];
 
     const TITLE_LIST = [
         'Mr', 'Mrs', 'Ms', 'Dr',
@@ -116,7 +112,7 @@ class User extends Model implements UserInterface
     public function getFileList(array $filter = []): array
     {
         $filter += ['model' => $this];
-        return \Bs\Db\File::findFiltered($filter);
+        return File::findFiltered($filter);
     }
 
     public function getDataPath(): string

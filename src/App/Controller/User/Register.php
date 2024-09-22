@@ -17,7 +17,10 @@ use Tk\Uri;
 class Register extends ControllerDomInterface
 {
 
-    protected ?Form $form = null;
+    protected ?Form $form  = null;
+    protected ?Auth $auth  = null;
+    protected bool  $isReg = true;
+
 
     public function __construct()
     {
@@ -41,21 +44,11 @@ class Register extends ControllerDomInterface
 
         $this->form->appendField(new Input('email'))
             ->setRequired()
+            ->setType('email')
             ->setAttr('placeholder', 'Email');
 
         $this->form->appendField(new Input('username'))
             ->setAttr('placeholder', 'Username')
-            ->setAttr('autocomplete', 'off')
-            ->setRequired();
-
-        $this->form->appendField(new Password('password'))
-            ->setAttr('placeholder', 'Password')
-            ->setAttr('autocomplete', 'off')
-            ->setRequired();
-
-        $this->form->appendField(new Password('confPassword'))
-            ->setLabel('Password Confirm')
-            ->setAttr('placeholder', 'Password Confirm')
             ->setAttr('autocomplete', 'off')
             ->setRequired();
 
@@ -64,7 +57,6 @@ class Register extends ControllerDomInterface
         HTML;
         $this->form->appendField(new Html('links', $html))->setLabel('')->addFieldCss('text-center');
         $this->form->appendField(new Submit('register', [$this, 'onSubmit']));
-
 
         $load = [];
         $this->form->setFieldValues($load);
@@ -110,19 +102,7 @@ class Register extends ControllerDomInterface
             }
         }
 
-        if (!$form->getFieldValue('password')  || $form->getFieldValue('password') != $form->getFieldValue('confPassword')) {
-            $form->addFieldError('password');
-            $form->addFieldError('confPassword');
-            $form->addFieldError('confPassword', 'Passwords do not match');
-        } else {
-            $errors = Auth::validatePassword($form->getFieldValue('password'));
-            if (count($errors)) {
-                $form->addFieldError('confPassword', implode('<br/>', $errors));
-            }
-        }
-
         $form->addFieldErrors($user->validate());
-
         if ($form->hasErrors()) {
             return;
         }
@@ -132,7 +112,6 @@ class Register extends ControllerDomInterface
 
         $auth = $user->getAuth();
         $form->mapModel($auth);
-        $auth->password = Auth::hashPassword($auth->password);
         $auth->active = false;
         $auth->save();
 
@@ -146,19 +125,20 @@ class Register extends ControllerDomInterface
     }
 
     /**
-     * @todo: This is just not secure enough. When activating that`s when they need to add their pass
-     *        A simple click can cause issues if a spider/hacker hists the page and does nothing.
+     *
      */
     public function doActivate(): void
     {
-        $this->getPage()->setTitle('Register');
+        $this->getPage()->setTitle('Activate Account');
+        $this->isReg = false;
 
         if (!$this->getConfig()->get('auth.registration.enable', false)) {
             Alert::addError('New user registrations are closed for this account');
             Uri::create('/')->redirect();
         }
 
-        $token = $_REQUEST['t'] ?? '';
+        // todo: use a guest token with ttl for this link hash
+        $token = $_GET['t'] ?? '';
         $arr = Encrypt::create($this->getConfig()->get('system.encrypt'))->decrypt($token);
         $arr = unserialize($arr);
         if (!is_array($arr)) {
@@ -166,23 +146,75 @@ class Register extends ControllerDomInterface
             Uri::create('/')->redirect();
         }
 
-        $auth = Auth::findByHash($arr['h'] ?? '');
-        if (!$auth) {
+        $this->auth = Auth::findByHash($arr['h'] ?? '');
+        if (!$this->auth) {
             Alert::addError('Invalid user registration');
             Uri::create('/')->redirect();
         }
 
-        $auth->active = true;
-        $auth->save();
+        $this->form = new Form();
+
+        $this->form->appendField(new Password('password'))
+            ->setAttr('placeholder', 'Password')
+            ->setAttr('autocomplete', 'off')
+            ->setRequired();
+
+        $this->form->appendField(new Password('confPassword'))
+            ->setLabel('Password Confirm')
+            ->setAttr('placeholder', 'Password Confirm')
+            ->setAttr('autocomplete', 'off')
+            ->setRequired();
+
+        $html = <<<HTML
+            <a href="/login">Login</a>
+        HTML;
+        $this->form->appendField(new Html('links', $html))->setLabel('')->addFieldCss('text-center');
+        $this->form->appendField(new Submit('activate', [$this, 'onActivate']));
+
+        $load = [];
+        $this->form->setFieldValues($load);
+        $this->form->execute($_POST);
+
+    }
+
+    public function onActivate(Form $form, Submit $action): void
+    {
+        if (!$this->getConfig()->get('auth.registration.enable', false)) {
+            Alert::addError('New user registrations are closed for this account');
+            Uri::create('/')->redirect();
+        }
+
+        if (!$form->getFieldValue('password')  || $form->getFieldValue('password') != $form->getFieldValue('confPassword')) {
+            $form->addFieldError('password', 'Invalid password');
+            $form->addFieldError('confPassword', 'Check passwords match');
+        } else {
+            $errors = Auth::validatePassword($form->getFieldValue('password'));
+            if (count($errors)) {
+                $form->addFieldError('confPassword', implode('<br/>', $errors));
+            }
+        }
+
+        $form->addFieldErrors($this->auth->validate());
+        if ($form->hasErrors()) {
+            return;
+        }
+
+        $this->auth->password = Auth::hashPassword($form->getFieldValue('password'));
+        $this->auth->active = true;
+        $this->auth->save();
 
         Alert::addSuccess('You account has been successfully activated, please login.');
         Uri::create('/login')->redirect();
-
     }
 
     public function show(): ?Template
     {
         $template = $this->getTemplate();
+
+        if (!$this->isReg) {
+            $template->setText('title', 'Account Activation');
+            $template->setVisible('activate');
+        }
 
         if ($this->form) {
             $template->appendTemplate('content', $this->form->show());
@@ -195,7 +227,8 @@ class Register extends ControllerDomInterface
     {
         $html = <<<HTML
 <div>
-    <h1 class="h3 mb-3 fw-normal text-center">Account Registration</h1>
+    <h1 class="h3 mb-3 fw-normal text-center" var="title">Account Registration</h1>
+    <p choice="activate">Set your new account password</p>
     <div class="" var="content"></div>
 </div>
 HTML;
