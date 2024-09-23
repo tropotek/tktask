@@ -35,8 +35,7 @@ class Profile extends ControllerAdmin
         }
 
         // Get the form template
-        /** @var User $user */
-        $this->user = Auth::getAuthUser()->getDbModel();
+        $this->user = User::getAuthUser();
         $this->form = new Form($this->user);
 
         $tab = 'Details';

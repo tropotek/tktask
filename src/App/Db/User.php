@@ -180,6 +180,19 @@ class User extends Model implements UserInterface
         return $errors;
     }
 
+    /**
+     * Get the currently logged-in user if any
+     * Only returns the authed model if instance of self
+     */
+    public static function getAuthUser(): ?self
+    {
+        $user = Auth::getAuthUser()?->getDbModel();
+        if ($user instanceof self) {
+            return $user;
+        }
+        return null;
+    }
+
     public static function find(int $userId): ?static
     {
         return Db::queryOne("

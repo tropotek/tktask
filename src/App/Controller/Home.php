@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use Au\Auth;
 use Bs\ControllerPublic;
 use Dom\Template;
 use Tk\Alert;
@@ -38,7 +39,7 @@ class Home extends ControllerPublic
         $template->setAttr('eurl', 'href', Uri::create()->set('e', true));
         $template->setAttr('aurl', 'href', Uri::create()->set('a', true));
 
-        if ($this->getAuthUser()) {
+        if (Auth::getAuthUser()) {
             $template->setVisible('auth');
         } else {
             $template->setVisible('no-auth');

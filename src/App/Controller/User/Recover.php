@@ -9,6 +9,7 @@ use Bs\Form;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Encrypt;
+use Tk\Exception;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Html;
@@ -94,14 +95,12 @@ class Recover extends ControllerDomInterface
 
         $this->token = GuestToken::getSessionToken();
         if (is_null($this->token)) {
-            Alert::addError('You do not have permission to access this page.');
-            Uri::create('/')->redirect();
+            throw new Exception("You do not have permission to access this page.");
         }
 
         $this->auth = Auth::findByHash($this->token->payload['h'] ?? '');
-        if (is_null($this->auth) || !$this->auth->active) {
-            Alert::addError('Invalid user token');
-            Uri::create('/')->redirect();
+        if (is_null($this->auth)) {
+            throw new Exception("Invalid user token");
         }
 
         $this->form = new Form();
@@ -139,6 +138,7 @@ class Recover extends ControllerDomInterface
         }
 
         $this->auth->password = Auth::hashPassword($form->getFieldValue('newPassword'));
+        $this->auth->active = true;
         $this->auth->save();
 
         $this->token->delete();

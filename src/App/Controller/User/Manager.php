@@ -84,7 +84,7 @@ class Manager extends ControllerAdmin
                 return sprintf('<a href="mailto:%s">%s</a>', $user->email, $user->email);
             });
 
-        if ($this->getAuthUser()->hasPermission(User::PERM_ADMIN) && $this->type == User::TYPE_STAFF) {
+        if (Auth::getAuthUser()->hasPermission(User::PERM_ADMIN) && $this->type == User::TYPE_STAFF) {
             $this->table->appendCell('permissions')
                 ->addOnValue(function (User $user, Cell $cell) {
                     if ($user->hasPermission(User::PERM_ADMIN)) {

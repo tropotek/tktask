@@ -10,7 +10,7 @@ use Tk\Uri;
 class User
 {
 
-	public static function sendRegister(\App\Db\User $user): bool
+    public static function sendRegister(\App\Db\User $user): bool
     {
         $content = <<<HTML
             <h2>Account Activation.</h2>
@@ -18,7 +18,7 @@ class User
               Welcome {name}
             </p>
             <p>
-              Please follow the link to activate your account and finish the user registration.<br/>
+              Please follow the link to create a new password and activate your account.<br/>
               <a href="{activate-url}" target="_blank">{activate-url}</a>
             </p>
             <p><small>Note: If you did not initiate this account creation you can safely disregard this message.</small></p>
@@ -40,8 +40,8 @@ class User
         return Factory::instance()->getMailGateway()->send($message);
     }
 
-    
-	public static function sendRecovery(\App\Db\User $user): bool
+
+    public static function sendRecovery(\App\Db\User $user): bool
     {
         $config = Config::instance();
 
@@ -51,7 +51,7 @@ class User
               Welcome {name}
             </p>
             <p>
-              Please follow the link to finish recovering your account password.<br/>
+              Please follow the link to create a new password and activate your account.<br/>
               <a href="{activate-url}" target="_blank">{activate-url}</a>
             </p>
             <p><small>Note: If you did not initiate this email, you can safely disregard this message.</small></p>

@@ -28,7 +28,7 @@ class Dashboard extends ControllerAdmin
             Uri::create()->remove('a')->redirect();
         }
 
-        if (!$this->getFactory()->getAuthUser()) {
+        if (!Auth::getAuthUser()) {
             Alert::addWarning('You do not have permission to access the page: <b>' . Uri::create()->getRelativePath() . '</b>');
             Uri::create('/home')->redirect();
             // $this->getBackUrl()->redirect();
@@ -41,12 +41,12 @@ class Dashboard extends ControllerAdmin
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-        if ($this->getFactory()->getAuthUser()) {
-            $template->appendHtml('content', "<p><b>My Username:</b> {$this->getFactory()->getAuthUser()->username}</p>");
+        if (Auth::getAuthUser()) {
+            $username = Auth::getAuthUser()->username;
+            $template->appendHtml('content', "<p><b>My Username:</b> {$username}</p>");
         }
 
-        /** @var User $user */
-        $user = Auth::getAuthUser()->getDbModel();
+        $user = User::getAuthUser();
         $template->setAttr('img', 'src', $user->getImageUrl());
         $template->setText('user-name', $user->nameShort);
 

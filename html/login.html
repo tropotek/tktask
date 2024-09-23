@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
   <meta name="author" content="Tropotek" />
 
-  <title>Bootstrap v5.2</title>
+  <title>Login</title>
 
   <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css"/>
   <link rel="stylesheet" href="/vendor/components/font-awesome/css/all.min.css"/>
@@ -13,28 +13,31 @@
   <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/vendor/components/jquery/jquery.min.js"></script>
   <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/components/htmx.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
-
 
   <style>
     .login-box {
       max-width: 330px;
       margin-top: 11%;
     }
+
     form .btn-primary {
       width: 95%;
     }
+
     form .fld > label {
       display: none;
     }
+
     form .tk-form-errors {
       margin: 15px 0 0 0;
     }
+
     .form-control:disabled, .form-control:read-only {
       pointer-events: none;
       background-color: #EEE;
     }
+
     form input:invalid,
     form textarea:invalid,
     form select:invalid {
@@ -52,7 +55,6 @@
 </head>
 <body class="bg-light h-100">
 
-
 <div class="login-box text-left mx-auto card p-4 w-100 p-2">
   <div var="alert"></div>
   <div class="" var="content"></div>
@@ -66,4 +68,3 @@
 
 </body>
 </html>
-

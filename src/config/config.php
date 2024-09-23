@@ -23,10 +23,10 @@ return function (Config $config) {
     $config->set('path.template.admin', '/html/minton/sn-admin.html');
     $config->set('path.template.user', $config->get('path.template.admin'));
 
-    /*
+    /**
      * mail template path
      */
-    $config['system.mail.template'] = '/html/templates/mail.default.tpl';
+    $config['system.mail.template'] = '/html/templates/mail.default.html';
 
     /**
      * Enable DB sessions
@@ -42,7 +42,6 @@ return function (Config $config) {
      * The default log level
      */
     $config['log.logLevel'] = \Psr\Log\LogLevel::ERROR;
-
 
     /**
      * Can users update their password from their profile page
@@ -68,4 +67,5 @@ return function (Config $config) {
      * (default: true)
      */
     //$config['auth.password.strict'] = false;
+
 };

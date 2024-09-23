@@ -219,8 +219,6 @@ HTML;
 
     public function getUser(): ?User
     {
-        /** @var User $obj */
-        $obj = Auth::getAuthUser()?->getDbModel();
-        return $obj;
+        return User::getAuthUser();
     }
 }

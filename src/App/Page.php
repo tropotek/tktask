@@ -34,13 +34,11 @@ class Page extends \Bs\Page
         $template->setText('year', date('Y'));
         $template->setAttr('home', 'href', Uri::create('/')->toString());
 
-        $auth = Auth::getAuthUser();
-        if (is_null($auth)) {
+        $user = User::getAuthUser();
+        if (is_null($user)) {
             $template->setVisible('no-auth');
             $template->setVisible('loggedOut');
         } else {
-            /** @var User $user */
-            $user = $auth->getDbModel();
             $template->setText('username', $user->username);
             $template->setText('user-name', $user->nameShort);
             $template->setText('user-type', ucfirst($user->type));

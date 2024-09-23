@@ -3,7 +3,7 @@
 --
 -- ------------------------------------------------------
 
-
+-- \App\Db\User
 CREATE OR REPLACE VIEW v_user AS
 SELECT
   u.*,

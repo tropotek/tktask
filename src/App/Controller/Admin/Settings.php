@@ -3,6 +3,7 @@ namespace App\Controller\Admin;
 
 use App\Db\User;
 use App\Factory;
+use Au\Auth;
 use Bs\ControllerAdmin;
 use Bs\Form;
 use Bs\Registry;
@@ -38,13 +39,13 @@ class Settings extends ControllerAdmin
         $this->form->appendField(new Input('site.name'))
             ->setLabel('Site Title')
             ->setNotes('Site Full title. Used for email subjects and content texts.')
-            ->setRequired(true)
+            ->setRequired()
             ->setGroup($tab);
 
         $this->form->appendField(new Input('site.name.short'))
             ->setLabel('Site Short Title')
             ->setNotes('Site short title. Used for nav bars and title where space is limited.')
-            ->setRequired(true)
+            ->setRequired()
             ->setGroup($tab);
 
         if ($this->templateSelect) {
@@ -57,7 +58,7 @@ class Settings extends ControllerAdmin
 
         $this->form->appendField(new Input('site.email'))
             ->setLabel('Site Email')
-            ->setRequired(true)
+            ->setRequired()
             ->setNotes('The default sender address when sending system emails.')
             ->setGroup($tab);
 
@@ -153,9 +154,9 @@ class Settings extends ControllerAdmin
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        $template->setVisible('staff', $this->getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF));
-        $template->setVisible('member', $this->getAuthUser()->hasPermission(User::PERM_MANAGE_MEMBERS));
-        $template->setVisible('admin', $this->getAuthUser()->hasPermission(User::PERM_ADMIN));
+        $template->setVisible('staff', Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF));
+        $template->setVisible('member', Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_MEMBERS));
+        $template->setVisible('admin', Auth::getAuthUser()->hasPermission(User::PERM_ADMIN));
 
         $this->form->getField('site.name')->addFieldCss('col-6');
         $this->form->getField('site.name.short')->addFieldCss('col-6');
