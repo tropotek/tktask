@@ -31,7 +31,8 @@ form .form-check-label {
 .tk-form .fld .invalid-feedback {
   color: var(--bs-danger);
 }
-.form-control:disabled, .form-control:read-only {
+.form-control:disabled,
+.form-control:read-only:not([type=file]) {
   pointer-events: none;
   background-color: #EEE;
 }
