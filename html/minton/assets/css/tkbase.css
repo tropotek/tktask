@@ -34,7 +34,7 @@ form .tk-form-fields.tab-content {
   color: var(--bs-danger);
 }
 
-.form-control:disabled, .form-control:read-only {
+.form-control:disabled, .form-control:read-only:not([type=file]) {
   pointer-events: none;
   background-color: #EEE;
 }
