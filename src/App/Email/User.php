@@ -12,8 +12,6 @@ class User
 
 	public static function sendRegister(\App\Db\User $user): bool
     {
-        $config = Config::instance();
-
         $content = <<<HTML
             <h2>Account Activation.</h2>
             <p>
@@ -42,6 +40,7 @@ class User
         return Factory::instance()->getMailGateway()->send($message);
     }
 
+    
 	public static function sendRecovery(\App\Db\User $user): bool
     {
         $config = Config::instance();
@@ -70,10 +69,6 @@ class User
             'h' => $user->hash
         ], 20);
         $message->set('activate-url', $gt->getUrl()->toString());
-
-//        $hashToken = Encrypt::create($config->get('system.encrypt'))->encrypt(serialize(['h' => $user->hash, 't' => time()]));
-//        $url = Uri::create('/recoverUpdate')->set('t', $hashToken);
-//        $message->set('activate-url', $url->toString());
 
         return Factory::instance()->getMailGateway()->send($message);
     }
