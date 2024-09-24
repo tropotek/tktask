@@ -35,7 +35,7 @@ class Nav
             ],
             'Dev' => [
                 'icon' => 'ri-bug-line',
-                'visible' => fn($i) => Config::instance()->isDev(),
+                'visible' => fn($i) => Config::isDev(),
                 'PHP Info' => [
                     'icon' => 'ri-information-line',
                     'url' => '/info'

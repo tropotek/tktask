@@ -5,6 +5,7 @@ use Bs\Db\GuestToken;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Bs\Console\Console;
+use Tk\Config;
 use Tk\Uri;
 
 class Test extends Console
@@ -18,7 +19,7 @@ class Test extends Console
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->getConfig()->isDebug()) {
+        if (!Config::isDebug()) {
             $this->writeError('Error: Only run this command in a debug environment.');
             return self::FAILURE;
         }

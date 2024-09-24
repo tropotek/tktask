@@ -33,7 +33,7 @@ class Factory extends \Bs\Factory
             $app = parent::getConsole();
 
             $app->add(new \App\Console\Cron());
-            if ($this->getConfig()->isDev()) {
+            if (Config::isDev()) {
                 $app->add(new \App\Console\Test());
             }
         }

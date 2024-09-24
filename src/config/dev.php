@@ -10,9 +10,7 @@
  *
  */
 
-$config = \Tk\Config::instance();
-
-if (!$config->isDebug() || $config->isProd()) {
+if (!\Tk\Config::isDebug() || \Tk\Config::isProd()) {
     error_log(__FILE__ . ': Do not execute this file in a production environment!');
     return;
 }
