@@ -104,7 +104,7 @@ class Login extends ControllerAdmin
         // SSI logout
         $ssiLogout = truefalse($_GET['ssi'] ?? false);
         if (isset($_SESSION['_OAUTH']) && $ssiLogout) {
-            $oAuth = trim($_SESSION['_OAUTH'] ?? '');
+            $oAuth = trim($_SESSION['_OAUTH']);
             unset($_SESSION['_OAUTH']);
             if ($this->getConfig()->get('auth.'.$oAuth.'.endpointLogout', '')) {
                 $url = Uri::create($this->getConfig()->get('auth.'.$oAuth.'.endpointLogout'));
@@ -179,15 +179,14 @@ class Login extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-    <h1 class="text-center h3 mb-3 fw-normal">Login</h1>
-    <div var="content"></div>
+  <h1 class="text-center h3 mb-3 fw-normal">Login</h1>
+  <div var="content"></div>
 
   <div class="external mt-4" choice="ext">
     <a href="#" class="btn btn-primary col-12 mb-2" choice="microsoft"><i class="fa-brands fa-fw fa-windows"></i> Microsoft</a>
     <a href="#" class="btn btn-warning col-12 mb-2" choice="google"><i class="fa-brands fa-fw fa-google"></i> Google</a>
     <a href="#" class="btn btn-info col-12 mb-2" choice="facebook"><i class="fa-brands fa-fw fa-facebook"></i> Facebook</a>
   </div>
-
 </div>
 HTML;
         return $this->loadTemplate($html);

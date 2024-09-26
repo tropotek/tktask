@@ -98,7 +98,6 @@ return function (Config $config) {
     $config['auth.microsoft.clientId']        = '';  // define in site /config.php
     $config['auth.microsoft.clientSecret']    = '';  // define in site /config.php
 
-
     /**
      * Google external SSI options
      *
@@ -117,7 +116,6 @@ return function (Config $config) {
     // user defined settings
     $config['auth.google.clientId']        = '';  // define in site /config.php
     $config['auth.google.clientSecret']    = '';  // define in site /config.php
-
 
     /**
      * Facebook external SSI options
