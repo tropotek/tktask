@@ -85,8 +85,7 @@ class Edit extends ControllerAdmin
             ->setRequired();
 
         $this->form->appendField(new Input('familyName'))
-            ->setGroup($group)
-            ->setRequired();
+            ->setGroup($group);
 
         $l1 = $this->form->appendField(new Input('username'))
             ->setGroup($group)

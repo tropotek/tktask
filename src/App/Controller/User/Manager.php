@@ -70,11 +70,11 @@ class Manager extends ControllerAdmin
                 return sprintf('<a href="%s">%s</a>', $url, $user->username);
             });
 
-        $this->table->appendCell('nameFirst')
+        $this->table->appendCell('givenName')
             ->addCss('text-nowrap')
             ->setSortable(true);
 
-        $this->table->appendCell('nameLast')
+        $this->table->appendCell('familyName')
             ->addCss('text-nowrap')
             ->setSortable(true);
 

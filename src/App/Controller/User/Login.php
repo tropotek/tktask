@@ -99,6 +99,22 @@ class Login extends ControllerAdmin
     public function doLogout(): void
     {
         Auth::logout();
+        Factory::instance()->getCrumbs()?->reset();
+
+        // SSI logout
+        $ssiLogout = truefalse($_GET['ssi'] ?? false);
+        if (isset($_SESSION['_OAUTH']) && $ssiLogout) {
+            $oAuth = trim($_SESSION['_OAUTH'] ?? '');
+            unset($_SESSION['_OAUTH']);
+            if ($this->getConfig()->get('auth.'.$oAuth.'.endpointLogout', '')) {
+                $url = Uri::create($this->getConfig()->get('auth.'.$oAuth.'.endpointLogout'));
+                if ($oAuth == Auth::EXT_MICROSOFT) {
+                    $url->set('post_logout_redirect_uri', Uri::create('/')->toString());
+                }
+                $url->redirect();
+            }
+        }
+
         Alert::addSuccess('Logged out successfully');
         Uri::create('/')->redirect();
     }
@@ -111,6 +127,51 @@ class Login extends ControllerAdmin
             $template->appendTemplate('content', $this->form->show());
         }
 
+        $oauthUrl = Uri::create('/_ssi');
+
+        $hasExternal = false;
+        if ($this->getConfig()->get('auth.microsoft.enabled', false)) {
+            $hasExternal = true;
+            $template->setVisible('microsoft');
+            $url = Uri::create('https://login.microsoftonline.com/common/oauth2/v2.0/authorize')
+                ->set('state', 'microsoft')
+                ->set('approval_prompt', 'auto')
+                ->set('response_type', 'code')
+                ->set('redirect_uri', $oauthUrl)
+                ->set('client_id', $this->getConfig()->get('auth.microsoft.clientId', ''))
+                ->set('scope', $this->getConfig()->get('auth.microsoft.scope', ''));
+            $template->setAttr('microsoft', 'href', $url);
+        }
+
+        if ($this->getConfig()->get('auth.google.enabled', false)) {
+            $hasExternal = true;
+            $template->setVisible('google');
+            $url = Uri::create('https://accounts.google.com/o/oauth2/auth')
+                ->set('state', 'google')
+                ->set('access_type', 'online')
+                ->set('response_type', 'code')
+                ->set('redirect_uri', $oauthUrl)
+                ->set('scope', $this->getConfig()->get('auth.google.scope', ''))
+                ->set('client_id', $this->getConfig()->get('auth.google.clientId', ''));
+            $template->setAttr('google', 'href', $url);
+        }
+
+        // todo ???
+        if ($this->getConfig()->get('auth.facebook.enabled', false)) {
+            $hasExternal = true;
+            $template->setVisible('facebook');
+            $url = Uri::create('https://accounts.facebook.com/o/oauth2/auth')
+                ->set('state', 'google')
+                ->set('access_type', 'online')
+                ->set('response_type', 'code')
+                ->set('redirect_uri', $oauthUrl)
+                ->set('scope', $this->getConfig()->get('auth.facebook.scope', ''))
+                ->set('client_id', $this->getConfig()->get('auth.facebook.clientId', ''));
+            $template->setAttr('facebook', 'href', $url);
+        }
+
+        $template->setVisible('ext', $hasExternal);
+
         return $template;
     }
 
@@ -120,6 +181,13 @@ class Login extends ControllerAdmin
 <div>
     <h1 class="text-center h3 mb-3 fw-normal">Login</h1>
     <div var="content"></div>
+
+  <div class="external mt-4" choice="ext">
+    <a href="#" class="btn btn-primary col-12 mb-2" choice="microsoft"><i class="fa-brands fa-fw fa-windows"></i> Microsoft</a>
+    <a href="#" class="btn btn-warning col-12 mb-2" choice="google"><i class="fa-brands fa-fw fa-google"></i> Google</a>
+    <a href="#" class="btn btn-info col-12 mb-2" choice="facebook"><i class="fa-brands fa-fw fa-facebook"></i> Facebook</a>
+  </div>
+
 </div>
 HTML;
         return $this->loadTemplate($html);

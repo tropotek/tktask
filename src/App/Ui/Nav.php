@@ -35,7 +35,11 @@ class Nav
             ],
             'Dev' => [
                 'icon' => 'ri-bug-line',
-                'visible' => fn($i) => Config::isDev(),
+                'visible' => fn($i) => Config::isDev() && $this->getUser()->isStaff(),
+                'Component Test' => [
+                    'icon' => 'ri-bug-line',
+                    'url' => '/componentTest'
+                ],
                 'PHP Info' => [
                     'icon' => 'ri-information-line',
                     'url' => '/info'
@@ -66,14 +70,17 @@ class Nav
         <i class="ri-palette-line me-1"></i>
         <span>Customizer</span>
     </a>
-    <a href="/logout" class="dropdown-item notify-item">
+    <a href="/logout" class="dropdown-item notify-item btn-logout">
         <i class="fe-log-out me-1"></i>
         <span>Logout</span>
     </a>
 </div>
 HTML;
         $template = Template::load($html);
-        $template->setVisible('sysadmin', $this->getUser()->hasPermission(User::PERM_SYSADMIN));
+
+        if ($this->getUser()) {
+            $template->setVisible('sysadmin', $this->getUser()->hasPermission(User::PERM_SYSADMIN));
+        }
 
         return $template;
     }

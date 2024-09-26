@@ -160,7 +160,9 @@ File: Main Js File
         });
 
         // Waves Effect
-        Waves.init();
+        // TODO: commented out as it gens an error in JS, need to find out why
+        //        only started when I moved js includes into the head tag
+        //Waves.init();
     }
 
     // Portlet Widget (Card Reload, Collapse, and Delete)

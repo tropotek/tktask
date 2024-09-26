@@ -18,6 +18,10 @@ use Tk\Form\Field\Password;
 use Tk\Form\Field\Select;
 use Tk\Uri;
 
+/**
+ *
+ * @todo Implement the user phone and address fields. Look at using google api to get timestamp etc.
+ */
 class Profile extends ControllerAdmin
 {
 
@@ -52,8 +56,7 @@ class Profile extends ControllerAdmin
             ->setRequired();
 
         $this->form->appendField(new Input('familyName'))
-            ->setGroup($tab)
-            ->setRequired();
+            ->setGroup($tab);
 
         $this->form->appendField(new Input('username'))->setGroup($tab)
             ->setDisabled()

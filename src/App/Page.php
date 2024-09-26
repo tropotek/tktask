@@ -51,9 +51,69 @@ class Page extends \Bs\Page
 
         $this->showCrumbs();
         $this->showAlert();
+        $this->showLogoutDialog();
         //$this->showMaintenanceRibbon();
 
         return $template;
+    }
+
+    /**
+     * Show a logout confirmation dialog
+     */
+    protected function showLogoutDialog(): void
+    {
+        //if (!(Auth::getAuthUser() && isset($_SESSION['_OAUTH']))) return;
+        if (!(Auth::getAuthUser())) return;
+        $oAuth = $_SESSION['_OAUTH'] ?? '';
+
+        $html = <<<HTML
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form method="get" action="/logout">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="logoutModalLabel">Logout</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to leave?
+
+          <div class="form-check" choice="ssi">
+            <input class="form-check-input" type="checkbox" name="ssi" value="1" id="fid-ssi-logout">
+            <label class="form-check-label" for="fid-ssi-logout" var="label">
+              Logout from Microsoft
+            </label>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Logout</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+HTML;
+        $template = $this->loadTemplate($html);
+
+        if ($oAuth && $this->getConfig()->get('auth.'.$oAuth.'.endpointLogout', '')) {
+            $template->setText('label', 'Logout from ' . ucwords($oAuth));
+            $template->setVisible('ssi');
+        }
+
+        $js = <<<JS
+jQuery(function($) {
+    $('.btn-logout').on('click', function() {
+        $('#logoutModal').modal('show');
+        return false;
+    });
+});
+JS;
+        $template->appendJs($js);
+
+        $this->getTemplate()->prependTemplate('content', $template);
     }
 
     protected function showMintonParams(Template $template): void
