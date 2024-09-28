@@ -1,10 +1,4 @@
 
-body {
-  padding-top: 5rem;
-  padding-bottom: 3rem;
-  color: #5a5a5a;
-  background-color: #FFF;
-}
 
 /*********** T I N Y M C E *************/
 /* Remove promotion button */
@@ -67,20 +61,21 @@ form .form-check-label {
   --bs-btn-font-size: .75rem;
 }
 
-
 /* Header OrderBy Arrows */
 th
 {
   text-align: center;
+  white-space: nowrap;
 }
 th a,
 td a {
+  position: relative;
   display: block;
   width: 100%;
 }
 th a {
   padding-right: 18px;
-  position: relative;
+  /*position: relative;*/
 }
 th a:before,
 th a:after {

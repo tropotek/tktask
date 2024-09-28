@@ -6,9 +6,6 @@ Website: https://coderthemes.com/
 Contact: support@coderthemes.com
 File: Layouts Js File
 */
-
-
-
 class ThemeCustomizer {
 
     constructor() {
