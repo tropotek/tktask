@@ -69,6 +69,9 @@ return function (Config $config) {
     //$config['auth.password.strict'] = false;
 
 
+
+
+
     /**
      * Whitelist URLS:
      *   - https://domain.com/_ssi  <- main oauth uri
@@ -140,7 +143,5 @@ return function (Config $config) {
     // user defined settings
     $config['auth.facebook.clientId']        = '';  // define in site /config.php
     $config['auth.facebook.clientSecret']    = '';  // define in site /config.php
-
-
 
 };
