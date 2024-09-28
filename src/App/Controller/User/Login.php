@@ -156,16 +156,14 @@ class Login extends ControllerAdmin
             $template->setAttr('google', 'href', $url);
         }
 
-        // todo ???
         if ($this->getConfig()->get('auth.facebook.enabled', false)) {
             $hasExternal = true;
             $template->setVisible('facebook');
-            $url = Uri::create('https://accounts.facebook.com/o/oauth2/auth')
-                ->set('state', 'google')
-                ->set('access_type', 'online')
+            $url = Uri::create('https://www.facebook.com/dialog/oauth')
+                ->set('state', 'facebook')
                 ->set('response_type', 'code')
-                ->set('redirect_uri', $oauthUrl)
                 ->set('scope', $this->getConfig()->get('auth.facebook.scope', ''))
+                ->set('redirect_uri', $oauthUrl)
                 ->set('client_id', $this->getConfig()->get('auth.facebook.clientId', ''));
             $template->setAttr('facebook', 'href', $url);
         }

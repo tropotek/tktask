@@ -98,6 +98,7 @@ return function (Config $config) {
     $config['auth.microsoft.clientId']        = '';  // define in site /config.php
     $config['auth.microsoft.clientSecret']    = '';  // define in site /config.php
 
+
     /**
      * Google external SSI options
      *
@@ -117,21 +118,24 @@ return function (Config $config) {
     $config['auth.google.clientId']        = '';  // define in site /config.php
     $config['auth.google.clientSecret']    = '';  // define in site /config.php
 
+
     /**
      * Facebook external SSI options
      *
      * Researching:
+     * - login to https://developers.facebook.com/
+     * -
+     *
      * @see https://codeshack.io/implement-facebook-login-php/
      * @see https://www.cloudways.com/blog/add-facebook-login-in-php/
-     *
-     * @todo
      */
     $config['auth.facebook.enabled']         = false;
     $config['auth.facebook.createUser']      = false;
     $config['auth.facebook.userType']        = \App\Db\User::TYPE_MEMBER;
-    $config['auth.facebook.scope']           = 'https://www.facebook.com/auth/userinfo.email';
-    $config['auth.facebook.endpointToken']   = 'https://www.facebook.com/oauth2/v4/token';
-    $config['auth.facebook.endpointScope']   = 'https://www.facebook.com/oauth2/v2/userinfo?fields=name,email,gender,id,picture,verified_email';
+    $config['auth.facebook.scope']           = 'email';
+    $config['auth.facebook.endpointLogout']  = '';
+    $config['auth.facebook.endpointToken']   = 'https://graph.facebook.com/oauth/access_token';
+    $config['auth.facebook.endpointScope']   = 'https://graph.facebook.com/v18.0/me?fields=name,email,picture';
     $config['auth.facebook.emailIdentifier'] = 'email';
     // user defined settings
     $config['auth.facebook.clientId']        = '';  // define in site /config.php

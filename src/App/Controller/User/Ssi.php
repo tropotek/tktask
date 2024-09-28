@@ -95,6 +95,7 @@ class Ssi extends ControllerAdmin
                 Alert::addError("Authentication error");
                 Uri::create('/login')->redirect();
             }
+            vd($data);
 
             // get email
             $email = $data[$settings[$oAuth]['emailIdentifier']] ?? '';
@@ -110,7 +111,7 @@ class Ssi extends ControllerAdmin
                     [$username, $domain] = explode('@', $email);
                     $user = new User();
                     $user->type       = $settings[$oAuth]['userType'];
-                    $user->givenName  = $data['givenName'] ?? $username;
+                    $user->givenName  = $data['givenName'] ?? $data['name'] ?? $username;
                     $user->familyName = $data['surname'] ?? '';
                     $user->phone      = $data['mobilePhone'] ?? '';
                     $user->save();
