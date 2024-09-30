@@ -1,6 +1,5 @@
 -- ------------------------------------------------------
 -- SQL views
---
 -- ------------------------------------------------------
 
 -- \App\Db\User
@@ -23,4 +22,11 @@ FROM user u
        LEFT JOIN auth a ON (a.fkey = 'App\\Db\\User' AND a.fid = (u.user_id))
 ;
 
+CREATE OR REPLACE VIEW v_notify AS
+SELECT
+  n.*,
+  read_on IS NOT NULL AS is_read,
+  notified_on IS NOT NULL AS is_notified
+FROM notify n
+;
 

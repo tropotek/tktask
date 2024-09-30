@@ -20,7 +20,21 @@ CREATE TABLE IF NOT EXISTS user
   KEY (type)
 );
 
-
+CREATE TABLE IF NOT EXISTS notify (
+  notify_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  title VARCHAR(250) NOT NULL,
+  message TEXT,
+  url VARCHAR(250) NOT NULL,
+  icon VARCHAR(250) NOT NULL,
+  read_on DATETIME NULL,        -- Date user read notification in browser
+  notified_on DATETIME NULL,    -- Date message was sent as browser notification
+  ttl_mins INT NOT NULL DEFAULT 1440,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expiry DATETIME GENERATED ALWAYS AS (created + INTERVAL ttl_mins MINUTE) VIRTUAL,
+  KEY (user_id),
+  CONSTRAINT fk_notify__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 
 -- Test users (remove for prod sites)
@@ -49,14 +63,5 @@ INSERT INTO auth (fkey, fid, username, email, timezone) VALUES
 
 SET SQL_SAFE_UPDATES = 1;
 SET FOREIGN_KEY_CHECKS = 1;
-
-
-
-
-
-
-
-
-
 
 

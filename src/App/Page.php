@@ -132,7 +132,6 @@ JS;
         $template->replaceHtml('right-sidebar', Customizer::getHtml());
     }
 
-
     protected function showCrumbs(): void
     {
         $crumbs = $this->getFactory()->getCrumbs();
@@ -148,7 +147,6 @@ JS;
             $this->getTemplate()->prependTemplate('container', $template);
         }
     }
-
 
     protected function showAlert(): void
     {
@@ -166,7 +164,7 @@ JS;
 HTML;
         $template = $this->loadTemplate($html);
 
-        $template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/alert'));
+        //$template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/alert'));
 
         foreach (Alert::getAlerts() as $type => $flash) {
             foreach ($flash as $a) {
@@ -190,7 +188,6 @@ HTML;
             $this->getTemplate()->prependTemplate('content', $template);
         }
     }
-
 
     // TODO: Show a maintenance ribbon on the site???
     protected function showMaintenanceRibbon(): void
