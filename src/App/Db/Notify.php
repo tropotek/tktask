@@ -19,7 +19,7 @@ class Notify extends Model
     use UserTrait;
     use CreatedTrait;
 
-    const DEFAULT_TTL = 60*12*7;
+    const DEFAULT_TTL = 60*12;
 
 
     public int        $notifyId      = 0;
@@ -61,7 +61,14 @@ class Notify extends Model
     /**
      * create a new notify message
      */
-    public static function create(int $userId, string $title, string $message, string $url = '', string $icon = '', int $ttlMins = self::DEFAULT_TTL): self
+    public static function create(
+        int $userId,
+        string $title,
+        string $message,
+        string $url = '',
+        string $icon = '',
+        int $ttlMins = self::DEFAULT_TTL
+    ): self
     {
         if (empty(trim($title)) || empty(trim($message)) || $ttlMins <= 0) {
             throw new Exception("empty title, message or ttl value");

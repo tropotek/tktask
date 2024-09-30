@@ -5,7 +5,7 @@
 -- ------------------------------------------------------
 
 
--- Delete expired notify messages
+-- Delete expired notify messages (\App\Db\Notify)
 DROP EVENT IF EXISTS evt_delete_expired_notify;
 DELIMITER //
 CREATE EVENT evt_delete_expired_notify

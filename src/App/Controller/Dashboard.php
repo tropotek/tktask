@@ -40,7 +40,7 @@ class Dashboard extends ControllerAdmin
                 'Test notify message',
                 Date::create()->format(Date::FORMAT_ISO_DATETIME) . ' - This is a test with some HTML',
                 Uri::create()->reset()->toString(),
-                Uri::create('/html/minton/assets/images/animat-diamond-color.gif')->toString(),
+                User::getAuthUser()->getImageUrl(),
                 5
             );
             Alert::addInfo("Notification Message Set");

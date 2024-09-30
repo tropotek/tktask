@@ -22,6 +22,7 @@ FROM user u
        LEFT JOIN auth a ON (a.fkey = 'App\\Db\\User' AND a.fid = (u.user_id))
 ;
 
+-- \App\Db\Notify
 CREATE OR REPLACE VIEW v_notify AS
 SELECT
   n.*,

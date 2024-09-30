@@ -23,10 +23,10 @@ CREATE TABLE IF NOT EXISTS user
 CREATE TABLE IF NOT EXISTS notify (
   notify_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   user_id INT UNSIGNED NOT NULL DEFAULT 0,
-  title VARCHAR(250) NOT NULL,
+  title VARCHAR(250) NOT NULL DEFAULT '',
   message TEXT,
-  url VARCHAR(250) NOT NULL,
-  icon VARCHAR(250) NOT NULL,
+  url VARCHAR(250) NOT NULL DEFAULT '',
+  icon BLOB NOT NULL DEFAULT '',
   read_on DATETIME NULL,        -- Date user read notification in browser
   notified_on DATETIME NULL,    -- Date message was sent as browser notification
   ttl_mins INT NOT NULL DEFAULT 1440,

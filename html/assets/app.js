@@ -78,7 +78,6 @@ let app = function () {
             );
             if (note.url !== '') {
               notification.onclick = function () {
-                console.log('Testing');
                 window.open(note.url);
                 notification.close();
               };
