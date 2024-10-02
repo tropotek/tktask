@@ -1,10 +1,10 @@
 <?php
 namespace App;
 
-use App\Db\Notify;
 use App\Db\User;
 use App\Ui\Customizer;
 use App\Ui\Nav;
+use App\Ui\Notify;
 use Au\Auth;
 use Bs\Registry;
 use Dom\Template;
