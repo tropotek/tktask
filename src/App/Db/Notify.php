@@ -140,7 +140,9 @@ class Notify extends Model
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';
             $w  = 'LOWER(a.title) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.notify_id) LIKE LOWER(:search) OR ';
+            if (is_numeric($filter['search'])) {
+                $w .= 'a.notify_id = :search OR ';
+            }
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
