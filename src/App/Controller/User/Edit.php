@@ -169,12 +169,14 @@ class Edit extends ControllerAdmin
             return;
         }
 
-        $isNew = $this->user->userId == 0;
-        if ($isNew) {
-            $this->user->active = false;
-        }
+        $isNew = ($this->user->userId == 0);
         $this->user->save();
+        if ($isNew) {
+            $this->auth->fid = $this->user->userId;
+            $this->auth->active = false;
+        }
         $this->auth->save();
+        $this->user->save();
 
         // Send email to update password
         if ($isNew) {
@@ -183,9 +185,10 @@ class Edit extends ControllerAdmin
             } else {
                 Alert::addError('Failed to send email to ' . $this->user->email . ' to create their password.');
             }
+        } else {
+            Alert::addSuccess('Form save successfully.');
         }
 
-        Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create('/user/'.$this->type.'Edit')->set('userId', $this->user->userId));
         if ($form->getTriggeredAction()->isExit()) {
             $action->setRedirect(Factory::instance()->getBackUrl());

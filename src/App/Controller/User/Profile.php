@@ -64,8 +64,8 @@ class Profile extends ControllerAdmin
             ->setRequired();
 
         $this->form->appendField(new Input('email'))->setGroup($tab)
-            ->addCss('tk-input-lock')
-            ->setRequired()
+            ->setDisabled()
+            ->setReadonly()
             ->setRequired();
 
         if ($this->user->isType(User::TYPE_STAFF)) {
