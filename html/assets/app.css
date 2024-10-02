@@ -45,6 +45,7 @@ form .form-check-label {
 .tk-form-inline .tk-inline-btn {
   padding-bottom: 0.3rem;
 }
+.tk-table .tk-actions .btn,
 .tk-form-inline .tk-inline-btn .btn {
   --bs-btn-padding-y: .2rem;
   --bs-btn-padding-x: .4rem;
