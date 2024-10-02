@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Db\Notify;
 use App\Db\User;
 use App\Ui\Customizer;
 use App\Ui\Nav;
@@ -53,6 +54,9 @@ class Page extends \Bs\Page
         $this->showAlert();
         $this->showLogoutDialog();
         //$this->showMaintenanceRibbon();
+
+        $notify = new Notify();
+        $template->prependTemplate('user-menu', $notify->show());
 
         return $template;
     }
