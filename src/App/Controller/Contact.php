@@ -1,8 +1,8 @@
 <?php
 namespace App\Controller;
 
-use Bs\ControllerPublic;
-use Bs\Form;
+use Bs\Mvc\ControllerPublic;
+use Bs\Mvc\Form;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;

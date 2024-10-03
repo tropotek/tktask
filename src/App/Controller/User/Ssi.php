@@ -2,7 +2,7 @@
 namespace App\Controller\User;
 
 use App\Db\User;
-use Bs\ControllerAdmin;
+use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Dom\Template;
 use Tk\Alert;

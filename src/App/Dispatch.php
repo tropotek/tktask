@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-use Au\Listener\RememberHandler;
+use Bs\Listener\RememberHandler;
 use Bs\Listener\CrumbsHandler;
 use Bs\Listener\MaintenanceHandler;
 

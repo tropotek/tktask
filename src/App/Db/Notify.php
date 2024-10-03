@@ -2,7 +2,7 @@
 namespace App\Db;
 
 use App\Db\Traits\UserTrait;
-use Bs\Db\Traits\CreatedTrait;
+use Bs\Traits\CreatedTrait;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Db\Model;

@@ -31,3 +31,10 @@ SELECT
 FROM notify n
 ;
 
+-- \App\Db\File
+CREATE OR REPLACE VIEW v_file AS
+SELECT
+  f.*,
+  MD5(CONCAT(f.file_id, 'File')) AS hash
+FROM file f
+;

@@ -36,6 +36,25 @@ CREATE TABLE IF NOT EXISTS notify (
   CONSTRAINT fk_notify__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS file
+(
+  file_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL DEFAULT 0,  -- uploader
+  fkey VARCHAR(64) DEFAULT '' NOT NULL,
+  fid INT DEFAULT 0 NOT NULL DEFAULT 0,
+  label VARCHAR(128) NOT NULL DEFAULT '',
+  `path` VARCHAR(512) NOT NULL DEFAULT '',
+  bytes INT UNSIGNED NOT NULL DEFAULT 0,
+  mime VARCHAR(255) NOT NULL DEFAULT '',
+  notes TEXT NULL,
+  selected BOOL NOT NULL DEFAULT FALSE,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY user_id (user_id),
+  KEY fkey (fkey),
+  KEY fkey_2 (fkey, fid),
+  KEY fkey_3 (fkey, fid, label),
+  CONSTRAINT fk_file__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 -- Test users (remove for prod sites)
 SET FOREIGN_KEY_CHECKS = 0;

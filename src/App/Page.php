@@ -5,13 +5,13 @@ use App\Db\User;
 use App\Ui\Customizer;
 use App\Ui\Nav;
 use App\Ui\Notify;
-use Au\Auth;
+use Bs\Auth;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Uri;
 
-class Page extends \Bs\Page
+class Page extends \Bs\Mvc\Page
 {
 
     public function show(): ?Template

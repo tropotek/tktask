@@ -3,9 +3,9 @@ namespace App\Controller\Admin;
 
 use App\Db\User;
 use App\Factory;
-use Au\Auth;
-use Bs\ControllerAdmin;
-use Bs\Form;
+use Bs\Auth;
+use Bs\Mvc\ControllerAdmin;
+use Bs\Mvc\Form;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;

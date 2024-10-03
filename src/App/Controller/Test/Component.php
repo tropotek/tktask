@@ -2,8 +2,8 @@
 namespace App\Controller\Test;
 
 use App\Component\Test;
-use Au\Auth;
-use Bs\ControllerAdmin;
+use Bs\Auth;
+use Bs\Mvc\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Uri;

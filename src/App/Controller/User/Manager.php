@@ -2,10 +2,10 @@
 namespace App\Controller\User;
 
 use App\Db\User;
-use Au\Auth;
-use Bs\ControllerAdmin;
-use Bs\Table;
-use Au\Masquerade;
+use Bs\Auth;
+use Bs\Mvc\ControllerAdmin;
+use Bs\Mvc\Table;
+use Bs\Db\Masquerade;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Field\Input;
@@ -44,7 +44,7 @@ class Manager extends ControllerAdmin
         }
 
         // init the user table
-        $this->table = new \Bs\Table();
+        $this->table = new \Bs\Mvc\Table();
         $this->table->setOrderBy('username');
         $this->table->setLimit(25);
 

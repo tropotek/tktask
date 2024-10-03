@@ -1,8 +1,8 @@
 <?php
 namespace App\Controller;
 
-use Au\Auth;
-use Bs\ControllerPublic;
+use Bs\Auth;
+use Bs\Mvc\ControllerPublic;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Exception;

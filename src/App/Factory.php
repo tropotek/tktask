@@ -1,11 +1,10 @@
 <?php
 namespace App;
 
-use Bs\PageDomInterface;
+use Bs\Mvc\PageDomInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Config;
-use Tk\System;
 
 class Factory extends \Bs\Factory
 {

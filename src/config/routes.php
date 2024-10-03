@@ -53,9 +53,14 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\User\Edit::class, 'doDefault'])
         ->defaults(['type' => \App\Db\User::TYPE_MEMBER]);
 
+    // Filesystem
+    $routes->add('file-manager', '/fileManager')
+        ->controller([\App\Controller\File\Manager::class, 'doDefault']);
+
+
+    // Component test page
     $routes->add('test-component', '/componentTest')
         ->controller([\App\Controller\Test\Component::class, 'doDefault']);
-
     $routes->add('component-test', '/component/test')
         ->controller([\App\Component\Test::class, 'doDefault']);
 

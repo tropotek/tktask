@@ -1,7 +1,7 @@
 <?php
 namespace App\Component;
 
-use Au\Auth;
+use Bs\Auth;
 use Dom\Template;
 use Tk\System;
 use Tk\Uri;
