@@ -23,7 +23,6 @@ class Manager extends ControllerAdmin
         $this->getPage()->setTitle('File Manager');
         $this->setAccess(Auth::PERM_ADMIN);
 
-vd();
         // Get the form template
         $this->table = new File();
         $this->table->setOrderBy('path');
