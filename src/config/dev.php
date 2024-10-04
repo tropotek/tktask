@@ -15,7 +15,7 @@ if (!\Tk\Config::isDebug() || \Tk\Config::isProd()) {
     return;
 }
 
-foreach (\Au\Auth::findAll() as $auth) {
-    $auth->password = \Au\Auth::hashPassword('password');
+foreach (\Bs\Auth::findAll() as $auth) {
+    $auth->password = \Bs\Auth::hashPassword('password');
     $auth->save();
 }
