@@ -31,7 +31,6 @@ class Component extends ControllerAdmin
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-
         $html = $this->com1->doDefault();
         $template->appendHtml('components', $html);
 
@@ -60,5 +59,3 @@ HTML;
     }
 
 }
-
-
