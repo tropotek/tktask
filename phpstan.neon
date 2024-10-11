@@ -1,0 +1,24 @@
+parameters:
+  level: 6
+  tmpDir: data/tmp/phpstan
+#  checkGenericClassInNonGenericObjectType: false
+  treatPhpDocTypesAsCertain: false
+  bootstrapFiles:
+    - _prepend.php
+  excludePaths:
+    - data
+    - html
+    - vendor/ttek/tk-table/templates
+#    - vendor
+  paths:
+#   - src
+#   - bin
+#   - vendor/ttek
+#   - vendor/ttek/tk-base
+#   - vendor/ttek/tk-domtemplate
+#   - vendor/ttek/tk-form
+#   - vendor/ttek/tk-framework
+   - vendor/ttek/tk-installers
+#   - vendor/ttek/tk-table
+  ignoreErrors:
+    - identifier: missingType.iterableValue

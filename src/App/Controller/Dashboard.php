@@ -47,6 +47,8 @@ class Dashboard extends ControllerAdmin
             Uri::create()->reset()->redirect();
         }
 
+
+
     }
 
     public function show(): ?Template
