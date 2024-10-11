@@ -9,6 +9,7 @@ parameters:
     - data
     - html
     - vendor/ttek/tk-table/templates
+    - vendor/ttek/tk-form/templates
 #    - vendor
   paths:
 #   - src
@@ -16,9 +17,9 @@ parameters:
 #   - vendor/ttek
 #   - vendor/ttek/tk-base
 #   - vendor/ttek/tk-domtemplate
-#   - vendor/ttek/tk-form
+   - vendor/ttek/tk-form
 #   - vendor/ttek/tk-framework
-   - vendor/ttek/tk-installers
+#   - vendor/ttek/tk-installers
 #   - vendor/ttek/tk-table
   ignoreErrors:
     - identifier: missingType.iterableValue
