@@ -54,7 +54,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(User $user, Cell $cell) {
-                $msq = Uri::create()->set(Masquerade::QUERY_MSQ, $user->userId);
+                $msq = Uri::create()->set(Masquerade::QUERY_MSQ, strval($user->userId));
                 $disabled = !Masquerade::canMasqueradeAs(Auth::getAuthUser(), $user->getAuth()) ? 'disabled' : '';
                 return <<<HTML
                     <a class="btn btn-outline-dark {$disabled}" href="$msq" title="Masquerade" data-confirm="Are you sure you want to log-in as user {$user->nameShort}" {$disabled}><i class="fa fa-fw fa-user-secret"></i></a>
@@ -124,7 +124,7 @@ class Manager extends ControllerAdmin
         $this->table->initForm();
 
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create($rowSelect, 'disable', 'fa fa-fw fa-times'))
+        $this->table->appendAction(\Tk\Table\Action\Select::create($rowSelect, 'disable', 'fa fa-fw fa-times')
             ->setConfirmStr('Disable the selected users?')
             ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected) {
                 foreach ($selected as $userId) {
@@ -133,9 +133,10 @@ class Manager extends ControllerAdmin
                     $a->active = false;
                     $a->save();
                 }
-            });
+            })
+        );
 
-        $this->table->appendAction(Csv::create($rowSelect))
+        $this->table->appendAction(Csv::create($rowSelect)
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions', 'permissions']);
                 $this->table->getCell('username')->getOnValue()->reset();
@@ -149,7 +150,8 @@ class Manager extends ControllerAdmin
                     $rows = User::findFiltered($filter->resetLimits());
                 }
                 return $rows;
-            });
+            })
+        );
 
         $this->table->execute();
 

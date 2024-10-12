@@ -117,7 +117,7 @@ class Ssi extends ControllerAdmin
                     $user->save();
                     $auth = $user->getAuth();
                     $auth->uid      = $data['id'] ?? '';
-                    $auth->username = $this->uniqueUsername($username ?? '');
+                    $auth->username = $this->uniqueUsername($username);
                     $auth->email    = $email;
                     $auth->external = $oAuth;
                     $auth->active   = true;

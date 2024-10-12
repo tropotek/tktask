@@ -26,7 +26,7 @@ class File extends Table
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\File $file, Cell $cell) {
                 $view = $file->getUrl();
-                $del  = Uri::create()->set('del', $file->fileId);
+                $del  = Uri::create()->set('del', strval($file->fileId));
                 return <<<HTML
                     <a class="btn btn-success" href="$view" title="View" target="_blank"><i class="fa fa-fw fa-eye"></i></a> &nbsp;
                     <a class="btn btn-danger" href="$del" title="Delete" data-confirm="Are you sure you want to delete file {$file->path}"><i class="fa fa-fw fa-trash"></i></a>
@@ -62,14 +62,15 @@ class File extends Table
 
 
         // Add Table actions
-        $this->appendAction(Delete::create($rowSelect))
+        $this->appendAction(Delete::create($rowSelect)
             ->addOnDelete(function(Delete $action, array $selected) {
                 foreach ($selected as $file_id) {
                     Db::delete('file', compact('file_id'));
                 }
-            });
+            })
+        );
 
-        $this->appendAction(Csv::create($rowSelect))
+        $this->appendAction(Csv::create($rowSelect)
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions', 'permissions']);
                 $this->getCell('username')->getOnValue()->reset();
@@ -82,7 +83,9 @@ class File extends Table
                     $rows = \App\Db\File::findFiltered($filter->resetLimits());
                 }
                 return $rows;
-            });
+            })
+        );
+
 
         return $this;
     }

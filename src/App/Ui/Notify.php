@@ -44,7 +44,7 @@ JS;
 
         if ($unread == 0) return $template;
 
-        $template->setText('unread', $unread);
+        $template->setText('unread', strval($unread));
         $template->setVisible('unread');
         $template->setVisible('view-all');
         $template->setVisible('show-all');

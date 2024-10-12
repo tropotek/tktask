@@ -192,7 +192,7 @@ class User extends Model implements UserInterface
         return null;
     }
 
-    public static function find(int $userId): ?static
+    public static function find(int $userId): ?self
     {
         return Db::queryOne("
             SELECT *
@@ -216,7 +216,7 @@ class User extends Model implements UserInterface
         );
     }
 
-    public static function findByUsername(string $username): ?static
+    public static function findByUsername(string $username): ?self
     {
         $username = trim($username);
         if(empty($username)) return null;
@@ -230,7 +230,7 @@ class User extends Model implements UserInterface
         );
     }
 
-    public static function findByEmail(string $email): ?static
+    public static function findByEmail(string $email): ?self
     {
         $email = trim($email);
         if(empty($email)) return null;
@@ -244,7 +244,7 @@ class User extends Model implements UserInterface
         );
     }
 
-    public static function findByHash(string $hash): ?static
+    public static function findByHash(string $hash): ?self
     {
         $hash = trim($hash);
         if(empty($hash)) return null;
@@ -272,7 +272,7 @@ class User extends Model implements UserInterface
             $w .= 'LOWER(a.email) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.uid) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.user_id) LIKE LOWER(:search) OR ';
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

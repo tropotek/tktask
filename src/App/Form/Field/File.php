@@ -31,9 +31,9 @@ class File extends \Tk\Form\Field\File
         //$this->addCss('tk-multiinput');
     }
 
-    public static function createFile($name, Model $model): static
+    public static function create(string $name, Model $model): self
     {
-        return new static($name, $model);
+        return new self($name, $model);
     }
 
     /**
@@ -44,7 +44,7 @@ class File extends \Tk\Form\Field\File
     {
         if ($this->hasFile()) {
             foreach ($this->getUploads() as $file) {
-                $dest = Config::makePath(Config::getDataPath() . $this->getModel()->dataPath . '/' . $file['name']);
+                $dest = Config::makePath(Config::getDataPath() . $this->getModelDataPath() . '/' . $file['name']);
                 FileUtil::mkdir(dirname($dest));
                 move_uploaded_file($file['tmp_name'], dirname($dest)."/".basename($dest));
 
@@ -61,5 +61,17 @@ class File extends \Tk\Form\Field\File
     public function getModel(): ?Model
     {
         return $this->model;
+    }
+
+    protected function getModelDataPath(): string
+    {
+        $model = $this->getModel();
+        if (property_exists($model, 'dataPath')) {
+            /** @phpstan-ignore-next-line */
+            return $model->dataPath;
+        } elseif (method_exists($model, 'getDataPath')) {
+            return $model->getDataPath();
+        }
+        return '';
     }
 }

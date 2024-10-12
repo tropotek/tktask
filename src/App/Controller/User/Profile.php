@@ -46,10 +46,9 @@ class Profile extends ControllerAdmin
         $this->form->appendField(new Hidden('userId'))->setReadonly();
 
         $list = User::TITLE_LIST;
-        $this->form->appendField(new Select('title', $list))
+        $this->form->appendField((new Select('title', $list))->prependOption('', ''))
             ->setGroup($tab)
-            ->setLabel('Title')
-            ->prependOption('', '');
+            ->setLabel('Title');
 
         $this->form->appendField(new Input('givenName'))
             ->setGroup($tab)
@@ -94,11 +93,13 @@ class Profile extends ControllerAdmin
 
         // Load form with object values
         $load = $this->form->unmapModel($this->user);
-        if ($this->user->getAuth()) {
-            $load['perm'] = array_keys(array_filter(User::PERMISSION_LIST,
-                    fn($k) => ($k & $this->user->getAuth()->permissions), ARRAY_FILTER_USE_KEY)
-            );
-        }
+        $load['perm'] = array_keys(
+            array_filter(
+                User::PERMISSION_LIST,
+                fn($k) => ($k & $this->user->getAuth()->permissions) != 0,
+                ARRAY_FILTER_USE_KEY
+            )
+        );
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);

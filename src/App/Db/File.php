@@ -44,13 +44,13 @@ class File extends Model
      *
      * @param string $file Full/Relative data path to a valid file
      */
-    public static function create(string $file, ?Model $model = null, int $userId = 0): static
+    public static function create(string $file, ?Model $model = null, int $userId = 0): self
     {
         if (empty($file)) {
             throw new Exception('Invalid file path.');
         }
 
-        $obj = new static();
+        $obj = new self();
 
         $obj->path = $file;
         $dataPath = Config::makePath(Config::getDataPath());
@@ -142,7 +142,7 @@ class File extends Model
         return $errors;
     }
 
-    public static function find(int $fileId): ?static
+    public static function find(int $fileId): ?self
     {
         return Db::queryOne("
             SELECT *
@@ -163,12 +163,12 @@ class File extends Model
         );
     }
 
-    public static function findByHash(string $hash): ?static
+    public static function findByHash(string $hash): ?self
     {
         return self::findFiltered(['hash' => $hash])[0] ?? null;
     }
 
-    public static function findByPath(string $path): ?static
+    public static function findByPath(string $path): ?self
     {
         return self::findFiltered(['path' => $path])[0] ?? null;
     }
@@ -182,7 +182,7 @@ class File extends Model
             $w  = 'LOWER(a.file_id) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.path) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.mime) LIKE LOWER(:search) OR ';
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

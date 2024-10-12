@@ -74,7 +74,7 @@ class Notify extends Model
             throw new Exception("empty title, message or ttl value");
         }
 
-        $obj = new static();
+        $obj = new self();
         $obj->userId = $userId;
         $obj->title = $title;
         $obj->message = $message;
@@ -97,7 +97,7 @@ class Notify extends Model
         );
     }
 
-    public static function find(int $notifyId): ?static
+    public static function find(int $notifyId): ?self
     {
         return Db::queryOne("
             SELECT *
@@ -143,7 +143,7 @@ class Notify extends Model
             if (is_numeric($filter['search'])) {
                 $w .= 'a.notify_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {
