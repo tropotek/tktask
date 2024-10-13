@@ -11,11 +11,10 @@ parameters:
     - vendor/ttek/tk-table/templates
     - vendor/ttek/tk-form/templates
     - vendor/ttek/tk-domtemplate/docs
-#    - vendor
   paths:
-   - src
-#    - bin
-#    - vendor/ttek
+    - src
+    - bin
+    - vendor/ttek
 #    - vendor/ttek/tk-base
 #    - vendor/ttek/tk-domtemplate
 #    - vendor/ttek/tk-form

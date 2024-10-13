@@ -11,7 +11,7 @@ use Tk\Uri;
 class Home extends ControllerPublic
 {
 
-    public function doDefault()
+    public function doDefault(): void
     {
         $this->getPage()->setTitle('Home');
 

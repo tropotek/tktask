@@ -39,30 +39,6 @@ class Test extends Console
         return self::SUCCESS;
     }
 
-    public function testUrl()
-    {
-
-        // TODO
-        Uri::$BASE_URL = '/Projects/tk8base';
-        $list = [
-            Uri::create(),
-            Uri::create('/'),
-            Uri::create('mailto:test@example.com'),
-            Uri::create('/Projects/tk8base/registerActivate?t=w22Vb7LUapRsg8uGn6mgZpSdUseSnJWamGRpamRnl2nHbJmbaMdplmTDlJiVmclnmcVghGyrapRxUq1Zb5+eYpllmW5ulGeVZ5zg'),
-            Uri::create('/registerActivate'),
-            Uri::create('/registerActivate.html'),
-            Uri::create('/registerActivate.html#test'),
-            Uri::create('https://godar.ttek.org/Projects/tk8base/user/memberEdit?userId=21'),
-            Uri::create('https://godar.ttek.org/'),
-            Uri::create('http://godar.ttek.org:8080/'),
-            Uri::create('https://user:pass@godar.ttek.org/?test=another+test'),
-            Uri::create('/register', ['queryparam' => 'test']),
-        ];
-        foreach ($list as $url) {
-            $this->output->writeln($url->__toString());
-        }
-
-    }
 
 
 }

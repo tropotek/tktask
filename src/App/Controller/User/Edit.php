@@ -76,9 +76,10 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Hidden('userId'))->setReadonly();
 
         $list = User::TITLE_LIST;
-        $this->form->appendField(new Select('title', $list))
+        $this->form->appendField((new Select('title', $list))
             ->setGroup($group)
-            ->prependOption('', '');
+            ->prependOption('', '')
+        );
 
         $this->form->appendField(new Input('givenName'))
             ->setGroup($group)
@@ -124,8 +125,12 @@ class Edit extends ControllerAdmin
 
         $load = $this->form->unmapModel($this->user);
         if ($this->type == User::TYPE_STAFF) {
-            $load['perm'] = array_keys(array_filter(User::PERMISSION_LIST,
-                    fn($k) => ($k & $this->auth->permissions), ARRAY_FILTER_USE_KEY)
+            $load['perm'] = array_keys(
+                array_filter(
+                    User::PERMISSION_LIST,
+                    fn($k) => ($k & $this->auth->permissions) != 0,
+                    ARRAY_FILTER_USE_KEY
+                )
             );
         }
         $this->form->setFieldValues($load);
