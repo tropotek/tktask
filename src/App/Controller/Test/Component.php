@@ -26,11 +26,11 @@ class Component extends ControllerAdmin
         $this->com1 = new Test();
 
 
-        $rsp = new Response('this is a test');
-        $rsp->prepare();
-        vd($rsp->__toString());
-        //$rsp->send();
-        //exit;
+//        $rsp = new Response('this is a test');
+//        $rsp->prepare();
+//        vd($rsp->__toString());
+//        $rsp->send();
+//        exit;
 
 
     }
