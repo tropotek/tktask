@@ -1,5 +1,5 @@
 parameters:
-  level: 6
+  level: 7
   tmpDir: data/tmp/phpstan
 #  checkGenericClassInNonGenericObjectType: false
   treatPhpDocTypesAsCertain: false
@@ -8,6 +8,8 @@ parameters:
   excludePaths:
     - data
     - html
+    - vendor/ttek/tk-framework/Tk/EventDispatcher
+    - vendor/ttek/tk-framework/Tk/Http
     - vendor/ttek/tk-table/templates
     - vendor/ttek/tk-form/templates
     - vendor/ttek/tk-domtemplate/docs

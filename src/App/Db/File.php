@@ -72,7 +72,7 @@ class File extends Model
         $obj->userId = $userId;
 
         if (is_file($obj->getFullPath())) {
-            $obj->bytes = filesize($obj->getFullPath());
+            $obj->bytes = intval(filesize($obj->getFullPath()));
             $obj->mime = \Tk\FileUtil::getMimeType($obj->getFullPath());
         }
 
@@ -117,7 +117,7 @@ class File extends Model
 
     public function isImage(): bool
     {
-        return preg_match('/^image\//', $this->mime);
+        return str_starts_with($this->mime, 'image/');
     }
 
     public function validate(): array
