@@ -48,6 +48,14 @@ class Nav
                     'icon' => 'ri-terminal-box-fill',
                     'url' => '/tailLog'
                 ],
+                'Inline Image' => [
+                    'icon' => 'fas fa-image',
+                    'url' => '/util/inlineImage'
+                ],
+                'DB Search' => [
+                    'icon' => 'fas fa-database',
+                    'url' => '/util/dbSearch'
+                ],
             ],
 
         ];
