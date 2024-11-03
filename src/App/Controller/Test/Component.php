@@ -6,11 +6,7 @@ use Bs\Auth;
 use Bs\Mvc\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
-use Tk\Config;
-use Tk\Http\FileResponse;
-use Tk\Http\Response;
 use Tk\Uri;
-use Tk\Url;
 
 class Component extends ControllerAdmin
 {
