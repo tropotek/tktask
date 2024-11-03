@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Bs\Console\Console;
 use Tk\Config;
 use Tk\Uri;
+use Tk\Url;
 
 class Test extends Console
 {
@@ -24,17 +25,15 @@ class Test extends Console
             return self::FAILURE;
         }
 
-        Uri::$SITE_HOSTNAME = 'godar.ttek.org';
-        Uri::$BASE_URL = '/Projects/tk8base';
 
-        $gt = GuestToken::create([
-            Uri::create('/login')->getPath()
-        ],
-        [
-            'hash' => md5('test'),
-            'fooId' => 22,
-            'text' => 'Just a blank message'
-        ], 15);
+//        $gt = GuestToken::create([
+//            Uri::create('/login')->getPath()
+//        ],
+//        [
+//            'hash' => md5('test'),
+//            'fooId' => 22,
+//            'text' => 'Just a blank message'
+//        ], 15);
 
         return self::SUCCESS;
     }

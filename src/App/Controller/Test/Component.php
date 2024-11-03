@@ -10,6 +10,7 @@ use Tk\Config;
 use Tk\Http\FileResponse;
 use Tk\Http\Response;
 use Tk\Uri;
+use Tk\Url;
 
 class Component extends ControllerAdmin
 {
@@ -26,6 +27,8 @@ class Component extends ControllerAdmin
         }
 
         $this->com1 = new Test();
+
+
 
 
         //$rsp = new Response('this is a test');
