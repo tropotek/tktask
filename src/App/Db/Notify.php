@@ -10,6 +10,10 @@ use Tk\Exception;
 
 
 /**
+ * A notify message gets displayed in the users notifications menu and executes a browser notification
+ * if the user has granted it permission to do so.
+ *
+ * See the `events.sql` to view the `evt_delete_expired_notify` event that clears notify records after their ttl.
  *
  * @todo Create a page to view and manage user notifications
  * @see https://webdamn.com/build-push-notification-system-with-php-mysql/#google_vignette
@@ -19,8 +23,7 @@ class Notify extends Model
     use UserTrait;
     use CreatedTrait;
 
-    const DEFAULT_TTL = 60*12;
-
+    const int DEFAULT_TTL = 60*12;
 
     public int        $notifyId      = 0;
     public int        $userId        = 0;

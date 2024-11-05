@@ -58,7 +58,6 @@ class Component extends ControllerAdmin
             <div class="card-header"><i class="fas fa-cogs"></i> <span var="title"></span></div>
             <div class="card-body" var="content">
                 <p>Main Content</p>
-
             </div>
         </div>
     </div>
