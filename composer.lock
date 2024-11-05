@@ -1075,12 +1075,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "4c0341b3e0a7291e752c69d2a1ed9a84b68d604c"
+                "reference": "4875486169c670d8cbf055b9d44e1aa4bade08e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/4c0341b3e0a7291e752c69d2a1ed9a84b68d604c",
-                "reference": "4c0341b3e0a7291e752c69d2a1ed9a84b68d604c",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/4875486169c670d8cbf055b9d44e1aa4bade08e5",
+                "reference": "4875486169c670d8cbf055b9d44e1aa4bade08e5",
                 "shasum": ""
             },
             "require": {
@@ -1144,7 +1144,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-11T19:20:58+00:00"
+            "time": "2024-11-03T20:36:05+00:00"
         },
         {
             "name": "symfony/http-kernel",
@@ -2140,12 +2140,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "cccbbf6b9e4c209a0f4342ceff5ffa4cf41dfd0c"
+                "reference": "53a99499e6bee96edd1c2a43847c12ddda809202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/cccbbf6b9e4c209a0f4342ceff5ffa4cf41dfd0c",
-                "reference": "cccbbf6b9e4c209a0f4342ceff5ffa4cf41dfd0c",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/53a99499e6bee96edd1c2a43847c12ddda809202",
+                "reference": "53a99499e6bee96edd1c2a43847c12ddda809202",
                 "shasum": ""
             },
             "require": {
@@ -2309,12 +2309,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "e426db51a736f83493ade8b182748271088947e8"
+                "reference": "43a2f9d2cba7e8b608eb43931b7fb09a5ac77fa9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/e426db51a736f83493ade8b182748271088947e8",
-                "reference": "e426db51a736f83493ade8b182748271088947e8",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/43a2f9d2cba7e8b608eb43931b7fb09a5ac77fa9",
+                "reference": "43a2f9d2cba7e8b608eb43931b7fb09a5ac77fa9",
                 "shasum": ""
             },
             "require": {
@@ -2534,12 +2534,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "66457b8698063a414b782c859b6d3bac3dc357b3"
+                "reference": "3b1fc3f0be055baa7c6258b1467849c3e8204eb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/66457b8698063a414b782c859b6d3bac3dc357b3",
-                "reference": "66457b8698063a414b782c859b6d3bac3dc357b3",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/3b1fc3f0be055baa7c6258b1467849c3e8204eb2",
+                "reference": "3b1fc3f0be055baa7c6258b1467849c3e8204eb2",
                 "shasum": ""
             },
             "require": {
@@ -2587,7 +2587,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/ca-bundle/issues",
-                "source": "https://github.com/composer/ca-bundle/tree/main"
+                "source": "https://github.com/composer/ca-bundle/tree/1.5.3"
             },
             "funding": [
                 {
@@ -2603,7 +2603,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-02T10:54:27+00:00"
+            "time": "2024-11-04T10:15:26+00:00"
         },
         {
             "name": "composer/class-map-generator",
@@ -3915,12 +3915,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "269b336845763e5a13bf48586d1b182829d2c387"
+                "reference": "4b3cae7b39032f95b6baeb2183d737ecaa1d9148"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/269b336845763e5a13bf48586d1b182829d2c387",
-                "reference": "269b336845763e5a13bf48586d1b182829d2c387",
+                "url": "https://api.github.com/repos/symfony/process/zipball/4b3cae7b39032f95b6baeb2183d737ecaa1d9148",
+                "reference": "4b3cae7b39032f95b6baeb2183d737ecaa1d9148",
                 "shasum": ""
             },
             "require": {
@@ -3968,7 +3968,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-31T07:34:21+00:00"
+            "time": "2024-11-04T15:44:54+00:00"
         }
     ],
     "aliases": [],
