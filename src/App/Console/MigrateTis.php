@@ -6,21 +6,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Bs\Console\Console;
 use Tk\Config;
 
-class Test extends Console
+class MigrateTis extends Console
 {
 
     protected function configure(): void
     {
-        $this->setName('test')
-            ->setDescription('This is a test script');
+        $this->setName('migrateTis')
+            ->setAliases(['tis'])
+            ->setDescription('Migrate the TkTis db to this TkTask');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!Config::isDebug()) {
-            $this->writeError('Error: Only run this command in a debug environment.');
-            return self::FAILURE;
-        }
+//        if (!Config::isDebug()) {
+//            $this->writeError('Error: Only run this command in a debug environment.');
+//            return self::FAILURE;
+//        }
+
 
 
 

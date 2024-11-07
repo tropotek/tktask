@@ -29,15 +29,15 @@ class File extends Table
                 $del  = Uri::create()->set('del', strval($file->fileId));
                 return <<<HTML
                     <a class="btn btn-success" href="$view" title="View" target="_blank"><i class="fa fa-fw fa-eye"></i></a> &nbsp;
-                    <a class="btn btn-danger" href="$del" title="Delete" data-confirm="Are you sure you want to delete file {$file->path}"><i class="fa fa-fw fa-trash"></i></a>
+                    <a class="btn btn-danger" href="$del" title="Delete" data-confirm="Are you sure you want to delete file {$file->filename}"><i class="fa fa-fw fa-trash"></i></a>
                 HTML;
             });
 
-        $this->appendCell('path')
+        $this->appendCell('filename')
             ->addHeaderCss('max-width')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\File $file, Cell $cell) {
-                return sprintf('<a href="%s" target="_blank">%s</a>', $file->getUrl(), $file->path);
+                return sprintf('<a href="%s" target="_blank">%s</a>', $file->getUrl(), $file->filename);
             });
 
         $this->appendCell('userId')

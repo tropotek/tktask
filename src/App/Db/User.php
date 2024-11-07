@@ -26,23 +26,23 @@ class User extends Model implements UserInterface
      *
      * @todo move all permission functions to app level
      */
-    const PERM_ADMIN            = 0x1; // Admin
-    const PERM_SYSADMIN         = 0x2; // Change system settings
-    const PERM_MANAGE_STAFF     = 0x4; // Manage staff
-    const PERM_MANAGE_MEMBERS   = 0x8; // Manage members
+    const int PERM_ADMIN            = 0x1; // Admin
+    const int PERM_SYSADMIN         = 0x2; // Change system settings
+    const int PERM_MANAGE_STAFF     = 0x4; // Manage staff
+    const int PERM_MANAGE_MEMBERS   = 0x8; // Manage members
     //                            0x10; // available
 
-    const PERMISSION_LIST = [
+    const array PERMISSION_LIST = [
         self::PERM_ADMIN            => "Admin",
         self::PERM_SYSADMIN         => "Manage Settings",
         self::PERM_MANAGE_STAFF     => "Manage Staff",
         self::PERM_MANAGE_MEMBERS   => "Manage Members",
     ];
 
-    const TYPE_STAFF = 'staff';
-    const TYPE_MEMBER = 'member';
+    const string TYPE_STAFF = 'staff';
+    const string TYPE_MEMBER = 'member';
 
-    const TITLE_LIST = [
+    const array TITLE_LIST = [
         'Mr', 'Mrs', 'Ms', 'Dr',
         'Prof', 'Esq', 'Hon', 'Messrs', 'Mmes',
         'Msgr', 'Rev', 'Jr', 'Sr', 'St'
@@ -75,14 +75,15 @@ class User extends Model implements UserInterface
     public ?string    $hash          = null;
     public ?\DateTime $lastLogin     = null;
 
-    public \DateTime $modified;
-    public \DateTime $created;
+    public \DateTimeImmutable $modified;
+    public \DateTimeImmutable $created;
 
 
     public function __construct()
     {
-        $this->_TimestampTrait();
         $this->timezone = Config::instance()->get('php.date.timezone');
+        $this->modified = new \DateTimeImmutable();
+        $this->created  = new \DateTimeImmutable();
     }
 
     public function save(): void

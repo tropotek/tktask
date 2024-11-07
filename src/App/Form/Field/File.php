@@ -50,7 +50,7 @@ class File extends \Tk\Form\Field\File
 
                 $file = \App\Db\File::create($dest, $this->getModel());
                 // Remove any existing File if path matches
-                $exists = \App\Db\File::findByPath($file->path);
+                $exists = \App\Db\File::findByFilename($file->filename);
                 $exists?->delete();
                 $file->save();
             }

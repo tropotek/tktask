@@ -25,23 +25,24 @@ class Notify extends Model
 
     const int DEFAULT_TTL = 60*12;
 
-    public int        $notifyId      = 0;
-    public int        $userId        = 0;
-    public string     $title         = '';
-    public string     $message       = '';
-    public string     $url           = '';  // note: popup blockers will request permission
-    public string     $icon          = '';
-    public ?\DateTime $readOn        = null;
-    public bool       $isRead        = false;
-    public bool       $isNotified    = false;
-    public int        $ttlMins       = 0;
-    public ?\DateTime $expiry        = null;
-    public \DateTime  $created;
+    public int        $notifyId   = 0;
+    public int        $userId     = 0;
+    public string     $title      = '';
+    public string     $message    = '';
+    public string     $url        = '';  // note: popup blockers will request permission
+    public string     $icon       = '';
+    public ?\DateTime $readOn     = null;
+    public bool       $isRead     = false;
+    public bool       $isNotified = false;
+    public int        $ttlMins    = 0;
+    public ?\DateTime $expiry     = null;
+
+    public \DateTimeImmutable $created;
 
 
     public function __construct()
     {
-        $this->_CreatedTrait();
+        $this->created = new \DateTimeImmutable();
     }
 
     public function save(): void

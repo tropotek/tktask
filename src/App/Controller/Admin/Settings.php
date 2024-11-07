@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Admin;
 
+use App\Db\Company;
 use App\Db\User;
 use App\Factory;
 use Bs\Auth;
@@ -9,10 +10,12 @@ use Bs\Mvc\Form;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Db\Filter;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
 use Tk\Form\Field\Checkbox;
 use Tk\Form\Field\Input;
+use Tk\Form\Field\Select;
 use Tk\Form\Field\Textarea;
 use Tk\Uri;
 
@@ -50,7 +53,7 @@ class Settings extends ControllerAdmin
 
         if ($this->templateSelect) {
             $list = ['Side Menu' => '/html/minton/sn-admin.html', 'Top Menu' => '/html/minton/tn-admin.html'];
-            $this->form->appendField(new \Tk\Form\Field\Select('minton.template', $list))
+            $this->form->appendField(new Select('minton.template', $list))
                 ->setLabel('Template Layout')
                 ->setNotes('Select Side-menu or top-menu template layout')
                 ->setGroup($tab);
@@ -62,12 +65,40 @@ class Settings extends ControllerAdmin
             ->setNotes('The default sender address when sending system emails.')
             ->setGroup($tab);
 
+        $list = Company::findFiltered(Filter::create(['active' => true], 'name'));
+        $this->form->appendField((new Select('site.company.id', $list))
+            ->setLabel('Site Company')
+            ->prependOption('-- None --', '')
+            ->setRequired()
+            ->setNotes('Select the owner company of this site')
+            ->setGroup($tab));
+
+        $list = array('-- System Default --' => '', 'Yes' => '1', 'No' => '0');
+        $this->form->appendField(new Select('site.taskLog.billable.default', $list))
+            ->setLabel('Log Default Billable')
+            ->setNotes('Set the default billable status when creating Task Logs. None means force the user to choose.')
+            ->setGroup($tab);
+
         $this->form->appendField(new Textarea('site.email.sig'))
             ->setLabel('Email Signature')
             ->setNotes('Set the email signature to appear at the footer of all system emails.')
             ->addCss('mce-min')
             ->setGroup($tab);
 
+        $tab = 'Setup';
+        $this->form->appendField((new Checkbox('site.invoice.enable', ['Enable task invoicing, products and recurring invoicing systems.' => '1']))
+            ->setLabel('Enable Invoicing')
+            ->setGroup($tab));
+
+        $this->form->appendField((new Checkbox('site.expenses.enable', ['Enable expenses and profit reporting.' => '1']))
+            ->setLabel('Enable Expenses')
+            ->setGroup($tab));
+
+        $this->form->appendField(new Textarea('site.invoice.payment'))
+            ->setLabel('Payment Methods')
+            ->setNotes('Enter the footer method text to be placed at the invoice footer.')
+            ->addCss('mce-min')
+            ->setGroup($tab);
 
         $tab = 'Metadata';
         $this->form->appendField(new Input('system.meta.keywords'))
@@ -136,6 +167,9 @@ class Settings extends ControllerAdmin
         if (!filter_var($values['site.email'] ?? '', \FILTER_VALIDATE_EMAIL)) {
             $form->addFieldError('site.email', 'Please enter a valid email address');
         }
+        if (empty($values['site.company.id'] ?? '')) {
+            $form->addFieldError('site.company.id', 'Please select a valid owner company');
+        }
 
         if ($form->hasErrors()) return;
 
@@ -177,7 +211,8 @@ class Settings extends ControllerAdmin
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
       <a href="/sessions" title="View Active Sessions" class="btn btn-outline-secondary" choice="admin"><i class="fa fa-fw fa-server"></i> Sessions</a>
       <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary" choice="staff"><i class="fa fa-fw fa-users"></i> Staff</a>
-      <a href="/user/memberManager" title="Manage Members" class="btn btn-outline-secondary" choice="member"><i class="fa fa-fw fa-users"></i> Members</a>
+<!--      <a href="/user/memberManager" title="Manage Members" class="btn btn-outline-secondary" choice="member"><i class="fa fa-fw fa-users"></i> Members</a>-->
+      <a href="/companyManager" title="Manage Companies" class="btn btn-outline-secondary"><i class="fa fa-fw fa-building"></i> Companies</a>
     </div>
   </div>
   <div class="card mb-3">

@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS file
   fkey VARCHAR(64) DEFAULT '' NOT NULL,
   fid INT DEFAULT 0 NOT NULL DEFAULT 0,
   label VARCHAR(128) NOT NULL DEFAULT '',
-  `path` VARCHAR(512) NOT NULL DEFAULT '',
+  filename VARCHAR(255) NOT NULL DEFAULT '',    -- the files relative path from site root
   bytes INT UNSIGNED NOT NULL DEFAULT 0,
   mime VARCHAR(255) NOT NULL DEFAULT '',
   notes TEXT NULL,
@@ -56,29 +56,45 @@ CREATE TABLE IF NOT EXISTS file
   CONSTRAINT fk_file__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Test users (remove for prod sites)
+-- ----
+
+
+CREATE TABLE IF NOT EXISTS company
+(
+  company_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  type ENUM('Client','Supplier') DEFAULT 'Client',
+  name VARCHAR(128) NOT NULL DEFAULT '',
+  alias VARCHAR(255) NOT NULL DEFAULT '',
+  abn VARCHAR(16) DEFAULT NULL DEFAULT '',
+  website VARCHAR(128) NOT NULL DEFAULT '',
+  contact VARCHAR(128) NOT NULL DEFAULT '',             -- The contact persons name
+  phone VARCHAR(32) NOT NULL DEFAULT '',
+  email VARCHAR(128) NOT NULL DEFAULT '',
+  address VARCHAR(512) NOT NULL DEFAULT '',
+  credit INT NOT NULL DEFAULT '0',                      -- Store any credit the client has in cents
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY (type)
+);
+
+
+-- ---------------------------------------------------
+
+-- Insert default table data
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_SAFE_UPDATES = 0;
 
-# TRUNCATE TABLE user;
-# TRUNCATE TABLE auth;
-# TRUNCATE TABLE auth_remember;
-
-INSERT INTO user (type, given_name) VALUES ('staff', 'Developer');
+-- Add default user
+# INSERT INTO user (type, given_name) VALUES ('staff', 'admin');
+# INSERT INTO auth (fkey, fid, permissions, username, email, timezone) VALUES
+#   ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne');
+-- TODO: remove for production release
+INSERT INTO user (type, given_name) VALUES ('staff', 'Tropotek');
 INSERT INTO auth (fkey, fid, permissions, username, email, timezone) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'dev', 'dev@example.com', 'Australia/Melbourne');
+  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'tropotek', 'godar@dev.ttek.org', 'Australia/Melbourne');
 
-INSERT INTO user (type, given_name) VALUES ('staff', 'Designer');
-INSERT INTO auth (fkey, fid, permissions, username, email, timezone) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 6, 'design', 'design@example.com', 'Australia/Melbourne');
 
-INSERT INTO user (type, given_name) VALUES ('staff', 'Staff');
-INSERT INTO auth (fkey, fid, permissions, username, email, timezone) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 14, 'staff', 'staff@example.com', 'Australia/Melbourne');
-
-INSERT INTO user (type, given_name) VALUES ('member', 'Member');
-INSERT INTO auth (fkey, fid, username, email, timezone) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 'member', 'member@example.com', 'Australia/Brisbane');
 
 SET SQL_SAFE_UPDATES = 1;
 SET FOREIGN_KEY_CHECKS = 1;
