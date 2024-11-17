@@ -73,9 +73,22 @@ CREATE TABLE IF NOT EXISTS company
   address VARCHAR(512) NOT NULL DEFAULT '',
   credit INT NOT NULL DEFAULT '0',                      -- Store any credit the client has in cents
   notes TEXT,
+  active BOOL NOT NULL DEFAULT TRUE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   KEY (type)
+);
+
+CREATE TABLE IF NOT EXISTS task_category
+(
+  task_category_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL DEFAULT '',
+  label VARCHAR(128) NOT NULL DEFAULT '',
+  description VARCHAR(512) NOT NULL DEFAULT '',
+  order_by INT NOT NULL DEFAULT '0',
+  active BOOL NOT NULL DEFAULT TRUE,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -85,16 +98,24 @@ CREATE TABLE IF NOT EXISTS company
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_SAFE_UPDATES = 0;
 
--- Add default user
-# INSERT INTO user (type, given_name) VALUES ('staff', 'admin');
-# INSERT INTO auth (fkey, fid, permissions, username, email, timezone) VALUES
-#   ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne');
--- TODO: remove for production release
+-- Add default user (remember to set password `./bin/cmd pwd admin`)
+INSERT INTO user (type, given_name) VALUES ('staff', 'admin');
+INSERT INTO auth (fkey, fid, permissions, username, email, timezone, active) VALUES
+  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne', false);
+
+-- TODO: remove for production release (remember to set password `./bin/cmd pwd tropotek`)
 INSERT INTO user (type, given_name) VALUES ('staff', 'Tropotek');
-INSERT INTO auth (fkey, fid, permissions, username, email, timezone) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'tropotek', 'godar@dev.ttek.org', 'Australia/Melbourne');
+INSERT INTO auth (fkey, fid, permissions, username, email, timezone, active) VALUES
+  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'tropotek', 'godar@dev.ttek.org', 'Australia/Melbourne', true);
 
-
+INSERT INTO task_category (name, label) VALUES
+  ('task', 'Task'),
+  ('feature', 'Feature'),
+  ('bug', 'Bug'),
+  ('support', 'Support'),
+  ('other', 'Other')
+;
+UPDATE task_category SET order_by = task_category_id WHERE TRUE;
 
 SET SQL_SAFE_UPDATES = 1;
 SET FOREIGN_KEY_CHECKS = 1;

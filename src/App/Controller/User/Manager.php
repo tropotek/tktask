@@ -117,20 +117,21 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search: uid, name, email, username');
 
-        $list = ['-- All Users --' => '', 'Active' => 'y', 'Disabled' => 'n'];
+        $list = ['-- All --' => '', 'Active' => 'y', 'Disabled' => 'n'];
         $this->table->getForm()->appendField(new Select('active', $list))->setValue('y');
 
         // init filter fields for actions to access to the filter values
         $this->table->initForm();
 
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create($rowSelect, 'disable', 'fa fa-fw fa-times')
-            ->setConfirmStr('Disable the selected users?')
-            ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected) {
-                foreach ($selected as $userId) {
-                    $u = User::find($userId);
+        $this->table->appendAction(\Tk\Table\Action\Select::create($rowSelect, 'Active Status', 'fa fa-fw fa-times')
+            ->setActions(['Active' => 'active', 'Disable' => 'disable'])
+            ->setConfirmStr('Toggle active/disable on the selected rows?')
+            ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
+                foreach ($selected as $id) {
+                    $u = User::find($id);
                     $a = $u->getAuth();
-                    $a->active = false;
+                    $a->active = (strtolower($value) == 'active');
                     $a->save();
                 }
             })
@@ -158,6 +159,7 @@ class Manager extends ControllerAdmin
         // Set the table rows
         $filter = $this->table->getDbFilter();
         $filter->set('type', $this->type);
+        $filter->set('active', truefalse($filter['active'] ?? null));
         $rows = User::findFiltered($filter);
 
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());

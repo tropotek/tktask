@@ -158,7 +158,8 @@ class Settings extends ControllerAdmin
 
     public function onSubmit(Form $form, SubmitExit $action): void
     {
-        $values = $form->getFieldValues();
+        // ignore any fields starting with underscores
+        $values = $form->getFieldValues('/^[^_]/');
         Registry::instance()->replace($values);
 
         if (strlen($values['site.name'] ?? '') < 3) {
@@ -211,8 +212,8 @@ class Settings extends ControllerAdmin
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
       <a href="/sessions" title="View Active Sessions" class="btn btn-outline-secondary" choice="admin"><i class="fa fa-fw fa-server"></i> Sessions</a>
       <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary" choice="staff"><i class="fa fa-fw fa-users"></i> Staff</a>
-<!--      <a href="/user/memberManager" title="Manage Members" class="btn btn-outline-secondary" choice="member"><i class="fa fa-fw fa-users"></i> Members</a>-->
       <a href="/companyManager" title="Manage Companies" class="btn btn-outline-secondary"><i class="fa fa-fw fa-building"></i> Companies</a>
+      <a href="/taskCategoryManager" title="Manage Task Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Task Categories</a>
     </div>
   </div>
   <div class="card mb-3">

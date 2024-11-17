@@ -69,6 +69,8 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('address'))
             ->setGroup($tab);
 
+        $this->form->appendField(new Checkbox('active'));
+
         $this->form->appendField(new Textarea('notes'))
             ->addCss('mce-min')
             ->setGroup($tab);
@@ -134,7 +136,7 @@ class Edit extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-edit"></i> <span var="title"></span></div>
+    <div class="card-header"><i class="fa fa-building"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

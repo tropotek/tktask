@@ -64,6 +64,12 @@ form .form-check-label {
   --bs-btn-padding-x: .4rem;
   --bs-btn-font-size: .75rem;
 }
+.tk-table .max-width {
+  width: 100%;
+}
+.tk-sortable .drag {
+  cursor: ns-resize;
+}
 
 /* Header OrderBy Arrows */
 th

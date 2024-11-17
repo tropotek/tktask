@@ -56,6 +56,11 @@ return function (CollectionConfigurator $routes) {
     $routes->add('company-edit', '/companyEdit')
         ->controller([\App\Controller\Company\Edit::class, 'doDefault']);
 
+    $routes->add('task-category-manager', '/taskCategoryManager')
+        ->controller([\App\Controller\TaskCategory\Manager::class, 'doDefault']);
+    $routes->add('task-category-edit', '/taskCategoryEdit')
+        ->controller([\App\Controller\TaskCategory\Edit::class, 'doDefault']);
+
     // API
     $routes->add('api-notify', '/api/notify/getNotifications')
         ->controller([\App\Api\Notify::class, 'doGetNotifications']);

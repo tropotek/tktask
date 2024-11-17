@@ -31,6 +31,7 @@ class Company extends Model
     public string  $email     = '';
     public string  $address   = '';
     public string  $notes     = '';
+    public bool    $active    = true;
 
     public Money              $credit;
     public \DateTimeImmutable $modified;
@@ -152,11 +153,11 @@ class Company extends Model
         if (!empty($filter['address'])) {
             $filter->appendWhere('a.address = :address AND ');
         }
-        if (!empty($filter['credit'])) {
-            $filter->appendWhere('a.credit = :credit AND ');
-        }
         if (isset($filter['hasCredit'])) {
             $filter->appendWhere('a.credit > 0 AND ');
+        }
+        if (is_bool($filter['active'] ?? null)) {
+            $filter->appendWhere('a.active = :active AND ');
         }
 
         return Db::query("

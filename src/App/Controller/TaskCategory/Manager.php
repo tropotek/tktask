@@ -1,7 +1,7 @@
 <?php
-namespace App\Controller\Company;
+namespace App\Controller\TaskCategory;
 
-use App\Db\Company;
+use App\Db\TaskCategory;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
@@ -20,50 +20,32 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Company Manager');
+        $this->getPage()->setTitle('Task Category Manager');
 
         // init table
         $this->table = new \Bs\Mvc\Table();
-        $this->table->setOrderBy('name');
+        $this->table->setOrderBy('order_by');
         $this->table->setLimit(25);
 
-        $rowSelect = RowSelect::create('id', 'companyId');
+        $this->table->appendCell(Cell\OrderBy::create('orderBy', TaskCategory::class));
+
+        $rowSelect = RowSelect::create('id', 'taskCategoryId');
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('name')
             ->addCss('text-nowrap')
-            ->setSortable(true)
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\Company $obj, Cell $cell) {
-                $url = Uri::create('/companyEdit', ['companyId' => $obj->companyId]);
+            ->addOnValue(function(\App\Db\TaskCategory $obj, Cell $cell) {
+                $url = Uri::create('/taskCategoryEdit', ['taskCategoryId' => $obj->taskCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
 
-        $this->table->appendCell('contact')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
-
-        $this->table->appendCell('phone')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
-
-        $this->table->appendCell('email')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
-
-        $this->table->appendCell('type')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
+        $this->table->appendCell('label')
+            ->addCss('text-nowrap');
 
         $this->table->appendCell('active')
             ->addCss('text-nowrap')
-            ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
-
-        $this->table->appendCell('created')
-            ->addCss('text-nowrap')
-            ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
 
         // Add Filter Fields
@@ -72,9 +54,6 @@ class Manager extends ControllerAdmin
 
         $this->table->getForm()->appendField((new Select('active', ['-- All --' => '', 'Active' => 'y', 'Inactive' => 'n'])))
             ->setValue('y');
-
-        $this->table->getForm()->appendField((new Select('type', Company::TYPE_LIST))->prependOption('-- Type --', ''))
-            ->setValue(Company::TYPE_CLIENT);
 
         // init filter fields for actions to access to the filter values
         $this->table->initForm();
@@ -85,7 +64,7 @@ class Manager extends ControllerAdmin
             ->setConfirmStr('Toggle active/disable on the selected rows?')
             ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
                 foreach ($selected as $id) {
-                    $obj = Company::find($id);
+                    $obj = TaskCategory::find($id);
                     $obj->active = (strtolower($value) == 'active');
                     $obj->save();
                 }
@@ -97,9 +76,9 @@ class Manager extends ControllerAdmin
                 $action->setExcluded(['id', 'actions']);
                 $filter = $this->table->getDbFilter();
                 if ($selected) {
-                    $rows = Company::findFiltered($filter);
+                    $rows = TaskCategory::findFiltered($filter);
                 } else {
-                    $rows = Company::findFiltered($filter->resetLimits());
+                    $rows = TaskCategory::findFiltered($filter->resetLimits());
                 }
                 return $rows;
             });
@@ -109,7 +88,7 @@ class Manager extends ControllerAdmin
         // Set the table rows
         $filter = $this->table->getDbFilter();
         $filter->set('active', truefalse($filter['active'] ?? null));
-        $rows = Company::findFiltered($filter);
+        $rows = TaskCategory::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
     }
 
@@ -132,11 +111,11 @@ class Manager extends ControllerAdmin
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="/companyEdit" title="Create Company" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Company</a>
+      <a href="/taskCategoryEdit" title="Create Task Category" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Task Category</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-building"></i> <span var="title"></span></div>
+    <div class="card-header"><i class="fa fa-folder-open"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

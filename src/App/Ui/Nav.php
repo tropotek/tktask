@@ -36,10 +36,6 @@ class Nav
             'Dev' => [
                 'icon' => 'ri-bug-line',
                 'visible' => fn($i) => Config::isDev() && $this->getUser()->isStaff(),
-                'Component Test' => [
-                    'icon' => 'ri-bug-line',
-                    'url' => '/componentTest'
-                ],
                 'PHP Info' => [
                     'icon' => 'ri-information-line',
                     'url' => '/info'
