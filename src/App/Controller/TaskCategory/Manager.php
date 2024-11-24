@@ -2,6 +2,7 @@
 namespace App\Controller\TaskCategory;
 
 use App\Db\TaskCategory;
+use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
@@ -21,6 +22,8 @@ class Manager extends ControllerAdmin
     public function doDefault(): void
     {
         $this->getPage()->setTitle('Task Category Manager');
+
+        $this->setAccess(User::PERM_SYSADMIN);
 
         // init table
         $this->table = new \Bs\Mvc\Table();
@@ -55,13 +58,11 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField((new Select('active', ['-- All --' => '', 'Active' => 'y', 'Inactive' => 'n'])))
             ->setValue('y');
 
-        // init filter fields for actions to access to the filter values
-        $this->table->initForm();
-
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create($rowSelect, 'Active Status', 'fa fa-fw fa-times')
+        $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
+            ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
                 foreach ($selected as $id) {
                     $obj = TaskCategory::find($id);
@@ -71,7 +72,8 @@ class Manager extends ControllerAdmin
             })
         );
 
-        $this->table->appendAction(Csv::create($rowSelect))
+        $this->table->appendAction(Csv::create()
+            ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions']);
                 $filter = $this->table->getDbFilter();
@@ -81,8 +83,9 @@ class Manager extends ControllerAdmin
                     $rows = TaskCategory::findFiltered($filter->resetLimits());
                 }
                 return $rows;
-            });
+            }));
 
+        // execute table to init filter object
         $this->table->execute();
 
         // Set the table rows

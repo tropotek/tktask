@@ -214,6 +214,8 @@ class Settings extends ControllerAdmin
       <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary" choice="staff"><i class="fa fa-fw fa-users"></i> Staff</a>
       <a href="/companyManager" title="Manage Companies" class="btn btn-outline-secondary"><i class="fa fa-fw fa-building"></i> Companies</a>
       <a href="/taskCategoryManager" title="Manage Task Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Task Categories</a>
+      <a href="/productCategoryManager" title="Manage Product Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Product Categories</a>
+      <a href="/productManager" title="Manage Products" class="btn btn-outline-secondary"><i class="fa fa-fw fa-shopping-cart"></i> Products</a>
     </div>
   </div>
   <div class="card mb-3">

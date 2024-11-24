@@ -2,6 +2,7 @@
 namespace App\Controller\Company;
 
 use App\Db\Company;
+use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
@@ -28,6 +29,8 @@ class Edit extends ControllerAdmin
     {
         $this->getPage()->setTitle('Edit Company');
 
+        $this->setAccess(User::PERM_SYSADMIN);
+
         $companyId = intval($_GET['companyId'] ?? 0);
 
         $this->company = new Company();
@@ -37,8 +40,6 @@ class Edit extends ControllerAdmin
                 throw new Exception("invalid companyId $companyId");
             }
         }
-
-        // todo: $this->setAccess(...);
 
         // Get the form template
         $this->form = new Form();

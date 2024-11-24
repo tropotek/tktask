@@ -1,13 +1,12 @@
 <?php
-namespace App\Controller\Company;
+namespace App\Controller\Product;
 
-use App\Db\Company;
+use App\Db\Product;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Form\Field\Input;
-use Tk\Form\Field\Select;
 use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
@@ -15,69 +14,65 @@ use Tk\Table\Action\Delete;
 use Tk\Uri;
 use Tk\Db;
 
+/**
+ *
+ */
 class Manager extends ControllerAdmin
 {
     protected ?Table $table = null;
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Company Manager');
+        $this->getPage()->setTitle('Product Manager');
 
         $this->setAccess(User::PERM_SYSADMIN);
 
         // init table
-        $this->table = new \Bs\Mvc\Table();
-        $this->table->setOrderBy('name');
+        $this->table = new Table();
+        $this->table->setOrderBy('order_by');
         $this->table->setLimit(25);
 
-        $rowSelect = RowSelect::create('id', 'companyId');
+        $this->table->appendCell(Cell\OrderBy::create('orderBy', Product::class));
+
+        $rowSelect = RowSelect::create('id', 'productId');
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('name')
             ->addCss('text-nowrap')
-            ->setSortable(true)
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\Company $obj, Cell $cell) {
-                $url = Uri::create('/companyEdit', ['companyId' => $obj->companyId]);
+            ->addOnValue(function(Product $obj, Cell $cell) {
+                $url = Uri::create('/productEdit', ['productId' => $obj->productId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
 
-        $this->table->appendCell('contact')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
+        $this->table->appendCell('categoryId')
+            ->addCss('text-nowrap');
 
-        $this->table->appendCell('phone')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
+        $this->table->appendCell('recur')
+            ->addCss('text-nowrap');
 
-        $this->table->appendCell('email')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
+        $this->table->appendCell('code')
+            ->addCss('text-nowrap');
 
-        $this->table->appendCell('type')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
+        $this->table->appendCell('price')
+            ->addCss('text-nowrap');
 
         $this->table->appendCell('active')
             ->addCss('text-nowrap')
-            ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
+
+        $this->table->appendCell('modified')
+            ->addCss('text-nowrap')
+            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
         $this->table->appendCell('created')
             ->addCss('text-nowrap')
-            ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
 
         // Add Filter Fields
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
-
-        $this->table->getForm()->appendField((new Select('active', ['-- All --' => '', 'Active' => 'y', 'Inactive' => 'n'])))
-            ->setValue('y');
-
-        $this->table->getForm()->appendField((new Select('type', Company::TYPE_LIST))->prependOption('-- Type --', ''))
-            ->setValue(Company::TYPE_CLIENT);
 
 
         // Add Table actions
@@ -87,7 +82,7 @@ class Manager extends ControllerAdmin
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
                 foreach ($selected as $id) {
-                    $obj = Company::find($id);
+                    $obj = Product::find($id);
                     $obj->active = (strtolower($value) == 'active');
                     $obj->save();
                 }
@@ -100,9 +95,9 @@ class Manager extends ControllerAdmin
                 $action->setExcluded(['id', 'actions']);
                 $filter = $this->table->getDbFilter();
                 if ($selected) {
-                    $rows = Company::findFiltered($filter);
+                    $rows = Product::findFiltered($filter);
                 } else {
-                    $rows = Company::findFiltered($filter->resetLimits());
+                    $rows = Product::findFiltered($filter->resetLimits());
                 }
                 return $rows;
             }));
@@ -112,8 +107,7 @@ class Manager extends ControllerAdmin
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
-        $filter->set('active', truefalse($filter['active'] ?? null));
-        $rows = Company::findFiltered($filter);
+        $rows = Product::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
     }
 
@@ -136,11 +130,11 @@ class Manager extends ControllerAdmin
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="/companyEdit" title="Create Company" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Company</a>
+      <a href="#" title="Create Product" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Product</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-building"></i> <span var="title"></span></div>
+    <div class="card-header"><i class="fa fa-shopping-cart"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

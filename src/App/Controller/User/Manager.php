@@ -120,13 +120,11 @@ class Manager extends ControllerAdmin
         $list = ['-- All --' => '', 'Active' => 'y', 'Disabled' => 'n'];
         $this->table->getForm()->appendField(new Select('active', $list))->setValue('y');
 
-        // init filter fields for actions to access to the filter values
-        $this->table->initForm();
-
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create($rowSelect, 'Active Status', 'fa fa-fw fa-times')
+        $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
+            ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
                 foreach ($selected as $id) {
                     $u = User::find($id);
@@ -137,7 +135,8 @@ class Manager extends ControllerAdmin
             })
         );
 
-        $this->table->appendAction(Csv::create($rowSelect)
+        $this->table->appendAction(Csv::create()
+            ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions', 'permissions']);
                 $this->table->getCell('username')->getOnValue()->reset();
@@ -154,6 +153,7 @@ class Manager extends ControllerAdmin
             })
         );
 
+        // execute table to init filter object
         $this->table->execute();
 
         // Set the table rows
