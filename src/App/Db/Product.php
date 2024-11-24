@@ -12,7 +12,7 @@ class Product extends Model
     use TimestampTrait;
 
     // TODO: this may go into the recurring billing object not here
-    //const string TYPE_EACH         = null;
+    const string RECURRING_EACH         = 'each';
     const string RECURRING_WEEK         = 'week';
     const string RECURRING_FORTNIGHT    = 'fortnight';
     const string RECURRING_MONTH        = 'month';
@@ -21,6 +21,7 @@ class Product extends Model
     const string RECURRING_BIANNUAL     = 'biannual';
 
     const array RECURRING_LIST = [
+        self::RECURRING_EACH      => 'Each',
         self::RECURRING_WEEK      => 'Weekly',
         self::RECURRING_FORTNIGHT => 'Fortnightly',
         self::RECURRING_MONTH     => 'Monthly',
@@ -43,6 +44,8 @@ class Product extends Model
     public \DateTime $modified;
     public \DateTime $created;
 
+    private ?ProductCategory $_category = null;
+
 
     public function __construct()
     {
@@ -50,6 +53,14 @@ class Product extends Model
         $this->created  = new \DateTime();
         $this->price    = Money::create();
         $this->code     = 'TK-'.$this->getCreated('Y').'-0000-00';
+    }
+
+    public function getCategory(): ?ProductCategory
+    {
+        if (!$this->_category) {
+            $this->_category = ProductCategory::find($this->categoryId);
+        }
+        return $this->_category;
     }
 
     public function save(): void

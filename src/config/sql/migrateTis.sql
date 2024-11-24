@@ -129,7 +129,7 @@ INSERT IGNORE INTO dev_tktask.product
     id AS product_id,
     category_id,
     CASE
-      WHEN type = 'each' THEN NULL
+      -- WHEN type = 'each' THEN NULL
       WHEN type = 'bianual' THEN 'biannual'
       ELSE type
     END AS recur,

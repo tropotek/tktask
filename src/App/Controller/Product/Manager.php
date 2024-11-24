@@ -8,9 +8,9 @@ use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Form\Field\Input;
 use Tk\Table\Action\Csv;
+use Tk\Table\Action\Select;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
-use Tk\Table\Action\Delete;
 use Tk\Uri;
 use Tk\Db;
 
@@ -46,7 +46,10 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('categoryId')
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap')
+            ->addOnValue(function(Product $obj, Cell $cell) {
+                return $obj->getCategory()->name;
+            });
 
         $this->table->appendCell('recur')
             ->addCss('text-nowrap');
@@ -65,9 +68,9 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
-        $this->table->appendCell('created')
-            ->addCss('text-nowrap')
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+//        $this->table->appendCell('created')
+//            ->addCss('text-nowrap')
+//            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
 
         // Add Filter Fields
@@ -76,11 +79,11 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
+        $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
             ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
+            ->addOnSelect(function(Select $action, array $selected, string $value) {
                 foreach ($selected as $id) {
                     $obj = Product::find($id);
                     $obj->active = (strtolower($value) == 'active');
@@ -94,6 +97,7 @@ class Manager extends ControllerAdmin
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions']);
                 $filter = $this->table->getDbFilter();
+                $this->table->getCell('name')->getOnValue()->reset();
                 if ($selected) {
                     $rows = Product::findFiltered($filter);
                 } else {

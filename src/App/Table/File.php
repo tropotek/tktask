@@ -57,12 +57,10 @@ class File extends Table
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
-        // init filter fields for actions to access to the filter values
-        $this->initForm();
-
 
         // Add Table actions
-        $this->appendAction(Delete::create($rowSelect)
+        $this->appendAction(Delete::create()
+            ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnDelete(function(Delete $action, array $selected) {
                 foreach ($selected as $file_id) {
                     Db::delete('file', compact('file_id'));
@@ -70,11 +68,11 @@ class File extends Table
             })
         );
 
-        $this->appendAction(Csv::create($rowSelect)
+        $this->appendAction(Csv::create()
+            ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions', 'permissions']);
                 $this->getCell('username')->getOnValue()->reset();
-                $this->getCell('email')->getOnValue()->reset();    // remove html from cell
                 $filter = $this->getDbFilter();
                 if (count($selected)) {
                     $filter['fileId'] = $selected;

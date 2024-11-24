@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS product_category (
 CREATE TABLE IF NOT EXISTS product (
   product_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   category_id INT UNSIGNED NOT NULL DEFAULT 0,
-  recur ENUM('week','fortnight','month','quarter','year','biannual') DEFAULT NULL,  -- price is for this duration, if null then a unit price
+  recur ENUM('each', 'week','fortnight','month','quarter','year','biannual') DEFAULT NULL,  -- price is for this duration, if null then a unit price
   name VARCHAR(128) NOT NULL DEFAULT '',
   code VARCHAR(64) NOT NULL DEFAULT '',
   price INT NOT NULL DEFAULT 0,

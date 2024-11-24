@@ -2,15 +2,14 @@
 namespace App\Controller\ProductCategory;
 
 use App\Db\ProductCategory;
-use App\Db\TaskCategory;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Form\Field\Input;
-use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
+use Tk\Table\Action\Csv;
 use Tk\Table\Action\Delete;
 use Tk\Uri;
 use Tk\Db;
@@ -62,10 +61,11 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(Csv::create())
+        $this->table->appendAction(Csv::create()
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions']);
+                $this->table->getCell('name')?->getOnValue()->reset();
                 $filter = $this->table->getDbFilter();
                 if ($selected) {
                     $rows = ProductCategory::findFiltered($filter);
@@ -73,7 +73,7 @@ class Manager extends ControllerAdmin
                     $rows = ProductCategory::findFiltered($filter->resetLimits());
                 }
                 return $rows;
-            });
+            }));
 
         // execute table to init filter object
         $this->table->execute();
