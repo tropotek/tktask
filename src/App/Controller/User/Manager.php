@@ -117,7 +117,7 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search: uid, name, email, username');
 
-        $list = ['-- All --' => '', 'Active' => 'y', 'Disabled' => 'n'];
+        $list = ['' => '-- All --', 'y' => 'Active', 'n' => 'Disabled'];
         $this->table->getForm()->appendField(new Select('active', $list))->setValue('y');
 
         // Add Table actions
@@ -159,7 +159,6 @@ class Manager extends ControllerAdmin
         // Set the table rows
         $filter = $this->table->getDbFilter();
         $filter->set('type', $this->type);
-        $filter->set('active', truefalse($filter['active'] ?? null));
         $rows = User::findFiltered($filter);
 
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());

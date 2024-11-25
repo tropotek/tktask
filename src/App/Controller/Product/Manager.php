@@ -68,14 +68,16 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
-//        $this->table->appendCell('created')
-//            ->addCss('text-nowrap')
-//            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
-
 
         // Add Filter Fields
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
+
+        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('active', ['' => '-- All --', 'y' => 'Active', 'n' => 'Inactive'])))
+            ->setValue('y');
+
+        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('recur', Product::RECURRING_LIST))
+            ->prependOption('-- Recurring --', ''));
 
 
         // Add Table actions

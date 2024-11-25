@@ -104,7 +104,8 @@ class TaskCategory extends Model
         if (!empty($filter['label'])) {
             $filter->appendWhere('a.label = :label AND ');
         }
-        if (is_bool($filter['active'] ?? '')) {
+        if (is_bool(truefalse($filter['active'] ?? null))) {
+            $filter['active'] = truefalse($filter['active']);
             $filter->appendWhere('a.active = :active AND ');
         }
 

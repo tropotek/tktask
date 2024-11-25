@@ -10,6 +10,7 @@ use Bs\Mvc\Form;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Collection;
 use Tk\Db\Filter;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
@@ -52,7 +53,7 @@ class Settings extends ControllerAdmin
             ->setGroup($tab);
 
         if ($this->templateSelect) {
-            $list = ['Side Menu' => '/html/minton/sn-admin.html', 'Top Menu' => '/html/minton/tn-admin.html'];
+            $list = ['/html/minton/sn-admin.html' => 'Side Menu', '/html/minton/tn-admin.html' => 'Top Menu'];
             $this->form->appendField(new Select('minton.template', $list))
                 ->setLabel('Template Layout')
                 ->setNotes('Select Side-menu or top-menu template layout')
@@ -66,6 +67,7 @@ class Settings extends ControllerAdmin
             ->setGroup($tab);
 
         $list = Company::findFiltered(Filter::create(['active' => true], 'name'));
+        $list = Collection::toSelectList($list, 'companyId');
         $this->form->appendField((new Select('site.company.id', $list))
             ->setLabel('Site Company')
             ->prependOption('-- None --', '')
@@ -73,7 +75,7 @@ class Settings extends ControllerAdmin
             ->setNotes('Select the owner company of this site')
             ->setGroup($tab));
 
-        $list = array('-- System Default --' => '', 'Yes' => '1', 'No' => '0');
+        $list = array('' => '-- System Default --', '1' => 'Yes', '0' => 'No');
         $this->form->appendField(new Select('site.taskLog.billable.default', $list))
             ->setLabel('Log Default Billable')
             ->setNotes('Set the default billable status when creating Task Logs. None means force the user to choose.')
@@ -86,11 +88,11 @@ class Settings extends ControllerAdmin
             ->setGroup($tab);
 
         $tab = 'Setup';
-        $this->form->appendField((new Checkbox('site.invoice.enable', ['Enable task invoicing, products and recurring invoicing systems.' => '1']))
+        $this->form->appendField((new Checkbox('site.invoice.enable', ['1' => 'Enable task invoicing, products and recurring invoicing systems.']))
             ->setLabel('Enable Invoicing')
             ->setGroup($tab));
 
-        $this->form->appendField((new Checkbox('site.expenses.enable', ['Enable expenses and profit reporting.' => '1']))
+        $this->form->appendField((new Checkbox('site.expenses.enable', ['1' => 'Enable expenses and profit reporting.']))
             ->setLabel('Enable Expenses')
             ->setGroup($tab));
 
@@ -126,10 +128,10 @@ class Settings extends ControllerAdmin
             ->setGroup($tab);
 
         $tab = 'Maintenance';
-        $this->form->appendField(new Checkbox('system.maintenance.enabled'))
+        $this->form->appendField(new Checkbox('system.maintenance.enabled', ['1' => 'Enable maintenance mode to disable site access']))
             ->addCss('check-enable')
             ->setLabel('Maintenance Mode Enabled')
-            ->setNotes('Enable maintenance mode. Admin users will still have access to the site.')
+            ->setNotes('Logged in admin users can still access the site.')
             ->setGroup($tab);
 
         $this->form->appendField(new Textarea('system.maintenance.message'))

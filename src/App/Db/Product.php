@@ -158,7 +158,8 @@ class Product extends Model
         if (!empty($filter['code'])) {
             $filter->appendWhere('a.code = :code AND ');
         }
-        if (is_bool($filter['active'] ?? '')) {
+        if (is_bool(truefalse($filter['active'] ?? null))) {
+            $filter['active'] = truefalse($filter['active']);
             $filter->appendWhere('a.active = :active AND ');
         }
 

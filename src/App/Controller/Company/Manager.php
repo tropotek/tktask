@@ -6,6 +6,7 @@ use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
+use Tk\Collection;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
 use Tk\Table\Action\Csv;
@@ -73,10 +74,11 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
 
-        $this->table->getForm()->appendField((new Select('active', ['-- All --' => '', 'Active' => 'y', 'Inactive' => 'n'])))
+        $this->table->getForm()->appendField((new Select('active', ['' => '-- All --', 'y' => 'Active', 'n' => 'Inactive'])))
             ->setValue('y');
 
-        $this->table->getForm()->appendField((new Select('type', Company::TYPE_LIST))->prependOption('-- Type --', ''))
+        $this->table->getForm()->appendField((new Select('type', Collection::listCombine(Company::TYPE_LIST)))
+            ->prependOption('-- Type --', ''))
             ->setValue(Company::TYPE_CLIENT);
 
 
@@ -112,7 +114,6 @@ class Manager extends ControllerAdmin
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
-        $filter->set('active', truefalse($filter['active'] ?? null));
         $rows = Company::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
     }

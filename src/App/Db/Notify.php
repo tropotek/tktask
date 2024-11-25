@@ -167,21 +167,30 @@ class Notify extends Model
             $filter->appendWhere('a.user_id = :userId AND ');
         }
 
-        if (is_bool($filter['isRead'] ?? '')) {
-            if ($filter['isRead']) {
-                $filter->appendWhere('a.is_read AND ');
-            } else {
-                $filter->appendWhere('NOT a.is_read AND ');
-            }
+        if (is_bool(truefalse($filter['isRead'] ?? null))) {
+            $filter['isRead'] = truefalse($filter['isRead']);
+            $filter->appendWhere('a.is_read = :isRead AND ');
         }
+//        if (is_bool($filter['isRead'] ?? '')) {
+//            if ($filter['isRead']) {
+//                $filter->appendWhere('a.is_read AND ');
+//            } else {
+//                $filter->appendWhere('NOT a.is_read AND ');
+//            }
+//        }
 
-        if (is_bool($filter['isNotified'] ?? '')) {
-            if ($filter['isNotified']) {
-                $filter->appendWhere('a.is_notified AND ');
-            } else {
-                $filter->appendWhere('NOT a.is_notified AND ');
-            }
+
+        if (is_bool(truefalse($filter['isNotified'] ?? null))) {
+            $filter['isNotified'] = truefalse($filter['isNotified']);
+            $filter->appendWhere('a.is_notified = :isNotified AND ');
         }
+//        if (is_bool($filter['isNotified'] ?? '')) {
+//            if ($filter['isNotified']) {
+//                $filter->appendWhere('a.is_notified AND ');
+//            } else {
+//                $filter->appendWhere('NOT a.is_notified AND ');
+//            }
+//        }
 
         return Db::query("
             SELECT *

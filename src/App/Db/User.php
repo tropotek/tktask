@@ -310,9 +310,9 @@ class User extends Model implements UserInterface
             $filter->appendWhere('a.email = :email AND ');
         }
 
-        if (!empty($filter['active'])) {
+        if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('active = :active AND ');
+            $filter->appendWhere('a.active = :active AND ');
         }
 
         return Db::query("

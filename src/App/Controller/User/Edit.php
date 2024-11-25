@@ -9,6 +9,7 @@ use Bs\Factory;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Collection;
 use Tk\Exception;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
@@ -75,7 +76,7 @@ class Edit extends ControllerAdmin
         $group = 'Details';
         $this->form->appendField(new Hidden('userId'))->setReadonly();
 
-        $list = User::TITLE_LIST;
+        $list = Collection::listCombine(User::TITLE_LIST);
         $this->form->appendField((new Select('title', $list))
             ->setGroup($group)
             ->prependOption('', '')
@@ -103,7 +104,7 @@ class Edit extends ControllerAdmin
         }
 
         if ($this->type == User::TYPE_STAFF) {
-            $list = array_flip(User::PERMISSION_LIST);
+            $list = User::PERMISSION_LIST;
             $field = $this->form->appendField(new Checkbox('perm', $list))
                 ->setLabel('Permissions')
                 ->setGroup('Permissions');
@@ -115,7 +116,7 @@ class Edit extends ControllerAdmin
         }
 
         if ($this->user->userId) {
-            $this->form->appendField(new Checkbox('active', ['Enable User Login' => '1']))
+            $this->form->appendField(new Checkbox('active', ['1' => 'Enable User Login']))
                 ->setGroup($group);
         }
 

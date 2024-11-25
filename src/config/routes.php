@@ -68,8 +68,8 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('product-manager', '/productManager')
         ->controller([\App\Controller\Product\Manager::class, 'doDefault']);
-//    $routes->add('product-edit', '/productEdit')
-//        ->controller([\App\Controller\Product\Edit::class, 'doDefault']);
+    $routes->add('product-edit', '/productEdit')
+        ->controller([\App\Controller\Product\Edit::class, 'doDefault']);
 
     // API
     $routes->add('api-notify', '/api/notify/getNotifications')

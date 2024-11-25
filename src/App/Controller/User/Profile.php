@@ -8,6 +8,7 @@ use Bs\Factory;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Collection;
 use Tk\Config;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
@@ -45,7 +46,7 @@ class Profile extends ControllerAdmin
         $tab = 'Details';
         $this->form->appendField(new Hidden('userId'))->setReadonly();
 
-        $list = User::TITLE_LIST;
+        $list = Collection::listCombine(User::TITLE_LIST);
         $this->form->appendField((new Select('title', $list))->prependOption('', ''))
             ->setGroup($tab)
             ->setLabel('Title');
@@ -68,7 +69,7 @@ class Profile extends ControllerAdmin
             ->setRequired();
 
         if ($this->user->isType(User::TYPE_STAFF)) {
-            $list = array_flip(User::PERMISSION_LIST);
+            $list = User::PERMISSION_LIST;
             $this->form->appendField(new Checkbox('perm', $list))
                 ->setGroup('Permissions')
                 ->setDisabled()

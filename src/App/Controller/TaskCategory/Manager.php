@@ -55,7 +55,7 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
 
-        $this->table->getForm()->appendField((new Select('active', ['-- All --' => '', 'Active' => 'y', 'Inactive' => 'n'])))
+        $this->table->getForm()->appendField((new Select('active', ['' => '-- All --', 'y' => 'Active', 'n' => 'Inactive'])))
             ->setValue('y');
 
         // Add Table actions
@@ -90,7 +90,6 @@ class Manager extends ControllerAdmin
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
-        $filter->set('active', truefalse($filter['active'] ?? null));
         $rows = TaskCategory::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
     }

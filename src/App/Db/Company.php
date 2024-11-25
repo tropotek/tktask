@@ -156,7 +156,8 @@ class Company extends Model
         if (isset($filter['hasCredit'])) {
             $filter->appendWhere('a.credit > 0 AND ');
         }
-        if (is_bool($filter['active'] ?? null)) {
+        if (is_bool(truefalse($filter['active'] ?? null))) {
+            $filter['active'] = truefalse($filter['active']);
             $filter->appendWhere('a.active = :active AND ');
         }
 

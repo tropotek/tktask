@@ -8,6 +8,7 @@ use Bs\Factory;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Collection;
 use Tk\Exception;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
@@ -49,7 +50,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('name'))
             ->setGroup($tab);
 
-        $this->form->appendField((new Select('type', Company::TYPE_LIST))
+        $this->form->appendField((new Select('type', Collection::listCombine(Company::TYPE_LIST)))
             ->prependOption('-- Select --', ''))
             ->setGroup($tab);
 
