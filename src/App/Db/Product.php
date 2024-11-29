@@ -37,7 +37,6 @@ class Product extends Model
     public string  $code        = '';
     public string  $description = '';
     public string  $notes       = '';
-    public int     $orderBy     = 0;
     public bool    $active      = true;
 
     public Money     $price;

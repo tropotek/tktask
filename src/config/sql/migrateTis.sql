@@ -89,6 +89,37 @@ INSERT IGNORE INTO dev_tktask.company
     created
   FROM dev_tktis.company
 );
+UPDATE dev_tktask.company SET active = FALSE WHERE company_id IN (3,6,8);
+
+--
+TRUNCATE dev_tktask.project;
+INSERT IGNORE INTO dev_tktask.project
+(
+  SELECT
+    id AS project_id,
+    user_id,
+    company_id,
+    status,
+    name,
+    quote,
+    date_start,
+    date_end,
+    IFNULL(description, ''),
+    IFNULL(notes, '') AS notes,
+    modified,
+    created
+  FROM dev_tktis.project
+);
+TRUNCATE dev_tktask.project_user;
+INSERT IGNORE INTO dev_tktask.project_user
+(
+  SELECT
+    project_id,
+    user_id
+  FROM dev_tktis.project_user
+);
+
+
 
 --
 TRUNCATE dev_tktask.task_category;
@@ -115,7 +146,6 @@ INSERT IGNORE INTO dev_tktask.product_category
     id AS product_category_id,
     name,
     IFNULL(description, '') AS description,
-    order_by,
     modified,
     created
   FROM dev_tktis.product_category
@@ -138,7 +168,6 @@ INSERT IGNORE INTO dev_tktask.product
     price,
     IFNULL(description, '') AS description,
     IFNULL(notes, '') AS notes,
-    order_by,
     NOT del AS active,
     modified,
     created
@@ -146,6 +175,37 @@ INSERT IGNORE INTO dev_tktask.product
 );
 UPDATE dev_tktask.product SET recur = 'biannual' WHERE recur = 'bianual';
 
+--
+TRUNCATE dev_tktask.expense_category;
+INSERT IGNORE INTO dev_tktask.expense_category
+  (
+    SELECT
+      id AS expense_category_id,
+      name,
+      IFNULL(description, '') AS description,
+      ratio,
+      NOT del AS active,
+      modified,
+      created
+    FROM dev_tktis.expense_category
+  );
+
+--
+TRUNCATE dev_tktask.status_log;
+INSERT IGNORE INTO dev_tktask.status_log
+  (
+    SELECT
+      id AS status_log_id,
+      2 AS user_id,
+      fkey,
+      fid,
+      name,
+      notify,
+      message,
+      NULL AS data,
+      created
+    FROM dev_tktis.status_log
+  );
 
 
 

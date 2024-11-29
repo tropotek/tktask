@@ -1,8 +1,10 @@
 <?php
-namespace App\Controller\TaskCategory;
+namespace App\Controller\ExpenseCategory;
 
-use App\Db\TaskCategory;
+use App\Db\ExpenseCategory;
+use App\Db\StatusLog;
 use App\Db\User;
+use App\Form\Field\StatusSelect;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
@@ -13,42 +15,50 @@ use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Checkbox;
+use Tk\Form\Field\InputGroup;
+use Tk\Form\Field\Textarea;
+use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Input;
+use Tk\Form\Field\Select;
 use Tk\Uri;
 
 class Edit extends ControllerAdmin
 {
-    protected ?TaskCategory $taskCategory = null;
+    protected ?ExpenseCategory $expenseCategory = null;
     protected ?Form  $form = null;
 
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Edit Task Category');
-
-        $taskCategoryId = intval($_GET['taskCategoryId'] ?? 0);
-
-        $this->taskCategory = new TaskCategory();
-        if ($taskCategoryId) {
-            $this->taskCategory = TaskCategory::find($taskCategoryId);
-            if (!($this->taskCategory instanceof TaskCategory)) {
-                throw new Exception("invalid taskCategoryId $taskCategoryId");
-            }
-        }
+        $this->getPage()->setTitle('Edit Expense Category');
 
         $this->setAccess(User::PERM_SYSADMIN);
+
+        $expenseCategoryId = intval($_GET['expenseCategoryId'] ?? 0);
+
+        $this->expenseCategory = new ExpenseCategory();
+        if ($expenseCategoryId) {
+            $this->expenseCategory = ExpenseCategory::find($expenseCategoryId);
+            if (!($this->expenseCategory instanceof ExpenseCategory)) {
+                throw new Exception("invalid expenseCategoryId $expenseCategoryId");
+            }
+        }
 
         // Get the form template
         $this->form = new Form();
         $this->form->appendField(new Input('name'));
-        $this->form->appendField(new Input('label'));
-        $this->form->appendField(new Input('description'));
-        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('');
+        $this->form->appendField(new InputGroup('ratio', '%'));
+
+//        $list = ['statusOne' => 'Status 1', 'statusTwo' => 'Status 2', 'statusThree' => 'Status 3'];
+//        $this->form->appendField(new StatusSelect('status', $list));
+
+        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('&nbsp;');
+        $this->form->appendField(new Textarea('description'));
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
-        $this->form->appendField(new Link('cancel', Uri::create('/taskCategoryManager')));
+        $this->form->appendField(new Link('cancel', Uri::create('/expenseCategoryManager')));
 
-        $load = $this->form->unmapModel($this->taskCategory);
+        $load = $this->form->unmapModel($this->expenseCategory);
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -57,18 +67,21 @@ class Edit extends ControllerAdmin
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->taskCategory);
+        $form->mapModel($this->expenseCategory);
+        //vd($_POST, $form->getFieldValues());
 
-        $form->addFieldErrors($this->taskCategory->validate());
+        $form->addFieldErrors($this->expenseCategory->validate());
         if ($form->hasErrors()) {
             return;
         }
 
-        $isNew = ($this->taskCategory->taskCategoryId == 0);
-        $this->taskCategory->save();
+        $isNew = ($this->expenseCategory->expenseCategoryId == 0);
+        $this->expenseCategory->save();
+
+        //StatusLog::create($this->expenseCategory, $_POST['status_msg'] ?? '', truefalse($_POST['status_notify'] ?? false));
 
         Alert::addSuccess('Form save successfully.');
-        $action->setRedirect(Uri::create()->set('taskCategoryId', $this->taskCategory->taskCategoryId));
+        $action->setRedirect(Uri::create()->set('expenseCategoryId', $this->expenseCategory->expenseCategoryId));
         if ($form->getTriggeredAction()->isExit()) {
             $action->setRedirect(Factory::instance()->getBackUrl());
         }
@@ -77,8 +90,9 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         // Setup field group widths with bootstrap classes
-        $this->form->getField('name')->addFieldCss('col-6');
-        $this->form->getField('label')->addFieldCss('col-6');
+        $this->form->getField('name')->addFieldCss('col-4');
+        $this->form->getField('ratio')->addFieldCss('col-4');
+        $this->form->getField('active')->addFieldCss('col-4');
 
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());

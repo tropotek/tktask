@@ -26,7 +26,7 @@ class Manager extends ControllerAdmin
         $this->setAccess(User::PERM_SYSADMIN);
 
         // init table
-        $this->table = new \Bs\Mvc\Table();
+        $this->table = new Table();
         $this->table->setOrderBy('order_by');
         $this->table->setLimit(25);
 
@@ -38,7 +38,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('name')
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\TaskCategory $obj, Cell $cell) {
+            ->addOnValue(function(TaskCategory $obj, Cell $cell) {
                 $url = Uri::create('/taskCategoryEdit', ['taskCategoryId' => $obj->taskCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });

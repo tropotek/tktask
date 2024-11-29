@@ -28,16 +28,15 @@ class Manager extends ControllerAdmin
         $this->setAccess(User::PERM_SYSADMIN);
 
         // init table
-        $this->table = new \Bs\Mvc\Table();
-        $this->table->setOrderBy('order_by');
+        $this->table = new Table();
+        $this->table->setOrderBy('name');
         $this->table->setLimit(25);
-
-        $this->table->appendCell(Cell\OrderBy::create('orderBy', ProductCategory::class));
 
         $rowSelect = RowSelect::create('id', 'productId');
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('name')
+            ->setSortable(true)
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addHeaderCss('max-width')
@@ -47,9 +46,11 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('description')
+            ->setSortable(true)
             ->addCss('text-nowrap');
 
-        $this->table->appendCell('created')
+        $this->table->appendCell('modified')
+            ->setSortable(true)
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\DateFmt::onValue');

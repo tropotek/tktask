@@ -89,11 +89,11 @@ class Settings extends ControllerAdmin
 
         $tab = 'Setup';
         $this->form->appendField((new Checkbox('site.invoice.enable', ['1' => 'Enable task invoicing, products and recurring invoicing systems.']))
-            ->setLabel('Enable Invoicing')
+            ->setLabel('')
             ->setGroup($tab));
 
         $this->form->appendField((new Checkbox('site.expenses.enable', ['1' => 'Enable expenses and profit reporting.']))
-            ->setLabel('Enable Expenses')
+            ->setLabel('')
             ->setGroup($tab));
 
         $this->form->appendField(new Textarea('site.invoice.payment'))
@@ -130,7 +130,7 @@ class Settings extends ControllerAdmin
         $tab = 'Maintenance';
         $this->form->appendField(new Checkbox('system.maintenance.enabled', ['1' => 'Enable maintenance mode to disable site access']))
             ->addCss('check-enable')
-            ->setLabel('Maintenance Mode Enabled')
+            ->setLabel('')
             ->setNotes('Logged in admin users can still access the site.')
             ->setGroup($tab);
 
@@ -218,6 +218,7 @@ class Settings extends ControllerAdmin
       <a href="/taskCategoryManager" title="Manage Task Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Task Categories</a>
       <a href="/productCategoryManager" title="Manage Product Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Product Categories</a>
       <a href="/productManager" title="Manage Products" class="btn btn-outline-secondary"><i class="fa fa-fw fa-shopping-cart"></i> Products</a>
+      <a href="/expenseCategoryManager" title="Manage Expense Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Expense Categories</a>
     </div>
   </div>
   <div class="card mb-3">

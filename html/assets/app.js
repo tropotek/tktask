@@ -14,11 +14,27 @@ jQuery(function ($) {
   tkbase.initPasswordToggle();
 
   app.initNotifications();
+  app.initCheckSelect();
 
 });
 
 let app = function () {
   "use strict";
+
+  /**
+   * Form checkbox dropdown select plugin
+   */
+  let initCheckSelect = function () {
+    if ($.fn.tkCheckSelect === undefined) return;
+
+    tkRegisterInit(function () {
+      $('.tk-checkselect', this).tkCheckSelect({
+        search: true,
+        selectAll: true,
+      });
+    });
+  };
+
 
   /**
    * Enable browser notifications using the systems Notify object
@@ -86,7 +102,8 @@ let app = function () {
 
 
   return {
-    initNotifications: initNotifications
+    initNotifications: initNotifications,
+    initCheckSelect: initCheckSelect,
   }
 
 }();

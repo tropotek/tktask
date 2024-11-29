@@ -71,7 +71,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('address'))
             ->setGroup($tab);
 
-        $this->form->appendField(new Checkbox('active'));
+        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('');
 
         $this->form->appendField(new Textarea('notes'))
             ->addCss('mce-min')

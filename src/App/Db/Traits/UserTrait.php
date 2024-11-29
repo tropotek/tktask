@@ -5,9 +5,7 @@ use App\Db\User;
 
 trait UserTrait
 {
-
     private ?User $_user = null;
-
 
     public function getUser(): ?User
     {
@@ -15,13 +13,6 @@ trait UserTrait
             $this->_user = User::find($this->userId);
         }
         return $this->_user;
-    }
-
-    public function setUser(User $user): static
-    {
-        $this->userId = $user->userId;
-        $this->_user = $user;
-        return $this;
     }
 
 }

@@ -71,6 +71,21 @@ return function (CollectionConfigurator $routes) {
     $routes->add('product-edit', '/productEdit')
         ->controller([\App\Controller\Product\Edit::class, 'doDefault']);
 
+    $routes->add('expense-category-manager', '/expenseCategoryManager')
+        ->controller([\App\Controller\ExpenseCategory\Manager::class, 'doDefault']);
+    $routes->add('expense-category-edit', '/expenseCategoryEdit')
+        ->controller([\App\Controller\ExpenseCategory\Edit::class, 'doDefault']);
+
+    $routes->add('project-manager', '/projectManager')
+        ->controller([\App\Controller\Project\Manager::class, 'doDefault']);
+//    $routes->add('project-edit', '/projectEdit')
+//        ->controller([\App\Controller\Project\Edit::class, 'doDefault']);
+
+
+
+
+
+
     // API
     $routes->add('api-notify', '/api/notify/getNotifications')
         ->controller([\App\Api\Notify::class, 'doGetNotifications']);

@@ -37,7 +37,8 @@
   <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/components/htmx.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tktabs.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkTabs.js"></script>
+  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkCheckSelect.js"></script>
   <!-- App js -->
   <script src="/vendor/ttek/tk-base/assets/js/tkbase.js" defer></script>
   <script src="/html/assets/app.js" defer></script>
@@ -78,7 +79,6 @@
             <i class="fe-maximize noti-icon"></i>
           </a>
         </li>
-
 
         <!--   USER Menu     -->
         <li class="dropdown notification-list topbar-dropdown me-1" var="user-menu">
@@ -132,6 +132,50 @@
             </div>
           </a>
           <!-- End mobile menu toggle-->
+        </li>
+
+        <li class="dropdown d-none d-md-block d-xl-block">
+          <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+            Create New
+            <i class="mdi mdi-chevron-down"></i>
+          </a>
+          <div class="dropdown-menu">
+            <!-- item-->
+            <a href="javascript:void(0);" class="dropdown-item">
+              <i class="fas fa-tasks me-1"></i>
+              <span>New Task</span>
+            </a>
+
+            <!-- item-->
+            <a href="javascript:void(0);" class="dropdown-item">
+              <i class="fas fa-project-diagram me-1"></i>
+              <span>New Project</span>
+            </a>
+
+            <!-- item-->
+            <a href="javascript:void(0);" class="dropdown-item">
+              <i class="far fa-building me-1"></i>
+              <span>New Company</span>
+            </a>
+
+            <!-- item-->
+            <a href="javascript:void(0);" class="dropdown-item">
+              <i class="fas fa-box-open me-1"></i>
+              <span>New Product</span>
+            </a>
+
+            <!-- item-->
+            <a href="javascript:void(0);" class="dropdown-item">
+              <i class="fas fa-money-bill me-1"></i>
+              <span>New Expense</span>
+            </a>
+
+            <!-- item-->
+            <a href="javascript:void(0);" class="dropdown-item">
+              <i class="fas fa-money-bill-wave me-1"></i>
+              <span>New Recurring</span>
+            </a>
+          </div>
         </li>
 
       </ul>

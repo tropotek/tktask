@@ -43,11 +43,8 @@
 form textarea {
   height: 150px;
 }
-form label {
-  font-weight: 500;
-}
-form .form-check-label {
-  font-weight: normal;
+.tk-form .fld-checkbox .form-check:first-of-type {
+  margin-top: .5rem !important;
 }
 .tk-form .fld .invalid-feedback {
   color: var(--bs-danger);
@@ -62,7 +59,6 @@ form .form-check-label {
 .tk-form select:invalid {
   background: #FDFDDA !important;
 }
-
 
 
 /***************** T A B L E ******************/

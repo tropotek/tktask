@@ -25,6 +25,11 @@ class Nav
                 'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
                 'url' => '/settings'
             ],
+            'Projects' => [
+                'icon' => 'fas fa-project-diagram',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/projectManager'
+            ],
             'Application' => [
                 'icon' => 'ri-apps-2-fill',
                 'File Manager' => [

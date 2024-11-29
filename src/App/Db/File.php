@@ -21,7 +21,7 @@ class File extends Model
     use CreatedTrait;
 
     public int        $fileId   = 0;
-    public int        $userId   = 0;
+    public ?int       $userId   = null;
     public string     $fkey     = '';
     public int        $fid      = 0;
     public string     $filename = '';

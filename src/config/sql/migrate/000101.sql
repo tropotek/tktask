@@ -4,7 +4,7 @@
 
 CREATE TABLE IF NOT EXISTS user
 (
-  user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   type VARCHAR(128) NOT NULL DEFAULT '',
   title VARCHAR(20) NOT NULL DEFAULT '',
   given_name VARCHAR(128) NOT NULL DEFAULT '',
@@ -21,15 +21,15 @@ CREATE TABLE IF NOT EXISTS user
 );
 
 CREATE TABLE IF NOT EXISTS notify (
-  notify_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  notify_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   user_id INT UNSIGNED NOT NULL DEFAULT 0,
   title VARCHAR(250) NOT NULL DEFAULT '',
   message TEXT,
   url VARCHAR(250) NOT NULL DEFAULT '',
   icon BLOB NOT NULL DEFAULT '',
-  read_on DATETIME NULL,        -- Date user read notification in browser
-  notified_on DATETIME NULL,    -- Date message was sent as browser notification
-  ttl_mins INT NOT NULL DEFAULT 1440,
+  read_on DATETIME NULL,                                    -- Date user read notification in browser
+  notified_on DATETIME NULL,                                -- Date message was sent as browser notification
+  ttl_mins INT UNSIGNED NOT NULL DEFAULT 1440,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   expiry DATETIME GENERATED ALWAYS AS (created + INTERVAL ttl_mins MINUTE) VIRTUAL,
   KEY (user_id),
@@ -38,30 +38,43 @@ CREATE TABLE IF NOT EXISTS notify (
 
 CREATE TABLE IF NOT EXISTS file
 (
-  file_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id INT UNSIGNED NOT NULL DEFAULT 0,  -- uploader
+  file_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NULL DEFAULT NULL,
   fkey VARCHAR(64) DEFAULT '' NOT NULL,
-  fid INT DEFAULT 0 NOT NULL DEFAULT 0,
+  fid INT UNSIGNED NOT NULL DEFAULT 0,
   label VARCHAR(128) NOT NULL DEFAULT '',
-  filename VARCHAR(255) NOT NULL DEFAULT '',    -- the files relative path from site root
+  filename VARCHAR(255) NOT NULL DEFAULT '',              -- the files relative path from site root
   bytes INT UNSIGNED NOT NULL DEFAULT 0,
   mime VARCHAR(255) NOT NULL DEFAULT '',
   notes TEXT NULL,
   selected BOOL NOT NULL DEFAULT FALSE,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY user_id (user_id),
-  KEY fkey (fkey),
-  KEY fkey_2 (fkey, fid),
-  KEY fkey_3 (fkey, fid, label),
-  CONSTRAINT fk_file__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY (user_id),
+  KEY (fkey),
+  KEY (fkey, fid),
+  KEY (fkey, fid, label),
+  CONSTRAINT fk_file__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
--- ----
+--
 
+CREATE TABLE IF NOT EXISTS status_log (
+  status_log_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NULL DEFAULT NULL,               -- The user who performed the activity
+  fkey VARCHAR(64) NOT NULL DEFAULT '',                 -- A foreign key as a string (usually the object name)
+  fid INT UNSIGNED NOT NULL DEFAULT 0,                  -- foreign_id
+  name VARCHAR(32) NOT NULL DEFAULT '',                 -- pending, approved, not_approved, etc
+  notify BOOL NOT NULL DEFAULT TRUE,                    -- trigger messages send event
+  message TEXT,                                         -- A status update log message
+  data TEXT,                                            -- json data of any related object data pertaining to this status event
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY (fkey, fid),
+  CONSTRAINT fk_status_log__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS company
 (
-  company_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  company_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   type ENUM('Client','Supplier') DEFAULT 'Client',
   name VARCHAR(128) NOT NULL DEFAULT '',
   alias VARCHAR(255) NOT NULL DEFAULT '',
@@ -79,30 +92,83 @@ CREATE TABLE IF NOT EXISTS company
   KEY (type)
 );
 
+CREATE TABLE IF NOT EXISTS project (
+  project_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL DEFAULT 0,              -- project lead user/contact
+  company_id INT UNSIGNED NOT NULL DEFAULT 0,
+  status ENUM('pending','active','hold','completed','cancelled') DEFAULT 'pending',
+  name VARCHAR(128) NOT NULL,
+  quote INT NOT NULL DEFAULT 0,
+  date_start DATETIME NULL,
+  date_end DATETIME NULL,
+  description TEXT,
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY status (status),
+  CONSTRAINT fk_project__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_project__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS project_user (
+  project_id INT UNSIGNED NOT NULL DEFAULT 0,
+  user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (project_id, user_id),
+  CONSTRAINT fk_project_user__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_project_user__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS task_category
 (
-  task_category_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  task_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(128) NOT NULL DEFAULT '',
   label VARCHAR(128) NOT NULL DEFAULT '',
   description VARCHAR(512) NOT NULL DEFAULT '',
-  order_by INT NOT NULL DEFAULT 0,
+  order_by INT UNSIGNED NOT NULL DEFAULT 0,
   active BOOL NOT NULL DEFAULT TRUE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS task (
+  task_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  company_id INT UNSIGNED NOT NULL DEFAULT 0,
+  project_id INT UNSIGNED NULL DEFAULT NULL,
+  category_id INT UNSIGNED NOT NULL DEFAULT 1,
+  creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  closed_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+
+  status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',
+  subject TEXT,
+  comments TEXT,
+  priority TINYINT NOT NULL DEFAULT 0,                      -- 0 None, 1 Low, 5 Med, 10 High
+  minutes INT UNSIGNED NOT NULL DEFAULT 0,                  -- 'Estimated Time in minutes for task',
+  invoiced DATETIME DEFAULT NULL,                           -- The date the billable tasked was invoice, after the task has been
+                                                            -- set to CLOSED, cannot be invoiced twice????
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY priority (priority),
+  KEY status (status),
+  CONSTRAINT fk_task__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_task__category_id FOREIGN KEY (category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
 
 CREATE TABLE IF NOT EXISTS product_category (
-  product_category_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(64) NOT NULL DEFAULT '',
   description TEXT,
-  order_by INT NOT NULL DEFAULT 0,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS product (
-  product_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   category_id INT UNSIGNED NOT NULL DEFAULT 0,
   recur ENUM('each', 'week','fortnight','month','quarter','year','biannual') DEFAULT NULL,  -- price is for this duration, if null then a unit price
   name VARCHAR(128) NOT NULL DEFAULT '',
@@ -110,7 +176,6 @@ CREATE TABLE IF NOT EXISTS product (
   price INT NOT NULL DEFAULT 0,
   description TEXT,
   notes TEXT,
-  order_by INT NOT NULL DEFAULT 0,
   active BOOL NOT NULL DEFAULT TRUE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -118,6 +183,16 @@ CREATE TABLE IF NOT EXISTS product (
   CONSTRAINT fk_product__category_id FOREIGN KEY (category_id) REFERENCES product_category (product_category_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
+
+CREATE TABLE expense_category (
+  expense_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
+  description TEXT,
+  ratio FLOAT UNSIGNED NOT NULL DEFAULT 1.0,
+  active BOOL NOT NULL DEFAULT TRUE,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 
 

@@ -13,7 +13,6 @@ class ProductCategory extends Model
     public int     $productCategoryId = 0;
     public string  $name              = '';
     public string  $description       = '';
-    public int     $orderBy           = 0;
 
     public \DateTime $modified;
     public \DateTime $created;

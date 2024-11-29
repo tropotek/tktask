@@ -27,7 +27,7 @@ class Manager extends ControllerAdmin
         $this->setAccess(User::PERM_SYSADMIN);
 
         // init table
-        $this->table = new \Bs\Mvc\Table();
+        $this->table = new Table();
         $this->table->setOrderBy('name');
         $this->table->setLimit(25);
 
@@ -38,7 +38,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\Company $obj, Cell $cell) {
+            ->addOnValue(function(Company $obj, Cell $cell) {
                 $url = Uri::create('/companyEdit', ['companyId' => $obj->companyId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
@@ -64,7 +64,7 @@ class Manager extends ControllerAdmin
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
-        $this->table->appendCell('created')
+        $this->table->appendCell('modified')
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\DateFmt::onValue');

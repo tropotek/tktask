@@ -1,31 +1,27 @@
 <?php
-namespace App\Controller\Product;
+namespace App\Controller\ExpenseCategory;
 
-use App\Db\Product;
-use App\Db\ProductCategory;
+use App\Db\ExpenseCategory;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
-use Tk\Collection;
 use Tk\Form\Field\Input;
-use Tk\Table\Action\Csv;
-use Tk\Table\Action\Select;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
+use Tk\Table\Action\Csv;
+use Tk\Table\Action\Delete;
+use Tk\Table\Action\Select;
 use Tk\Uri;
 use Tk\Db;
 
-/**
- *
- */
 class Manager extends ControllerAdmin
 {
     protected ?Table $table = null;
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Product Manager');
+        $this->getPage()->setTitle('Expense Category Manager');
 
         $this->setAccess(User::PERM_SYSADMIN);
 
@@ -34,34 +30,19 @@ class Manager extends ControllerAdmin
         $this->table->setOrderBy('name');
         $this->table->setLimit(25);
 
-        $rowSelect = RowSelect::create('id', 'productId');
+        $rowSelect = RowSelect::create('id', 'expenseCategoryId');
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('name')
             ->setSortable(true)
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
-            ->addOnValue(function(Product $obj, Cell $cell) {
-                $url = Uri::create('/productEdit', ['productId' => $obj->productId]);
+            ->addOnValue(function(ExpenseCategory $obj, Cell $cell) {
+                $url = Uri::create('/expenseCategoryEdit', ['expenseCategoryId' => $obj->expenseCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
 
-        $this->table->appendCell('categoryId')
-            ->setSortable(true)
-            ->addCss('text-nowrap')
-            ->addOnValue(function(Product $obj, Cell $cell) {
-                return $obj->getCategory()->name;
-            });
-
-        $this->table->appendCell('recur')
-            ->setSortable(true)
-            ->addCss('text-nowrap');
-
-        $this->table->appendCell('code')
-            ->setSortable(true)
-            ->addCss('text-nowrap');
-
-        $this->table->appendCell('price')
+        $this->table->appendCell('ratio')
             ->setSortable(true)
             ->addCss('text-nowrap');
 
@@ -83,14 +64,6 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField((new \Tk\Form\Field\Select('active', ['' => '-- All --', 'y' => 'Active', 'n' => 'Inactive'])))
             ->setValue('y');
 
-        $cats = ProductCategory::findFiltered(Db\Filter::create([], 'name'));
-        $list = Collection::toSelectList($cats, 'productCategoryId');
-        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('categoryId', $list))
-            ->prependOption('-- Category --', ''));
-
-        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('recur', Product::RECURRING_LIST))
-            ->prependOption('-- Recurring --', ''));
-
 
         // Add Table actions
         $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
@@ -99,7 +72,7 @@ class Manager extends ControllerAdmin
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnSelect(function(Select $action, array $selected, string $value) {
                 foreach ($selected as $id) {
-                    $obj = Product::find($id);
+                    $obj = ExpenseCategory::find($id);
                     $obj->active = (strtolower($value) == 'active');
                     $obj->save();
                 }
@@ -111,21 +84,21 @@ class Manager extends ControllerAdmin
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions']);
                 $filter = $this->table->getDbFilter();
-                $this->table->getCell('name')->getOnValue()->reset();
+                //$this->table->getCell('name')->getOnValue()->reset();
                 if ($selected) {
-                    $rows = Product::findFiltered($filter);
+                    $rows = ExpenseCategory::findFiltered($filter);
                 } else {
-                    $rows = Product::findFiltered($filter->resetLimits());
+                    $rows = ExpenseCategory::findFiltered($filter->resetLimits());
                 }
                 return $rows;
             }));
 
-        // execute table to init filter object
+        // execute table
         $this->table->execute();
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
-        $rows = Product::findFiltered($filter);
+        $rows = ExpenseCategory::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
     }
 
@@ -148,11 +121,11 @@ class Manager extends ControllerAdmin
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="#" title="Create Product" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Product</a>
+      <a href="#" title="Create Expense Category" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Category</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-shopping-cart"></i> <span var="title"></span></div>
+    <div class="card-header"><i class="fa fa-folder-open"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

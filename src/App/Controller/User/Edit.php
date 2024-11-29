@@ -116,7 +116,9 @@ class Edit extends ControllerAdmin
         }
 
         if ($this->user->userId) {
-            $this->form->appendField(new Checkbox('active', ['1' => 'Enable User Login']))
+            $this->form->appendField(new Checkbox('active', ['1' => 'active']))
+                ->setLabel('')
+                ->setNotes('User Login Enabled')
                 ->setGroup($group);
         }
 
