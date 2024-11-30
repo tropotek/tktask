@@ -119,25 +119,6 @@ INSERT IGNORE INTO dev_tktask.project_user
   FROM dev_tktis.project_user
 );
 
-
-
---
-TRUNCATE dev_tktask.task_category;
-INSERT IGNORE INTO dev_tktask.task_category
-(
-  SELECT
-    id AS task_category_id,
-    name,
-    label,
-    IFNULL(description, '') AS description,
-    order_by,
-    NOT del AS active,
-    modified,
-    created
-  FROM dev_tktis.task_category
-);
--- UPDATE dev_tktask.task_category SET order_by = task_category_id WHERE TRUE;
-
 --
 TRUNCATE dev_tktask.product_category;
 INSERT IGNORE INTO dev_tktask.product_category
@@ -206,6 +187,66 @@ INSERT IGNORE INTO dev_tktask.status_log
       created
     FROM dev_tktis.status_log
   );
+
+--
+TRUNCATE dev_tktask.task_category;
+INSERT IGNORE INTO dev_tktask.task_category
+(
+  SELECT
+    id AS task_category_id,
+    name,
+    label,
+    IFNULL(description, '') AS description,
+    order_by,
+    NOT del AS active,
+    modified,
+    created
+  FROM dev_tktis.task_category
+);
+
+--
+TRUNCATE dev_tktask.task;
+INSERT IGNORE INTO dev_tktask.task
+(
+  SELECT
+    id AS task_id,
+    company_id,
+    project_id,
+    category_id,
+    creator_user_id,
+    assigned_user_id,
+    closed_user_id,
+    status,
+    IFNULL(subject, '') AS subject,
+    IFNULL(comments, '') AS comments,
+    priority,
+    SEC_TO_TIME(minutes*60) AS time,
+    minutes,
+    invoiced,
+    modified,
+    created
+  FROM dev_tktis.task
+);
+
+--
+TRUNCATE dev_tktask.task_log;
+INSERT IGNORE INTO dev_tktask.task_log
+(
+  SELECT
+    id AS task_log_id,
+    task_id,
+    user_id,
+    product_id,
+    status,
+    billable,
+    date,
+    minutes,
+    IFNULL(comment, '') AS comment,
+    IFNULL(notes, '') AS notes,
+    modified,
+    created
+  FROM dev_tktis.task_log
+);
 
 
 

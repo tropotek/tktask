@@ -78,8 +78,13 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('project-manager', '/projectManager')
         ->controller([\App\Controller\Project\Manager::class, 'doDefault']);
-//    $routes->add('project-edit', '/projectEdit')
-//        ->controller([\App\Controller\Project\Edit::class, 'doDefault']);
+    $routes->add('project-edit', '/projectEdit')
+        ->controller([\App\Controller\Project\Edit::class, 'doDefault']);
+
+    $routes->add('task-manager', '/taskManager')
+        ->controller([\App\Controller\Task\Manager::class, 'doDefault']);
+//    $routes->add('task-edit', '/taskEdit')
+//        ->controller([\App\Controller\Task\Edit::class, 'doDefault']);
 
 
 

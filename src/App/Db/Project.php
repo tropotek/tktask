@@ -187,6 +187,10 @@ class Project extends Model implements StatusInterface
             $errors['status'] = 'Invalid value: status';
         }
 
+        if ($this->dateStart > $this->dateEnd) {
+            $errors['dateEnd'] = 'End date must be before start date.';
+        }
+
         return $errors;
     }
 
@@ -195,32 +199,5 @@ class Project extends Model implements StatusInterface
         return $this->status;
     }
 
-    public function hasStatusChanged(StatusLog $statusLog): bool
-    {
-        // TODO: Implement hasStatusChanged() method.
-//        $prevStatusName = $statusLog->getPreviousName();
-//        switch($statusLog->getName()) {
-//            case self::STATUS_PENDING:
-//                if (!$prevStatusName)
-//                    return true;
-//                break;
-//            case self::STATUS_ACTIVE:
-//                if (self::STATUS_PENDING == $prevStatusName || self::STATUS_HOLD == $prevStatusName)
-//                    return true;
-//                break;
-//            case self::STATUS_HOLD:
-//                if ($prevStatusName)
-//                    return true;
-//                break;
-//            case self::STATUS_COMPLETED:
-//                if (self::STATUS_PENDING == $prevStatusName || self::STATUS_ACTIVE == $prevStatusName || self::STATUS_HOLD == $prevStatusName)
-//                    return true;
-//                break;
-//            case self::STATUS_CANCELLED:
-//                if ($prevStatusName && self::STATUS_COMPLETED != $prevStatusName)
-//                    return true;
-//                break;
-//        }
-        return false;
-    }
+    public function onStatusChanged(StatusLog $statusLog): void { }
 }

@@ -22,7 +22,11 @@ class Test extends Console
             return self::FAILURE;
         }
 
-
+//        $orderBy = 'FIELD(`status`, "open", "pending", "hold", "closed", "cancelled"), -created';
+//        //preg_match('/,\(?!\d+\))/gm', $orderBy, $regs);
+//
+//        $regs = preg_split('/(,)|([([{])|[)\]}]/', $orderBy);
+//        vd($orderBy, $regs);
 
         return self::SUCCESS;
     }

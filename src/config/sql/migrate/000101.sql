@@ -118,47 +118,6 @@ CREATE TABLE IF NOT EXISTS project_user (
   CONSTRAINT fk_project_user__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS task_category
-(
-  task_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(128) NOT NULL DEFAULT '',
-  label VARCHAR(128) NOT NULL DEFAULT '',
-  description VARCHAR(512) NOT NULL DEFAULT '',
-  order_by INT UNSIGNED NOT NULL DEFAULT 0,
-  active BOOL NOT NULL DEFAULT TRUE,
-  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS task (
-  task_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  company_id INT UNSIGNED NOT NULL DEFAULT 0,
-  project_id INT UNSIGNED NULL DEFAULT NULL,
-  category_id INT UNSIGNED NOT NULL DEFAULT 1,
-  creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
-  assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
-  closed_user_id INT UNSIGNED NOT NULL DEFAULT 0,
-
-  status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',
-  subject TEXT,
-  comments TEXT,
-  priority TINYINT NOT NULL DEFAULT 0,                      -- 0 None, 1 Low, 5 Med, 10 High
-  minutes INT UNSIGNED NOT NULL DEFAULT 0,                  -- 'Estimated Time in minutes for task',
-  invoiced DATETIME DEFAULT NULL,                           -- The date the billable tasked was invoice, after the task has been
-                                                            -- set to CLOSED, cannot be invoiced twice????
-  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  KEY priority (priority),
-  KEY status (status),
-  CONSTRAINT fk_task__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT fk_task__category_id FOREIGN KEY (category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
-
 CREATE TABLE IF NOT EXISTS product_category (
   product_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(64) NOT NULL DEFAULT '',
@@ -181,6 +140,63 @@ CREATE TABLE IF NOT EXISTS product (
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY (code),
   CONSTRAINT fk_product__category_id FOREIGN KEY (category_id) REFERENCES product_category (product_category_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS task_category
+(
+  task_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL DEFAULT '',
+  label VARCHAR(128) NOT NULL DEFAULT '',
+  description VARCHAR(512) NOT NULL DEFAULT '',
+  order_by INT UNSIGNED NOT NULL DEFAULT 0,
+  active BOOL NOT NULL DEFAULT TRUE,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS task (
+  task_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  company_id INT UNSIGNED NOT NULL DEFAULT 0,
+  project_id INT UNSIGNED NULL DEFAULT NULL,
+  category_id INT UNSIGNED NOT NULL DEFAULT 1,
+  creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  closed_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',
+  subject TEXT,
+  comments TEXT,
+  priority TINYINT NOT NULL DEFAULT 0,        -- 0 None, 1 Low, 5 Med, 10 High
+  minutes INT UNSIGNED NOT NULL DEFAULT 0,    -- Estimated Time for task `hh:mm:ss`,
+  time TIME NOT NULL DEFAULT '',              -- Estimated Time in minutes for task,
+  invoiced DATETIME DEFAULT NULL,             -- The date the billable tasked was invoice, after task CLOSED, not to be invoiced twice
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY priority (priority),
+  KEY status (status),
+  CONSTRAINT fk_task__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_task__category_id FOREIGN KEY (category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS task_log (
+  task_log_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  task_id INT UNSIGNED NOT NULL DEFAULT 0,
+  user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  product_id INT UNSIGNED NOT NULL DEFAULT 1,       -- Usually labor products go here
+  status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',  -- Same options as a task
+  billable BOOL NOT NULL DEFAULT 0,                 -- Is this task billable
+  date DATETIME NOT NULL,                           -- DateTime worked started
+  minutes INT NOT NULL DEFAULT 0,                   -- Time worked
+  comment TEXT,
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_task_log__task_id FOREIGN KEY (task_id) REFERENCES task (task_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task_log__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task_log__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 

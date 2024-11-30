@@ -49,9 +49,6 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('name'));
         $this->form->appendField(new InputGroup('ratio', '%'));
 
-//        $list = ['statusOne' => 'Status 1', 'statusTwo' => 'Status 2', 'statusThree' => 'Status 3'];
-//        $this->form->appendField(new StatusSelect('status', $list));
-
         $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('&nbsp;');
         $this->form->appendField(new Textarea('description'));
 
@@ -77,8 +74,6 @@ class Edit extends ControllerAdmin
 
         $isNew = ($this->expenseCategory->expenseCategoryId == 0);
         $this->expenseCategory->save();
-
-        //StatusLog::create($this->expenseCategory, $_POST['status_msg'] ?? '', truefalse($_POST['status_notify'] ?? false));
 
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('expenseCategoryId', $this->expenseCategory->expenseCategoryId));

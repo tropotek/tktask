@@ -13,8 +13,6 @@ use Tk\Form\Field\Input;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
-use Tk\Table\Action\Delete;
-use Tk\Table\Action\Select;
 use Tk\Uri;
 use Tk\Db;
 
@@ -111,7 +109,6 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
 
-        // todo Need a multi select element for searching status
         $this->table->getForm()->appendField((new \Tk\Form\Field\Select('status', Project::STATUS_LIST))
             ->setMultiple(true)
             ->setAttr('placeholder', '-- Status --')
@@ -172,7 +169,7 @@ class Manager extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> <span var="title"></span></div>
+    <div class="card-header"><i class="fas fa-project-diagram"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

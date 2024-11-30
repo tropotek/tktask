@@ -28,12 +28,25 @@ let app = function () {
     if ($.fn.tkCheckSelect === undefined) return;
 
     tkRegisterInit(function () {
-      $('.tk-checkselect', this).tkCheckSelect({
+      $('select.tk-checkselect', this).tkCheckSelect({
         search: true,
         selectAll: true,
       });
     });
   };
+
+  /**
+   * @see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format
+   */
+  // let initDatepicker = function () {
+  //   if ($.fn.datepicker === undefined) return;
+  //
+  //   tkRegisterInit(function () {
+  //     $('input.datepicker', this).datepicker({
+  //       format: tkConfig.dateFormat.bsDatepicker ?? 'dd/mm/yyyy'
+  //     });
+  //   });
+  // };
 
 
   /**

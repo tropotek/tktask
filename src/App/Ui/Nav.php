@@ -30,6 +30,11 @@ class Nav
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/projectManager'
             ],
+            'Tasks' => [
+                'icon' => 'fas fa-tasks',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/taskManager'
+            ],
             'Application' => [
                 'icon' => 'ri-apps-2-fill',
                 'File Manager' => [

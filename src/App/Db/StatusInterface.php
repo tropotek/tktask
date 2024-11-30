@@ -10,9 +10,8 @@ interface StatusInterface
     public function getStatus(): string;
 
     /**
-     * Return true when the status changes are required to trigger the status.change event
-     *
+     * Executed when objects status has changed and after new status log saved
      */
-    public function hasStatusChanged(StatusLog $statusLog): bool;
+    public function onStatusChanged(StatusLog $statusLog): void;
 
 }

@@ -27,6 +27,8 @@ class StatusLog extends Model
     public ?\stdClass $data        = null;
     public \DateTime  $created;
 
+    private ?StatusLog $_previous = null;
+
 
     public function __construct()
     {
@@ -74,9 +76,39 @@ class StatusLog extends Model
         $obj->name = $model->getStatus();
         $obj->message = trim($message);
         $obj->notify = $notify;
+
+        // save log if status has changed
+        $prev = $obj->getPrevious();
+        if (!($prev instanceof StatusLog) || $obj->name != $prev->name) {
+            $obj->save();
+            $model->onStatusChanged($obj);
+        }
+
         return $obj;
     }
 
+    public function getPrevious(): ?static
+    {
+        if (!$this->_previous) {
+            $filter = array(
+                'before' => $this->created,
+                'fid' => $this->fid,
+                'fkey' => $this->fkey
+            );
+            $this->_previous = self::findFiltered(Filter::create($filter, '-created'))[0] ?? null;
+        }
+        return $this->_previous;
+    }
+
+    public function getPreviousName(): string
+    {
+        return $this->getPrevious()?->name ?? '';
+    }
+
+    public function getLabel(): string
+    {
+        return ucwords(preg_replace('/[A-Z]/', ' $0', \Tk\ObjectUtil::basename($this->fkey)));
+    }
 
     public static function find(int $statusLogId): ?self
     {

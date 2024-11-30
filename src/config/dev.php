@@ -16,6 +16,7 @@ if (!\Tk\Config::isDebug() || \Tk\Config::isProd()) {
 }
 
 foreach (\Bs\Auth::findAll() as $auth) {
+    if (!$auth->active) continue;
     $auth->password = \Bs\Auth::hashPassword('password');
     $auth->save();
 }
