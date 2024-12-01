@@ -1,15 +1,15 @@
 <?php
 namespace App\Db\Traits;
 
-use App\Db\ProductCategory;
+use App\Db\Product;
 
 trait ProductTrait
 {
-    private ?ProductCategory $_product = null;
+    private ?Product $_product = null;
 
-    public function getProductCategory(): ?ProductCategory
+    public function getProduct(): ?Product
     {
-        if (!$this->_product) $this->_product = ProductCategory::find($this->productId);
+        if (!$this->_product) $this->_product = Product::find($this->productId);
         return $this->_product;
     }
 

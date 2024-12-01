@@ -1,15 +1,19 @@
 <?php
 namespace App\Db;
 
+use App\Db\Traits\ProductCategoryTrait;
 use Bs\Traits\TimestampTrait;
+use Tk\Config;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Exception;
 use Tk\Money;
 
 class Product extends Model
 {
     use TimestampTrait;
+    use ProductCategoryTrait;
 
     // TODO: this may go into the recurring billing object not here
     const string RECURRING_EACH         = 'each';
@@ -77,6 +81,15 @@ class Product extends Model
         }
 
         $this->reload();
+    }
+
+    public static function getDefaultLaborProduct(): static
+    {
+        $config = Config::instance();
+        $id = (int)$config->get('site.taskLog.billable.default', 1);
+        $obj = self::find($id);
+        if (!($obj instanceof Product)) throw new Exception("Failed to find product id {$id}");
+        return $obj;
     }
 
     public static function find(int $productId): ?self

@@ -2,9 +2,13 @@
 namespace App\Table;
 
 use App\Db\Company;
+use App\Db\TaskCategory;
+use App\Util\Tools;
 use Bs\Mvc\Table;
+use Bs\Registry;
 use Dom\Template;
 use Tk\Collection;
+use Tk\Config;
 use Tk\Uri;
 use Tk\Db;
 use Tk\Table\Action\Csv;
@@ -48,15 +52,16 @@ class Task extends Table
     {
         $editUrl = Uri::create('/taskEdit');
 
-        $rowSelect = RowSelect::create('id', 'taskId');
-        $this->appendCell($rowSelect);
+//        $rowSelect = RowSelect::create('id', 'taskId');
+//        $this->appendCell($rowSelect);
 
         $this->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                // TODO: add a log to the task
                 $url = Uri::create('/taskEdit')->set('taskId', $obj->taskId);
                 return <<<HTML
-                    <a class="btn btn-outline-success" href="$url" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
+                    <a class="btn btn-primary" href="$url" title="Add Log"><i class="far fa-fw fa-clock "></i></a>
                 HTML;
             });
 
@@ -99,35 +104,63 @@ class Task extends Table
         // Progress
         // todo wait until Task exist
         $this->appendCell('progress')
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap')
+            ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                $pcnt = 0;
+                if ($obj->minutes) {
+                    $completed = $obj->getCompletedTime();
+                    $pcnt = (round(($completed/$obj->minutes), 2) * 100);
+                }
+                return sprintf('
+                    <div class="progress" role="progressbar" aria-label="Task Progress" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar" style="width: %s%%">%s%%</div>
+                    </div>', $pcnt, $pcnt, $pcnt
+                );
+            });
 
         $this->appendCell('minutes')
             ->setHeader('Est Min.')
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
-                return date('H:i', strtotime($obj->minutes));
+                return Tools::mins2Str($obj->minutes);
             });
 
-        $this->appendCell('invoiced')
-            ->addCss('text-nowrap')
-            ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+        if (Registry::instance()->get('site.invoice.enable', false)) {
+            $this->appendCell('cost')
+                ->setHeader('$ Cur.')
+                ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                    return $obj->getCost()->toString();
+                });
 
-        $this->appendCell('modified')
-            ->addCss('text-nowrap')
-            ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            $this->appendCell('est')
+                ->setHeader('$ Est.')
+                ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                    return $obj->getEstimatedCost()->toString();
+                });
+        }
 
-        $this->appendCell('created')
-            ->addCss('text-nowrap')
+        $this->appendCell('tasks')
+            ->addCss('text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                return count($obj->getLogList());
+            });
+
+//        $this->appendCell('created')
+//            ->addCss('text-nowrap')
+//            ->setSortable(true)
+//            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
 
         // Add Filter Fields
         $this->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
+
+        $cats = TaskCategory::findFiltered(Db\Filter::create(['active' => true], 'order_by'));
+        $list = Collection::toSelectList($cats, 'taskCategoryId');
+        $this->getForm()->appendField((new \Tk\Form\Field\Select('categoryId', $list))
+            ->prependOption('-- Category --', ''));
 
         $this->getForm()->appendField((new \Tk\Form\Field\Select('status', \App\Db\Task::STATUS_LIST))
             ->setMultiple(true)
@@ -136,27 +169,26 @@ class Task extends Table
             ->setPersistent(true)
             ->setValue([\App\Db\Task::STATUS_PENDING, \App\Db\Task::STATUS_HOLD, \App\Db\Task::STATUS_OPEN]);
 
+        $this->getForm()->appendField((new \Tk\Form\Field\Select('priority', \App\Db\Task::PRIORITY_LIST))
+            ->setMultiple(true)
+            ->setAttr('placeholder', '-- Priority --')
+            ->addCss('tk-checkselect'))
+            ->setPersistent(true);
+
         $cats = Company::findFiltered(Db\Filter::create(['type' => Company::TYPE_CLIENT], '-active, name'));
         $list = Collection::toSelectList($cats, 'companyId', fn($obj) => ($obj->active ? '' : '- ') . $obj->name);
         $this->getForm()->appendField((new \Tk\Form\Field\Select('companyId', $list))
             ->prependOption('-- Company --', ''));
 
-        // init filter fields for actions to access to the filter values
-        //$this->initForm();
 
         // Add Table actions
-//        $this->appendAction(Delete::create())
-//            ->addOnGetSelected([$rowSelect, 'getSelected'])
-//            ->addOnDelete(function(Delete $action, array $selected) {
-//                foreach ($selected as $task_id) {
-//                    Db::delete('task', compact('task_id'));
-//                }
-//            });
-
         $this->appendAction(Csv::create())
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
+            //->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions']);
+                $this->getCell('subject')->getOnValue()->reset();
+                $this->getCell('status')->getOnValue()->reset();
+                $this->getCell('priority')->getOnValue()->reset();
                 $filter = $this->getDbFilter();
                 if ($selected) {
                     $rows = \App\Db\Task::findFiltered($filter);

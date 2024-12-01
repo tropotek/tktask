@@ -166,8 +166,7 @@ CREATE TABLE IF NOT EXISTS task (
   subject TEXT,
   comments TEXT,
   priority TINYINT NOT NULL DEFAULT 0,        -- 0 None, 1 Low, 5 Med, 10 High
-  minutes INT UNSIGNED NOT NULL DEFAULT 0,    -- Estimated Time for task `hh:mm:ss`,
-  time TIME NOT NULL DEFAULT '',              -- Estimated Time in minutes for task,
+  minutes INT UNSIGNED NOT NULL DEFAULT 0,    -- Est time in mins for task,
   invoiced DATETIME DEFAULT NULL,             -- The date the billable tasked was invoice, after task CLOSED, not to be invoiced twice
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

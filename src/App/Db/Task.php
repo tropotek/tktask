@@ -4,12 +4,13 @@ namespace App\Db;
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\ProjectTrait;
 use App\Db\Traits\TaskCategoryTrait;
+use Bs\Registry;
 use Bs\Traits\TimestampTrait;
-use Tk\Config;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Exception;
+use Tk\Money;
 
 class Task extends Model implements StatusInterface
 {
@@ -73,7 +74,7 @@ class Task extends Model implements StatusInterface
     public string     $comments       = '';
     public int        $priority       = 0;
     public int        $minutes        = 0;
-    public ?\DateTime $invoiced       = null;
+    public ?\DateTime $invoiced       = null;       // TODO not used anywhere ??? Remove ???
     public \DateTime  $modified;
     public \DateTime  $created;
 
@@ -158,6 +159,44 @@ class Task extends Model implements StatusInterface
         return $this;
     }
 
+    /**
+     * @return array<int,TaskLog>
+     */
+    public function getLogList(?Filter $filter = null): array
+    {
+        if (!$filter) $filter = Filter::create([], '-created');
+        $filter->set('taskId', $this->taskId);
+        return TaskLog::findFiltered($filter);
+    }
+
+    public function getCompletedTime(): int
+    {
+        $time = 0;
+        foreach ($this->getLogList() as $task) {
+            $time += $task->minutes;
+        }
+        return $time;
+    }
+
+    public function getCost(): Money
+    {
+        // billable TaskLogs
+        $logs = TaskLog::findFiltered(array(
+            'taskId' => $this->taskId,
+            'billable' => true
+        ));
+        $total = Money::create();
+        foreach ($logs as $log) {
+            $total = $total->add($log->getProduct()->price->multiply(round($log->minutes/60, 2)));
+        }
+        return $total;
+    }
+
+    public function getEstimatedCost(): Money
+    {
+        $price = Product::getDefaultLaborProduct()->price->multiply(round($this->minutes/60, 2));
+        return \Tk\Money::create($price);
+    }
 
     public static function find(int $taskId): ?self
     {
@@ -241,7 +280,8 @@ class Task extends Model implements StatusInterface
             $filter->appendWhere('a.status IN :status AND ');
         }
         if (!empty($filter['priority'])) {
-            $filter->appendWhere('a.priority = :priority AND ');
+            if (!is_array($filter['priority'])) $filter['priority'] = [$filter['priority']];
+            $filter->appendWhere('a.priority IN :priority AND ');
         }
 
         return Db::query("
@@ -301,10 +341,6 @@ class Task extends Model implements StatusInterface
             $errors['priority'] = 'Invalid value: priority';
         }
 
-//        if (!$this->minutes) {
-//            $errors['minutes'] = 'Invalid value: minutes';
-//        }
-
         return $errors;
     }
 
@@ -320,7 +356,7 @@ class Task extends Model implements StatusInterface
             case self::STATUS_CLOSED:
                 if (self::STATUS_CANCELLED != $prevStatusName) {
                     // TODO: finish implementation ...
-                    if ($this->getCompany() && Config::instance()->get('site.invoice.enable')) {
+                    if ($this->getCompany() && Registry::instance()->get('site.invoice.enable')) {
 //                        $invoice = \App\Db\Invoice::getOpenInvoice($this->getCompany()->getAccount());
 //                        if ($invoice && $invoice->getStatus() == \App\Db\Invoice::STATUS_OPEN) {
 //                            $item = $this->getInvoiceItem();

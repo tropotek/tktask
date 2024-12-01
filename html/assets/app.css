@@ -78,6 +78,9 @@ form textarea {
 .tk-table-sm {
   font-size: 0.75rem;
 }
+.table > :not(caption) > * > * {
+  padding: .55rem;
+}
 .tk-table-sm.table > :not(caption) > * > * {
   padding: 0.5rem;
 }

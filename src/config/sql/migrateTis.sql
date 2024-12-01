@@ -220,7 +220,6 @@ INSERT IGNORE INTO dev_tktask.task
     IFNULL(subject, '') AS subject,
     IFNULL(comments, '') AS comments,
     priority,
-    SEC_TO_TIME(minutes*60) AS time,
     minutes,
     invoiced,
     modified,
