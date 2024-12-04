@@ -1,7 +1,6 @@
 <?php
 namespace App\Component;
 
-use App\Db\Project;
 use App\Db\StatusLog;
 use App\Db\User;
 use Bs\Mvc\Table;
@@ -13,11 +12,11 @@ use Tk\Table\Cell;
 class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
     protected Table   $table;
-    protected Project $project;
+    protected Db\Model $model;
 
-    public function __construct(Project $project)
+    public function __construct(Db\Model $model)
     {
-        $this->project = $project;
+        $this->model = $model;
     }
 
     public function doDefault(): string
@@ -30,24 +29,25 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         $this->table->setLimit(10);
         $this->table->addCss('tk-table-sm');
 
+        $this->table->appendCell('message')
+            ->addHeaderCss('max-width');
 
         $this->table->appendCell('name')
+            ->setHeader('Status')
             ->addCss('text-nowrap')
             ->setSortable(true);
 
-        $this->table->appendCell('userId')
-            ->addCss('text-nowrap')
-            ->setSortable(true)
-            ->addOnValue(function(\App\Db\StatusLog $obj, Cell $cell) {
-                return $obj->getUser()?->nameShort ?? 'N/A';
-            });
-
-        $this->table->appendCell('message');
+//        $this->table->appendCell('userId')
+//            ->addCss('text-nowrap')
+//            ->setSortable(true)
+//            ->addOnValue(function(\App\Db\StatusLog $obj, Cell $cell) {
+//                return $obj->getUser()?->nameShort ?? 'N/A';
+//            });
 
         $this->table->appendCell('created')
-            ->addCss('text-nowrap')
+            ->addCss('text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
 
 
         // Add Table actions
@@ -58,9 +58,9 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
                 $filter = $this->table->getDbFilter();
                 $this->table->getCell('name')->getOnValue()->reset();
                 if ($selected) {
-                    $rows = Project::findFiltered($filter);
+                    $rows = $this->model::class::findFiltered($filter);
                 } else {
-                    $rows = Project::findFiltered($filter->resetLimits());
+                    $rows = $this->model::class::findFiltered($filter->resetLimits());
                 }
                 return $rows;
             }));
@@ -70,7 +70,7 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
-        $filter['model'] = $this->project;
+        $filter['model'] = $this->model;
         $rows = StatusLog::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 

@@ -53,6 +53,7 @@ class Manager extends ControllerAdmin
 
         $this->table->appendCell('comment')
             ->addCss('text-nowrap')
+            ->addHeaderCss('max-width')
             ->setSortable(true)
             ->addOnValue(function(TaskLog $obj, Cell $cell) {
                 return $obj->comment;
@@ -64,6 +65,10 @@ class Manager extends ControllerAdmin
 //            ->addOnValue(function(TaskLog $obj, Cell $cell) {
 //                return $obj->getUser()?->nameShort ?? 'N/A';
 //            });
+
+        $this->table->appendCell('status')
+            ->addCss('text-nowrap')
+            ->setSortable(true);
 
         $this->table->appendCell('billable')
             ->addCss('text-nowrap')
@@ -89,7 +94,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('created')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
 
 
         // Add Filter Fields

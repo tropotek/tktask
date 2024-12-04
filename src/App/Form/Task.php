@@ -102,6 +102,7 @@ class Task extends Form
 
     public function execute(array $values = []): static
     {
+        $this->setCsrfTtl(0);
         $this->init();
 
         // Load form with object values

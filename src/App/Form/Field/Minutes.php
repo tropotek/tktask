@@ -12,6 +12,8 @@ use Tk\Form\Renderer\Dom\Field\Input;
  * This field is a select with a checkbox.
  * The checkbox state is not saved, and is reset to the default value
  * on each page load. it is meant to be used as a trigger element.
+ *
+ * Be sure to add the \App\Dorm\DataMap\Minutes object to the Form mapper for this field
  */
 class Minutes extends FieldInterface implements DisplayInterface, RendererInterface
 {
