@@ -83,8 +83,13 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('task-manager', '/taskManager')
         ->controller([\App\Controller\Task\Manager::class, 'doDefault']);
-//    $routes->add('task-edit', '/taskEdit')
-//        ->controller([\App\Controller\Task\Edit::class, 'doDefault']);
+    $routes->add('task-edit', '/taskEdit')
+        ->controller([\App\Controller\Task\Edit::class, 'doDefault']);
+
+    $routes->add('task-log-manager', '/taskLogManager')
+        ->controller([\App\Controller\TaskLog\Manager::class, 'doDefault']);
+    $routes->add('task-log-edit', '/taskLogEdit')
+        ->controller([\App\Controller\TaskLog\Edit::class, 'doDefault']);
 
 
 

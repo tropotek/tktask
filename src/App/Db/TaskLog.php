@@ -3,8 +3,12 @@ namespace App\Db;
 
 use App\Db\Traits\ProductTrait;
 use App\Db\Traits\TaskTrait;
+use App\Db\Traits\UserTrait;
+use App\Form\DataMap\Minutes;
 use Bs\Traits\TimestampTrait;
 use Tk\Config;
+use Tk\DataMap\DataMap;
+use Tk\DataMap\Form\Boolean;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -14,14 +18,17 @@ class TaskLog extends Model
 {
     use TimestampTrait;
     use TaskTrait;
+    use UserTrait;
     use ProductTrait;
+
+    const int DEFAULT_PRODUCT_ID = 1;
 
     public int       $taskLogId     = 0;
     public int       $taskId        = 0;
     public int       $userId        = 0;
-    public int       $productId     = 1;
+    public int       $productId     = self::DEFAULT_PRODUCT_ID;
     public string    $status        = Task::STATUS_PENDING;
-    public bool      $billable      = false;
+    public bool      $billable      = true;
     public \DateTime $date;
     public int       $minutes       = 0;
     public string    $comment       = '';
@@ -40,7 +47,15 @@ class TaskLog extends Model
         if (User::getAuthUser() instanceof User) {
             $this->userId = User::getAuthUser()->userId;
         }
-        $this->billable = $config->get('site.taskLog.billable.default', false);
+        $this->billable = $config->get('site.taskLog.billable.default', true);
+    }
+
+    public static function getFormMap(): DataMap
+    {
+        $map = parent::getFormMap();
+        $map->addType(new Boolean('billable'));
+        $map->addType(new Minutes('minutes'));
+        return $map;
     }
 
     public function save(): void
@@ -117,7 +132,7 @@ class TaskLog extends Model
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';
             $w = '';
-            //$w .= 'LOWER(a.name) LIKE LOWER(:search) OR ';
+            $w .= 'LOWER(a.comment) LIKE LOWER(:search) OR ';
             $w .= 'a.task_log_id = :search OR ';
             if (is_numeric($filter['search'])) {
                 $w .= 'a.task_log_id = :search OR ';
@@ -141,16 +156,22 @@ class TaskLog extends Model
         if (!empty($filter['taskId'])) {
             $filter->appendWhere('a.task_id = :taskId AND ');
         }
+
         if (!empty($filter['userId'])) {
-            $filter->appendWhere('a.user_id = :userId AND ');
+            if (!is_array($filter['userId'])) $filter['userId'] = [$filter['userId']];
+            $filter->appendWhere('a.user_id IN :userId AND ');
         }
+
         if (!empty($filter['productId'])) {
-            $filter->appendWhere('a.product_id = :productId AND ');
+            if (!is_array($filter['productId'])) $filter['productId'] = [$filter['productId']];
+            $filter->appendWhere('a.product_id IN :productId AND ');
         }
+
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
             $filter->appendWhere('a.status IN :status AND ');
         }
+
         if (is_bool(truefalse($filter['billable'] ?? null))) {
             $filter['billable'] = truefalse($filter['billable']);
             $filter->appendWhere('a.billable = :billable AND ');

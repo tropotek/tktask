@@ -45,8 +45,9 @@ class Edit extends ControllerAdmin
 
         // Get the form template
         $this->form = new Form();
-        $prods = ProductCategory::findFiltered([]);
-        $list = Collection::toSelectList($prods, 'productCategoryId');
+
+        $categories = ProductCategory::findFiltered([]);
+        $list = Collection::toSelectList($categories, 'productCategoryId');
         $this->form->appendField(new Select('categoryId', $list))->prependOption('-- Select --', '');
 
         $this->form->appendField(new Input('name'));

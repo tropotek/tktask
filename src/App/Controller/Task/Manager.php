@@ -23,8 +23,7 @@ class Manager extends ControllerAdmin
 
         if (!User::getAuthUser()?->isStaff()) {
             Alert::addWarning('You do not have permission to access this page');
-            User::getAuthUser()?->getHomeUrl()->redirect();
-            Uri::create('/')->redirect();
+            User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
         }
 
         $this->table = new \App\Table\Task();
@@ -37,7 +36,6 @@ class Manager extends ControllerAdmin
         // Set the table rows
         $filter = $this->table->getDbFilter();
         $rows = Task::findFiltered($filter);
-
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
     }
 
@@ -64,7 +62,7 @@ class Manager extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header" var="title"><i class="fas fa-tasks"></i> </div>
+    <div class="card-header"><i class="fas fa-tasks"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

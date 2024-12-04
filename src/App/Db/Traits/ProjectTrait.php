@@ -10,7 +10,7 @@ trait ProjectTrait
     public function getProject(): ?Project
     {
         if (!$this->_project) {
-            $this->_project = Project::find($this->projectId);
+            $this->_project = Project::find((int)$this->projectId);
         }
         return $this->_project;
     }

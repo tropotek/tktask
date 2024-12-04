@@ -21,6 +21,12 @@ class Project extends Model implements StatusInterface
     const string STATUS_COMPLETED  = 'completed';
     const string STATUS_CANCELLED  = 'cancelled';
 
+    const array STATUS_OPEN = [
+        self::STATUS_PENDING,
+        self::STATUS_ACTIVE,
+        self::STATUS_HOLD,
+    ];
+
     const array STATUS_LIST = [
         self::STATUS_PENDING   => 'Pending',
         self::STATUS_ACTIVE    => 'Active',
@@ -115,8 +121,8 @@ class Project extends Model implements StatusInterface
 
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';
-            $w = '';
-            //$w .= 'LOWER(a.name) LIKE LOWER(:search) OR ';
+            $w  = 'LOWER(a.name) LIKE LOWER(:search) OR ';
+            $w  = 'LOWER(a.description) LIKE LOWER(:search) OR ';
             $w .= 'a.project_id = :search OR ';
             if (is_numeric($filter['search'])) {
                 $w .= 'a.project_id = :search OR ';

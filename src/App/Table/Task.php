@@ -6,16 +6,12 @@ use App\Db\TaskCategory;
 use App\Util\Tools;
 use Bs\Mvc\Table;
 use Bs\Registry;
-use Dom\Template;
 use Tk\Collection;
-use Tk\Config;
 use Tk\Uri;
 use Tk\Db;
 use Tk\Table\Action\Csv;
-use Tk\Table\Action\Delete;
 use Tk\Form\Field\Input;
 use Tk\Table\Cell;
-use Tk\Table\Cell\RowSelect;
 
 /**
  * Example Controller:
@@ -50,18 +46,18 @@ class Task extends Table
 
     public function init(): static
     {
-        $editUrl = Uri::create('/taskEdit');
-
-//        $rowSelect = RowSelect::create('id', 'taskId');
-//        $this->appendCell($rowSelect);
-
         $this->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                if (!$obj->isOpen()) {
+                    $cell->getTable()->getRowAttrs()->addCss('task-closed');
+                }
+
                 // TODO: add a log to the task
                 $url = Uri::create('/taskEdit')->set('taskId', $obj->taskId);
+                $disabled = $obj->isOpen() ? '' : 'disabled';
                 return <<<HTML
-                    <a class="btn btn-primary" href="$url" title="Add Log"><i class="far fa-fw fa-clock "></i></a>
+                    <a class="btn btn-primary $disabled" href="$url" title="Add Log" $disabled><i class="far fa-fw fa-clock"></i></a>
                 HTML;
             });
 
@@ -140,17 +136,11 @@ class Task extends Table
                 });
         }
 
-        $this->appendCell('tasks')
+        $this->appendCell('logs')
             ->addCss('text-center')
-            ->setSortable(true)
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
                 return count($obj->getLogList());
             });
-
-//        $this->appendCell('created')
-//            ->addCss('text-nowrap')
-//            ->setSortable(true)
-//            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
 
         // Add Filter Fields
@@ -183,7 +173,6 @@ class Task extends Table
 
         // Add Table actions
         $this->appendAction(Csv::create())
-            //->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['id', 'actions']);
                 $this->getCell('subject')->getOnValue()->reset();

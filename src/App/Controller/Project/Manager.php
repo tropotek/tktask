@@ -85,7 +85,6 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('openTasks')
             ->addCss('text-nowrap');
 
-
         $this->table->appendCell('userId')
             ->setHeader('Lead')
             ->addCss('text-nowrap')

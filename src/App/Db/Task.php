@@ -4,8 +4,10 @@ namespace App\Db;
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\ProjectTrait;
 use App\Db\Traits\TaskCategoryTrait;
+use App\Form\DataMap\Minutes;
 use Bs\Registry;
 use Bs\Traits\TimestampTrait;
+use Tk\DataMap\DataMap;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -65,14 +67,14 @@ class Task extends Model implements StatusInterface
     public int        $taskId         = 0;
     public int        $companyId      = 0;
     public ?int       $projectId      = null;
-    public int        $categoryId     = self::CATEGORY_DEFAULT;     // task_category
+    public int        $categoryId     = self::CATEGORY_DEFAULT;
     public int        $creatorUserId  = 0;
     public int        $assignedUserId = 0;
-    public int        $closedUserId   = 0;
-    public string     $status         = '';
+    public ?int       $closedUserId   = null;
+    public string     $status         = self::STATUS_PENDING;
     public string     $subject        = '';
     public string     $comments       = '';
-    public int        $priority       = 0;
+    public int        $priority       = self::PRIORITY_MED;
     public int        $minutes        = 0;
     public ?\DateTime $invoiced       = null;       // TODO not used anywhere ??? Remove ???
     public \DateTime  $modified;
@@ -91,6 +93,13 @@ class Task extends Model implements StatusInterface
             $this->creatorUserId = $user->userId;
             $this->assignedUserId = $user->userId;
         }
+    }
+
+    public static function getFormMap(): DataMap
+    {
+        $map = parent::getFormMap();
+        $map->addType(new Minutes('minutes'));
+        return $map;
     }
 
     public function save(): void
@@ -152,10 +161,41 @@ class Task extends Model implements StatusInterface
     {
         $log = TaskLog::findFiltered(Filter::create(['taskId' => $this->getId()], '-created'))[0] ?? null;
         $this->status = self::STATUS_PENDING;
-        if ($log) {
+        if ($log instanceof TaskLog) {
             $this->status = $log->status;
         }
         $this->save();
+        return $this;
+    }
+
+    public function reopen(): static
+    {
+        if ($this->isEditable()) {
+            return $this;
+        }
+
+        $log = TaskLog::create($this);
+        $log->status = self::STATUS_OPEN;
+        $log->comment = '-- Task Re-Opened. --';
+        $this->status = self::STATUS_OPEN;
+        $this->addTaskLog($log, $log->comment);
+
+        return $this;
+    }
+
+    public function addTaskLog(TaskLog $log, string $statusMsg = '', bool $statusNotify = true): static
+    {
+        if (!$this->isEditable()) {
+            throw new \Tk\Exception('Cannot add a TaskLog with Task status of: ' . $this->getStatus());
+        }
+
+        $log->taskId = $this->taskId;
+        $this->status = $log->status;
+        $log->save();
+        $this->save();
+
+        \App\Db\StatusLog::create($this, $statusMsg, $statusNotify);
+
         return $this;
     }
 

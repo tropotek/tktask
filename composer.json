@@ -1,11 +1,11 @@
 {
-  "name": "ttek/tk8base",
+  "name": "ttek/tktask",
   "type": "project",
-  "description": "A base example site using the tropotek tk v8 libs.",
+  "description": "Developer customer management app",
   "keywords": [
     "tropotek"
   ],
-  "time": "2022-10-17",
+  "time": "2024-12-01",
   "license": "MIT",
   "minimum-stability": "dev",
   "authors": [
@@ -49,7 +49,8 @@
     "components/font-awesome": "~6.2.0",
     "twbs/bootstrap": "~5.3.0",
 		"select2/select2": "~4.0",
-    "studio-42/elfinder": "~2.1.0"
+    "studio-42/elfinder": "~2.1.0",
+    "mpdf/mpdf": "^8.0"
   },
   "require-dev": {
     "composer/composer": "^2.0",

@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS task (
   category_id INT UNSIGNED NOT NULL DEFAULT 1,
   creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
   assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
-  closed_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  closed_user_id INT UNSIGNED NULL DEFAULT NULL,
   status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',
   subject TEXT,
   comments TEXT,
@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS task (
   CONSTRAINT fk_task__category_id FOREIGN KEY (category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS task_log (
