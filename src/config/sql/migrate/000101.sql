@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS product_category (
 CREATE TABLE IF NOT EXISTS product (
   product_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   category_id INT UNSIGNED NOT NULL DEFAULT 0,
-  recur ENUM('each', 'week','fortnight','month','quarter','year','biannual') DEFAULT NULL,  -- price is for this duration, if null then a unit price
+  cycle ENUM('each', 'week','fortnight','month','quarter','year','biannual') DEFAULT NULL,  -- recurring billing cycle (each = none)
   name VARCHAR(128) NOT NULL DEFAULT '',
   code VARCHAR(64) NOT NULL DEFAULT '',
   price INT NOT NULL DEFAULT 0,
@@ -205,7 +205,7 @@ CREATE TABLE IF NOT EXISTS recurring (
   product_id INT UNSIGNED NULL DEFAULT NULL,
   price INT NOT NULL DEFAULT 0,              -- The chargeable amount in cents (what is charged to the invoice if > 0)
   count INT UNSIGNED NOT NULL DEFAULT 0,     -- The number of issued invoices
-  type ENUM('week','fortnight','month','year','biannual') DEFAULT 'year',
+  cycle ENUM('week','fortnight','month','year','biannual') DEFAULT 'year',
   start_on DATE NOT NULL,                    -- date started recurring invoicing
   end_on DATE NULL DEFAULT NULL,             -- (optional) date to end the recurring invoicing
   prev_on DATE NULL DEFAULT NULL,            -- date the line item was last invoiced

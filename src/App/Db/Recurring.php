@@ -15,13 +15,13 @@ class Recurring extends Model
     use CompanyTrait;
     use ProductTrait;
 
-    const array RECURRING_LIST = [
-        Product::RECURRING_WEEK      => 'Weekly',
-        Product::RECURRING_FORTNIGHT => 'Fortnightly',
-        Product::RECURRING_MONTH     => 'Monthly',
-        Product::RECURRING_QUARTER   => 'Quarterly',
-        Product::RECURRING_YEAR      => 'Yearly',
-        Product::RECURRING_BIANNUAL  => 'Biannually',
+    const array CYCLE_LIST = [
+        Product::CYCLE_WEEK      => 'Weekly',
+        Product::CYCLE_FORTNIGHT => 'Fortnightly',
+        Product::CYCLE_MONTH     => 'Monthly',
+        Product::CYCLE_QUARTER   => 'Quarterly',
+        Product::CYCLE_YEAR      => 'Yearly',
+        Product::CYCLE_BIANNUAL  => 'Biannually',
     ];
 
     public int        $recurringId = 0;
@@ -29,7 +29,7 @@ class Recurring extends Model
     public ?int       $productId   = null;
     public Money      $price;
     public int        $count       = 0;
-    public string     $type        = Product::RECURRING_YEAR;
+    public string     $cycle        = Product::CYCLE_YEAR;
     public \DateTime  $startOn;
     public ?\DateTime $endOn       = null;
     public ?\DateTime $prevOn      = null;
@@ -90,7 +90,7 @@ class Recurring extends Model
 //        }
 //
 //        $this->prevOn = $this->nextOn;
-//        $this->nextOn = self::createNextDate($this->prevOn, $this->type);
+//        $this->nextOn = self::createNextDate($this->prevOn, $this->cycle);
 //        $description = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_MED_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_MED_DATE) . ']';
 //
 //        $invoice = Invoice::getOpenInvoice($this->getCompany()->getAccount());
@@ -131,26 +131,26 @@ class Recurring extends Model
     /**
      * Build a date and add the recurring time difference to the date supplied
      */
-    public static function createNextDate($date, $type): \DateTime
+    public static function createNextDate($date, $cycle): \DateTime
     {
         $date = clone $date;
-        switch ($type) {
-            case Product::RECURRING_WEEK:
+        switch ($cycle) {
+            case Product::CYCLE_WEEK:
                 $date = $date->add(new \DateInterval('P7D'));
                 break;
-            case Product::RECURRING_FORTNIGHT:
+            case Product::CYCLE_FORTNIGHT:
                 $date = $date->add(new \DateInterval('P14D'));
                 break;
-            case Product::RECURRING_MONTH:
+            case Product::CYCLE_MONTH:
                 $date = $date->add(new \DateInterval('P1M'));
                 break;
-            case Product::RECURRING_QUARTER:
+            case Product::CYCLE_QUARTER:
                 $date = $date->add(new \DateInterval('P3M'));
                 break;
-            case Product::RECURRING_YEAR:
+            case Product::CYCLE_YEAR:
                 $date = $date->add(new \DateInterval('P1Y'));
                 break;
-            case Product::RECURRING_BIANNUAL:
+            case Product::CYCLE_BIANNUAL:
                 $date = $date->add(new \DateInterval('P2Y'));
                 break;
         }
@@ -237,8 +237,8 @@ class Recurring extends Model
             $filter->appendWhere('a.product_id IN :productId AND ');
         }
 
-        if (!empty($filter['type'])) {
-            $filter->appendWhere('a.type = :type AND ');
+        if (!empty($filter['cycle'])) {
+            $filter->appendWhere('a.cycle = :cycle AND ');
         }
 
         if (is_bool(truefalse($filter['active'] ?? null))) {
@@ -288,8 +288,8 @@ class Recurring extends Model
             $errors['description'] = 'Invalid value: description';
         }
 
-        if (!$this->type) {
-            $errors['type'] = 'Invalid value: type';
+        if (!$this->cycle) {
+            $errors['cycle'] = 'Invalid value: cycle';
         }
 
         return $errors;

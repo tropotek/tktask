@@ -31,20 +31,11 @@ class Manager extends ControllerAdmin
 
         // init table
         $this->table = new Table();
-        $this->table->setOrderBy('-prev_on');
+        $this->table->setOrderBy('next_on');
         $this->table->setLimit(25);
 
         $rowSelect = RowSelect::create('id', 'recurringId');
         $this->table->appendCell($rowSelect);
-
-//        $this->table->appendCell('actions')
-//            ->addCss('text-nowrap text-center')
-//            ->addOnValue(function(Recurring $obj, Cell $cell) {
-//                $url = Uri::create('/recurringEdit')->set('recurringId', $obj->recurringId);
-//                return <<<HTML
-//                    <a class="btn btn-outline-success" href="$url" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
-//                HTML;
-//            });
 
         $this->table->appendCell('description')
             ->setSortable(true)
@@ -53,13 +44,6 @@ class Manager extends ControllerAdmin
                 $url = Uri::create('/recurringEdit', ['recurringId' => $obj->recurringId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->description);
             });
-
-//        $this->table->appendCell('companyId')
-//            ->addCss('text-nowrap')
-//            ->setSortable(true)
-//            ->addOnValue(function(Recurring $obj, Cell $cell) {
-//                return $obj->getCompany()->name;
-//            });
 
         $this->table->appendCell('productId')
             ->addCss('text-nowrap')
@@ -72,19 +56,9 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap text-end')
             ->setSortable(true);
 
-        $this->table->appendCell('type')
+        $this->table->appendCell('cycle')
             ->addCss('text-nowrap text-center')
             ->setSortable(true);
-
-//        $this->table->appendCell('count')
-//            ->addCss('text-nowrap text-center')
-//            ->setSortable(true);
-
-//        $this->table->appendCell('prevOn')
-//            ->addCss('text-nowrap')
-//            ->setHeader('Last Invoice')
-//            ->setSortable(true)
-//            ->addOnValue('\Tk\Table\Type\Date::onValue');
 
         $this->table->appendCell('nextOn')
             ->addCss('text-nowrap text-center')
@@ -106,11 +80,6 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::onValue');
-
-//        $this->table->appendCell('endOn')
-//            ->addCss('text-nowrap')
-//            ->setSortable(true)
-//            ->addOnValue('\Tk\Table\Type\Date::onValue');
 
 
         // Add Filter Fields
@@ -182,7 +151,7 @@ class Manager extends ControllerAdmin
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="#" title="Create Recurring" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Recurring</a>
+      <a href="/recurringEdit" title="Create Recurring" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Recurring</a>
     </div>
   </div>
   <div class="card mb-3">

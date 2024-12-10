@@ -143,7 +143,7 @@ INSERT IGNORE INTO dev_tktask.product
       -- WHEN type = 'each' THEN NULL
       WHEN type = 'bianual' THEN 'biannual'
       ELSE type
-    END AS recur,
+    END AS cycle,
     name,
     code,
     price,
@@ -257,7 +257,7 @@ INSERT IGNORE INTO dev_tktask.recurring
     product_id,
     price,
     count,
-    type,
+    type AS cycle,
     date_start AS start_on,
     date_end AS end_on,
     last_invoice AS prev_on,

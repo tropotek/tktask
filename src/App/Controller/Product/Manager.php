@@ -53,7 +53,8 @@ class Manager extends ControllerAdmin
                 return $obj->getCategory()->name;
             });
 
-        $this->table->appendCell('recur')
+        $this->table->appendCell('cycle')
+            ->setHeader('Recurring')
             ->setSortable(true)
             ->addCss('text-nowrap');
 

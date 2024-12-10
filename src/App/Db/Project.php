@@ -4,6 +4,8 @@ namespace App\Db;
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\UserTrait;
 use Bs\Traits\TimestampTrait;
+use DateTime;
+use Tk\Date;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -49,21 +51,21 @@ class Project extends Model implements StatusInterface
     public string     $status      = self::STATUS_PENDING;
     public string     $name        = '';
     public Money      $quote;
-    public ?\DateTime $dateStart   = null;
-    public ?\DateTime $dateEnd     = null;
+    public ?DateTime $dateStart   = null;
+    public ?DateTime $dateEnd     = null;
     public string     $description = '';
     public string     $notes       = '';
-    public \DateTime  $modified;
-    public \DateTime  $created;
+    public DateTime  $modified;
+    public DateTime  $created;
 
 
     public function __construct()
     {
-        $this->modified  = new \DateTime();
-        $this->created   = new \DateTime();
-        $this->quote     = new \Tk\Money();
-        $this->dateStart = new \DateTime();
-        $this->dateEnd   = \Tk\Date::create()->add(new \DateInterval('P3M'));
+        $this->modified  = new DateTime();
+        $this->created   = new DateTime();
+        $this->quote     = new Money();
+        $this->dateStart = new DateTime();
+        $this->dateEnd   = Date::create()->add(new \DateInterval('P3M'));
     }
 
     public function save(): void

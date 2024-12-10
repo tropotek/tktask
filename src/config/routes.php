@@ -93,8 +93,8 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('recurring-manager', '/recurringManager')
         ->controller([\App\Controller\Recurring\Manager::class, 'doDefault']);
-//    $routes->add('recurring-edit', '/recurringEdit')
-//        ->controller([\App\Controller\Recurring\Edit::class, 'doDefault']);
+    $routes->add('recurring-edit', '/recurringEdit')
+        ->controller([\App\Controller\Recurring\Edit::class, 'doDefault']);
 
 
 

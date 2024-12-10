@@ -3,6 +3,7 @@ namespace App\Db;
 
 use App\Db\Traits\ProductCategoryTrait;
 use Bs\Traits\TimestampTrait;
+use DateTime;
 use Tk\Config;
 use Tk\Db\Model;
 use Tk\Db;
@@ -15,45 +16,44 @@ class Product extends Model
     use TimestampTrait;
     use ProductCategoryTrait;
 
-    // TODO: this may go into the recurring billing object not here
-    const string RECURRING_EACH         = 'each';
-    const string RECURRING_WEEK         = 'week';
-    const string RECURRING_FORTNIGHT    = 'fortnight';
-    const string RECURRING_MONTH        = 'month';
-    const string RECURRING_QUARTER      = 'quarter';
-    const string RECURRING_YEAR         = 'year';
-    const string RECURRING_BIANNUAL     = 'biannual';
+    const string CYCLE_EACH      = 'each';
+    const string CYCLE_WEEK      = 'week';
+    const string CYCLE_FORTNIGHT = 'fortnight';
+    const string CYCLE_MONTH     = 'month';
+    const string CYCLE_QUARTER   = 'quarter';
+    const string CYCLE_YEAR      = 'year';
+    const string CYCLE_BIANNUAL  = 'biannual';
 
-    const array RECURRING_LIST = [
-        self::RECURRING_EACH      => 'Each',
-        self::RECURRING_WEEK      => 'Weekly',
-        self::RECURRING_FORTNIGHT => 'Fortnightly',
-        self::RECURRING_MONTH     => 'Monthly',
-        self::RECURRING_QUARTER   => 'Quarterly',
-        self::RECURRING_YEAR      => 'Yearly',
-        self::RECURRING_BIANNUAL  => 'Biannually',
+    const array CYCLE_LIST = [
+        self::CYCLE_EACH      => 'Each',
+        self::CYCLE_WEEK      => 'Weekly',
+        self::CYCLE_FORTNIGHT => 'Fortnightly',
+        self::CYCLE_MONTH     => 'Monthly',
+        self::CYCLE_QUARTER   => 'Quarterly',
+        self::CYCLE_YEAR      => 'Yearly',
+        self::CYCLE_BIANNUAL  => 'Biannually',
     ];
 
     public int     $productId   = 0;
     public int     $categoryId  = 0;
-    public ?string $recur       = null;
+    public string  $cycle       = self::CYCLE_EACH;
     public string  $name        = '';
     public string  $code        = '';
     public string  $description = '';
     public string  $notes       = '';
     public bool    $active      = true;
 
-    public Money     $price;
-    public \DateTime $modified;
-    public \DateTime $created;
+    public Money    $price;
+    public DateTime $modified;
+    public DateTime $created;
 
     private ?ProductCategory $_category = null;
 
 
     public function __construct()
     {
-        $this->modified = new \DateTime();
-        $this->created  = new \DateTime();
+        $this->modified = new DateTime();
+        $this->created  = new DateTime();
         $this->price    = Money::create();
         $this->code     = 'TK-'.$this->getCreated('Y').'-0000-00';
     }
@@ -161,8 +161,8 @@ class Product extends Model
         if (!empty($filter['categoryId'])) {
             $filter->appendWhere('a.category_id = :categoryId AND ');
         }
-        if (!empty($filter['recur'])) {
-            $filter->appendWhere('a.recur = :recur AND ');
+        if (!empty($filter['cycle'])) {
+            $filter->appendWhere('a.cycle = :cycle AND ');
         }
         if (!empty($filter['name'])) {
             $filter->appendWhere('a.name = :name AND ');

@@ -53,7 +53,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('name'));
         $this->form->appendField(new Input('code'));
         $this->form->appendField(new InputGroup('price', '$'));
-        $this->form->appendField(new Select('recur', Product::RECURRING_LIST))->setLabel('Recurring Period');
+        $this->form->appendField(new Select('cycle', Product::CYCLE_LIST))->setLabel('Recurring');
         $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('&nbsp;');
 
         $this->form->appendField(new Textarea('description'))->addCss('mce-min');
