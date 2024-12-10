@@ -247,6 +247,31 @@ INSERT IGNORE INTO dev_tktask.task_log
   FROM dev_tktis.task_log
 );
 
+--
+TRUNCATE dev_tktask.recurring;
+INSERT IGNORE INTO dev_tktask.recurring
+(
+  SELECT
+    id AS recurring_id,
+    company_id,
+    product_id,
+    price,
+    count,
+    type,
+    date_start AS start_on,
+    date_end AS end_on,
+    last_invoice AS prev_on,
+    next_invoice AS next_on,
+    active,
+    issue,
+    IFNULL(description, '') AS description,
+    IFNULL(notes, '') AS notes,
+    modified,
+    created
+  FROM dev_tktis.recurring
+  WHERE NOT del
+);
+
 
 
 

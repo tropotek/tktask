@@ -24,11 +24,9 @@ class Manager extends ControllerAdmin
     {
         $this->getPage()->setTitle('Project Manager');
 
-        $user = User::getAuthUser();
-        if (!($user && $user->isStaff())) {
-            Alert::addWarning('You do not have permission to access the requested page');
-            $user?->getHomeUrl()->redirect();
-            Uri::create('/')->redirect();
+        if (!User::getAuthUser()?->isStaff()) {
+            Alert::addWarning('You do not have permission to access this page');
+                User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
         }
 
         // init table

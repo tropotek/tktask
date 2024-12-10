@@ -99,8 +99,8 @@ CREATE TABLE IF NOT EXISTS project (
   status ENUM('pending','active','hold','completed','cancelled') DEFAULT 'pending',
   name VARCHAR(128) NOT NULL,
   quote INT NOT NULL DEFAULT 0,
-  date_start DATETIME NULL,
-  date_end DATETIME NULL,
+  date_start DATETIME NULL,   -- todo DATE
+  date_end DATETIME NULL,     -- todo DATE
   description TEXT,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -187,6 +187,7 @@ CREATE TABLE IF NOT EXISTS task_log (
   product_id INT UNSIGNED NOT NULL DEFAULT 1,       -- Usually labor products go here
   status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',  -- Same options as a task
   billable BOOL NOT NULL DEFAULT 0,                 -- Is this task billable
+  -- todo rename `worked_at`
   date DATETIME NOT NULL,                           -- DateTime worked started
   minutes INT NOT NULL DEFAULT 0,                   -- Time worked
   comment TEXT,
@@ -197,6 +198,29 @@ CREATE TABLE IF NOT EXISTS task_log (
   CONSTRAINT fk_task_log__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task_log__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS recurring (
+  recurring_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  company_id INT UNSIGNED NOT NULL DEFAULT 0,
+  product_id INT UNSIGNED NULL DEFAULT NULL,
+  price INT NOT NULL DEFAULT 0,              -- The chargeable amount in cents (what is charged to the invoice if > 0)
+  count INT UNSIGNED NOT NULL DEFAULT 0,     -- The number of issued invoices
+  type ENUM('week','fortnight','month','year','biannual') DEFAULT 'year',
+  start_on DATE NOT NULL,                    -- date started recurring invoicing
+  end_on DATE NULL DEFAULT NULL,             -- (optional) date to end the recurring invoicing
+  prev_on DATE NULL DEFAULT NULL,            -- date the line item was last invoiced
+  next_on DATE NOT NULL,                     -- date the line item will be invoiced next
+  active BOOL NOT NULL DEFAULT TRUE,         -- If inactive this record should still be updated (next_on) just not invoiced, as if paid automatically
+  issue BOOL NOT NULL DEFAULT FALSE,         -- if set, the current invoice is issued after the recurring items are added for that company
+  description TEXT,
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_recurring__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_recurring__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
 
 
 CREATE TABLE expense_category (

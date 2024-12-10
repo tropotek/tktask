@@ -25,6 +25,10 @@ class Nav
                 'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
                 'url' => '/settings'
             ],
+
+            'Task' => [
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+            ],
             'Projects' => [
                 'icon' => 'fas fa-project-diagram',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
@@ -34,6 +38,24 @@ class Nav
                 'icon' => 'fas fa-tasks',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/taskManager'
+            ],
+
+            'Accounts' => [
+                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+            ],
+            'Recurring' => [
+                'icon' => 'far fa-money-bill-alt',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/recurringManager'
+            ],
+
+//            'Reports' => [
+//                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+//            ],
+
+
+            'Admin' => [
+                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
             ],
             'Application' => [
                 'icon' => 'ri-apps-2-fill',
@@ -105,9 +127,12 @@ HTML;
         $nav = sprintf('<ul class="navbar-nav %s" %s>', $this->getCssString(), $this->getAttrString());
         foreach ($this->getNavList() as $name => $item) {
             if (!$this->isVisible($item)) continue;
-            if (empty($item['url'])) {  // is dropdown item
-                if (!count($item)) continue;
-                $nav .= $this->makeTopDropdown($name, $item['icon'] ?? '', $item);
+            if (empty($item['url'])) {
+                if ($this->hasItems($item)) { // is dropdown item
+                    $nav .= $this->makeSideDropdown($name, $item['icon'] ?? '', $item);
+                } else {    // is title item
+                    $nav .= sprintf('<li class="menu-title">%s</li>', $name);
+                }
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
@@ -135,9 +160,12 @@ HTML;
         $nav .= '<div class="dropdown-menu">';
         foreach ($items as $sub_name => $item) {
             if (!$this->isVisible($item)) continue;
-            if (empty($item['url'])) {  // is dropdown item
-                if (!count($item)) continue;
-                $nav .= $this->makeTopSubDropdown($sub_name, $item['icon'] ?? '', $item);
+            if (empty($item['url'])) {
+                if ($this->hasItems($item)) { // is dropdown item
+                    $nav .= $this->makeSideDropdown($name, $item['icon'] ?? '', $item);
+                } else {    // is title item
+                    $nav .= sprintf('<li class="menu-title">%s</li>', $name);
+                }
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
@@ -164,9 +192,12 @@ HTML;
         $nav .= sprintf('<a class="dropdown-item dropdown-toggle arrow-none" href="javascript:;" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">%s %s <div class="arrow-down"></div></a>', $ico, $name);
         $nav .= '<div class="dropdown-menu">';
         foreach ($items as $sub_name => $item) {
-            if (empty($item['url'])) {  // is dropdown item
-                if (!count($item)) continue;
-                $nav .= $this->makeTopSubDropdown($sub_name, $item['icon'] ?? '', $item);
+            if (empty($item['url'])) {
+                if ($this->hasItems($item)) { // is dropdown item
+                    $nav .= $this->makeSideDropdown($name, $item['icon'] ?? '', $item);
+                } else {    // is title item
+                    $nav .= sprintf('<li class="menu-title">%s</li>', $name);
+                }
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
@@ -185,9 +216,12 @@ HTML;
         $nav = sprintf('<ul class="%s" %s>', $this->getCssString(), $this->getAttrString());
         foreach ($this->getNavList() as $name => $item) {
             if (!$this->isVisible($item)) continue;
-            if (empty($item['url'])) {  // is dropdown item
-                if (!count($item)) continue;
-                $nav .= $this->makeSideDropdown($name, $item['icon'] ?? '', $item);
+            if (empty($item['url'])) {
+                if ($this->hasItems($item)) { // is dropdown item
+                    $nav .= $this->makeSideDropdown($name, $item['icon'] ?? '', $item);
+                } else {    // is title item
+                    $nav .= sprintf('<li class="menu-title">%s</li>', $name);
+                }
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
@@ -215,9 +249,12 @@ HTML;
         $nav .= sprintf('<a href="#%s" class="waves-effect" data-bs-toggle="collapse" aria-expanded="false">%s <span>%s</span> <span class="menu-arrow"></span></a>', $id, $ico, $name);
         $nav .= sprintf('<div class="collapse" id="%s"><ul class="nav-second-level">', $id);
         foreach ($items as $sub_name => $item) {
-            if (empty($item['url'])) {  // is dropdown item
-                if (!count($item)) continue;
-                $nav .= $this->makeSideDropdown($sub_name, $item['icon'] ?? '', $item);
+            if (empty($item['url'])) {
+                if ($this->hasItems($item)) { // is dropdown item
+                    $nav .= $this->makeSideDropdown($sub_name, $item['icon'] ?? '', $item);
+                } else {    // is title item
+                    $nav .= sprintf('<li class="menu-title">%s</li>', $sub_name);
+                }
             } else {
                 $ico = '';
                 if ($item['icon'] ?? false) {
@@ -228,6 +265,14 @@ HTML;
         }
         $nav .= '</ul></div></li>';
         return $nav;
+    }
+
+    protected function hasItems(array $item): bool
+    {
+        unset($item['icon']);
+        unset($item['url']);
+        unset($item['visible']);
+        return count($item) > 0;
     }
 
     protected function isVisible(array $item): bool
