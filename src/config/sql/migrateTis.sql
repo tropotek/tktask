@@ -102,8 +102,8 @@ INSERT IGNORE INTO dev_tktask.project
     status,
     name,
     quote,
-    date_start,
-    date_end,
+    DATE(date_start) AS start_on,
+    DATE(date_end) AS end_on,
     IFNULL(description, ''),
     IFNULL(notes, '') AS notes,
     modified,
@@ -154,7 +154,7 @@ INSERT IGNORE INTO dev_tktask.product
     created
   FROM dev_tktis.product
 );
-UPDATE dev_tktask.product SET recur = 'biannual' WHERE recur = 'bianual';
+UPDATE dev_tktask.product SET cycle = 'biannual' WHERE cycle = 'bianual';
 
 --
 TRUNCATE dev_tktask.expense_category;

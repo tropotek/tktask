@@ -4,6 +4,8 @@ namespace App\Db;
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\ProductTrait;
 use Bs\Traits\TimestampTrait;
+use Tk\DataMap\DataMap;
+use Tk\DataMap\Db\Date;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -35,7 +37,7 @@ class Recurring extends Model
     public ?\DateTime $prevOn      = null;
     public \DateTime  $nextOn;
     public bool       $active      = true;
-    public bool       $issue       = false;
+    public bool       $issue       = true;
     public string     $description = '';
     public string     $notes       = '';
     public \DateTime  $modified;
@@ -44,11 +46,21 @@ class Recurring extends Model
 
     public function __construct()
     {
-        $this->startOn  = new \DateTime();
-        $this->nextOn   = new \DateTime();
+        $this->startOn  = new \DateTime('tomorrow');
+        $this->nextOn   = new \DateTime('tomorrow');
         $this->modified = new \DateTime();
         $this->created  = new \DateTime();
         $this->price    = new Money();
+    }
+
+    public static function getDataMap(): DataMap
+    {
+        $map = parent::getDataMap();
+        $map->addType(new Date('start_on', 'startOn'));
+        $map->addType(new Date('end_on', 'endOn'));
+        $map->addType(new Date('prev_on', 'prevOn'));
+        $map->addType(new Date('next_on', 'nextOn'));
+        return $map;
     }
 
     public function save(): void

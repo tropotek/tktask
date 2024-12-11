@@ -27,11 +27,11 @@ CREATE TABLE IF NOT EXISTS notify (
   message TEXT,
   url VARCHAR(250) NOT NULL DEFAULT '',
   icon BLOB NOT NULL DEFAULT '',
-  read_on DATETIME NULL,                                    -- Date user read notification in browser
-  notified_on DATETIME NULL,                                -- Date message was sent as browser notification
+  read_at DATETIME NULL,                                    -- Date user read notification in browser
+  notified_at DATETIME NULL,                                -- Date message was sent as browser notification
   ttl_mins INT UNSIGNED NOT NULL DEFAULT 1440,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   expiry DATETIME GENERATED ALWAYS AS (created + INTERVAL ttl_mins MINUTE) VIRTUAL,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   KEY (user_id),
   CONSTRAINT fk_notify__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -99,8 +99,8 @@ CREATE TABLE IF NOT EXISTS project (
   status ENUM('pending','active','hold','completed','cancelled') DEFAULT 'pending',
   name VARCHAR(128) NOT NULL,
   quote INT NOT NULL DEFAULT 0,
-  date_start DATETIME NULL,   -- todo DATE
-  date_end DATETIME NULL,     -- todo DATE
+  start_on DATE NULL,
+  end_on DATE NULL,
   description TEXT,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -187,8 +187,7 @@ CREATE TABLE IF NOT EXISTS task_log (
   product_id INT UNSIGNED NOT NULL DEFAULT 1,       -- Usually labor products go here
   status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',  -- Same options as a task
   billable BOOL NOT NULL DEFAULT 0,                 -- Is this task billable
-  -- todo rename `worked_at`
-  date DATETIME NOT NULL,                           -- DateTime worked started
+  start_at DATETIME NOT NULL,                       -- DateTime worked started
   minutes INT NOT NULL DEFAULT 0,                   -- Time worked
   comment TEXT,
   notes TEXT,
@@ -220,8 +219,54 @@ CREATE TABLE IF NOT EXISTS recurring (
   CONSTRAINT fk_recurring__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS invoice (
+  invoice_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  account VARCHAR(64) NOT NULL DEFAULT '',                  -- Account Number: CO-000001, UR-000001
+  sub_total INT NOT NULL DEFAULT 0,
+  discount FLOAT UNSIGNED NOT NULL DEFAULT 0.0,             -- '0.0-1.0' as a ratio percentage
+  tax FLOAT UNSIGNED NOT NULL DEFAULT 0.0,                  -- '0.0-1.0' as a ratio percentage
+  shipping INT NOT NULL DEFAULT 0,                          -- cost in cents
+  total INT NOT NULL DEFAULT 0,                             -- cost in cents
+  status ENUM('open','unpaid','paid','cancelled','write_off') DEFAULT 'open',
+  billing_address TEXT,
+  shipping_address TEXT,
+  issued_on DATE DEFAULT NULL,
+  paid_on DATE DEFAULT NULL,
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY account (account)
+);
+ALTER TABLE invoice AUTO_INCREMENT = 1000;
 
+CREATE TABLE IF NOT EXISTS invoice_item (
+  invoice_item_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  invoice_id INT UNSIGNED NOT NULL DEFAULT 0,
+  product_code VARCHAR(64) NOT NULL DEFAULT '',
+  description TEXT,
+  qty FLOAT NOT NULL DEFAULT 1.0,
+  price INT NOT NULL DEFAULT 0,                 -- cost in cents
+  total INT NOT NULL DEFAULT 0,                 -- cost in cents
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY invoice_id (invoice_id),
+  KEY product_code (product_code)
+);
 
+CREATE TABLE IF NOT EXISTS payment (
+  payment_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  invoice_id INT UNSIGNED NOT NULL DEFAULT 0,
+  amount INT UNSIGNED NOT NULL DEFAULT 0,
+  method ENUM('cash','eft','card','crypto','other') DEFAULT 'eft',
+  status ENUM('pending','cleared','cancelled') DEFAULT 'pending',
+  received_at DATETIME NOT NULL,
+  cleared_at DATETIME NULL,
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY invoice_id (invoice_id)
+);
 
 CREATE TABLE expense_category (
   expense_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

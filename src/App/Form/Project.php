@@ -65,9 +65,9 @@ class Project extends Form
 
         $this->appendField(new InputGroup('quote', '$'));
 
-        $this->appendField(new Input('dateStart', 'date'));
+        $this->appendField(new Input('startOn', 'date'));
 
-        $this->appendField(new Input('dateEnd', 'date'));
+        $this->appendField(new Input('endOn', 'date'));
 
         $list = \App\Db\Project::STATUS_LIST;
         $this->form->appendField(new StatusSelect('status', $list));
@@ -122,16 +122,16 @@ class Project extends Form
         $this->getField('companyId')->addFieldCss('col-6');
         $this->getField('userId')->addFieldCss('col-6');
         $this->getField('quote')->addFieldCss('col-6');
-        $this->getField('dateStart')->addFieldCss('col-6');
-        $this->getField('dateEnd')->addFieldCss('col-6');
+        $this->getField('startOn')->addFieldCss('col-6');
+        $this->getField('endOn')->addFieldCss('col-6');
 
         $renderer = $this->getRenderer();
 
         // set end date min range to start date
         $js = <<<JS
 jQuery(function($) {
-    $('#project_dateStart').on('change', function() {
-        $('#project_dateEnd').attr('min', $(this).val());
+    $('#project_startOn').on('change', function() {
+        $('#project_endOn').attr('min', $(this).val());
     }).trigger('change');
 });
 JS;

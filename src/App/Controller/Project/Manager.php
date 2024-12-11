@@ -91,15 +91,15 @@ class Manager extends ControllerAdmin
                 return $obj->getUser()?->nameShort ?? 'N/A';
             });
 
-        $this->table->appendCell('dateStart')
+        $this->table->appendCell('startOn')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::onValue');
 
-        $this->table->appendCell('dateEnd')
+        $this->table->appendCell('endOn')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::onValue');
 
 
         // Add Filter Fields

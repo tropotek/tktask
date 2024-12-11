@@ -29,7 +29,7 @@ class TaskLog extends Model
     public int       $productId     = self::DEFAULT_PRODUCT_ID;
     public string    $status        = Task::STATUS_PENDING;
     public bool      $billable      = true;
-    public \DateTime $date;
+    public \DateTime $startAt;
     public int       $minutes       = 0;
     public string    $comment       = '';
     public string    $notes         = '';
@@ -39,7 +39,7 @@ class TaskLog extends Model
 
     public function __construct()
     {
-        $this->date     = new \DateTime();
+        $this->startAt  = new \DateTime();
         $this->modified = new \DateTime();
         $this->created  = new \DateTime();
 

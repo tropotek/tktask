@@ -19,7 +19,6 @@ use Tk\Form\Action\Submit;
 use Tk\Form\Field\Checkbox;
 use Tk\Form\Field\InputGroup;
 use Tk\Form\Field\Textarea;
-use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
 use Tk\Uri;
@@ -96,7 +95,6 @@ class Edit extends ControllerAdmin
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
-
     }
 
     public function onSubmit(Form $form, Submit $action): void
@@ -109,6 +107,15 @@ class Edit extends ControllerAdmin
         }
 
         $isNew = ($this->recurring->recurringId == 0);
+
+        $now = new \DateTime();
+        if ($isNew) {
+            $this->recurring->nextOn = $this->recurring->startOn;
+            if ($this->recurring->startOn < $now) {
+                $this->recurring->nextOn = Recurring::createNextDate($this->recurring->startOn, $this->recurring->cycle);
+            }
+        }
+
         $this->recurring->save();
 
         Alert::addSuccess('Form save successfully.');
@@ -171,7 +178,7 @@ JS;
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-edit"></i> <span var="title"></span></div>
+    <div class="card-header"><i class="fas fa-money-bill-wave"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

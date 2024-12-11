@@ -155,7 +155,7 @@ class Manager extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="far fa-money-bill-alt"></i> <span var="title"></span></div>
+    <div class="card-header"><i class="fas fa-money-bill-wave"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

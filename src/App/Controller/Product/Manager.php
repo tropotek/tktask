@@ -89,7 +89,7 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField((new \Tk\Form\Field\Select('categoryId', $list))
             ->prependOption('-- Category --', ''));
 
-        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('recur', Product::RECURRING_LIST))
+        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('cycle', Product::CYCLE_LIST))
             ->prependOption('-- Recurring --', ''));
 
 

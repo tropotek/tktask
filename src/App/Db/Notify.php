@@ -8,7 +8,6 @@ use Tk\Db\Filter;
 use Tk\Db\Model;
 use Tk\Exception;
 
-
 /**
  * A notify message gets displayed in the users notifications menu and executes a browser notification
  * if the user has granted it permission to do so.
@@ -31,7 +30,8 @@ class Notify extends Model
     public string     $message    = '';
     public string     $url        = '';  // note: popup blockers will request permission
     public string     $icon       = '';
-    public ?\DateTime $readOn     = null;
+    public ?\DateTime $readAt     = null;
+    public ?\DateTime $notifiedAt = null;
     public bool       $isRead     = false;
     public bool       $isNotified = false;
     public int        $ttlMins    = 0;
@@ -95,7 +95,7 @@ class Notify extends Model
         if (!$notifyIds) return true;
 
         return false !== Db::execute("
-            UPDATE notify SET notified_on = NOW()
+            UPDATE notify SET notified_at = NOW()
             WHERE notify_id IN :notifyIds",
             compact('notifyIds')
         );
@@ -128,7 +128,7 @@ class Notify extends Model
     public static function markAllRead(int $userId): bool
     {
         return false !== Db::execute("
-            UPDATE notify SET read_on = NOW()
+            UPDATE notify SET read_at = NOW()
             WHERE user_id = :userId",
             compact('userId')
         );

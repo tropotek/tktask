@@ -29,22 +29,22 @@ class Nav
             'Task' => [
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
             ],
-            'Projects' => [
-                'icon' => 'fas fa-project-diagram',
-                'visible' => fn($i) => $this->getUser()?->isStaff(),
-                'url' => '/projectManager'
-            ],
             'Tasks' => [
                 'icon' => 'fas fa-tasks',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/taskManager'
+            ],
+            'Projects' => [
+                'icon' => 'fas fa-project-diagram',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/projectManager'
             ],
 
             'Accounts' => [
                 'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
             ],
             'Recurring' => [
-                'icon' => 'far fa-money-bill-alt',
+                'icon' => 'fas fa-money-bill-wave',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/recurringManager'
             ],

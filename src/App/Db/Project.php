@@ -5,6 +5,7 @@ use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\UserTrait;
 use Bs\Traits\TimestampTrait;
 use DateTime;
+use Tk\DataMap\DataMap;
 use Tk\Date;
 use Tk\Db\Model;
 use Tk\Db;
@@ -45,16 +46,16 @@ class Project extends Model implements StatusInterface
         self::STATUS_CANCELLED => 'danger',
     ];
 
-    public int        $projectId   = 0;
-    public int        $userId      = 0;
-    public int        $companyId   = 0;
-    public string     $status      = self::STATUS_PENDING;
-    public string     $name        = '';
-    public Money      $quote;
-    public ?DateTime $dateStart   = null;
-    public ?DateTime $dateEnd     = null;
-    public string     $description = '';
-    public string     $notes       = '';
+    public int       $projectId   = 0;
+    public int       $userId      = 0;
+    public int       $companyId   = 0;
+    public string    $status      = self::STATUS_PENDING;
+    public string    $name        = '';
+    public Money     $quote;
+    public ?DateTime $startOn     = null;
+    public ?DateTime $endOn       = null;
+    public string    $description = '';
+    public string    $notes       = '';
     public DateTime  $modified;
     public DateTime  $created;
 
@@ -64,8 +65,16 @@ class Project extends Model implements StatusInterface
         $this->modified  = new DateTime();
         $this->created   = new DateTime();
         $this->quote     = new Money();
-        $this->dateStart = new DateTime();
-        $this->dateEnd   = Date::create()->add(new \DateInterval('P3M'));
+        $this->startOn   = Date::floor(new DateTime());
+        $this->endOn     = Date::floor(Date::create()->add(new \DateInterval('P3M')));
+    }
+
+    public static function getDataMap(): DataMap
+    {
+        $map = parent::getDataMap();
+        $map->addType(new \Tk\DataMap\Db\Date('start_on', 'startOn'));
+        $map->addType(new \Tk\DataMap\Db\Date('end_on', 'endOn'));
+        return $map;
     }
 
     public function save(): void
@@ -195,8 +204,8 @@ class Project extends Model implements StatusInterface
             $errors['status'] = 'Invalid value: status';
         }
 
-        if ($this->dateStart > $this->dateEnd) {
-            $errors['dateEnd'] = 'End date must be before start date.';
+        if ($this->startOn > $this->endOn) {
+            $errors['endOn'] = 'Start date must be before end date.';
         }
 
         return $errors;

@@ -45,11 +45,15 @@ class TaskLog extends Form
     public function init(): static
     {
         $this->appendField(new Minutes('minutes'));
-        $this->appendField(new Input('date', 'date'));
+
+        // TODO: implement a date time selector
+        //$this->appendField(new Input('startAt', 'datetime'));
+        $this->appendField(new Input('startAt', 'date'));
+
         $this->appendField((new Select('billable', ['' => '-- Select --', '1' => 'Yes', '0' => 'No']))
-            ->setLabel('&nbsp;')
             ->setStrict(true)
         );
+
         $this->appendField(new Textarea('comment'))->addCss('mce-min');
 
         $this->appendField(new SubmitExit('save', [$this, 'onSubmit']));
@@ -94,7 +98,7 @@ class TaskLog extends Form
     {
         // Setup field group widths with bootstrap classes
         $this->getField('minutes')->addFieldCss('col-4');
-        $this->getField('date')->addFieldCss('col-4');
+        $this->getField('startAt')->addFieldCss('col-4');
         $this->getField('billable')->addFieldCss('col-4');
 
         $renderer = $this->getRenderer();

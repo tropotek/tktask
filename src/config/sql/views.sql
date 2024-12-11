@@ -26,8 +26,8 @@ FROM user u
 CREATE OR REPLACE VIEW v_notify AS
 SELECT
   n.*,
-  read_on IS NOT NULL AS is_read,
-  notified_on IS NOT NULL AS is_notified
+  read_at IS NOT NULL AS is_read,
+  notified_at IS NOT NULL AS is_notified
 FROM notify n
 ;
 
