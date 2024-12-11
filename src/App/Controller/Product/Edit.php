@@ -93,7 +93,7 @@ class Edit extends ControllerAdmin
         $this->form->getField('name')->addFieldCss('col-6');
         $this->form->getField('code')->addFieldCss('col-6');
         $this->form->getField('price')->addFieldCss('col-4');
-        $this->form->getField('recur')->addFieldCss('col-4');
+        $this->form->getField('cycle')->addFieldCss('col-4');
         $this->form->getField('active')->addFieldCss('col-4');
 
         $template = $this->getTemplate();

@@ -43,6 +43,6 @@ FROM file f
 CREATE OR REPLACE VIEW v_company AS
 SELECT
   c.*,
-  CONCAT("CO-", LPAD(c.company_id, 10, "0")) AS account_id
+  CONCAT('CO-', LPAD(c.company_id, 10, '0')) AS account_id
 FROM company c
 ;

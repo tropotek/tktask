@@ -56,24 +56,24 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('cycle')
             ->setHeader('Recurring')
             ->setSortable(true)
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap text-center');
 
         $this->table->appendCell('code')
             ->setSortable(true)
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap text-center');
 
         $this->table->appendCell('price')
             ->setSortable(true)
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap text-end');
 
         $this->table->appendCell('active')
             ->setSortable(true)
-            ->addCss('text-nowrap')
+            ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->table->appendCell('modified')
             ->setSortable(true)
-            ->addCss('text-nowrap')
+            ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
 

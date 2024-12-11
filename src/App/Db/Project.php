@@ -72,8 +72,8 @@ class Project extends Model implements StatusInterface
     public static function getDataMap(): DataMap
     {
         $map = parent::getDataMap();
-        $map->addType(new \Tk\DataMap\Db\Date('start_on', 'startOn'));
-        $map->addType(new \Tk\DataMap\Db\Date('end_on', 'endOn'));
+        $map->addType(new \Tk\DataMap\Db\Date('startOn', 'start_on'));
+        $map->addType(new \Tk\DataMap\Db\Date('endOn', 'end_on'));
         return $map;
     }
 

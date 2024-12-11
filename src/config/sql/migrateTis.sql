@@ -238,7 +238,7 @@ INSERT IGNORE INTO dev_tktask.task_log
     product_id,
     status,
     billable,
-    date,
+    date AS start_at,
     minutes,
     IFNULL(comment, '') AS comment,
     IFNULL(notes, '') AS notes,
@@ -258,10 +258,10 @@ INSERT IGNORE INTO dev_tktask.recurring
     price,
     count,
     type AS cycle,
-    date_start AS start_on,
-    date_end AS end_on,
-    last_invoice AS prev_on,
-    next_invoice AS next_on,
+    DATE(date_start) AS start_on,
+    DATE(date_end) AS end_on,
+    DATE(last_invoice) AS prev_on,
+    DATE(next_invoice) AS next_on,
     active,
     issue,
     IFNULL(description, '') AS description,
@@ -272,6 +272,67 @@ INSERT IGNORE INTO dev_tktask.recurring
   WHERE NOT del
 );
 
+--
+TRUNCATE dev_tktask.invoice;
+INSERT IGNORE INTO dev_tktask.invoice
+(
+  SELECT
+    id AS invoice_id,
+    account,
+    sub_total,
+    discount,
+    tax,
+    shipping,
+    total,
+    status,
+    billing_address,
+    shipping_address,
+    DATE(date_issued) AS issued_on,
+    DATE(date_paid) AS paid_on,
+    IFNULL(notes, '') AS notes,
+    modified,
+    created
+  FROM dev_tktis.invoice
+);
+ANALYZE TABLE dev_tktask.invoice;
+
+--
+TRUNCATE dev_tktask.invoice_item;
+INSERT IGNORE INTO dev_tktask.invoice_item
+(
+  SELECT
+    id AS invoice_item_id,
+    invoice_id,
+    product_code,
+    IFNULL(description, '') AS description,
+    qty,
+    price,
+    total,
+    IFNULL(notes, '') AS notes,
+    modified,
+    created
+  FROM dev_tktis.invoice_item
+  WHERE NOT del
+);
+
+--
+TRUNCATE dev_tktask.payment;
+INSERT IGNORE INTO dev_tktask.payment
+(
+  SELECT
+    id AS payment_id,
+    invoice_id,
+    amount,
+    method,
+    status,
+    received AS received_at,
+    cleared AS cleared_at,
+    IFNULL(notes, '') AS notes,
+    modified,
+    created
+  FROM dev_tktis.invoice_payment
+  WHERE NOT del
+);
 
 
 
