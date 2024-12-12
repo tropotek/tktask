@@ -172,6 +172,24 @@ INSERT IGNORE INTO dev_tktask.expense_category
   );
 
 --
+TRUNCATE dev_tktask.expense;
+INSERT IGNORE INTO dev_tktask.expense
+  (
+    SELECT
+      id AS expense_id,
+      category_id,
+      company_id,
+      invoice_no,
+      receipt_no,
+      IFNULL(description, '') AS description,
+      DATE(date) AS purchased_on,
+      total,
+      modified,
+      created
+    FROM dev_tktis.expense
+  );
+
+--
 TRUNCATE dev_tktask.status_log;
 INSERT IGNORE INTO dev_tktask.status_log
   (
@@ -278,15 +296,17 @@ INSERT IGNORE INTO dev_tktask.invoice
 (
   SELECT
     id AS invoice_id,
-    account,
-    sub_total,
+    -- account,   -- This can be generated from a view or method
+    'App\\Db\\Company' AS fkey,
+    CAST(REGEXP_SUBSTR(account, '[0-9]+') AS UNSIGNED) AS fid,
     discount,
     tax,
+    sub_total,
     shipping,
     total,
     status,
-    billing_address,
-    shipping_address,
+    IFNULL(billing_address, '') AS billing_address,
+    IFNULL(shipping_address, '') AS shipping_address,
     DATE(date_issued) AS issued_on,
     DATE(date_paid) AS paid_on,
     IFNULL(notes, '') AS notes,
@@ -326,7 +346,6 @@ INSERT IGNORE INTO dev_tktask.payment
     method,
     status,
     received AS received_at,
-    cleared AS cleared_at,
     IFNULL(notes, '') AS notes,
     modified,
     created

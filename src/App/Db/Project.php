@@ -133,7 +133,7 @@ class Project extends Model implements StatusInterface
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';
             $w  = 'LOWER(a.name) LIKE LOWER(:search) OR ';
-            $w  = 'LOWER(a.description) LIKE LOWER(:search) OR ';
+            $w .= 'LOWER(a.description) LIKE LOWER(:search) OR ';
             $w .= 'a.project_id = :search OR ';
             if (is_numeric($filter['search'])) {
                 $w .= 'a.project_id = :search OR ';
@@ -157,16 +157,20 @@ class Project extends Model implements StatusInterface
         if (!empty($filter['userId'])) {
             $filter->appendWhere('a.user_id = :userId AND ');
         }
+
         if (!empty($filter['companyId'])) {
             $filter->appendWhere('a.company_id = :companyId AND ');
         }
+
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
             $filter->appendWhere('a.status IN :status AND ');
         }
+
         if (!empty($filter['name'])) {
             $filter->appendWhere('a.name = :name AND ');
         }
+
         if (!empty($filter['quote'])) {
             $filter->appendWhere('a.quote = :quote AND ');
         }

@@ -38,7 +38,6 @@ class Factory extends \Bs\Factory
             if (Registry::instance()->has('site.company.id')) {
                 $cid = (int)Registry::instance()->get('site.company.id');
             }
-
             $company = Company::find($cid);
             if ($company instanceof Company) {
                 $this->set('site.owner.company', $company);

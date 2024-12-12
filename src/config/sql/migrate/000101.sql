@@ -221,10 +221,12 @@ CREATE TABLE IF NOT EXISTS recurring (
 
 CREATE TABLE IF NOT EXISTS invoice (
   invoice_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  account VARCHAR(64) NOT NULL DEFAULT '',                  -- Account Number: CO-000001, UR-000001
-  sub_total INT NOT NULL DEFAULT 0,
+  -- account VARCHAR(64) NOT NULL DEFAULT '',                  -- Account Number: CO-000001, UR-000001
+  fkey VARCHAR(64) DEFAULT '' NOT NULL,
+  fid INT UNSIGNED NOT NULL DEFAULT 0,
   discount FLOAT UNSIGNED NOT NULL DEFAULT 0.0,             -- '0.0-1.0' as a ratio percentage
   tax FLOAT UNSIGNED NOT NULL DEFAULT 0.0,                  -- '0.0-1.0' as a ratio percentage
+  sub_total INT NOT NULL DEFAULT 0,                         -- cost in cents
   shipping INT NOT NULL DEFAULT 0,                          -- cost in cents
   total INT NOT NULL DEFAULT 0,                             -- cost in cents
   status ENUM('open','unpaid','paid','cancelled','write_off') DEFAULT 'open',
@@ -234,8 +236,7 @@ CREATE TABLE IF NOT EXISTS invoice (
   paid_on DATE DEFAULT NULL,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  KEY account (account)
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE invoice AUTO_INCREMENT = 1000;
 
@@ -250,8 +251,8 @@ CREATE TABLE IF NOT EXISTS invoice_item (
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  KEY invoice_id (invoice_id),
-  KEY product_code (product_code)
+  KEY product_code (product_code),
+  CONSTRAINT fk_invoice_item__invoice_id FOREIGN KEY (invoice_id) REFERENCES invoice (invoice_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS payment (
@@ -261,11 +262,10 @@ CREATE TABLE IF NOT EXISTS payment (
   method ENUM('cash','eft','card','crypto','other') DEFAULT 'eft',
   status ENUM('pending','cleared','cancelled') DEFAULT 'pending',
   received_at DATETIME NOT NULL,
-  cleared_at DATETIME NULL,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  KEY invoice_id (invoice_id)
+  CONSTRAINT fk_payment__invoice_id FOREIGN KEY (invoice_id) REFERENCES invoice (invoice_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE expense_category (
@@ -276,6 +276,21 @@ CREATE TABLE expense_category (
   active BOOL NOT NULL DEFAULT TRUE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE expense (
+  expense_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  category_id INT UNSIGNED NOT NULL DEFAULT 0,
+  company_id INT UNSIGNED NOT NULL,
+  invoice_no VARCHAR(64) NOT NULL,
+  receipt_no VARCHAR(64) NOT NULL DEFAULT '',
+  description TEXT,
+  purchased_on DATE NOT NULL,
+  total INT NOT NULL DEFAULT 0,
+  modified DATETIME ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_expense__category_id FOREIGN KEY (category_id) REFERENCES expense_category (expense_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_expense__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 

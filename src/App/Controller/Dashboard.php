@@ -20,7 +20,7 @@ class Dashboard extends ControllerAdmin
         $this->getCrumbs()->reset();
 
         if (!Auth::getAuthUser()) {
-            Alert::addWarning('You do not have permission to access the page: <b>' . Uri::create()->getRelativePath() . '</b>');
+            Alert::addWarning('You do not have permission to access the page');
             Uri::create('/')->redirect();
         }
 

@@ -296,29 +296,36 @@ class Task extends Model implements StatusInterface
         if (!empty($filter['companyId'])) {
             $filter->appendWhere('a.company_id = :companyId AND ');
         }
+
         if (!empty($filter['projectId'])) {
             $filter->appendWhere('a.project_id = :projectId AND ');
         }
+
         if (!empty($filter['categoryId'])) {
             if (!is_array($filter['categoryId'])) $filter['categoryId'] = [$filter['categoryId']];
             $filter->appendWhere('a.category_id IN :categoryId AND ');
         }
+
         if (!empty($filter['creatorUserId'])) {
             if (!is_array($filter['creatorUserId'])) $filter['creatorUserId'] = [$filter['creatorUserId']];
             $filter->appendWhere('a.creator_user_id IN :creatorUserId AND ');
         }
+
         if (!empty($filter['assignedUserId'])) {
             if (!is_array($filter['assignedUserId'])) $filter['assignedUserId'] = [$filter['assignedUserId']];
             $filter->appendWhere('a.assigned_user_id IN :assignedUserId AND ');
         }
+
         if (!empty($filter['closedUserId'])) {
             if (!is_array($filter['closedUserId'])) $filter['closedUserId'] = [$filter['closedUserId']];
             $filter->appendWhere('a.closed_user_id IN :closedUserId AND ');
         }
+
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
             $filter->appendWhere('a.status IN :status AND ');
         }
+
         if (!empty($filter['priority'])) {
             if (!is_array($filter['priority'])) $filter['priority'] = [$filter['priority']];
             $filter->appendWhere('a.priority IN :priority AND ');
