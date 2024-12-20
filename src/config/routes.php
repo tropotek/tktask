@@ -96,12 +96,32 @@ return function (CollectionConfigurator $routes) {
     $routes->add('recurring-edit', '/recurringEdit')
         ->controller([\App\Controller\Recurring\Edit::class, 'doDefault']);
 
+    $routes->add('expense-manager', '/expenseManager')
+        ->controller([\App\Controller\Expense\Manager::class, 'doDefault']);
+    $routes->add('expense-edit', '/expenseEdit')
+        ->controller([\App\Controller\Expense\Edit::class, 'doDefault']);
+
+    $routes->add('invoice-manager', '/invoiceManager')
+        ->controller([\App\Controller\Invoice\Manager::class, 'doDefault']);
+    $routes->add('invoice-edit', '/invoiceEdit')
+        ->controller([\App\Controller\Invoice\Edit::class, 'doDefault']);
 
 
 
+    // Components
+    $routes->add('com-status-table', '/component/statusLogTable')
+        ->controller([\App\Component\StatusLogTable::class, 'doDefault']);
+    $routes->add('com-task-log-table', '/component/taskLogTable')
+        ->controller([\App\Component\TaskLogTable::class, 'doDefault']);
+    $routes->add('com-item-add-dialog', '/component/itemAddDialog')
+        ->controller([\App\Component\ItemAddDialog::class, 'doDefault']);
+    $routes->add('com-invoice-edit-dialog', '/component/invoiceEditDialog')
+        ->controller([\App\Component\InvoiceEditDialog::class, 'doDefault']);
 
 
     // API
     $routes->add('api-notify', '/api/notify/getNotifications')
         ->controller([\App\Api\Notify::class, 'doGetNotifications']);
+    $routes->add('api-get-product', '/api/getProduct')
+        ->controller([\App\Api\Product::class, 'doGetProduct']);
 };

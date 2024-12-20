@@ -2,7 +2,7 @@
 
 namespace App\Ui;
 
-use Bs\Auth;
+use App\Db\Invoice;
 use App\Db\User;
 use Dom\Template;
 use Tk\Config;
@@ -23,7 +23,7 @@ class Nav
             'Site Settings' => [
                 'icon' => 'ri-settings-2-line',
                 'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
-                'url' => '/settings'
+                'url' => '/settings',
             ],
 
             'Task' => [
@@ -32,27 +32,40 @@ class Nav
             'Tasks' => [
                 'icon' => 'fas fa-tasks',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
-                'url' => '/taskManager'
+                'url' => '/taskManager',
             ],
             'Projects' => [
                 'icon' => 'fas fa-project-diagram',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
-                'url' => '/projectManager'
+                'url' => '/projectManager',
             ],
 
             'Accounts' => [
                 'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
             ],
+            'Invoices' => [
+                'icon' => 'far fa-credit-card',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/invoiceManager',
+                'badge' => function() {
+                    $open = Invoice::findFiltered(['status' => [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID]]);
+                    return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
+                },
+            ],
             'Recurring' => [
                 'icon' => 'fas fa-money-bill-wave',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
-                'url' => '/recurringManager'
+                'url' => '/recurringManager',
+            ],
+            'Expenses' => [
+                'icon' => 'fas fa-money-check-alt',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/expenseManager',
             ],
 
 //            'Reports' => [
 //                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
 //            ],
-
 
             'Admin' => [
                 'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
@@ -62,7 +75,7 @@ class Nav
                 'File Manager' => [
                     'icon' => 'ri-archive-drawer-line',
                     'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
-                    'url' => '/fileManager'
+                    'url' => '/fileManager',
                 ],
             ],
             'Dev' => [
@@ -121,7 +134,6 @@ HTML;
         return $template;
     }
 
-
     public function getTopNav(): string
     {
         $nav = sprintf('<ul class="navbar-nav %s" %s>', $this->getCssString(), $this->getAttrString());
@@ -129,16 +141,23 @@ HTML;
             if (!$this->isVisible($item)) continue;
             if (empty($item['url'])) {
                 if ($this->hasItems($item)) { // is dropdown item
-                    $nav .= $this->makeSideDropdown($name, $item['icon'] ?? '', $item);
+                    $nav .= $this->makeTopDropdown($name, $item['icon'] ?? '', $item);
                 } else {    // is title item
-                    $nav .= sprintf('<li class="menu-title">%s</li>', $name);
+                    //$nav .= sprintf('<li class="menu-title">%s</li>', $name);
                 }
             } else {
+
+                $nav .= '<li class="nav-item">';
+                $badge = '';
+                if (!empty($item['badge'])) {
+                    $badge = $item['badge']();
+                }
                 $ico = '';
                 if ($item['icon'] ?? false) {
                     $ico = sprintf('<i class="%s me-1"></i>', $item['icon']);
                 }
-                $nav .= sprintf('<li class="nav-item"><a class="nav-link" href="%s">%s %s</a></li>', $item['url'], $ico, $name);
+                $nav .= sprintf('<a href="%s" class="nav-link">%s %s %s</a>', $item['url'], $ico, $badge, $name);
+                $nav .= '</li>';
             }
         }
         $nav .= '</ul>';
@@ -210,7 +229,6 @@ HTML;
         return $nav;
     }
 
-
     public function getSideNav(): string
     {
         $nav = sprintf('<ul class="%s" %s>', $this->getCssString(), $this->getAttrString());
@@ -223,11 +241,17 @@ HTML;
                     $nav .= sprintf('<li class="menu-title">%s</li>', $name);
                 }
             } else {
+                $nav .= '<li>';
+                $badge = '';
+                if (!empty($item['badge'])) {
+                    $badge = $item['badge']();
+                }
                 $ico = '';
                 if ($item['icon'] ?? false) {
                     $ico = sprintf('<i class="%s me-1"></i>', $item['icon']);
                 }
-                $nav .= sprintf('<li><a href="%s">%s <span>%s</span></a></li>', $item['url'], $ico, $name);
+                $nav .= sprintf('<a href="%s">%s %s <span>%s</span></a>', $item['url'], $ico, $badge, $name);
+                $nav .= '</li>';
             }
         }
         $nav .= '</ul>';

@@ -17,6 +17,8 @@ class Invoice extends Model implements StatusInterface
     use TimestampTrait;
     use ForeignModelTrait;
 
+    CONST int DEFAULT_DUE_DAYS = 14;
+
     const string STATUS_OPEN      = 'open';
     const string STATUS_UNPAID    = 'unpaid';
     const string STATUS_PAID      = 'paid';
@@ -43,6 +45,7 @@ class Invoice extends Model implements StatusInterface
     //public string     $account         = '';
     public string     $fkey            = '';
     public int        $fid             = 0;
+    public string     $purchaseOrder   = '';
     public float      $discount        = 0.0;
     public float      $tax             = 0.0;
     public Money      $subTotal;
@@ -308,11 +311,15 @@ class Invoice extends Model implements StatusInterface
         return $this;
     }
 
+    /**
+     * @todo `account.due.days` is not in the registry or settings page
+     */
     public function getDateDue(): ?\DateTime
     {
         $due = null;
         if ($this->issuedOn) {
-            $interval = new \DateInterval('P' . Registry::instance()->get('account.due.days') . 'D');
+            $days = intval(Registry::instance()->get('account.due.days', self::DEFAULT_DUE_DAYS));
+            $interval = new \DateInterval('P' . $days . 'D');
             $due = $this->issuedOn->add($interval);
         }
         return $due;

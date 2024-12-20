@@ -69,12 +69,16 @@ class Invoice
 
         $message = Factory::instance()->createMessage();
         $message->addTo($company->email);
+        if ($company->accountsEmail) {
+            $message->addCc($company->accountsEmail);
+        }
         $message->setFrom($siteCompany->email);
         $message->setSubject('Payment Receipt: ' . $siteCompany->name . ' - Invoice ' . $payment->invoiceId);
         $data = array(
             'company.name' => $company->name,
+            'company.contact' => $company->contact,
             'payment.id' => $payment->paymentId,
-            // TODO: get account id from method/view
+            // TODO: get account id from method/view of company ???
             'account.id' => 'CM-0000000' . $invoice->fid,
             'payment.amount' => $payment->amount->toString(),
             'payment.received' => $payment->receivedAt->format(\Tk\Date::FORMAT_SHORT_DATETIME),

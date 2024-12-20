@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS company
   contact VARCHAR(128) NOT NULL DEFAULT '',             -- The contact persons name
   phone VARCHAR(32) NOT NULL DEFAULT '',
   email VARCHAR(128) NOT NULL DEFAULT '',
+  accounts_email VARCHAR(128) NOT NULL DEFAULT '',
   address VARCHAR(512) NOT NULL DEFAULT '',
   credit INT NOT NULL DEFAULT 0,                      -- Store any credit the client has in cents
   notes TEXT,
@@ -222,8 +223,9 @@ CREATE TABLE IF NOT EXISTS recurring (
 CREATE TABLE IF NOT EXISTS invoice (
   invoice_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   -- account VARCHAR(64) NOT NULL DEFAULT '',                  -- Account Number: CO-000001, UR-000001
-  fkey VARCHAR(64) DEFAULT '' NOT NULL,
+  fkey VARCHAR(64) NOT NULL DEFAULT '',
   fid INT UNSIGNED NOT NULL DEFAULT 0,
+  purchase_order VARCHAR(128) NOT NULL DEFAULT '',
   discount FLOAT UNSIGNED NOT NULL DEFAULT 0.0,             -- '0.0-1.0' as a ratio percentage
   tax FLOAT UNSIGNED NOT NULL DEFAULT 0.0,                  -- '0.0-1.0' as a ratio percentage
   sub_total INT NOT NULL DEFAULT 0,                         -- cost in cents

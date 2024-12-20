@@ -1,5 +1,11 @@
 
 
+.htmx-request
+{
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 /*********** B O O T S T R A P *************/
 .modal-header-success {
   color:#fff;

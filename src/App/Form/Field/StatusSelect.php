@@ -82,32 +82,35 @@ class StatusSelect extends Select implements DisplayInterface, RendererInterface
         $js = <<<JS
 jQuery(function ($) {
 
-  $('.tk-status-select').each(function () {
-    var select = $('select', this);
-    var msg = $('textarea', this);
-    var cb = $('[type="checkbox"]', this);
+    tkRegisterInit(function () {
+      $('.tk-status-select', this).each(function () {
+        var select = $('select', this);
+        var msg = $('textarea', this);
+        var cb = $('[type="checkbox"]', this);
 
-    select.data('cs-current-val', select.val());
-    msg.hide();
-    cb.prop('checked', false);
-
-    select.on('change', function () {
-      if ($(this).val() === $(this).data('cs-current-val')) {
+        select.data('cs-current-val', select.val());
+        msg.hide();
         cb.prop('checked', false);
-        if (select.data('messageText') !== 'off')
-          msg.hide();
-      } else {
-        cb.prop('checked', true);
-        if (select.data('messageText') !== 'off')
-          msg.show();
-      }
 
-      if (select.data('messageText') !== 'off') {
-        $(this).blur();
-        msg.focus();
-      }
+        select.on('change', function () {
+          if ($(this).val() === $(this).data('cs-current-val')) {
+            cb.prop('checked', false);
+            if (select.data('messageText') !== 'off')
+              msg.hide();
+          } else {
+            cb.prop('checked', true);
+            if (select.data('messageText') !== 'off')
+              msg.show();
+          }
+
+          if (select.data('messageText') !== 'off') {
+            $(this).blur();
+            msg.focus();
+          }
+        });
+      });
+
     });
-  });
 
 });
 JS;

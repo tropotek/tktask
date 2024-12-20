@@ -34,7 +34,7 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
         $this->table->appendCell('name')
             ->setHeader('Status')
-            ->addCss('text-nowrap')
+            ->addCss('text-nowrap text-center')
             ->setSortable(true);
 
 //        $this->table->appendCell('userId')
@@ -45,7 +45,7 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 //            });
 
         $this->table->appendCell('created')
-            ->addCss('text-center')
+            ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
 

@@ -25,6 +25,7 @@ class InvoiceItem extends Model
     public \DateTime $created;
 
     protected ?Product $_product = null;
+    protected ?Model   $_model   = null;
 
 
     public function __construct()
@@ -70,14 +71,28 @@ class InvoiceItem extends Model
     public function getProduct(): ?Product
     {
         if (!$this->_product) {
-            $code = $this->productCode;
-            if (str_starts_with($code, 'TSK-')) {
-                $code = substr($code, 4);
-vd($code);
-            }
-            $this->_product = Product::findByCode(intval($code));
+            $this->_product = Product::findByCode($this->productCode);
         }
         return $this->_product;
+    }
+
+    public function getModel(): ?Model
+    {
+        if (!$this->_model) {
+            $code = $this->productCode;
+            if (str_starts_with($code, 'TSK-')) {
+                $id = intval(substr($code, 4));
+                $this->_model = Task::find($id);
+            } else {
+                $this->_model = $this->getProduct();
+            }
+        }
+        return $this->_model;
+    }
+
+    public function getTotal(): Money
+    {
+        return $this->price->multiply($this->qty);
     }
 
     public static function find(int $invoiceItemId): ?self
@@ -168,8 +183,16 @@ vd($code);
             $errors['productCode'] = 'Invalid value: productCode';
         }
 
-        if (!$this->qty) {
+        if (!$this->description) {
+            $errors['description'] = 'Invalid value: description';
+        }
+
+        if ($this->qty == 0) {
             $errors['qty'] = 'Invalid value: qty';
+        }
+
+        if ($this->price->getAmount() == 0) {
+            $errors['price'] = 'Invalid value unit price';
         }
 
         return $errors;

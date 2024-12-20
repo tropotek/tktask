@@ -19,19 +19,20 @@ class Company extends Model
         self::TYPE_SUPPLIER,
     ];
 
-    public int     $companyId = 0;
-    public string  $accountId = '';
-    public ?string $type      = self::TYPE_CLIENT;
-    public string  $name      = '';
-    public string  $alias     = '';
-    public string  $abn       = '';
-    public string  $website   = '';
-    public string  $contact   = '';
-    public string  $phone     = '';
-    public string  $email     = '';
-    public string  $address   = '';
-    public string  $notes     = '';
-    public bool    $active    = true;
+    public int     $companyId     = 0;
+    public string  $accountId     = '';
+    public ?string $type          = self::TYPE_CLIENT;
+    public string  $name          = '';
+    public string  $alias         = '';
+    public string  $abn           = '';
+    public string  $website       = '';
+    public string  $contact       = '';
+    public string  $phone         = '';
+    public string  $email         = '';
+    public string  $accountsEmail = '';
+    public string  $address       = '';
+    public string  $notes         = '';
+    public bool    $active        = true;
 
     public Money              $credit;
     public \DateTimeImmutable $modified;
@@ -100,6 +101,7 @@ class Company extends Model
             $w .= 'LOWER(a.abn) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.contact) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.email) LIKE LOWER(:search) OR ';
+            $w .= 'LOWER(a.accounts_email) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.phone) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.website) LIKE LOWER(:search) OR ';
             $w .= 'LOWER(a.account_id) LIKE LOWER(:search) OR ';
@@ -191,6 +193,9 @@ class Company extends Model
         }
         if ($this->email && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Invalid value: email';
+        }
+        if ($this->accountsEmail && !filter_var($this->accountsEmail, FILTER_VALIDATE_EMAIL)) {
+            $errors['accountsEmail'] = 'Invalid value: accountsEmail';
         }
 
         return $errors;

@@ -56,9 +56,10 @@ class Edit extends ControllerAdmin
 
         $this->form->appendField(new Input('email'))
             ->setGroup($tab);
-        $this->form->appendField(new Input('contact'))
+        $this->form->appendField(new Input('accountsEmail'))
             ->setGroup($tab);
-        $this->form->appendField(new Input('alias'))
+
+        $this->form->appendField(new Input('contact'))
             ->setGroup($tab);
 
         $this->form->appendField(new Input('phone'))
@@ -66,6 +67,8 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('abn'))
             ->setGroup($tab);
         $this->form->appendField(new Input('website'))
+            ->setGroup($tab);
+        $this->form->appendField(new Input('alias'))
             ->setGroup($tab);
 
         $this->form->appendField(new Input('address'))
@@ -111,12 +114,13 @@ class Edit extends ControllerAdmin
         // Setup field group widths with bootstrap classes
         $this->form->getField('name')->addFieldCss('col-6');
         $this->form->getField('type')->addFieldCss('col-6');
-        $this->form->getField('email')->addFieldCss('col-4');
-        $this->form->getField('contact')->addFieldCss('col-4');
-        $this->form->getField('alias')->addFieldCss('col-4');
-        $this->form->getField('phone')->addFieldCss('col-4');
+        $this->form->getField('email')->addFieldCss('col-6');
+        $this->form->getField('accountsEmail')->addFieldCss('col-6');
+        $this->form->getField('contact')->addFieldCss('col-6');
+        $this->form->getField('phone')->addFieldCss('col-6');
         $this->form->getField('abn')->addFieldCss('col-4');
         $this->form->getField('website')->addFieldCss('col-4');
+        $this->form->getField('alias')->addFieldCss('col-4');
 
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());

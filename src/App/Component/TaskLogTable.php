@@ -39,7 +39,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
             });
 
         $this->table->appendCell('status')
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap text-center');
 
         $this->table->appendCell('minutes')
             ->setHeader('Duration')
@@ -50,7 +50,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
             });
 
         $this->table->appendCell('created')
-            ->addCss('text-center')
+            ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
 
 
