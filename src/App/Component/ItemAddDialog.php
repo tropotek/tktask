@@ -112,9 +112,11 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
         $js = <<<JS
 jQuery(function($) {
     const dialog = '#{$this->getDialogId()}';
+    const form   = '#{$this->form->getId()}';
 
     // reload page after successfull submit
     $(document).on('tkForm:afterSubmit', function(e) {
+        if (!$(e.detail.elt).is(form)) return;
         $(dialog).modal('hide');
         location = location.href;
     });
@@ -128,16 +130,27 @@ jQuery(function($) {
         $('.is-invalid', this).removeClass('is-invalid');
     });
 
-    // auto-complete select for invoiceable products
-    $('[name=description]', dialog).on('change', function() {
-        let selected = $('option[value="' + $(this).val() + '"]', $(this).next());
-        if (!selected.length) return;
-        let productId = selected.data('value');
-         $.get(tkConfig.baseUrl + '/api/getProduct', {productId})
-         .done(function(data) {
-            $('[name=productCode]', dialog).val(data.code);
-            $('[name=price]', dialog).val(data.price);
-         });
+    // auto-complete select for invoicable products
+    $('[name=description]', dialog).on('input', function() {
+        let options = $('option', '#' + $(this).attr('list'));
+        let val = $(this).val();
+        let selected = null;
+
+        options.each(function() {
+            if ($(this).val() === val) {
+                selected = $(this);
+                return;
+            }
+        });
+
+        if (selected) {
+            let productId = selected.data('value');
+            $.get(tkConfig.baseUrl + '/api/getProduct', {productId})
+            .done(function(data) {
+               $('[name=productCode]', dialog).val(data.code);
+               $('[name=price]', dialog).val(data.price);
+            });
+        }
     });
 });
 JS;

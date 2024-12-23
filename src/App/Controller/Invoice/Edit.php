@@ -7,8 +7,8 @@ use App\Component\StatusLogTable;
 use App\Db\Company;
 use App\Db\Invoice;
 use App\Db\InvoiceItem;
+use App\Db\StatusLog;
 use App\Db\User;
-use App\Factory;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Registry;
 use Dom\Template;
@@ -61,15 +61,28 @@ class Edit extends ControllerAdmin
             $this->itemAddDialog = new ItemAddDialog();
         }
 
-        if (in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID])) {
+        //if (in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID, Invoice::STATUS_CANCELLED])) {
             $this->invoiceEditDialog = new InvoiceEditDialog();
-        }
+        //}
     }
 
     public function doAction(): void
     {
         $action = trim($_GET['post'] ?? $_GET['act'] ?? '');
         switch ($action) {
+            case 'issue':
+                $this->invoice->doIssue();
+                Alert::addSuccess("Invoiced issued to client");
+                Uri::create()->remove('act')->redirect();
+                break;
+            case 'qty':
+                $invoiceItemId = intval($_REQUEST['invoiceItemId'] ?? 0);
+                $item = InvoiceItem::find($invoiceItemId);
+                if ($item instanceof InvoiceItem) {
+                    $item->qty = intval($_POST['qty'] ?? 1);
+                    $item->save();
+                }
+                break;
             case 'del':
                 $invoiceItemId = intval($_REQUEST['invoiceItemId'] ?? 0);
                 $item = InvoiceItem::find($invoiceItemId);
@@ -77,13 +90,21 @@ class Edit extends ControllerAdmin
                     $item->delete();
                 }
                 break;
+            case 'cancel':
+                if ($this->invoice instanceof Invoice) {
+                    $this->invoice->doCancel();
+                    StatusLog::create($this->invoice, "Invoice cancelled");
+                    Alert::addSuccess("Invoice #{$this->invoice->invoiceId} cancelled");
+                    Uri::create()->remove('act')->redirect();
+                }
+                break;
             case 'email':
                 if (!\App\Email\Invoice::sendIssueInvoice($this->invoice)) {
                     Alert::addError("Failed to send invoice id {$this->invoice->invoiceId}");
                 }
+                Uri::create()->remove('act')->redirect();
                 break;
         }
-        //Uri::create()->remove('act')->redirect();
     }
 
     public function show(): ?Template
@@ -91,13 +112,22 @@ class Edit extends ControllerAdmin
         $template = $this->getTemplate();
         $template->setAttr('back', 'href', $this->getBackUrl());
 
+        //$template->setVisible('btn-edit', in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID, Invoice::STATUS_CANCELLED]));
+        $template->setVisible('btn-edit', true);
         $template->setVisible('btn-cancel', in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID]));
-        $template->setVisible('btn-edit', in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID]));
         $template->setVisible('btn-pay', in_array($this->invoice->status, [Invoice::STATUS_UNPAID]));
         $template->setVisible('btn-issue', in_array($this->invoice->status, [Invoice::STATUS_OPEN]));
         $template->setVisible('btn-add-item', in_array($this->invoice->status, [Invoice::STATUS_OPEN]));
 
-        // Status Log
+        $cancel = Uri::create()->set('act', 'cancel');
+        $template->setAttr('btn-cancel', 'href', $cancel);
+
+        $email = Uri::create()->set('act', 'email');
+        $template->setAttr('btn-email', 'href', $email);
+
+        $issue = Uri::create()->set('act', 'issue');
+        $template->setAttr('btn-issue', 'href', $issue);
+
         if ($this->statusLog) {
             $html = $this->statusLog->doDefault();
             $template->appendHtml('components', $html);
@@ -115,40 +145,7 @@ class Edit extends ControllerAdmin
             if ($tpl) $template->appendTemplate('dialogs', $tpl);
         }
 
-
         $this->showInvoice($template);
-
-        if ($this->invoice->getStatus() == \App\Db\Invoice::STATUS_OPEN) {
-            $js = <<<JS
-jQuery(function ($) {
-
-    // todo: review this script, could use HTMX instead???
-  $('.tk-invoice').each(function () {
-    var invoice = $(this);
-
-    invoice.on('click', '.btn-delete', function (e) {
-      var itemId = $(this).closest('tr').data('item-id');
-      console.log(e);
-      // if (confirm('Are you sure you want to remove this Item?')) {
-      //   $.post(document.location, {act: 'del', itemId: itemId}, function (html) {
-      //     invoice.find('.tk-invoice-box').replaceWith($(html).find('.tk-invoice .tk-invoice-box'));
-      //   }, 'html');
-      // }
-    });
-
-    invoice.on('change', '.input-qty', function (e) {
-      var itemId = $(this).closest('tr').data('itemId');
-        $.post(document.location, {act: 'qty', itemId: itemId, qty: $(this).val()}, function (html) {
-          invoice.find('.tk-invoice-box').replaceWith($(html).find('.tk-invoice .tk-invoice-box'));
-        }, 'html');
-    });
-
-  });
-
-});
-JS;
-            $template->appendJs($js);
-        }
 
         return $template;
     }
@@ -160,6 +157,8 @@ JS;
             Log::warning("Only Company clients are supported at this time?");
             return;
         }
+
+        $this->invoice->reload();
 
         $template->setText('invoiceId', $this->invoice->getId());
         $template->setText('due-days', strval(Registry::instance()->get('account.due.days', Invoice::DEFAULT_DUE_DAYS)));
@@ -224,6 +223,11 @@ JS;
             $template->setVisible('open');
         }
 
+        if ($this->invoice->notes) {
+            $template->setHtml('notes', $this->invoice->notes);
+            $template->setVisible('notes');
+        }
+
         // render item list
         foreach ($this->invoice->getItemList() as $item) {
             $row = $template->getRepeat('item');
@@ -232,6 +236,9 @@ JS;
 
             $del = Uri::create()->set('invoiceItemId', $item->invoiceItemId)->set('act', 'del');
             $row->setAttr('delete', 'hx-delete', $del);
+
+            $qty = Uri::create()->set('invoiceItemId', $item->invoiceItemId)->set('act', 'qty');
+            $row->setAttr('qty-input', 'hx-post', $qty);
 
             $model = $item->getModel();
             if ($model instanceof \App\Db\Task) {
@@ -252,7 +259,7 @@ JS;
                 $row->setText('qty', $item->qty);
             }
             $row->setText('price', $item->price);
-            $row->setText('total', $item->getTotal());
+            $row->setText('total', $item->total);
             $row->appendRepeat();
         }
 
@@ -261,18 +268,18 @@ JS;
 
         if ($this->invoice->discount > 0) {
             $template->setText('discount-pcnt', round($this->invoice->discount * 100, 2) . '%');
-            $template->setText('discount-amount', $this->invoice->getDiscountTotal());
+            $template->setText('discount-amount', $this->invoice->discountTotal);
             $template->setVisible('discount');
         }
 
         if ($this->invoice->tax > 0) {
             $template->setText('tax-pcnt', round($this->invoice->tax * 100, 2) . '%');
-            $template->setText('tax-amount', $this->invoice->getTaxTotal());
+            $template->setText('tax-amount', $this->invoice->taxTotal);
             $template->setVisible('tax');
         }
 
         if ($this->invoice->shipping && $this->invoice->shipping->getAmount() > 0) {
-            $template->setText('shipping', $this->invoice->shipping);
+            $template->setText('shipping-amount', $this->invoice->shipping);
             $template->setVisible('shipping');
         }
 
@@ -295,7 +302,7 @@ JS;
                     <span>Email</span></a>
 
 
-                <a href="#" class="btn btn-danger float-end me-1" title="Cancel" choice="btn-cancel">
+                <a href="#" class="btn btn-danger float-end me-1" title="Cancel" choice="btn-cancel" data-confirm="Are you sure you want to cancel this invoice?">
                     <i class="fas fa-bell-slash"></i>
                     <span>Cancel</span>
                 </a>
@@ -321,7 +328,7 @@ JS;
     </div>
 
     <!-- Invoice Template -->
-    <div class="col-8">
+    <div class="col-8" id="tk-invoice-container">
         <div class="card mb-3">
             <div class="card-header">
                 <i class="far fa-credit-card"></i> Invoice #: <span var="invoiceId">00000</span>
@@ -371,11 +378,10 @@ JS;
                                     <tbody>
                                         <tr data-item-id="0" repeat="item">
                                             <td choice="open">
-                                                <button type="button" class="btn btn-outline-danger btn-sm btn-delete" title="Remove Item"
-                                                    data-confirm="Are you sure you want to remove this Item?"
+                                                <button type="button" class="btn btn-outline-danger btn-sm btn-delete" title="Delete Item"
                                                     hx-delete=""
-                                                    hx-target=".tk-invoice-box"
-                                                    hx-select=".tk-invoice-box"
+                                                    hx-target="#tk-invoice-container"
+                                                    hx-select="#tk-invoice-container"
                                                     hx-swap="outerHTML"
                                                     hx-confirm="Delete the selected invoice item?"
                                                     var="delete">
@@ -388,7 +394,13 @@ JS;
                                                 2 Pages static website - my website
                                             </td>
                                             <td class="text-center" var="qty">
-                                                <input type="text" class="form-control input-qty" name="qty[]" value="5" var="qty-input" />
+                                                <input type="text" class="form-control input-qty" name="qty" value="5"
+                                                    hx-post=""
+                                                    hx-trigger="keyup changed delay:500ms"
+                                                    hx-target="#tk-invoice-container"
+                                                    hx-select="#tk-invoice-container"
+                                                    hx-swap="outerHTML"
+                                                    var="qty-input"/>
                                             </td>
                                             <td class="text-end" var="price">$0.00</td>
                                             <td class="text-end" var="total">$0.00</td>
@@ -404,12 +416,15 @@ JS;
                         <div class="col-sm-6">
                             <div class="clearfix">
                                 <h6 class="text-muted">Notes:</h6>
-                                <small class="text-muted">
-                                    All accounts are to be paid within
-                                    <span var="due-days">7</span> days from receipt of
-                                    invoice. If account is not paid within
-                                    <span var="due-days">7</span> days late fees may be incurred.
-                                </small>
+                                <div choice="notes"></div>
+                                <p>
+                                    <small class="text-muted">
+                                        All accounts are to be paid within
+                                        <span var="due-days">7</span> days from receipt of
+                                        invoice. If account is not paid within
+                                        <span var="due-days">7</span> days late fees may be incurred.
+                                    </small>
+                                </p>
                             </div>
                         </div> <!-- end col -->
                         <div class="col-sm-6 ps-2">
@@ -427,8 +442,8 @@ JS;
                                     <span class="float-end ms-1" var="tax-amount">$0.00</span>
                                 </p>
                                 <p choice="shipping">
-                                    <b>Tax <a href="#" title="Edit Shipping Amount" class="btn btn-default btn-sm" choice="ed-shipping"><i class="fa fa-pencil"></i></a>: </b>
-                                    <span class="float-end ms-1" var="shipping">$0.00</span>
+                                    <b>Shipping <a href="#" title="Edit Shipping Amount" class="btn btn-default btn-sm" choice="ed-shipping"><i class="fa fa-pencil"></i></a>: </b>
+                                    <span class="float-end ms-1" var="shipping-amount">$0.00</span>
                                 </p>
 
                                 <h3 var="total">$0.00</h3>

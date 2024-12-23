@@ -46,3 +46,57 @@ SELECT
   CONCAT('CO-', LPAD(c.company_id, 10, '0')) AS account_id
 FROM company c
 ;
+
+-- \App\Db\InvoiceItem
+CREATE OR REPLACE VIEW v_invoice_item AS
+SELECT
+  it.*,
+  (it.qty * it.price) AS total
+FROM invoice_item it
+;
+
+-- \App\Db\Invoice
+CREATE OR REPLACE VIEW v_invoice AS
+WITH sub_totals AS (
+  SELECT
+    invoice_id,
+    SUM(ROUND(qty*price)) AS sub_total
+  FROM invoice_item
+  GROUP BY invoice_id
+),
+payments AS (
+  SELECT
+    invoice_id,
+    SUM(amount) AS paid_total
+  FROM payment
+  WHERE status = 'cleared'
+  GROUP BY invoice_id
+),
+totals AS (
+  SELECT
+    invoice_id,
+    st.sub_total,
+    IFNULL(ROUND(st.sub_total * i.discount), 0) AS discount_total,
+    IFNULL(ROUND((st.sub_total - (st.sub_total * i.discount)) * i.tax), 0) AS tax_total,
+    IFNULL(ROUND(
+      ((st.sub_total -                                                     --
+      IFNULL((st.sub_total * i.discount), 0)) +                            -- subtract discount
+      IFNULL((st.sub_total - (st.sub_total * i.discount)) * i.tax, 0)) +   -- Add tax
+      i.shipping
+    ), 0) AS total,
+    IFNULL(p.paid_total, 0) AS paid_total
+  FROM invoice i
+  LEFT JOIN sub_totals st USING (invoice_id)
+  LEFT JOIN payments p USING (invoice_id)
+)
+SELECT
+  i.*,
+  t.sub_total,
+  t.discount_total,
+  t.tax_total,
+  t.total,
+  t.paid_total,
+  ROUND(t.total - t.paid_total, 0) AS unpaid_total
+FROM invoice i
+LEFT JOIN totals t USING (invoice_id)
+;

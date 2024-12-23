@@ -20,6 +20,9 @@ class Invoice
         // Email client the new invoice
         $message = Factory::instance()->createMessage();
         $message->addTo($company->email);
+        if ($company->accountsEmail) {
+            $message->addCc($company->accountsEmail);
+        }
         $message->setFrom($siteCompany->email);
         $message->setSubject($siteCompany->name . ' - Invoice ' . $invoice->invoiceId);
         $message->set('company.name', $company->name);

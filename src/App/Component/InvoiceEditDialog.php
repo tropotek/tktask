@@ -4,6 +4,7 @@ namespace App\Component;
 use App\Db\Invoice;
 use App\Db\InvoiceItem;
 use App\Db\Product;
+use App\Db\StatusLog;
 use App\Db\User;
 use App\Form\Field\Datalist;
 use App\Form\Field\StatusSelect;
@@ -39,7 +40,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         }
 
         $this->form = new Form($this->invoice, 'frm-invoice');
-        //$this->form->setAction('');
+        $this->form->removeAttr('action');
         $this->form->setAttr('hx-post', Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId]));
         $this->form->setAttr('hx-swap', 'outerHTML');
         $this->form->setAttr('hx-target', "#{$this->form->getId()}");
@@ -50,7 +51,9 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->appendField(new InputGroup('tax', '%'));
         $this->form->appendField(new InputGroup('shipping', '$'));
 
-        $list = \App\Db\Project::STATUS_LIST;
+        $this->form->appendField(new InputGroup('purchaseOrder', '#'));
+
+        $list = \App\Db\Invoice::STATUS_LIST;
         $this->form->appendField(new StatusSelect('status', $list));
 
         $this->form->appendField(new Textarea('notes'))->addCss('mce-min');
@@ -77,9 +80,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $vals = $form->getFieldValues();
-
-
+        $form->mapModel($this->invoice);
 
         $form->addFieldErrors($this->invoice->validate());
         if ($form->hasErrors()) {
@@ -87,7 +88,9 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
             return;
         }
 
-        //$this->invoice->addItem($this->item);
+        $this->invoice->save();
+
+        StatusLog::create($this->invoice, trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
 
         // Trigger HX events
         $this->hxEvents['tkForm:afterSubmit'] = ['status' => 'ok'];
@@ -101,34 +104,50 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->getField('discount')->addFieldCss('col-4');
         $this->form->getField('tax')->addFieldCss('col-4');
         $this->form->getField('shipping')->addFieldCss('col-4');
+        $this->form->getField('purchaseOrder')->addFieldCss('col-6');
+        $this->form->getField('status')->addFieldCss('col-6');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
 
         $template->appendTemplate('content', $this->form->show());
 
         $baseUrl = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString();
+        $editUrl = Uri::create('/invoiceEdit', ['invoiceId' => $this->invoice->invoiceId])->toString();
 
         $js = <<<JS
-//htmx.logAll();
 jQuery(function($) {
-    const dialog  = '#{$this->getDialogId()}';
-    const form    = '#{$this->form->getId()}';
-    const baseUrl = '$baseUrl';
+    const dialog    = '#{$this->getDialogId()}';
+    const form      = '#{$this->form->getId()}';
+    const baseUrl   = '$baseUrl';
+    const editUrl   = '$editUrl';
 
     // reload page after successfull submit
     $(document).on('htmx:afterSettle', function(e) {
-        console.log('htmx:afterSettle');
-        console.log(e);
-        console.log(e.detail);
-        console.log($(form).get(0));
-        //tkInit($(e.detail.target));
-        tkInit(form)
+        if (!$(e.detail.elt).is(form)) return;
+        if (e.detail.requestConfig.verb === 'get') {
+            tkInit(form);
+        }
+    });
+    $(document).on('htmx:beforeRequest', function(e) {
+        if (e.detail.requestConfig.verb === 'post') {
+            // set the description value as tinymce is not in the HTMX dom tree
+            e.detail.requestConfig.parameters['notes'] = tinymce.activeEditor.getContent();
+        }
     });
 
     // reload page after successfull submit
     $(document).on('tkForm:afterSubmit', function(e) {
+        if (!$(e.detail.elt).is(form)) return;
         $(dialog).modal('hide');
         location = location.href;
+
+        // todo alternativly we could reload the invoice using a HTMX request ????
+        //      Not working need to look into this
+        // htmx.ajax('get', editUrl, {
+        //     source:    '#tk-invoice-container',
+        //     target:    '#tk-invoice-container',
+        //     swap:      'outerHTML'
+        // });
     });
 
     // reset form fields

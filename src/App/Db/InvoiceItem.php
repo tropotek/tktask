@@ -90,16 +90,16 @@ class InvoiceItem extends Model
         return $this->_model;
     }
 
-    public function getTotal(): Money
-    {
-        return $this->price->multiply($this->qty);
-    }
+//    public function getTotal(): Money
+//    {
+//        return $this->price->multiply($this->qty);
+//    }
 
     public static function find(int $invoiceItemId): ?self
     {
         return Db::queryOne("
             SELECT *
-            FROM invoice_item
+            FROM v_invoice_item
             WHERE invoice_item_id = :invoiceItemId",
             compact('invoiceItemId'),
             self::class
@@ -113,7 +113,7 @@ class InvoiceItem extends Model
     {
         return Db::query("
             SELECT *
-            FROM invoice_item",
+            FROM v_invoice_item",
             [],
             self::class
         );
@@ -160,7 +160,7 @@ class InvoiceItem extends Model
 
         return Db::query("
             SELECT *
-            FROM invoice_item a
+            FROM v_invoice_item a
             {$filter->getSql()}",
             $filter->all(),
             self::class
@@ -191,9 +191,9 @@ class InvoiceItem extends Model
             $errors['qty'] = 'Invalid value: qty';
         }
 
-        if ($this->price->getAmount() == 0) {
-            $errors['price'] = 'Invalid value unit price';
-        }
+//        if ($this->price->getAmount() == 0) {
+//            $errors['price'] = 'Invalid value unit price';
+//        }
 
         return $errors;
     }

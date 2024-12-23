@@ -6,6 +6,7 @@ use Bs\Traits\ForeignModelTrait;
 use Bs\Traits\TimestampTrait;
 use Tk\DataMap\DataMap;
 use Tk\DataMap\Db\Date;
+use Tk\DataMap\Form\Percent;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -48,9 +49,13 @@ class Invoice extends Model implements StatusInterface
     public string     $purchaseOrder   = '';
     public float      $discount        = 0.0;
     public float      $tax             = 0.0;
-    public Money      $subTotal;
     public Money      $shipping;
+    public Money      $subTotal;
+    public Money      $discountTotal;
+    public Money      $taxTotal;
     public Money      $total;
+    public Money      $paidTotal;
+    public Money      $unpaidTotal;
     public string     $status          = self::STATUS_OPEN;
     public string     $billingAddress  = '';
     public string     $shippingAddress = '';
@@ -63,9 +68,14 @@ class Invoice extends Model implements StatusInterface
 
     public function __construct()
     {
-        $this->subTotal = Money::create();
-        $this->shipping = Money::create();
-        $this->total    = Money::create();
+        $this->shipping      = Money::create();
+        $this->subTotal      = Money::create();
+        $this->discountTotal = Money::create();
+        $this->taxTotal      = Money::create();
+        $this->total         = Money::create();
+        $this->paidTotal     = Money::create();
+        $this->unpaidTotal   = Money::create();
+
         $this->modified = new \DateTime();
         $this->created  = new \DateTime();
     }
@@ -75,6 +85,14 @@ class Invoice extends Model implements StatusInterface
         $map = parent::getDataMap();
         $map->addType(new Date('issuedOn', 'issued_on'));
         $map->addType(new Date('paidOn', 'paid_on'));
+        return $map;
+    }
+
+    public static function getFormMap(): DataMap
+    {
+        $map = parent::getFormMap();
+        $map->addType(new Percent('discount'));
+        $map->addType(new Percent('tax'));
         return $map;
     }
 
@@ -107,9 +125,6 @@ class Invoice extends Model implements StatusInterface
     public function save(): void
     {
         $map = static::getDataMap();
-
-        // calculate and set totals
-        $this->calculateTotal();
 
         $values = $map->getArray($this);
         if ($this->invoiceId) {
@@ -149,7 +164,7 @@ class Invoice extends Model implements StatusInterface
 
         $item->invoiceId = $this->invoiceId;
         $item->save();
-        $this->save();      // Recalculate totals.
+        $this->reload();
 
         return $this;
     }
@@ -161,67 +176,9 @@ class Invoice extends Model implements StatusInterface
         }
 
         $item->delete();
-        $this->save();      // Recalculate totals.
+        $this->reload();
 
         return $this;
-    }
-
-    public function calculateTotal(): Money
-    {
-        $this->subTotal = $this->calculateSubTotal();
-        $this->total = $this->subTotal->subtract($this->getDiscountTotal());
-        $this->total = $this->total->add($this->getTaxTotal());
-        $this->total = $this->total->add($this->shipping);
-        return $this->total;
-    }
-
-    protected function calculateSubTotal(): Money
-    {
-        $total = Money::create();
-        foreach ($this->getItemList() as $item) {
-            $total = $total->add($item->total);
-        }
-        return $total;
-    }
-
-    /**
-     * Get the total of the invoice
-     *  o subtotal * discount = discount
-     */
-    function getDiscountTotal(): Money
-    {
-        return $this->subTotal->multiply($this->discount);
-    }
-
-    /**
-     * Get the total of the invoice
-     *  o subtotal * tax = tax
-     */
-    function getTaxTotal(): Money
-    {
-        $discount = $this->subTotal->multiply($this->discount);
-        $total = $this->subTotal->subtract($discount);
-        return $total->multiply($this->tax);
-    }
-
-    public static function getUnpaidTotal(): Money
-    {
-        $total = \Tk\Money::create();
-        $list = self::findFiltered(Filter::create(['status' => self::STATUS_UNPAID]));
-        foreach ($list as $invoice) {
-            $total = $total->add($invoice->getOutstandingAmount());
-        }
-        return $total;
-    }
-
-    public static function getOpenTotal(): Money
-    {
-        $total = \Tk\Money::create();
-        $list = self::findFiltered(Filter::create(['status' => self::STATUS_OPEN]));
-        foreach ($list as $invoice) {
-            $total = $total->add($invoice->getOutstandingAmount());
-        }
-        return $total;
     }
 
     /**
@@ -232,20 +189,6 @@ class Invoice extends Model implements StatusInterface
         return Payment::findFiltered(['invoiceId' => $this->invoiceId], '-created');
     }
 
-    public function getPaymentTotal(): Money
-    {
-        $total = \Tk\Money::create();
-        foreach ($this->getPaymentList() as $payment) {
-            $total = $total->add($payment->amount);
-        }
-        return $total;
-    }
-
-    public function getOutstandingAmount(): Money
-    {
-        return $this->total->subtract($this->getPaymentTotal());
-    }
-
     public function addPayment(Payment $payment): static
     {
         if ($this->getStatus() != self::STATUS_UNPAID) {
@@ -253,15 +196,15 @@ class Invoice extends Model implements StatusInterface
         }
 
         $this->save();      // Recalculate totals.
-        if ($payment->amount->getAmount() <= 0 || $this->getOutstandingAmount()->lessThan($payment->amount)) {
-            throw new \Tk\Exception('Payment amount must be greater than 0 and less than the outstanding amount: ' . $this->getOutstandingAmount()->toString());
+        if ($payment->amount->getAmount() <= 0 || $this->unpaidTotal->lessThan($payment->amount)) {
+            throw new \Tk\Exception('Payment amount must be greater than 0 and less than the outstanding amount: ' . $this->unpaidTotal->toString());
         }
         $payment->invoiceId = $this->invoiceId;
         $payment->save();
         $this->save();      // Recalculate totals.
 
         // Check if invoice is paid then change the invoice status to paid
-        if ($this->getOutstandingAmount()->getAmount() == 0) {
+        if ($this->unpaidTotal->getAmount() == 0) {
             $this->status = self::STATUS_PAID;
             $this->paidOn = $payment->receivedAt;
             $this->save();
@@ -284,7 +227,7 @@ class Invoice extends Model implements StatusInterface
 
     public function doIssue(): static
     {
-        if ($this->getOutstandingAmount()->getAmount() <= 0) {
+        if ($this->unpaidTotal->getAmount() <= 0) {
             \Tk\Log::warning('Invoice not issued as there is no outstanding amount: ID: ' . $this->invoiceId);
             return $this;
         }
@@ -297,16 +240,6 @@ class Invoice extends Model implements StatusInterface
     public function doCancel(): static
     {
         $this->status = self::STATUS_CANCELLED;
-        $this->save();
-        return $this;
-    }
-
-    public function doWriteOff(): static
-    {
-        if ($this->getOutstandingAmount()->getAmount() <= 0) {
-            throw new \Tk\Exception('Cannot issue an invoice without an outstanding amount.');
-        }
-        $this->status = self::STATUS_WRITE_OFF;
         $this->save();
         return $this;
     }
@@ -337,7 +270,7 @@ class Invoice extends Model implements StatusInterface
     {
         return Db::queryOne("
             SELECT *
-            FROM invoice
+            FROM v_invoice
             WHERE invoice_id = :invoiceId",
             compact('invoiceId'),
             self::class
@@ -351,7 +284,7 @@ class Invoice extends Model implements StatusInterface
     {
         return Db::query("
             SELECT *
-            FROM invoice",
+            FROM v_invoice",
             [],
             self::class
         );
@@ -441,7 +374,7 @@ class Invoice extends Model implements StatusInterface
 
         return Db::query("
             SELECT *
-            FROM invoice a
+            FROM v_invoice a
             {$filter->getSql()}",
             $filter->all(),
             self::class

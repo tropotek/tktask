@@ -59,7 +59,7 @@ class StatusLog extends Model
         $this->reload();
     }
 
-    public static function create(Model $model, string $message = '', bool $notify = false): static
+    public static function create(Model $model, string $message = '', bool $notify = true): static
     {
         $obj = new static();
         $obj->setDbModel($model);
