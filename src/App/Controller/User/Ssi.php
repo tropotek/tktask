@@ -95,7 +95,6 @@ class Ssi extends ControllerAdmin
                 Alert::addError("Authentication error");
                 Uri::create('/login')->redirect();
             }
-            vd($data);
 
             // get email
             $email = $data[$settings[$oAuth]['emailIdentifier']] ?? '';
