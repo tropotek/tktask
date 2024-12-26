@@ -65,7 +65,6 @@ class Edit extends ControllerAdmin
     public function onSubmit(Form $form, Submit $action): void
     {
         $form->mapModel($this->expenseCategory);
-        //vd($_POST, $form->getFieldValues());
 
         $form->addFieldErrors($this->expenseCategory->validate());
         if ($form->hasErrors()) {

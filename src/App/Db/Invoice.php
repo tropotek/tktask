@@ -40,7 +40,6 @@ class Invoice extends Model implements StatusInterface
     ];
 
     public int        $invoiceId       = 0;
-    //public string     $account         = '';
     public string     $fkey            = '';
     public int        $fid             = 0;
     public string     $purchaseOrder   = '';
@@ -55,7 +54,6 @@ class Invoice extends Model implements StatusInterface
     public Money      $unpaidTotal;
     public string     $status          = self::STATUS_OPEN;
     public string     $billingAddress  = '';
-    public string     $shippingAddress = '';
     public ?\DateTime $issuedOn        = null;
     public ?\DateTime $paidOn          = null;
     public string     $notes           = '';

@@ -222,7 +222,6 @@ CREATE TABLE IF NOT EXISTS recurring (
 
 CREATE TABLE IF NOT EXISTS invoice (
   invoice_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  -- account VARCHAR(64) NOT NULL DEFAULT '',                  -- Account Number: CO-000001, UR-000001
   fkey VARCHAR(64) NOT NULL DEFAULT '',
   fid INT UNSIGNED NOT NULL DEFAULT 0,
   purchase_order VARCHAR(128) NOT NULL DEFAULT '',
@@ -231,7 +230,6 @@ CREATE TABLE IF NOT EXISTS invoice (
   shipping INT NOT NULL DEFAULT 0,                          -- cost in cents
   status ENUM('open','unpaid','paid','cancelled','write_off') DEFAULT 'open',
   billing_address TEXT,
-  shipping_address TEXT,
   issued_on DATE DEFAULT NULL,
   paid_on DATE DEFAULT NULL,
   notes TEXT,
@@ -291,8 +289,6 @@ CREATE TABLE expense (
   CONSTRAINT fk_expense__category_id FOREIGN KEY (category_id) REFERENCES expense_category (expense_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_expense__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
-
-
 
 
 -- ---------------------------------------------------
