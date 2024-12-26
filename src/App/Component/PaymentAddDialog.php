@@ -3,11 +3,10 @@ namespace App\Component;
 
 use App\Db\Invoice;
 use App\Db\InvoiceItem;
+use App\Db\Payment;
 use App\Db\Product;
-use App\Db\StatusLog;
 use App\Db\User;
 use App\Form\Field\Datalist;
-use App\Form\Field\StatusSelect;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Collection;
@@ -16,16 +15,18 @@ use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\InputGroup;
+use Tk\Form\Field\Select;
 use Tk\Form\Field\Textarea;
 use Tk\Log;
 use Tk\Uri;
 
-class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string       $dialogId = 'invoice-edit';
+    protected string       $dialogId = 'invoice-add-item';
     protected ?Form        $form     = null;
     protected array        $hxEvents = [];
     protected ?Invoice     $invoice  = null;
+    protected ?Payment     $payment  = null;
 
 
     public function doDefault(): ?Template
@@ -39,25 +40,21 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
             return null;
         }
 
-        $this->form = new Form($this->invoice, 'frm-invoice');
-        $this->form->removeAttr('action');
-        $this->form->setAttr('hx-post', Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId]));
+        $this->payment = new Payment();
+
+        $this->form = new Form($this->payment);
+        $this->form->setAction('');
+        $this->form->setAttr('hx-post', Uri::create('/component/paymentAddDialog', ['invoiceId' => $this->invoice->invoiceId]));
         $this->form->setAttr('hx-swap', 'outerHTML');
         $this->form->setAttr('hx-target', "#{$this->form->getId()}");
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
 
+        $this->form->appendField((new Select('method', Payment::METHOD_LIST))
+            ->prependOption('-- Select --', ''));
 
-        $this->form->appendField(new InputGroup('discount', '%'));
-        $this->form->appendField(new InputGroup('tax', '%'));
-        $this->form->appendField(new InputGroup('shipping', '$'));
+        $this->form->appendField(new InputGroup('amount', '$'))->setLabel('Payment Amount');
 
-        $this->form->appendField(new InputGroup('purchaseOrder', '#'));
-
-        $list = \App\Db\Invoice::STATUS_LIST;
-        $this->form->appendField(new StatusSelect('status', $list));
-
-        $this->form->appendField(new Textarea('notes'))->addCss('mce-min');
-
+        $this->form->appendField(new Textarea('notes'));
 
         $this->form->appendField(new Link('cancel', Uri::create('#')))
             ->setAttr('data-bs-dismiss', 'modal')
@@ -65,7 +62,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->appendField(new Submit('save', [$this, 'onSubmit']))
             ->addCss('float-end');
 
-        $load = $this->form->unmapModel($this->invoice);
+        $load = $this->form->unmapModel($this->payment);
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -80,17 +77,25 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->invoice);
+        $form->mapModel($this->payment);
 
-        $form->addFieldErrors($this->invoice->validate());
+        // Check that the invoice is in the unpaid status.
+        if ($this->invoice->getStatus() != \App\Db\Invoice::STATUS_UNPAID) {
+            $form->addFieldError('method', 'You can only add payments to invoices with a status of `Unpaid`.');
+        }
+
+        // Check the payment amount does not exceed the invoice remainder amount (can be less)
+        if ($this->payment->amount->greaterThan($this->invoice->unpaidTotal)) {
+            $form->addFieldError('price', 'The payment amount cannot exceed '.$this->invoice->unpaidTotal->toString().'.');
+        }
+
+        $form->addFieldErrors($this->payment->validate());
         if ($form->hasErrors()) {
             $this->hxEvents['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
             return;
         }
 
-        $this->invoice->save();
-
-        StatusLog::create($this->invoice, trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
+        $this->invoice->addPayment($this->payment);
 
         // Trigger HX events
         $this->hxEvents['tkForm:afterSubmit'] = ['status' => 'ok'];
@@ -101,63 +106,30 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $template = $this->getTemplate();
         $template->setAttr('dialog', 'id', $this->getDialogId());
 
-        $this->form->getField('discount')->addFieldCss('col-4');
-        $this->form->getField('tax')->addFieldCss('col-4');
-        $this->form->getField('shipping')->addFieldCss('col-4');
-        $this->form->getField('purchaseOrder')->addFieldCss('col-6');
-        $this->form->getField('status')->addFieldCss('col-6');
-
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
 
         $template->appendTemplate('content', $this->form->show());
-
-        $baseUrl = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString();
-        $editUrl = Uri::create('/invoiceEdit', ['invoiceId' => $this->invoice->invoiceId])->toString();
+        $unpaidTotal = json_encode($this->invoice->unpaidTotal->toFloatString());
 
         $js = <<<JS
 jQuery(function($) {
-    const dialog    = '#{$this->getDialogId()}';
-    const form      = '#{$this->form->getId()}';
-    const baseUrl   = '$baseUrl';
-    const editUrl   = '$editUrl';
-
-    // reload page after successfull submit
-    $(document).on('htmx:afterSettle', function(e) {
-        if (!$(e.detail.elt).is(form)) return;
-        if (e.detail.requestConfig.verb === 'get') {
-            tkInit(form);
-        }
-    });
-    $(document).on('htmx:beforeRequest', function(e) {
-        if ($(e.detail.elt).is(form) && e.detail.requestConfig.verb === 'post') {
-            // set the description value as tinymce is not in the HTMX dom tree
-            e.detail.requestConfig.parameters['notes'] = tinymce.activeEditor.getContent();
-        }
-    });
+    const dialog = '#{$this->getDialogId()}';
+    const form   = '#{$this->form->getId()}';
+    const unpaid = {$unpaidTotal};
 
     // reload page after successfull submit
     $(document).on('tkForm:afterSubmit', function(e) {
         if (!$(e.detail.elt).is(form)) return;
         $(dialog).modal('hide');
         location = location.href;
-
-        // todo alternativly we could reload the invoice using a HTMX request ????
-        //      Not working need to look into this
-        // htmx.ajax('get', editUrl, {
-        //     source:    '#tk-invoice-container',
-        //     target:    '#tk-invoice-container',
-        //     swap:      'outerHTML'
-        // });
     });
 
     // reset form fields
     $(dialog).on('show.bs.modal', function(e) {
-        // reload form to refresh vals
-        htmx.ajax('get', baseUrl, {
-            source:    form,
-            target:    form,
-            swap:      'outerHTML'
-        });
+        $('[name=method]', this).val('cash');
+        $('[name=amount]', this).val(unpaid);
+        $('[name=notes]', this).val('');
+        $('.is-invalid', this).removeClass('is-invalid');
     });
 
 });

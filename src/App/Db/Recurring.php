@@ -56,10 +56,10 @@ class Recurring extends Model
     public static function getDataMap(): DataMap
     {
         $map = parent::getDataMap();
-        $map->addType(new Date('start_on', 'startOn'));
-        $map->addType(new Date('end_on', 'endOn'));
-        $map->addType(new Date('prev_on', 'prevOn'));
-        $map->addType(new Date('next_on', 'nextOn'));
+        $map->addType(new Date('startOn', 'start_on'));
+        $map->addType(new Date('endOn',   'end_on'));
+        $map->addType(new Date('prevOn',  'prev_on'));
+        $map->addType(new Date('nextOn',  'next_on'));
         return $map;
     }
 
@@ -83,61 +83,32 @@ class Recurring extends Model
     /**
      * Invoice this recurring product to the companies current open invoice
      */
-//    public function invoice(?\DateTime $now = null): ?Invoice
-//    {
-//        if (!$now) {
-//            $now = \Tk\Date::floor();
-//        }
-//
-//        if ($this->getId() <= 0) {
-//            throw new \Tk\Exception('Insert the record first.');
-//        }
-//        if (!$this->isDue($now)) {
-//            return null;
-//        }
-//
-//        $lastInvoice = $this->prevOn;
-//        if (!$lastInvoice) {
-//            $lastInvoice = $now;
-//        }
-//
-//        $this->prevOn = $this->nextOn;
-//        $this->nextOn = self::createNextDate($this->prevOn, $this->cycle);
-//        $description = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_MED_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_MED_DATE) . ']';
-//
-//        $invoice = Invoice::getOpenInvoice($this->getCompany()->getAccount());
-//
-//        $code = '';
-//        if ($this->getProduct()) {
-//            $code = $this->getProduct()->code;
-//        }
-//
-//        $item = InvoiceItem::create($code, $description, $this->price);
-//        $invoice->addItem($item);
-//        $this->count++;
-//        $this->save();
-//
-//        return $invoice;
-//    }
-
-    /**
-     * test if this recurring object is ready to be invoiced.
-     */
-    function isDue(?\DateTime $now = null): bool
+    public function invoice(?\DateTime $now = null): ?Invoice
     {
-        if (!$now) {
-            $now = \Tk\Date::floor();
-        }
-        if (!$this->active) return false;
+        if (!$now) $now = \Tk\Date::floor();
 
-        if (\Tk\Date::floor($this->prevOn) >= \Tk\Date::floor($this->nextOn)) {
-            return false;
+        $lastInvoice = $this->prevOn;
+        if (!$lastInvoice) {
+            $lastInvoice = $now;
         }
 
-        if (\Tk\Date::floor($this->nextOn) > $now) {
-            return false;
+        $this->prevOn = $this->nextOn;
+        $this->nextOn = self::createNextDate($this->prevOn, $this->cycle);
+        $description = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_MED_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_MED_DATE) . ']';
+
+        $invoice = Invoice::getOpenInvoice($this->getCompany());
+
+        $code = '';
+        if ($this->getProduct()) {
+            $code = $this->getProduct()->code;
         }
-        return true;
+
+        $item = InvoiceItem::create($code, $description, $this->price);
+        $invoice->addItem($item);
+        $this->count++;
+        $this->save();
+
+        return $invoice;
     }
 
     /**
@@ -196,9 +167,9 @@ class Recurring extends Model
     /**
      * Deactivate all expired recurring items
      */
-    public function closeExpired(): bool
+    public static function closeExpired(): bool
     {
-        $ok = Db::query("
+        $ok = Db::execute("
             UPDATE recurring SET
               active = 0,
               notes = CONCAT(notes, '\\nAuto Expired')
@@ -262,13 +233,12 @@ class Recurring extends Model
             $filter['issue'] = truefalse($filter['issue']);
             $filter->appendWhere('a.issue = :issue AND ');
         }
-
-        if (is_bool(truefalse($filter['isDue'] ?? null))) {
+        if (($filter['isDue'] ?? null) instanceof \DateTime) {
+            $filter['isDue'] = $filter['isDue']->format(\Tk\Date::FORMAT_ISO_DATETIME);
+            $filter->appendWhere('active AND a.next_on IS NOT NULL AND a.next_on BETWEEN prev_on AND :isDue AND ');
+        } elseif (is_bool(truefalse($filter['isDue'] ?? null))) {
             $filter->appendWhere('active AND a.next_on IS NOT NULL AND a.next_on BETWEEN prev_on AND CURRENT_DATE AND ');
-//            $filter->appendWhere('`active` AND DATE(a.next_invoice) <= DATE(%s) AND DATE(a.next_invoice) > DATE(a.last_invoice)',
-//                $this->quote($now->format(\Tk\Date::FORMAT_ISO_DATETIME)));
         }
-
 
         return Db::query("
             SELECT *

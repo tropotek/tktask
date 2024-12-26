@@ -99,6 +99,71 @@ class Project extends Model implements StatusInterface
         return !in_array($this->status, [self::STATUS_COMPLETED, self::STATUS_CANCELLED]);
     }
 
+    /**
+     * @return array<int,Task>
+     */
+    public function getTaskList(array|Filter $filter = []): array
+    {
+        $filter = Filter::create($filter);
+        $filter->set('projectId', $this->projectId);
+        return self::findFiltered($filter);
+    }
+
+    /**
+     * Return the estimated project time in minutes by adding all the task est times.
+     */
+    public function getTotalEstTime(): int
+    {
+        $time = 0;
+        foreach ($this->getTaskList() as $task) {
+            $time += $task->minutes;
+        }
+        return $time;
+    }
+
+    /**
+     * Get the estimated cost of this project based on the default rate
+     */
+    public function getEstimatedCost(): Money
+    {
+        $cost = \Tk\Money::create();
+        $list = $this->getTaskList([
+            'status' => array(Task::STATUS_PENDING, Task::STATUS_HOLD, Task::STATUS_OPEN, Task::STATUS_CLOSED)
+        ]);
+
+        foreach ($list as $task) {
+            $cost = $cost->add($task->getEstimatedCost());
+        }
+        return $cost;
+    }
+
+    /**
+     * @return array<int,User>
+     */
+    public static function getMembers(int $projectId): array
+    {
+        return Db::query("
+            SELECT *
+            FROM project_user pu
+            JOIN v_user u USING (user_id)
+            WHERE pu.project_id = :projectId",
+            compact('projectId'),
+            User::class
+        );
+    }
+
+    public function getTotalCompletedTime(): int
+    {
+        $time = 0;
+        $list = $this->getTaskList([
+            'status' => array(Task::STATUS_CLOSED)
+        ]);
+        foreach ($list as $task) {
+            $time += $task->minutes;
+        }
+        return $time;
+    }
+
     public static function find(int $projectId): ?self
     {
         return Db::queryOne("

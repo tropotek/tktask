@@ -106,22 +106,37 @@ return function (CollectionConfigurator $routes) {
     $routes->add('invoice-edit', '/invoiceEdit')
         ->controller([\App\Controller\Invoice\Edit::class, 'doDefault']);
 
+    $routes->add('reports-profit', '/profitReport')
+        ->controller([\App\Controller\Reports\ProfitLoss::class, 'doDefault']);
+    $routes->add('sales-profit', '/salesReport')
+        ->controller([\App\Controller\Reports\Sales::class, 'doDefault']);
+
 
 
     // Components
     $routes->add('com-status-table', '/component/statusLogTable')
         ->controller([\App\Component\StatusLogTable::class, 'doDefault']);
+
+    $routes->add('com-payment-table', '/component/paymentTable')
+        ->controller([\App\Component\PaymentTable::class, 'doDefault']);
+
     $routes->add('com-task-log-table', '/component/taskLogTable')
         ->controller([\App\Component\TaskLogTable::class, 'doDefault']);
+
     $routes->add('com-item-add-dialog', '/component/itemAddDialog')
         ->controller([\App\Component\ItemAddDialog::class, 'doDefault']);
+
     $routes->add('com-invoice-edit-dialog', '/component/invoiceEditDialog')
         ->controller([\App\Component\InvoiceEditDialog::class, 'doDefault']);
+
+    $routes->add('com-payment-add-dialog', '/component/paymentAddDialog')
+        ->controller([\App\Component\PaymentAddDialog::class, 'doDefault']);
 
 
     // API
     $routes->add('api-notify', '/api/notify/getNotifications')
         ->controller([\App\Api\Notify::class, 'doGetNotifications']);
+
     $routes->add('api-get-product', '/api/getProduct')
         ->controller([\App\Api\Product::class, 'doGetProduct']);
 };

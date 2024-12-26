@@ -203,9 +203,9 @@ class Manager extends ControllerAdmin
   <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="/" title="Create Staff" class="btn btn-outline-secondary" choice="create-staff"><i class="fa fa-user"></i> Create Staff</a>
-      <a href="/" title="Create Member" class="btn btn-outline-secondary" choice="create-member"><i class="fa fa-user"></i> Create Member</a>
+      <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+      <a href="/" title="Create Staff" class="btn btn-outline-secondary me-1" choice="create-staff"><i class="fa fa-user"></i> Create Staff</a>
+      <a href="/" title="Create Member" class="btn btn-outline-secondary me-1" choice="create-member"><i class="fa fa-user"></i> Create Member</a>
     </div>
   </div>
   <div class="card mb-3">

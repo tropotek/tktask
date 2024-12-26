@@ -229,8 +229,6 @@ CREATE TABLE IF NOT EXISTS invoice (
   discount FLOAT UNSIGNED NOT NULL DEFAULT 0.0,             -- '0.0-1.0' as a ratio percentage
   tax FLOAT UNSIGNED NOT NULL DEFAULT 0.0,                  -- '0.0-1.0' as a ratio percentage
   shipping INT NOT NULL DEFAULT 0,                          -- cost in cents
---  sub_total INT NOT NULL DEFAULT 0,                         -- cost in cents
---  total INT NOT NULL DEFAULT 0,                             -- cost in cents
   status ENUM('open','unpaid','paid','cancelled','write_off') DEFAULT 'open',
   billing_address TEXT,
   shipping_address TEXT,
@@ -249,7 +247,6 @@ CREATE TABLE IF NOT EXISTS invoice_item (
   description TEXT,
   qty FLOAT NOT NULL DEFAULT 1.0,
   price INT NOT NULL DEFAULT 0,                 -- cost in cents
---  total INT NOT NULL DEFAULT 0,                 -- cost in cents
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

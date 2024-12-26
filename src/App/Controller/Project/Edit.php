@@ -65,7 +65,7 @@ class Edit extends ControllerAdmin
     <div class="page-actions card mb-3">
       <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
       <div class="card-body" var="actions">
-        <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+        <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       </div>
     </div>
   </div>

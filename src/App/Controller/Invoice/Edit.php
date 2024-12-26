@@ -3,6 +3,8 @@ namespace App\Controller\Invoice;
 
 use App\Component\InvoiceEditDialog;
 use App\Component\ItemAddDialog;
+use App\Component\PaymentAddDialog;
+use App\Component\PaymentTable;
 use App\Component\StatusLogTable;
 use App\Db\Company;
 use App\Db\Invoice;
@@ -21,11 +23,13 @@ class Edit extends ControllerAdmin
 {
     protected ?Invoice           $invoice           = null;
     protected ?StatusLogTable    $statusLog         = null;
+    protected ?PaymentTable      $paymentTable      = null;
     protected ?ItemAddDialog     $itemAddDialog     = null;
     protected ?InvoiceEditDialog $invoiceEditDialog = null;
+    protected ?PaymentAddDialog  $paymentAddDialog  = null;
 
 
-    public function doDefault(): void
+    public function doDefault(): mixed
     {
         $this->getPage()->setTitle('Edit Invoice');
 
@@ -52,7 +56,7 @@ class Edit extends ControllerAdmin
         }
 
         if ($_GET['act'] ?? false) {
-            $this->doAction();
+            return $this->doAction();
         }
 
         // Show status log component
@@ -61,15 +65,27 @@ class Edit extends ControllerAdmin
             $this->itemAddDialog = new ItemAddDialog();
         }
 
-        //if (in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID, Invoice::STATUS_CANCELLED])) {
-            $this->invoiceEditDialog = new InvoiceEditDialog();
-        //}
+        $this->invoiceEditDialog = new InvoiceEditDialog();
+
+        if ($this->invoice->status == Invoice::STATUS_UNPAID) {
+            $this->paymentAddDialog = new PaymentAddDialog();
+        }
+        if ($this->invoice->paidTotal->getAmount() > 0) {
+            $this->paymentTable = new PaymentTable();
+        }
+
+        return null;
     }
 
-    public function doAction(): void
+    public function doAction(): mixed
     {
         $action = trim($_GET['post'] ?? $_GET['act'] ?? '');
         switch ($action) {
+            case 'pdf':
+                $ren = new \App\Pdf\PdfInvoice($this->invoice);
+                $ren->output();
+                //return $ren->show();  // to show HTML
+                break;
             case 'issue':
                 $this->invoice->doIssue();
                 Alert::addSuccess("Invoiced issued to client");
@@ -105,6 +121,8 @@ class Edit extends ControllerAdmin
                 Uri::create()->remove('act')->redirect();
                 break;
         }
+
+        return null;
     }
 
     public function show(): ?Template
@@ -128,6 +146,14 @@ class Edit extends ControllerAdmin
         $issue = Uri::create()->set('act', 'issue');
         $template->setAttr('btn-issue', 'href', $issue);
 
+        $pdf = Uri::create()->set('act', 'pdf');
+        $template->setAttr('btn-pdf', 'href', $pdf);
+
+        if ($this->paymentTable) {
+            $html = $this->paymentTable->doDefault();
+            $template->appendHtml('components', $html);
+        }
+
         if ($this->statusLog) {
             $html = $this->statusLog->doDefault();
             $template->appendHtml('components', $html);
@@ -142,6 +168,12 @@ class Edit extends ControllerAdmin
         if ($this->invoiceEditDialog) {
             $template->setAttr('btn-edit', 'data-bs-target', "#{$this->invoiceEditDialog->getDialogId()}");
             $tpl = $this->invoiceEditDialog->doDefault();
+            if ($tpl) $template->appendTemplate('dialogs', $tpl);
+        }
+
+        if ($this->paymentAddDialog) {
+            $template->setAttr('btn-pay', 'data-bs-target', "#{$this->paymentAddDialog->getDialogId()}");
+            $tpl = $this->paymentAddDialog->doDefault();
             if ($tpl) $template->appendTemplate('dialogs', $tpl);
         }
 
@@ -264,7 +296,13 @@ class Edit extends ControllerAdmin
         }
 
         // totals footer
-        $template->setText('subTotal', $this->invoice->subTotal);
+        if (($this->invoice->discount) > 0 ||
+            ($this->invoice->tax > 0) ||
+            ($this->invoice->shipping->getAmount() > 0)
+        ) {
+            $template->setText('subTotal-amount', $this->invoice->subTotal);
+            $template->setVisible('subTotal');
+        }
 
         if ($this->invoice->discount > 0) {
             $template->setText('discount-pcnt', round($this->invoice->discount * 100, 2) . '%');
@@ -278,12 +316,23 @@ class Edit extends ControllerAdmin
             $template->setVisible('tax');
         }
 
-        if ($this->invoice->shipping && $this->invoice->shipping->getAmount() > 0) {
+        if ($this->invoice->shipping->getAmount() > 0) {
             $template->setText('shipping-amount', $this->invoice->shipping);
             $template->setVisible('shipping');
         }
 
-        $template->setText('total', $this->invoice->total);
+        $template->setText('total-amount', $this->invoice->total);
+
+        if ($this->invoice->paidTotal->getAmount() > 0) {
+            $template->setText('paid-amount', '-'.$this->invoice->paidTotal);
+            $template->setVisible('paid');
+        }
+
+        if ($this->invoice->status == Invoice::STATUS_UNPAID) {
+            $template->setText('outstanding-amount', $this->invoice->unpaidTotal);
+            $template->setVisible('outstanding');
+        }
+
     }
 
     public function __makeTemplate(): ?Template
@@ -296,11 +345,14 @@ class Edit extends ControllerAdmin
             <div class="card-body" var="actions">
                 <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
 
-                <a href="#" class="btn btn-light me-1" title="PDF" target="_blank" var="btn-pdf"><i class="fa fa-download"></i>
-                    <span>PDF</span></a>
-                <a href="#" class="btn btn-light me-1" title="Email" var="btn-email" data-confirm="Are you sure you want to email this invoice to the client?"><i class="fas fa-envelope"></i>
-                    <span>Email</span></a>
-
+                <a href="#" class="btn btn-outline-secondary me-1" title="PDF" target="_blank" var="btn-pdf">
+                    <i class="fa fa-download"></i>
+                    <span>PDF</span>
+                </a>
+                <a href="#" class="btn btn-outline-secondary me-1" title="Email" var="btn-email" data-confirm="Are you sure you want to email this invoice to the client?">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </a>
 
                 <a href="#" class="btn btn-danger float-end me-1" title="Cancel" choice="btn-cancel" data-confirm="Are you sure you want to cancel this invoice?">
                     <i class="fas fa-bell-slash"></i>
@@ -310,7 +362,7 @@ class Edit extends ControllerAdmin
                     <i class="fa fa-edit"></i>
                     <span>Edit</span>
                 </a>
-                <a href="#" class="btn btn-success float-end me-1" title="Add a new payment" choice="btn-pay">
+                <a href="#" class="btn btn-success float-end me-1" data-bs-toggle="modal" title="Add a new payment" choice="btn-pay">
                     <i class="fas fa-dollar-sign"></i>
                     <span>Add Payment</span>
                 </a>
@@ -338,7 +390,7 @@ class Edit extends ControllerAdmin
 
                     <div class="row">
                         <div class="col-sm-8">
-                            <h5>Billing Address</h5>
+                            <h5>Client</h5>
                             <address>
                                 <strong><a href="#" var="clientName"></a></strong><br>
                                 <strong choice="clientContact"></strong><br>
@@ -421,32 +473,39 @@ class Edit extends ControllerAdmin
                                     <small class="text-muted">
                                         All accounts are to be paid within
                                         <span var="due-days">7</span> days from receipt of
-                                        invoice. If account is not paid within
-                                        <span var="due-days">7</span> days late fees may be incurred.
+                                        invoice.<br> Late payments may incur a 10% fee.
                                     </small>
                                 </p>
                             </div>
                         </div> <!-- end col -->
                         <div class="col-sm-6 ps-2">
                             <div class="float-end pe-1">
-                                <p>
+                                <p choice="subTotal">
                                     <b>Sub-total: </b>
-                                    <span class="float-end ms-1" var="subTotal">$0.00</span>
+                                    <span class="float-end ms-1" var="subTotal-amount">$0.00</span>
                                 </p>
                                 <p choice="discount">
-                                    <b>Discount (<span var="discount-pcnt"></span>) <a href="#" title="Edit Discount Amount" class="btn btn-default btn-sm" choice="ed-discount"><i class="fa fa-pencil"></i></a>: </b>
+                                    <b>Discount (<span var="discount-pcnt"></span>): </b>
                                     <span class="float-end ms-1" var="discount-amount">$0.00</span>
                                 </p>
                                 <p choice="tax">
-                                    <b>Tax (<span var="tax-pcnt"></span>) <a href="#" title="Edit Tax Amount" class="btn btn-default btn-sm" choice="ed-tax"><i class="fa fa-pencil"></i></a>: </b>
+                                    <b>Tax (<span var="tax-pcnt"></span>): </b>
                                     <span class="float-end ms-1" var="tax-amount">$0.00</span>
                                 </p>
                                 <p choice="shipping">
-                                    <b>Shipping <a href="#" title="Edit Shipping Amount" class="btn btn-default btn-sm" choice="ed-shipping"><i class="fa fa-pencil"></i></a>: </b>
+                                    <b>Shipping: </b>
                                     <span class="float-end ms-1" var="shipping-amount">$0.00</span>
                                 </p>
+                                <p>
+                                    <b>Total: </b>
+                                    <span class="float-end ms-1" var="total-amount">$0.00</span>
+                                </p>
+                                <p choice="paid">
+                                    <b>Paid: </b>
+                                    <span class="float-end ms-1" var="paid-amount">-$0.00</span>
+                                </p>
 
-                                <h3 var="total">$0.00</h3>
+                                <h3 choice="outstanding"><span var="outstanding-amount">$0.00</span></h3>
                             </div>
                             <div class="clearfix"></div>
                         </div> <!-- end col -->

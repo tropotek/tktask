@@ -7,6 +7,16 @@
 }
 
 /*********** B O O T S T R A P *************/
+.modal-header-success .modal-title,
+.modal-header-warning .modal-title,
+.modal-header-danger .modal-title,
+.modal-header-info .modal-title,
+.modal-header-primary .modal-title
+{
+  color: #fff;
+  font-size: 1.125rem;
+}
+
 .modal-header-success {
   color:#fff;
   border-bottom:1px solid #eee;

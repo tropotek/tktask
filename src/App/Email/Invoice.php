@@ -26,37 +26,34 @@ class Invoice
         $message->setFrom($siteCompany->email);
         $message->setSubject($siteCompany->name . ' - Invoice ' . $invoice->invoiceId);
         $message->set('company.name', $company->name);
+        $message->set('payment.text', Registry::instance()->get('site.invoice.payment', ''));
 
         // get unpaid email template
-        $content = Registry::instance()->get('site.email.invoice.unpaid');
+        $content = Registry::instance()->get('site.email.invoice.unpaid', '');
         $message->setContent($content);
 
-        // TODO: implement invoice PDF
-//        $ren = \App\Ui\PdfInvoice::create($invoice);
-//        $attach = $ren->getPdfAttachment();
-//        $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
-//        if ($invoice->issuedOn instanceof \DateTime) {
-//            $filename = $invoice->issuedOn->format('Y-m-d') . '_' . $filename;
-//        }
-//        $message->addStringAttachment($attach, $filename);
+        $ren = new \App\Pdf\PdfInvoice($invoice);
+        $attach = $ren->getPdfAttachment();
+        $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
+        if ($invoice->issuedOn instanceof \DateTime) {
+            $filename = $invoice->issuedOn->format('Y-m-d') . '_' . $filename;
+        }
+        $message->addStringAttachment($attach, $filename);
 
         // TODO Add a PDF of all tasks completed not just project ones.
+        $items = $invoice->getItemList();
+        $tasks = [];
+        foreach ($items as $item) {
+            $task = $item->getModel();
+            if (!$task instanceof \App\Db\Task) continue;
+            $tasks[] = $task;
+        }
 
-//        $items = $invoice->getItemList();
-//        $projects = [];
-//        foreach ($items as $item) {
-//            $task = $item->findModelByCode();
-//            if (!$task instanceof \App\Db\Task) continue;
-//            if ($task->getProject()) {
-//                $projects[$task->getProject()->getId()] = $task->getProject();
-//            }
-//        }
-//        // TODO: just show project name on task list
-//        foreach ($projects as $project) {
-//            $pdf = new \App\Ui\PdfTaskList($items, $project);
-//            $filename = str_replace([' ', '/', '\\'], '', $project->getName() . '-TaskList.pdf');
-//            $message->addStringAttachment($pdf->getPdfAttachment($filename), $filename);
-//        }
+        if (count($tasks)) {
+            $pdf = new \App\Pdf\PdfTaskList($tasks);
+            $filename = str_replace([' ', '/', '\\'], '', $invoice->invoiceId . '-TaskList.pdf');
+            $message->addStringAttachment($pdf->getPdfAttachment($filename), $filename);
+        }
 
         return Factory::instance()->getMailGateway()->send($message);
     }

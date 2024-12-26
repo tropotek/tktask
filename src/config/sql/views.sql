@@ -75,7 +75,7 @@ payments AS (
 totals AS (
   SELECT
     invoice_id,
-    st.sub_total,
+    IFNULL(st.sub_total, 0) AS sub_total,
     IFNULL(ROUND(st.sub_total * i.discount), 0) AS discount_total,
     IFNULL(ROUND((st.sub_total - (st.sub_total * i.discount)) * i.tax), 0) AS tax_total,
     IFNULL(ROUND(

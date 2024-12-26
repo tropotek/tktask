@@ -24,14 +24,12 @@ class Invoice extends Model implements StatusInterface
     const string STATUS_UNPAID    = 'unpaid';
     const string STATUS_PAID      = 'paid';
     const string STATUS_CANCELLED = 'cancelled';
-    const string STATUS_WRITE_OFF = 'write_off';
 
     const array STATUS_LIST = [
         self::STATUS_OPEN      => 'Open',
         self::STATUS_UNPAID    => 'Unpaid',
         self::STATUS_PAID      => 'Paid',
         self::STATUS_CANCELLED => 'Cancelled',
-        self::STATUS_WRITE_OFF => 'Write Off',
     ];
 
     const array STATUS_CSS = [
@@ -39,7 +37,6 @@ class Invoice extends Model implements StatusInterface
         self::STATUS_UNPAID     => 'warning',
         self::STATUS_PAID       => 'success',
         self::STATUS_CANCELLED  => 'danger',
-        self::STATUS_WRITE_OFF  => 'danger',
     ];
 
     public int        $invoiceId       = 0;
@@ -195,20 +192,24 @@ class Invoice extends Model implements StatusInterface
             throw new \Tk\Exception('Invoice is not unpaid and payments cannot be modified');
         }
 
-        $this->save();      // Recalculate totals.
         if ($payment->amount->getAmount() <= 0 || $this->unpaidTotal->lessThan($payment->amount)) {
             throw new \Tk\Exception('Payment amount must be greater than 0 and less than the outstanding amount: ' . $this->unpaidTotal->toString());
         }
+
         $payment->invoiceId = $this->invoiceId;
         $payment->save();
-        $this->save();      // Recalculate totals.
+        StatusLog::create($payment, 'payment made');
+        $this->reload();      // Recalculate totals.
 
         // Check if invoice is paid then change the invoice status to paid
         if ($this->unpaidTotal->getAmount() == 0) {
             $this->status = self::STATUS_PAID;
             $this->paidOn = $payment->receivedAt;
             $this->save();
+            StatusLog::create($this, 'final payment made');
         }
+
+        $this->reload();      // Recalculate totals.
 
         return $this;
     }
@@ -220,7 +221,7 @@ class Invoice extends Model implements StatusInterface
         }
 
         $payment->delete();
-        $this->save();      // Recalculate totals.
+        $this->reload();      // Recalculate totals.
 
         return $this;
     }
@@ -234,6 +235,7 @@ class Invoice extends Model implements StatusInterface
         $this->status = self::STATUS_UNPAID;
         $this->issuedOn = \Tk\Date::create();
         $this->save();
+        StatusLog::create($this, 'Invoice Issued');
         return $this;
     }
 
@@ -241,6 +243,7 @@ class Invoice extends Model implements StatusInterface
     {
         $this->status = self::STATUS_CANCELLED;
         $this->save();
+        StatusLog::create($this, 'Invoice Cancelled');
         return $this;
     }
 
@@ -285,6 +288,18 @@ class Invoice extends Model implements StatusInterface
         return Db::query("
             SELECT *
             FROM v_invoice",
+            [],
+            self::class
+        );
+    }
+
+    public static function getFirstInvoice(): ?static
+    {
+        return Db::queryOne("
+            SELECT *
+            FROM v_invoice
+            ORDER BY invoice_id
+            LIMIT 1",
             [],
             self::class
         );
@@ -412,7 +427,7 @@ class Invoice extends Model implements StatusInterface
     public function onStatusChanged(StatusLog $statusLog): void
     {
         $prevStatusName = $statusLog->getPreviousName();
-        if ($statusLog->name == self::STATUS_UNPAID && $prevStatusName == self::STATUS_OPEN) {
+        if ($statusLog->name == self::STATUS_UNPAID && (!$prevStatusName || $prevStatusName == self::STATUS_OPEN)) {
             if (!\App\Email\Invoice::sendIssueInvoice($this)) {     // on invoice issue
                 Log::error("failed to send invoice email to {$this->fkey} ID {$this->fid}");
             }

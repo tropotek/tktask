@@ -1,0 +1,74 @@
+
+
+th {
+  background-color: #EFEFEF;
+}
+tbody td,
+tbody th {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+
+.primary, .badge-primary, .label-primary { color: #0399e2; }
+.secondary, .badge-secondary, .label-secondary { color: #5d6a72; }
+.success, .badge-success, .label-success { color: #7cb044; }
+.warning, .badge-warning, .label-warning { color: #e3ad07; }
+.danger, .badge-danger, .label-danger { color: #e24c3f; }
+
+.bb-1
+{
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.w-100 {
+  width: 100%;
+}
+.w-50 {
+  width: 50%;
+}
+.w-33 {
+  width: 33%;
+}
+.w-25 {
+  width: 25%;
+}
+.text-start {
+  text-align: left;
+}
+.text-end {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.text-strong {
+  font-weight: bold;
+}
+.mt-1 {
+  margin-top: 1em;
+}
+.mt-2 {
+  margin-top: 2em;
+}
+.mt-3 {
+  margin-top: 3em;
+}
+.mt-4 {
+  margin-top: 4em;
+}
+.mb-1 {
+  margin-bottom: 1em;
+}
+.mb-2 {
+  margin-bottom: 2em;
+}
+.mb-3 {
+  margin-bottom: 3em;
+}
+.mb-4 {
+  margin-bottom: 4em;
+}
+
+
+

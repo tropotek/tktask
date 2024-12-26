@@ -26,9 +26,9 @@ class Nav
                 'url' => '/settings',
             ],
 
-            'Task' => [
-                'visible' => fn($i) => $this->getUser()?->isStaff(),
-            ],
+//            'Task' => [
+//                'visible' => fn($i) => $this->getUser()?->isStaff(),
+//            ],
             'Tasks' => [
                 'icon' => 'fas fa-tasks',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
@@ -52,7 +52,7 @@ class Nav
                     return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },
             ],
-            'Recurring' => [
+            'Recurring Billing' => [
                 'icon' => 'fas fa-money-bill-wave',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/recurringManager',
@@ -63,9 +63,19 @@ class Nav
                 'url' => '/expenseManager',
             ],
 
-//            'Reports' => [
-//                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
-//            ],
+            'Reports' => [
+                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+            ],
+            'Profit & Loss' => [
+                'icon' => 'fas fa-dollar-sign',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/profitReport',
+            ],
+            'Sales' => [
+                'icon' => 'fas fa-chart-line',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/salesReport',
+            ],
 
             'Admin' => [
                 'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),

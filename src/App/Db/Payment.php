@@ -42,8 +42,8 @@ class Payment extends Model implements StatusInterface
     public int        $paymentId  = 0;
     public int        $invoiceId  = 0;
     public Money      $amount;
-    public string     $method     = '';
-    public string     $status     = '';
+    public string     $method     = self::METHOD_CASH;
+    public string     $status     = self::STATUS_CLEARED;
     public \DateTime  $receivedAt;
     public ?string    $notes      = null;
     public \DateTime  $modified;
@@ -159,19 +159,11 @@ class Payment extends Model implements StatusInterface
 
         if (!empty($filter['dateStart'])) {
             if (($filter['dateStart'] instanceof \DateTime)) $filter['dateStart'] = $filter['dateStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.received >= :dateStart AND ');
+            $filter->appendWhere('a.received_at >= :dateStart AND ');
         }
         if (!empty($filter['dateEnd'])) {
             if (($filter['dateEnd'] instanceof \DateTime)) $filter['dateEnd'] = $filter['dateEnd']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.received <= :dateEnd AND ');
-        }
-        if (!empty($filter['dateClearedStart'])) {
-            if (($filter['dateClearedStart'] instanceof \DateTime)) $filter['dateClearedStart'] = $filter['dateClearedStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.cleared >= :dateClearedStart AND ');
-        }
-        if (!empty($filter['dateClearedEnd'])) {
-            if (($filter['dateClearedEnd'] instanceof \DateTime)) $filter['dateClearedEnd'] = $filter['dateClearedEnd']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.cleared <= :dateClearedEnd AND ');
+            $filter->appendWhere('a.received_at <= :dateEnd AND ');
         }
 
         return Db::query("
@@ -210,7 +202,7 @@ class Payment extends Model implements StatusInterface
     public function onStatusChanged(StatusLog $statusLog): void
     {
         $prevStatusName = $statusLog->getPreviousName();
-        if ($statusLog->name == self::STATUS_CLEARED && $prevStatusName == self::STATUS_PENDING) {
+        if ($statusLog->name == self::STATUS_CLEARED && (!$prevStatusName || $prevStatusName == self::STATUS_PENDING)) {
             if (!\App\Email\Invoice::sendPaymentReceipt($this)) {       // email client payment receipt
                 Log::error("failed to send payment receipt for invoice {$this->getInvoice()->fkey} ID {$this->getInvoice()->fid}");
             }

@@ -16,7 +16,7 @@ class Edit extends ControllerAdmin
     protected ?TaskLogTable $taskLog = null;
 
 
-    public function doDefault(): void
+    public function doDefault(): mixed
     {
         $this->getPage()->setTitle('Edit Task');
 
@@ -52,6 +52,8 @@ class Edit extends ControllerAdmin
                 $field->setReadonly()->setDisabled();
             }
         }
+
+        return null;
     }
 
     public function doReopen(): void
@@ -107,10 +109,10 @@ class Edit extends ControllerAdmin
       <div class="page-actions card mb-3">
         <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
         <div class="card-body" var="actions">
-          <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-          <a href="/taskLogEdit" title="Add a new Task Log" class="btn btn-outline-secondary" choice="add-log" data-toggle="modal"><i class="fa fa-fw fa-plus"></i> Add Log</a>
-          <a href="#" title="Re-Open this task" class="btn btn-outline-secondary" choice="re-open" data-confirm="Are you sure you want to re-open this task?"><i class="fa fa-fw fa-tasks"></i> Re-Open</a>
-          <a href="#" title="Manage Task Logs" class="btn btn-outline-secondary" var="logs"><i class="fa fa-fw fa-tasks"></i> Task Logs</a>
+          <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+          <a href="/taskLogEdit" title="Add a new Task Log" class="btn btn-outline-secondary me-1" choice="add-log" data-toggle="modal"><i class="fa fa-fw fa-plus"></i> Add Log</a>
+          <a href="#" title="Re-Open this task" class="btn btn-outline-secondary me-1" choice="re-open" data-confirm="Are you sure you want to re-open this task?"><i class="fa fa-fw fa-tasks"></i> Re-Open</a>
+          <a href="#" title="Manage Task Logs" class="btn btn-outline-secondary me-1" var="logs"><i class="fa fa-fw fa-tasks"></i> Task Logs</a>
         </div>
       </div>
   </div>

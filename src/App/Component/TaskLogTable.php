@@ -79,7 +79,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
     public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
-<div class="test-com">
+<div>
   <div class="card mb-3">
     <div class="card-header"><i class="fas fa-cogs"></i> <span var="title">Task Logs</span></div>
     <div class="card-body" var="content"></div>
