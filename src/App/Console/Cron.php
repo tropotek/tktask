@@ -38,7 +38,7 @@ class Cron extends Console
         //$this->sendInvoiceReminders();
 
         // Closing Expired Recurring Items
-        //$this->closeExpired();
+        $this->closeExpired();
 
         $this->release();   // release lock
 
@@ -53,13 +53,12 @@ class Cron extends Console
     {
         $this->writeComment(' - Invoicing Recurring Items', OutputInterface::VERBOSITY_VERBOSE);
 
-        $now = null;
-        if ($this->getConfig()->isDebug()) {
-            $now = \Tk\Date::floor(\Tk\Date::create('2025-05-01'));
-        }
+        $now = true;
+//        if ($this->getConfig()->isDebug()) {
+//            $now = \Tk\Date::floor(\Tk\Date::create('2025-05-01'));
+//        }
 
         $items = \App\Db\Recurring::findFiltered([
-            //'isDue' => true,      // for release
             'isDue' => $now
         ]);
 
@@ -92,7 +91,7 @@ class Cron extends Console
     {
         $this->writeComment(' - Send invoice overdue reminder emails', OutputInterface::VERBOSITY_VERBOSE);
 
-        // todo
+        // todo ...
 
     }
 
