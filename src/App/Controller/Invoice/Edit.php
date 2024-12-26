@@ -95,7 +95,7 @@ class Edit extends ControllerAdmin
                 $invoiceItemId = intval($_REQUEST['invoiceItemId'] ?? 0);
                 $item = InvoiceItem::find($invoiceItemId);
                 if ($item instanceof InvoiceItem) {
-                    $item->qty = intval($_POST['qty'] ?? 1);
+                    $item->qty = intval($_POST['qty'][$invoiceItemId] ?? 1);
                     $item->save();
                 }
                 break;
@@ -269,9 +269,6 @@ class Edit extends ControllerAdmin
             $del = Uri::create()->set('invoiceItemId', $item->invoiceItemId)->set('act', 'del');
             $row->setAttr('delete', 'hx-delete', $del);
 
-            $qty = Uri::create()->set('invoiceItemId', $item->invoiceItemId)->set('act', 'qty');
-            $row->setAttr('qty-input', 'hx-post', $qty);
-
             $model = $item->getModel();
             if ($model instanceof \App\Db\Task) {
                 $url = Uri::create('/taskEdit')->set('taskId', $model->getId());
@@ -285,6 +282,10 @@ class Edit extends ControllerAdmin
 
             $row->setText('description', $item->description);
             if ($this->invoice->status == \App\Db\Invoice::STATUS_OPEN) {
+                $qty = Uri::create()->set('invoiceItemId', $item->invoiceItemId)->set('act', 'qty');
+                $row->setAttr('qty-input', 'hx-post', $qty);
+                $row->setAttr('qty-input', 'name', "qty[{$item->invoiceItemId}]");
+
                 $row->setAttr('qty-input', 'value', $item->qty);
                 $row->setVisible('open');
             } else {
@@ -446,7 +447,7 @@ class Edit extends ControllerAdmin
                                                 2 Pages static website - my website
                                             </td>
                                             <td class="text-center" var="qty">
-                                                <input type="text" class="form-control input-qty" name="qty" value="5"
+                                                <input type="text" class="form-control" name="qty[]" value="0"
                                                     hx-post=""
                                                     hx-trigger="keyup changed delay:500ms"
                                                     hx-target="#tk-invoice-container"

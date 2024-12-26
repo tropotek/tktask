@@ -245,6 +245,7 @@ CREATE TABLE IF NOT EXISTS invoice_item (
   description TEXT,
   qty FLOAT NOT NULL DEFAULT 1.0,
   price INT NOT NULL DEFAULT 0,                 -- cost in cents
+  total INT GENERATED ALWAYS AS (qty * price),
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

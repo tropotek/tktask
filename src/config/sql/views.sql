@@ -50,8 +50,7 @@ FROM company c
 -- \App\Db\InvoiceItem
 CREATE OR REPLACE VIEW v_invoice_item AS
 SELECT
-  it.*,
-  (it.qty * it.price) AS total
+  it.*
 FROM invoice_item it
 ;
 

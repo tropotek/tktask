@@ -41,7 +41,6 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         }
         $template->setText('profit', $grossProfit->toString());
 
-
         // Expenses
         $total = \Tk\Money::create();
 
@@ -71,7 +70,7 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $template->setText('netProfit', $netProfit->toString());
 
         // Estimate the amount of tax payable for year
-        $taxRatio = 0.25;
+        $taxRatio = 0.20;
         $tax = $netProfit->multiply($taxRatio);
         $template->setText('tax-ratio', '('.($taxRatio*100).'%)');
         $template->setText('tax', $tax->toString());
