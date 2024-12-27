@@ -115,7 +115,7 @@ class Nav
     public function getProfileNav(): Template
     {
         $html = <<<HTML
-<div>
+<div class="dropdown-menu dropdown-menu-end profile-dropdown">
     <a href="/profile" class="dropdown-item notify-item">
         <i class="fe-user me-1"></i>
         <span>My Account</span>

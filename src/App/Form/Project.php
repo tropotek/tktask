@@ -106,7 +106,7 @@ class Project extends Form
         $isNew = ($this->getProject()->projectId == 0);
         $this->getProject()->save();
 
-        StatusLog::create($this->getProject(), $_POST['status_msg'] ?? '', truefalse($_POST['status_notify'] ?? false));
+        StatusLog::create($this->getProject(), trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
 
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('projectId', $this->getProject()->projectId));

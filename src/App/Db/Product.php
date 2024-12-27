@@ -16,6 +16,9 @@ class Product extends Model
     use TimestampTrait;
     use ProductCategoryTrait;
 
+    const int    LABOR_CAT_ID    = 1;
+    const int    DEFAULT_LABOUR_PRODUCT = 1;
+
     const string CYCLE_EACH      = 'each';
     const string CYCLE_WEEK      = 'week';
     const string CYCLE_FORTNIGHT = 'fortnight';
@@ -86,7 +89,7 @@ class Product extends Model
     public static function getDefaultLaborProduct(): static
     {
         $config = Config::instance();
-        $id = (int)$config->get('site.taskLog.billable.default', 1);
+        $id = (int)$config->get('site.product.labor.default', self::DEFAULT_LABOUR_PRODUCT);
         $obj = self::find($id);
         if (!($obj instanceof Product)) throw new Exception("Failed to find product id {$id}");
         return $obj;

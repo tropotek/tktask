@@ -1,11 +1,13 @@
 <?php
 namespace App\Table;
 
+use App\Component\TaskLogAddDialog;
 use App\Db\Company;
 use App\Db\TaskCategory;
 use App\Util\Tools;
 use Bs\Mvc\Table;
 use Bs\Registry;
+use Dom\Template;
 use Tk\Collection;
 use Tk\Uri;
 use Tk\Db;
@@ -43,21 +45,27 @@ use Tk\Table\Cell;
  */
 class Task extends Table
 {
+    protected ?TaskLogAddDialog $logAddDialog = null;
 
     public function init(): static
     {
+        $this->logAddDialog = new TaskLogAddDialog();
+
         $this->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
                 if (!$obj->isOpen()) {
                     $cell->getTable()->getRowAttrs()->addCss('task-closed');
                 }
-
-                // TODO: add a log to the task
-                $url = Uri::create('/taskEdit')->set('taskId', $obj->taskId);
                 $disabled = $obj->isOpen() ? '' : 'disabled';
+                $url = Uri::create('/taskEdit')->set('taskId', $obj->taskId);
                 return <<<HTML
-                    <a class="btn btn-primary $disabled" href="$url" title="Add Log" $disabled><i class="far fa-fw fa-clock"></i></a>
+                    <button class="btn btn-primary $disabled" type="button" title="Add Log" $disabled
+                        data-bs-target="#{$this->logAddDialog->getDialogId()}"
+                        data-bs-toggle="modal"
+                        data-task-id="{$obj->taskId}">
+                        <i class="far fa-fw fa-clock"></i>
+                    </button>
                 HTML;
             });
 
@@ -190,4 +198,15 @@ class Task extends Table
         return $this;
     }
 
+    public function show(): ?Template
+    {
+        $template = $this->getTemplate();
+
+        if ($this->logAddDialog) {
+            $tpl = $this->logAddDialog->doDefault();
+            if ($tpl) $template->appendTemplate('table', $tpl);
+        }
+
+        return parent::show();
+    }
 }

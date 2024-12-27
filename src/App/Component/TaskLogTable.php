@@ -10,6 +10,7 @@ use Dom\Template;
 use Tk\Db;
 use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
+use Tk\Uri;
 
 class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
@@ -31,6 +32,15 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $this->table->setLimit(10);
         $this->table->addCss('tk-table-sm');
 
+
+        $this->table->appendCell('actions')
+            ->addCss('text-nowrap text-center')
+            ->addOnValue(function(\App\Db\TaskLog $obj, Cell $cell) {
+                $url = Uri::create('/taskLogEdit')->set('taskLogId', $obj->taskLogId);
+                return <<<HTML
+                    <a class="btn btn-primary" href="$url" title="Edit Task Log"><i class="fas fa-fw fa-pencil-alt"></i></a>
+                HTML;
+            });
 
         $this->table->appendCell('comment')
             ->addHeaderCss('max-width')

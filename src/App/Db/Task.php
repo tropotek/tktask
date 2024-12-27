@@ -175,6 +175,7 @@ class Task extends Model implements StatusInterface
         }
 
         $log = TaskLog::create($this);
+        $log->billable = false;
         $log->status = self::STATUS_OPEN;
         $log->comment = '-- Task Re-Opened. --';
         $this->status = self::STATUS_OPEN;
@@ -202,9 +203,9 @@ class Task extends Model implements StatusInterface
     /**
      * @return array<int,TaskLog>
      */
-    public function getLogList(?Filter $filter = null): array
+    public function getLogList(array|Filter $filter = []): array
     {
-        if (!$filter) $filter = Filter::create([], '-created');
+        $filter = Filter::create($filter, '-created');
         $filter->set('taskId', $this->taskId);
         return TaskLog::findFiltered($filter);
     }
@@ -213,6 +214,15 @@ class Task extends Model implements StatusInterface
     {
         $time = 0;
         foreach ($this->getLogList() as $task) {
+            $time += $task->minutes;
+        }
+        return $time;
+    }
+
+    public function getTotalBillableTime(): int
+    {
+        $time = 0;
+        foreach ($this->getLogList(['billable' => true]) as $task) {
             $time += $task->minutes;
         }
         return $time;
@@ -236,6 +246,13 @@ class Task extends Model implements StatusInterface
     {
         $price = Product::getDefaultLaborProduct()->price->multiply(round($this->minutes/60, 2));
         return \Tk\Money::create($price);
+    }
+
+    public function createInvoiceItem(): InvoiceItem
+    {
+        $total = $this->getCost();
+        $subject = sprintf('%s (%s hrs)', $this->subject, round($this->getTotalBillableTime()/60, 2));
+        return \App\Db\InvoiceItem::create('TSK-'.$this->getId(), $subject, $total);
     }
 
     public static function find(int $taskId): ?self
@@ -366,7 +383,7 @@ class Task extends Model implements StatusInterface
 
         if ($this->getProject()) {
             if ($this->assignedUserId) {
-                // TODO: finish ...
+                // TODO: complete with project member functions ...
 //                if (!$this->getProject()->isMember($this->getAssignedUser())) {
 //                    $errors['projectId'] = 'Invalid value: Assigned User is not a member of this project.';
 //                }
@@ -401,16 +418,14 @@ class Task extends Model implements StatusInterface
         $prevStatusName = $statusLog->getPreviousName();
         switch($statusLog->name) {
             case self::STATUS_CLOSED:
-                if (self::STATUS_CANCELLED != $prevStatusName) {
-                    // TODO: finish implementation ...
-                    if ($this->getCompany() && Registry::instance()->get('site.invoice.enable')) {
-//                        $invoice = \App\Db\Invoice::getOpenInvoice($this->getCompany()->getAccount());
-//                        if ($invoice && $invoice->getStatus() == \App\Db\Invoice::STATUS_OPEN) {
-//                            $item = $this->getInvoiceItem();
-//                            if ($item) {
-//                                $invoice->addItem($item);
-//                            }
-//                        }
+                if ($prevStatusName != self::STATUS_CANCELLED) {
+                    // Add task to open invoice
+                    if ($this->getTotalBillableTime() <= 0) break;
+                    if (is_null($this->getCompany()) || !Registry::instance()->get('site.invoice.enable', false)) break;
+                    $invoice = \App\Db\Invoice::getOpenInvoice($this->getCompany());
+                    if ($invoice && $invoice->getStatus() == \App\Db\Invoice::STATUS_OPEN) {
+                        $item = $this->createInvoiceItem();
+                        $invoice->addItem($item);
                     }
                 }
                 break;

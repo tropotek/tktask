@@ -108,6 +108,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->getField('status')->addFieldCss('col-6');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
+        $this->form->getRenderer()->getTemplate()->removeCss('fields', 'g-3 mt-1')->addCss('fields', 'g-2');
 
         $template->appendTemplate('content', $this->form->show());
 
@@ -140,14 +141,6 @@ jQuery(function($) {
         if (!$(e.detail.elt).is(form)) return;
         $(dialog).modal('hide');
         location = location.href;
-
-        // todo alternativly we could reload the invoice using a HTMX request ????
-        //      Not working need to look into this
-        // htmx.ajax('get', editUrl, {
-        //     source:    '#tk-invoice-container',
-        //     target:    '#tk-invoice-container',
-        //     swap:      'outerHTML'
-        // });
     });
 
     // reset form fields

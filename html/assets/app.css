@@ -128,7 +128,7 @@ form textarea {
 .tk-table .tk-actions .btn {
   margin-right: 0.5rem;
 }
-.tk-table table td a.btn {
+.tk-table table td .btn {
   display: inline;
   --bs-btn-padding-y: .2rem;
   --bs-btn-padding-x: .4rem;

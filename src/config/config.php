@@ -69,7 +69,11 @@ return function (Config $config) {
     //$config['auth.password.strict'] = false;
 
 
-
+    /**
+     * Set the default labor product that will be set for tasks and logs
+     * (Default: 1)
+     */
+    //$config['site.product.labor.default'] = 1;
 
 
     /**

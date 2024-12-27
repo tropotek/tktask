@@ -47,7 +47,11 @@ class TaskLog extends Model
         if (User::getAuthUser() instanceof User) {
             $this->userId = User::getAuthUser()->userId;
         }
-        $this->billable = $config->get('site.taskLog.billable.default', true);
+
+        if (is_bool(truefalse($config->get('site.taskLog.billable.default', true)))) {
+            $this->billable = truefalse($config->get('site.taskLog.billable.default', true));
+        }
+
     }
 
     public static function getFormMap(): DataMap

@@ -19,6 +19,7 @@ return function (CollectionConfigurator $routes) {
     $routes->add('home', '/home')
         ->controller([\App\Controller\User\Login::class, 'doLogin']);
 
+
     // User Public
     $routes->add('login', '/login')
         ->controller([\App\Controller\User\Login::class, 'doLogin']);
@@ -35,11 +36,13 @@ return function (CollectionConfigurator $routes) {
     $routes->add('register', '/register')
         ->controller([\App\Controller\User\Register::class, 'doDefault']);
 
+
     // User Member
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
     $routes->add('user-profile', '/profile')
         ->controller([\App\Controller\User\Profile::class, 'doDefault']);
+
 
     // User Staff
     $routes->add('settings-edit', '/settings')
@@ -112,7 +115,6 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Reports\Sales::class, 'doDefault']);
 
 
-
     // Components
     $routes->add('com-status-table', '/component/statusLogTable')
         ->controller([\App\Component\StatusLogTable::class, 'doDefault']);
@@ -131,6 +133,9 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('com-payment-add-dialog', '/component/paymentAddDialog')
         ->controller([\App\Component\PaymentAddDialog::class, 'doDefault']);
+
+    $routes->add('com-task-log-add-dialog', '/component/taskLogAddDialog')
+        ->controller([\App\Component\TaskLogAddDialog::class, 'doDefault']);
 
 
     // API

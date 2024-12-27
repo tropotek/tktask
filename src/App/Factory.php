@@ -2,6 +2,7 @@
 namespace App;
 
 use App\Db\Company;
+use App\Db\Product;
 use Bs\Mvc\PageDomInterface;
 use Bs\Registry;
 use Symfony\Component\Console\Application;

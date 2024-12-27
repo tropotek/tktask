@@ -106,6 +106,7 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
         $this->form->getField('qty')->addFieldCss('col-6');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
+        $this->form->getRenderer()->getTemplate()->removeCss('fields', 'g-3 mt-1')->addCss('fields', 'g-2');
 
         $template->appendTemplate('content', $this->form->show());
 
