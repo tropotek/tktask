@@ -2,17 +2,21 @@
 namespace App\Controller;
 
 use App\Db\Notify;
+use App\Db\Task;
 use App\Db\User;
 use Bs\Auth;
 use Bs\Mvc\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Date;
+use Tk\Db;
 use Tk\Exception;
 use Tk\Uri;
 
 class Dashboard extends ControllerAdmin
 {
+
+    protected ?\App\Table\Task $table = null;
 
     public function doDefault(): void
     {
@@ -24,29 +28,16 @@ class Dashboard extends ControllerAdmin
             Uri::create('/')->redirect();
         }
 
-        if (isset($_GET['e'])){
-            throw new Exception('This is a test exception...', 500);
-        }
-        if (isset($_GET['a'])) {
-            Alert::addSuccess('This is a success alert', '', 'fa-solid fa-circle-check');
-            Alert::addInfo('This is a info alert', '', 'fa-solid fa-circle-info');
-            Alert::addWarning('This is a warning alert', '', 'fa-solid fa-triangle-exclamation');
-            Alert::addError('This is a error alert', '', 'fa-solid fa-circle-exclamation');
-            Uri::create()->reset()->redirect();
-        }
-        if (isset($_GET['n'])) {
-            Notify::create(
-                User::getAuthUser()->userId,
-                'Test notify message',
-                Date::create()->format(Date::FORMAT_ISO_DATETIME) . ' - This is a test with some HTML',
-                Uri::create()->reset()->toString(),
-                User::getAuthUser()->getImageUrl(),
-                5
-            );
-            Alert::addInfo("Notification Message Set");
-            Uri::create()->reset()->redirect();
-        }
+        $this->table = new \App\Table\Task('mytasks');
+        $this->table->setOrderBy('-created');
+        $this->table->setLimit(25);
+        $this->table->execute();
 
+        // Set the table rows
+        $filter = $this->table->getDbFilter();
+        $filter->set('assignedUserId', User::getAuthUser()->userId);
+        $rows = Task::findFiltered($filter);
+        $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
 
     }
@@ -56,18 +47,7 @@ class Dashboard extends ControllerAdmin
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
 
-        if (Auth::getAuthUser()) {
-            $username = Auth::getAuthUser()->username;
-            $template->appendHtml('content', "<p><b>My Username:</b> {$username}</p>");
-        }
-
-        $user = User::getAuthUser();
-        $template->setAttr('img', 'src', $user->getImageUrl());
-        $template->setText('user-name', $user->nameShort);
-
-        $template->setAttr('eurl', 'href', Uri::create()->set('e', true));
-        $template->setAttr('aurl', 'href', Uri::create()->set('a', true));
-        $template->setAttr('nurl', 'href', Uri::create()->set('n', true));
+        $template->appendTemplate('content', $this->table->show());
 
         return $template;
     }
@@ -76,23 +56,105 @@ class Dashboard extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="card mb-3">
-    <div class="card-header"><i class="fas fa-cogs"></i> <span var="title"></span></div>
-    <div class="card-body" var="content">
-        <p><img src="#" var="img" /></p>
+  <div class="row">
 
-        <p>
-          <a href="#?e" class="btn btn-outline-dark" var="eurl">Test Exception</a>
-          <a href="/info" class="btn btn-outline-dark" title="Confirmation Dialog Test" data-confirm="<p><em>Are you sure?</em></p>" data-cancel="Nuh!!">Confirm Test</a>
-          <a href="#?a" class="btn btn-outline-dark" var="aurl">Alert Test</a>
-        </p>
-
-        <p>
-          <a href="#?n" class="btn btn-outline-dark" var="nurl">Test Notify Message</a>
-        </p>
-
-        <p><b>Name:</b> <span var="user-name"></span></p>
+    <!-- Open Tasks -->
+    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="text-muted fw-normal mt-0 text-truncate" title="Open Tasks">Open Tasks</h5>
+              <h3 class="my-2 py-1"><span data-plugin="counterup" var="openTasks">100</span></h3>
+<!--              <p class="mb-0 text-muted hidden">-->
+<!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
+<!--                <span class="text-nowrap">Since last month</span>-->
+<!--              </p>-->
+            </div>
+            <div class="avatar-sm">
+              <span class="avatar-title bg-soft-primary rounded">
+                <i class="ri-stack-line font-20 text-primary"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Unpaid Invoices -->
+    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="text-muted fw-normal mt-0 text-truncate" title="Unpaid Invoices">Unpaid Invoices</h5>
+              <h3 class="my-2 py-1">$<span data-plugin="counterup" var="unpaidInvoices">100.00</span></h3>
+<!--              <p class="mb-0 text-muted">-->
+<!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
+<!--                <span class="text-nowrap">Since last month</span>-->
+<!--              </p>-->
+            </div>
+            <div class="avatar-sm">
+              <span class="avatar-title bg-soft-primary rounded">
+                <i class="ri-coins-line font-20 text-primary"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open Invoices -->
+    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="text-muted fw-normal mt-0 text-truncate" title="Campaign Sent">Open Invoices</h5>
+              <h3 class="my-2 py-1">$<span data-plugin="counterup" var="openInvoices">100.00</span></h3>
+<!--              <p class="mb-0 text-muted">-->
+<!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
+<!--                <span class="text-nowrap">Since last month</span>-->
+<!--              </p>-->
+            </div>
+            <div class="avatar-sm">
+              <span class="avatar-title bg-soft-primary rounded">
+                <i class="ri-coins-fill font-20 text-primary"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue -->
+    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="text-muted fw-normal mt-0 text-truncate" title="Financial Year Revenue">Revenue</h5>
+              <h3 class="my-2 py-1">$<span data-plugin="counterup" var="revenue">100.00</span></h3>
+<!--              <p class="mb-0 text-muted">-->
+<!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
+<!--                <span class="text-nowrap">Since last month</span>-->
+<!--              </p>-->
+            </div>
+            <div class="avatar-sm">
+              <span class="avatar-title bg-soft-primary rounded">
+                <i class="ri-funds-box-line font-20 text-primary"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header"><i class="fas fa-tasks"></i> <span>My Tasks</span></div>
+    <div class="card-body" var="content"></div>
   </div>
 </div>
 HTML;

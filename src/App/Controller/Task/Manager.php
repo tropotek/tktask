@@ -5,7 +5,6 @@ use App\Db\Project;
 use App\Db\Task;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
-use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Uri;
@@ -14,7 +13,7 @@ use Tk\Db;
 class Manager extends ControllerAdmin
 {
 
-    protected ?Table $table = null;
+    protected ?\App\Table\Task $table = null;
 
 
     public function doDefault(): mixed
