@@ -65,7 +65,7 @@ class Dashboard extends ControllerAdmin
           <div class="d-flex justify-content-between">
             <div>
               <h5 class="text-muted fw-normal mt-0 text-truncate" title="Open Tasks">Open Tasks</h5>
-              <h3 class="my-2 py-1"><span data-plugin="counterup" var="openTasks">100</span></h3>
+              <h3 class="my-2"><span data-plugin="counterup" var="openTasks">100</span></h3>
 <!--              <p class="mb-0 text-muted hidden">-->
 <!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
 <!--                <span class="text-nowrap">Since last month</span>-->
@@ -88,7 +88,7 @@ class Dashboard extends ControllerAdmin
           <div class="d-flex justify-content-between">
             <div>
               <h5 class="text-muted fw-normal mt-0 text-truncate" title="Unpaid Invoices">Unpaid Invoices</h5>
-              <h3 class="my-2 py-1">$<span data-plugin="counterup" var="unpaidInvoices">100.00</span></h3>
+              <h3 class="my-2">$<span data-plugin="counterup" var="unpaidInvoices">100.00</span></h3>
 <!--              <p class="mb-0 text-muted">-->
 <!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
 <!--                <span class="text-nowrap">Since last month</span>-->
@@ -111,7 +111,7 @@ class Dashboard extends ControllerAdmin
           <div class="d-flex justify-content-between">
             <div>
               <h5 class="text-muted fw-normal mt-0 text-truncate" title="Campaign Sent">Open Invoices</h5>
-              <h3 class="my-2 py-1">$<span data-plugin="counterup" var="openInvoices">100.00</span></h3>
+              <h3 class="my-2">$<span data-plugin="counterup" var="openInvoices">100.00</span></h3>
 <!--              <p class="mb-0 text-muted">-->
 <!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
 <!--                <span class="text-nowrap">Since last month</span>-->
@@ -134,7 +134,7 @@ class Dashboard extends ControllerAdmin
           <div class="d-flex justify-content-between">
             <div>
               <h5 class="text-muted fw-normal mt-0 text-truncate" title="Financial Year Revenue">Revenue</h5>
-              <h3 class="my-2 py-1">$<span data-plugin="counterup" var="revenue">100.00</span></h3>
+              <h3 class="my-2">$<span data-plugin="counterup" var="revenue">100.00</span></h3>
 <!--              <p class="mb-0 text-muted">-->
 <!--                <span class="text-success me-2"><span class="mdi mdi-arrow-up-bold"></span> 0.00%</span>-->
 <!--                <span class="text-nowrap">Since last month</span>-->
