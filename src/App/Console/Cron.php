@@ -5,6 +5,7 @@ use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Bs\Console\Console;
+use Tk\Log;
 
 /**
  * Cron job to invoice recurring products and send ay invoices
@@ -31,6 +32,8 @@ class Cron extends Console
             return self::SUCCESS;
         }
 
+        Log::error('Cron script running');
+
         // invoice recurring items
         $this->invoiceRecurring();
 
@@ -38,7 +41,7 @@ class Cron extends Console
         //$this->sendInvoiceReminders();
 
         // Closing Expired Recurring Items
-        $this->closeExpired();
+        $this->closeExpiredRecurring();
 
         $this->release();   // release lock
 
@@ -47,7 +50,7 @@ class Cron extends Console
 
     /**
      * find all due recurring items and add them to any open invoices,
-     * issue any invoices where recurring.issue is true
+     * issue any invoices where recurring issue is true
      */
     private function invoiceRecurring(): void
     {
@@ -68,9 +71,13 @@ class Cron extends Console
         $noIssue = [];
 
         foreach ($items as $recurring) {
-            $invoice = $recurring->invoice($now);
+//            if ($this->getConfig()->isDebug()) {
+//                $invoice = $recurring->invoice($now);
+//            } else {
+                $invoice = $recurring->invoice();
+//            }
             if ($invoice) {
-                $this->writeComment('   - [' .$recurring->getId(). '] ' . $recurring->description . ' - ' . $recurring->getCompany()->name, OutputInterface::VERBOSITY_VERBOSE);
+                $this->writeComment('   - [' .$recurring->getId(). '] Added Invoice Item: ' . $recurring->description . ' - ' . $recurring->getCompany()->name);
                 $invoiceList[$invoice->invoiceId] = $invoice;
                 if (!$recurring->issue) {
                     $noIssue[] = $invoice->invoiceId;
@@ -95,7 +102,7 @@ class Cron extends Console
 
     }
 
-    private function closeExpired(): void
+    private function closeExpiredRecurring(): void
     {
         $this->writeComment(' - Closing Expired Recurring Items', OutputInterface::VERBOSITY_VERBOSE);
         \App\Db\Recurring::closeExpired();
