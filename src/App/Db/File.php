@@ -102,7 +102,6 @@ class File extends Model
     {
         if (is_file($this->getFullPath())) {
             unlink($this->getFullPath());
-            Log::alert('File deleted: ' . $this->filename);
         }
         return (false !== Db::delete('file', ['file_id' => $this->fileId]));
     }

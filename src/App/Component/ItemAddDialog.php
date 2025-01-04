@@ -140,7 +140,6 @@ jQuery(function($) {
         options.each(function() {
             if ($(this).val() === val) {
                 selected = $(this);
-                return;
             }
         });
 

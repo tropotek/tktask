@@ -1,10 +1,13 @@
 <?php
 namespace App\Controller\Expense;
 
+use App\Component\Files;
+use App\Component\CompanyAddDialog;
 use App\Db\Company;
 use App\Db\Expense;
 use App\Db\ExpenseCategory;
 use App\Db\User;
+use App\Form\Field\SelectBtn;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
@@ -16,10 +19,7 @@ use Tk\Exception;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
 use Tk\Form\Action\Submit;
-use Tk\Form\Field\Checkbox;
 use Tk\Form\Field\InputGroup;
-use Tk\Form\Field\Textarea;
-use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
 use Tk\Uri;
@@ -27,7 +27,10 @@ use Tk\Uri;
 class Edit extends ControllerAdmin
 {
     protected ?Expense $expense = null;
-    protected ?Form  $form = null;
+    protected ?Form    $form    = null;
+    protected ?Files   $files   = null;
+
+    protected ?CompanyAddDialog $companyDialog = null;
 
 
     public function doDefault(): void
@@ -49,6 +52,9 @@ class Edit extends ControllerAdmin
             }
         }
 
+        $this->companyDialog = new CompanyAddDialog();
+
+
         // Get the form template
         $this->form = new Form();
 
@@ -56,7 +62,13 @@ class Edit extends ControllerAdmin
 
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_SUPPLIER], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
-        $this->form->appendField(new Select('companyId', $list))->prependOption('-- Select --', '');
+        $this->form->appendField((new SelectBtn('companyId', $list))
+            ->prependOption('-- Select --', '')
+            ->setBtnAttr('title', 'Add Supplier')
+            ->setBtnAttr('data-bs-toggle', 'modal')
+            ->setBtnAttr('data-bs-target', '#'.$this->companyDialog->getDialogId())
+            ->setBtnText('<i class="fas fa-plus"></i>')
+        );
 
         $categories = ExpenseCategory::findFiltered(Filter::create([], 'name'));
         $list = Collection::toSelectList($categories, 'expenseCategoryId');
@@ -70,8 +82,6 @@ class Edit extends ControllerAdmin
 
         $this->form->appendField(new Input('receiptNo'));
 
-        // TODO Add multiple file field or side component
-
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create('/expenseManager')));
 
@@ -79,6 +89,10 @@ class Edit extends ControllerAdmin
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
+
+        if ($this->expense->expenseId) {
+            $this->files = new Files($this->expense);
+        }
 
     }
 
@@ -117,23 +131,62 @@ class Edit extends ControllerAdmin
 
         $template->appendTemplate('content', $this->form->show());
 
+        $cssCol = 'col-12';
+        if ($this->files) {
+            $html = $this->files->doDefault();
+            $template->appendHtml('secondary', $html);
+            $template->setVisible('secondary');
+            $cssCol = 'col-7';
+        }
+        $template->addCss('primary', $cssCol);
+
+        if ($this->companyDialog) {
+            $template->appendTemplate('primary', $this->companyDialog->doDefault());
+
+            $js = <<<JS
+jQuery(function($) {
+    const dialog        = '#{$this->companyDialog->getDialogId()}';
+    const dialogForm    = $('form', dialog);
+    const companySelect = $('#form_companyId');
+
+    // reload select options after company creation
+    $(document).on('tkForm:afterSubmit', function(e) {
+        if (!$(e.detail.elt).is(dialogForm)) return;
+        companySelect.empty();
+        companySelect.append('<option value="">-- Select --</option>');
+        for(var key in e.detail.companies) {
+            companySelect.append(`<option value="\${key}">\${e.detail.companies[key]}</option>`);
+        }
+        // select created company
+        companySelect.val(e.detail.companyId);
+    });
+});
+JS;
+            $template->appendJs($js);
+        }
+
         return $template;
     }
 
     public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
-<div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+<div class="row">
+  <div class="col-12">
+    <div class="page-actions card mb-3">
+      <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
+      <div class="card-body" var="actions">
+        <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+      </div>
     </div>
   </div>
-  <div class="card mb-3">
-    <div class="card-header"><i class="fas fa-money-check-alt"></i> <span var="title"></span></div>
-    <div class="card-body" var="content"></div>
+  <div var="primary">
+    <div class="card mb-3">
+      <div class="card-header"><i class="fas fa-money-check-alt"></i> <span var="title"></span></div>
+      <div class="card-body" var="content"></div>
+    </div>
   </div>
+  <div class="col-5" choice="secondary"></div>
 </div>
 HTML;
         return Template::load($html);

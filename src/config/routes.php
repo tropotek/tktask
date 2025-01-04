@@ -137,6 +137,12 @@ return function (CollectionConfigurator $routes) {
     $routes->add('com-task-log-add-dialog', '/component/taskLogAddDialog')
         ->controller([\App\Component\TaskLogAddDialog::class, 'doDefault']);
 
+    $routes->add('com-company-add-dialog', '/component/companyAddDialog')
+        ->controller([\App\Component\CompanyAddDialog::class, 'doDefault']);
+
+    $routes->add('com-files', '/component/files')
+        ->controller([\App\Component\Files::class, 'doDefault']);
+
 
     // API
     $routes->add('api-notify', '/api/notify/getNotifications')

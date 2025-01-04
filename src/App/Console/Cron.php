@@ -32,7 +32,7 @@ class Cron extends Console
             return self::SUCCESS;
         }
 
-        Log::error('Cron script running');
+        Log::info('tktask: Cron script running');
 
         // invoice recurring items
         $this->invoiceRecurring();

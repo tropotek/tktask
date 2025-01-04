@@ -113,14 +113,12 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $template->appendTemplate('content', $this->form->show());
 
         $baseUrl = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString();
-        $editUrl = Uri::create('/invoiceEdit', ['invoiceId' => $this->invoice->invoiceId])->toString();
 
         $js = <<<JS
 jQuery(function($) {
     const dialog    = '#{$this->getDialogId()}';
     const form      = '#{$this->form->getId()}';
     const baseUrl   = '$baseUrl';
-    const editUrl   = '$editUrl';
 
     // reload page after successfull submit
     $(document).on('htmx:afterSettle', function(e) {

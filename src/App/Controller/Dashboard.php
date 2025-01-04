@@ -1,7 +1,9 @@
 <?php
 namespace App\Controller;
 
+use App\Db\Invoice;
 use App\Db\Notify;
+use App\Db\Payment;
 use App\Db\Task;
 use App\Db\User;
 use Bs\Auth;
@@ -11,6 +13,7 @@ use Tk\Alert;
 use Tk\Date;
 use Tk\Db;
 use Tk\Exception;
+use Tk\Money;
 use Tk\Uri;
 
 class Dashboard extends ControllerAdmin
@@ -48,6 +51,46 @@ class Dashboard extends ControllerAdmin
         $template->setText('title', $this->getPage()->getTitle());
 
         $template->appendTemplate('content', $this->table->show());
+
+        // Open Tasks
+        $tasks = Task::findFiltered([
+            'assignedUserId' => User::getAuthUser()->userId,
+            'status' => [Task::STATUS_OPEN, Task::STATUS_PENDING, Task::STATUS_HOLD],
+        ]);
+        $template->setText('openTasks', count($tasks));
+
+        // Unpaid Invoices
+        $unpaid = Invoice::findFiltered([
+            'status' => Invoice::STATUS_UNPAID
+        ]);
+        $total = Money::create();
+        foreach ($unpaid as $invoice) {
+            $total = $total->add($invoice->total);
+        }
+        $template->setText('unpaidInvoices', $total->toFloatString('.', ','));
+
+        // Open Invoices
+        $open = Invoice::findFiltered([
+            'status' => Invoice::STATUS_OPEN
+        ]);
+        $total = Money::create();
+        foreach ($open as $invoice) {
+            $total = $total->add($invoice->total);
+        }
+        $template->setText('openInvoices', $total->toFloatString('.', ','));
+
+
+        $dateSet = Date::getFinancialYear(Date::create());
+        $payments = Payment::findFiltered([
+            'dateStart' => $dateSet[0],
+            'dateEnd' => $dateSet[1],
+            'status' => Payment::STATUS_CLEARED,
+        ]);
+        $total = Money::create();
+        foreach ($payments as $payment) {
+            $total = $total->add($payment->amount);
+        }
+        $template->setText('revenue', $total->toFloatString('.', ','));
 
         return $template;
     }
