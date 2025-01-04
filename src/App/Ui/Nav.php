@@ -3,6 +3,7 @@
 namespace App\Ui;
 
 use App\Db\Invoice;
+use App\Db\Task;
 use App\Db\User;
 use Dom\Template;
 use Tk\Config;
@@ -19,20 +20,27 @@ class Nav
                 'icon' => 'ri-dashboard-line',
                 'visible' => fn($i) => (bool)$this->getUser(),
                 'url' => '/dashboard',
+                'badge' => function() {
+                    $open = Task::findFiltered([
+                        'status' => [Task::STATUS_PENDING, Task::STATUS_OPEN, Task::STATUS_HOLD],
+                        'assignedUserId' => User::getAuthUser()->userId,
+                    ]);
+                    return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
+                },
             ],
             'Site Settings' => [
                 'icon' => 'ri-settings-2-line',
                 'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
                 'url' => '/settings',
             ],
-
-//            'Task' => [
-//                'visible' => fn($i) => $this->getUser()?->isStaff(),
-//            ],
             'Tasks' => [
                 'icon' => 'fas fa-tasks',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/taskManager',
+                'badge' => function() {
+                    $open = Task::findFiltered(['status' => [Task::STATUS_PENDING, Task::STATUS_OPEN, Task::STATUS_HOLD]]);
+                    return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
+                },
             ],
             'Projects' => [
                 'icon' => 'fas fa-project-diagram',

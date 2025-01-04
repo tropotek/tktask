@@ -12,6 +12,7 @@ use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Log;
 use Tk\Money;
+use Tk\Uri;
 
 class Invoice extends Model implements StatusInterface
 {
@@ -234,6 +235,19 @@ class Invoice extends Model implements StatusInterface
         $this->issuedOn = \Tk\Date::create();
         $this->save();
         StatusLog::create($this, 'Invoice Issued');
+
+        // Notify users
+        $users = User::findFiltered(['active' => true, 'type' => User::TYPE_STAFF]);
+        foreach ($users as $user) {
+            Notify::create(
+                $user->userId,
+                'Invoice issued',
+                sprintf('Invoice #%s issued to %s', $this->invoiceId, $this->getCompany()->name),
+                Uri::create('/invoiceEdit')->set('invoiceId', $this->invoiceId)->toString(),
+                $user->getImageUrl()
+            );
+        }
+
         return $this;
     }
 

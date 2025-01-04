@@ -29,7 +29,7 @@ class ProfitLoss extends ControllerAdmin
             Uri::create('/')->redirect();
         }
 
-        $this->dateSet = Date::getFinancialYear(new \DateTime($_GET['date'] ?? null));
+        $this->dateSet = Date::getFinancialYear(new \DateTime($_GET['date'] ?? 'now'));
 
         $this->form = new Form();
         $this->form->setMethod(\Tk\Form::METHOD_GET);

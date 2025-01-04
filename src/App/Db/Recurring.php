@@ -10,6 +10,7 @@ use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Money;
+use Tk\Uri;
 
 class Recurring extends Model
 {
@@ -107,6 +108,18 @@ class Recurring extends Model
         $invoice->addItem($item);
         $this->count++;
         $this->save();
+
+        // Notify users
+        $users = User::findFiltered(['active' => true, 'type' => User::TYPE_STAFF]);
+        foreach ($users as $user) {
+            Notify::create(
+                $user->userId,
+                'Recurring product invoiced',
+                $description,
+                Uri::create('/invoiceEdit')->set('invoiceId', $invoice->invoiceId)->toString(),
+                $user->getImageUrl()
+            );
+        }
 
         return $invoice;
     }

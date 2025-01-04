@@ -13,16 +13,19 @@ class Notify
     {
         $result = [];
         $user = User::getAuthUser();
+
         if ($user instanceof User) {
             $notices = \App\Db\Notify::findFiltered(Filter::create([
                 'userId' => $user->userId,
                 'isRead' => false,
                 'isNotified' => false
             ], '-created'));
-            \App\Db\Notify::setNotified(array_map(fn($n) => $n->notifyId, $notices));
+
             // limit notices to a maximum
-            $notices = array_splice($notices, 0, 3);
+            $notices = array_splice($notices, 0, 5);
             $result['notices'] = $notices;
+
+            \App\Db\Notify::setNotified(array_map(fn($n) => $n->notifyId, $result['notices']));
         }
         return new JsonResponse($result, Response::HTTP_OK);
     }

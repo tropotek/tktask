@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Db\Invoice;
-use App\Db\Notify;
 use App\Db\Payment;
 use App\Db\Task;
 use App\Db\User;
@@ -12,7 +11,6 @@ use Dom\Template;
 use Tk\Alert;
 use Tk\Date;
 use Tk\Db;
-use Tk\Exception;
 use Tk\Money;
 use Tk\Uri;
 

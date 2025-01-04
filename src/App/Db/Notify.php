@@ -28,10 +28,10 @@ class Notify extends Model
     public int        $userId     = 0;
     public string     $title      = '';
     public string     $message    = '';
-    public string     $url        = '';  // note: popup blockers will request permission
+    public string     $url        = '';         // note: popup blockers will request permission
     public string     $icon       = '';
-    public ?\DateTime $readAt     = null;
-    public ?\DateTime $notifiedAt = null;
+    public ?\DateTime $readAt     = null;       // Notice read by viewing notice dropdown (not fully implemented yet)
+    public ?\DateTime $notifiedAt = null;       // Notification sent to browser
     public bool       $isRead     = false;
     public bool       $isNotified = false;
     public int        $ttlMins    = 0;
@@ -171,26 +171,11 @@ class Notify extends Model
             $filter['isRead'] = truefalse($filter['isRead']);
             $filter->appendWhere('a.is_read = :isRead AND ');
         }
-//        if (is_bool($filter['isRead'] ?? '')) {
-//            if ($filter['isRead']) {
-//                $filter->appendWhere('a.is_read AND ');
-//            } else {
-//                $filter->appendWhere('NOT a.is_read AND ');
-//            }
-//        }
-
 
         if (is_bool(truefalse($filter['isNotified'] ?? null))) {
             $filter['isNotified'] = truefalse($filter['isNotified']);
             $filter->appendWhere('a.is_notified = :isNotified AND ');
         }
-//        if (is_bool($filter['isNotified'] ?? '')) {
-//            if ($filter['isNotified']) {
-//                $filter->appendWhere('a.is_notified AND ');
-//            } else {
-//                $filter->appendWhere('NOT a.is_notified AND ');
-//            }
-//        }
 
         return Db::query("
             SELECT *
