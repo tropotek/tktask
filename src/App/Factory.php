@@ -5,9 +5,11 @@ use App\Db\Company;
 use App\Db\Product;
 use Bs\Mvc\PageDomInterface;
 use Bs\Registry;
+use Bs\Ui\Breadcrumbs;
 use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Config;
+use Tk\Uri;
 
 class Factory extends \Bs\Factory
 {
@@ -56,6 +58,11 @@ class Factory extends \Bs\Factory
             return true;
         }
         return false;
+    }
+
+    public function getBackUrl(): Uri
+    {
+        return Breadcrumbs::previous();
     }
 
     public function getConsole(): Application

@@ -5,6 +5,7 @@ use App\Db\Invoice;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Date;
@@ -22,6 +23,7 @@ class ProfitLoss extends ControllerAdmin
 
     public function doDefault(): mixed
     {
+        Breadcrumbs::reset();
         $this->getPage()->setTitle('Profit & Loss Report');
 
         if (!User::getAuthUser()?->isStaff()) {

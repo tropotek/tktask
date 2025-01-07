@@ -7,6 +7,7 @@ use App\Ui\Nav;
 use App\Ui\Notify;
 use Bs\Auth;
 use Bs\Registry;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Uri;
@@ -138,11 +139,36 @@ JS;
 
     protected function showCrumbs(): void
     {
-        $crumbs = $this->getFactory()->getCrumbs();
-        if (!($crumbs && $crumbs->isVisible())) return;
+        if (!Breadcrumbs::instance()->isVisible()) return;
 
-        if (!$template = $crumbs->show()) {
-            return;
+        $html = <<<HTML
+<div>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb" var="crumbs">
+      <li class="breadcrumb-item" repeat="item"><a href="#" var="url"></a></li>
+    </ol>
+  </nav>
+</div>
+HTML;
+        $template = Template::load($html);
+
+        $i = 0;
+        $last = Breadcrumbs::count() - 1;
+        foreach (Breadcrumbs::toArray() as $url => $title) {
+            $repeat = $template->getRepeat('item');
+
+            $repeat->setAttr('url', 'href', $url);
+            $repeat->setHtml('url', $title);
+
+            // last item
+            if ($i >= $last) {
+                //$repeat->setHtml('item', $title); // disable link on last crumb
+                $repeat->addCss('item', 'active');
+                $repeat->setAttr('item', 'aria-current', 'page');
+            }
+
+            $repeat->appendRepeat();
+            $i++;
         }
 
         if ($this->getTemplate()->hasVar('crumbs')) {

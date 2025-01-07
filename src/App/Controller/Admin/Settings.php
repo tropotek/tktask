@@ -8,6 +8,7 @@ use Bs\Auth;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Form;
 use Bs\Registry;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
@@ -28,12 +29,12 @@ class Settings extends ControllerAdmin
 
     public function doDefault(): void
     {
+        Breadcrumbs::reset();
         $this->getPage()->setTitle('Edit Settings');
 
         $this->setAccess(User::PERM_SYSADMIN);
 
         Factory::instance()->getRegistry()->save();
-        $this->getCrumbs()->reset();
 
         $this->templateSelect = str_contains($this->getPage()->getTemplatePath(), '/minton/');
 

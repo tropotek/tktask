@@ -5,6 +5,7 @@ use App\Db\Recurring;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Field\Input;
@@ -22,6 +23,7 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
+        Breadcrumbs::reset();
         $this->getPage()->setTitle('Recurring Manager');
 
         if (!User::getAuthUser()?->isStaff()) {
