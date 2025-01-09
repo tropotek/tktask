@@ -6,6 +6,7 @@ use Bs\Db\Remember;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Auth\Result;
@@ -99,7 +100,7 @@ class Login extends ControllerAdmin
     public function doLogout(): void
     {
         Auth::logout();
-        Factory::instance()->getCrumbs()?->reset();
+        Breadcrumbs::reset();
 
         // SSI logout
         $ssiLogout = truefalse($_GET['ssi'] ?? false);

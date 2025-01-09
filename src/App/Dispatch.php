@@ -2,7 +2,6 @@
 namespace App;
 
 use Bs\Listener\RememberHandler;
-use Bs\Listener\CrumbsHandler;
 use Bs\Listener\MaintenanceHandler;
 
 class Dispatch extends \Bs\Dispatch
