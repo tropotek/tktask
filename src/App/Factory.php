@@ -31,8 +31,14 @@ class Factory extends \Bs\Factory
         return new Page($templatePath);
     }
 
+    public function getBackUrl(): Uri
+    {
+        return Breadcrumbs::previous();
+    }
+
     /**
      * Get the owner company for this website
+     * @todo: Move this to the Company object
      */
     public function getOwnerCompany(): Company
     {
@@ -49,6 +55,9 @@ class Factory extends \Bs\Factory
         return $this->get('site.owner.company');
     }
 
+    /**
+     * @todo: Move this to the Company object
+     */
     public function isOwnerCompany(Company $company): bool
     {
         if (
@@ -58,11 +67,6 @@ class Factory extends \Bs\Factory
             return true;
         }
         return false;
-    }
-
-    public function getBackUrl(): Uri
-    {
-        return Breadcrumbs::previous();
     }
 
     public function getConsole(): Application

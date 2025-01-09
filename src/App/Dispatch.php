@@ -23,7 +23,6 @@ class Dispatch extends \Bs\Dispatch
     {
         parent::httpInit();
 
-        $this->getDispatcher()->addSubscriber(new CrumbsHandler());
         $this->getDispatcher()->addSubscriber(new MaintenanceHandler());
         $this->getDispatcher()->addSubscriber(new RememberHandler());
     }
