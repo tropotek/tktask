@@ -123,8 +123,6 @@ JS;
 
     protected function showMintonParams(Template $template): void
     {
-        $this->getFactory()->getCrumbs()->setCssList()->addCss('m-0');
-
         $nav = new Nav();
         if (basename($this->getTemplatePath()) == 'sn-admin.html') {
             $nav->setAttr('id', 'side-nav');

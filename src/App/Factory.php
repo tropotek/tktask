@@ -31,11 +31,6 @@ class Factory extends \Bs\Factory
         return new Page($templatePath);
     }
 
-    public function getBackUrl(): Uri
-    {
-        return Breadcrumbs::previous();
-    }
-
     /**
      * Get the owner company for this website
      * @todo: Move this to the Company object
