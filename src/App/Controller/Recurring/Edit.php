@@ -83,8 +83,8 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('startOn', 'date'));
         $this->form->appendField(new Input('endOn', 'date'));
 
-        $this->form->appendField(new Checkbox('issue'));
-        $this->form->appendField(new Checkbox('active'));
+        $this->form->appendField(new Checkbox('issue'))->setPersistent();
+        $this->form->appendField(new Checkbox('active'))->setPersistent();
 
         $this->form->appendField(new Textarea('notes'));
 
