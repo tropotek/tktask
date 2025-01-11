@@ -150,6 +150,11 @@ class Task extends Table
                 return count($obj->getLogList());
             });
 
+        $this->appendCell('created')
+            ->addCss('text-nowrap')
+            ->setSortable(true)
+            ->addOnValue('\Tk\Table\Type\Date::onValue');
+
 
         // Add Filter Fields
         $this->getForm()->appendField(new Input('search'))

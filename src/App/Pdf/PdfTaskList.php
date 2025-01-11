@@ -93,7 +93,7 @@ class PdfTaskList extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displa
             $row->setText('subject', $task->subject);
 
             if (is_null($this->project)) {
-                $project = Project::find($task->projectId);
+                $project = Project::find(intval($task->projectId));
                 if ($this->project instanceof Project) {
                     $row->setText('project', $project->name);
                 } else {

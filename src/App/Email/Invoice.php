@@ -40,7 +40,6 @@ class Invoice
         }
         $message->addStringAttachment($attach, $filename);
 
-        // TODO Add a PDF of all tasks completed not just project ones.
         $items = $invoice->getItemList();
         $tasks = [];
         foreach ($items as $item) {
@@ -48,7 +47,6 @@ class Invoice
             if (!$task instanceof \App\Db\Task) continue;
             $tasks[] = $task;
         }
-
         if (count($tasks)) {
             $pdf = new \App\Pdf\PdfTaskList($tasks);
             $filename = str_replace([' ', '/', '\\'], '', $invoice->invoiceId . '-TaskList.pdf');
@@ -66,7 +64,6 @@ class Invoice
         $company = $payment->getInvoice()->getCompany();
         if (!($company instanceof Company)) return false;
 
-
         $message = Factory::instance()->createMessage();
         $message->addTo($company->email);
         if ($company->accountsEmail) {
@@ -79,8 +76,7 @@ class Invoice
             'company.name' => $company->name,
             'company.contact' => $company->contact,
             'payment.id' => $payment->paymentId,
-            // TODO: get account id from method/view of company ???
-            'account.id' => 'CM-0000000' . $invoice->fid,
+            'account.id' => $company->accountId,
             'payment.amount' => $payment->amount->toString(),
             'payment.received' => $payment->receivedAt->format(\Tk\Date::FORMAT_SHORT_DATETIME),
             'payment.method' => Payment::METHOD_LIST[$payment->method],
@@ -90,14 +86,13 @@ class Invoice
         $content = Registry::instance()->get('site.email.payment.cleared');
         $message->setContent($content);
 
-        // TODO implement receipt invoice
-//        $ren = \App\Ui\PdfInvoice::create($payment->getInvoice());
-//        $attach = $ren->getPdfAttachment();
-//        $filename = 'invoice-' . $payment->getId().'.pdf';
-//        if ($payment->getInvoice()->issuedOn) {
-//            $filename = $payment->getInvoice()->issuedOn->format('Y-m-d') . '_' . $filename;
-//        }
-//        $message->addStringAttachment($attach, $filename);
+        $ren = new \App\Pdf\PdfInvoice($invoice);
+        $attach = $ren->getPdfAttachment();
+        $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
+        if ($invoice->issuedOn instanceof \DateTime) {
+            $filename = $invoice->issuedOn->format('Y-m-d') . '_' . $filename;
+        }
+        $message->addStringAttachment($attach, $filename);
 
         return Factory::instance()->getMailGateway()->send($message);
     }

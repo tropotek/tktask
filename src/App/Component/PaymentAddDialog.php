@@ -127,7 +127,7 @@ jQuery(function($) {
 
     // reset form fields
     $(dialog).on('show.bs.modal', function(e) {
-        $('[name=method]', this).val('cash');
+        $('[name=method]', this).val('eft');
         $('[name=amount]', this).val(unpaid);
         $('[name=notes]', this).val('');
         $('.is-invalid', this).removeClass('is-invalid');
