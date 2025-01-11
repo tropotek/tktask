@@ -25,6 +25,7 @@ class Nav
                         'status' => [Task::STATUS_PENDING, Task::STATUS_OPEN, Task::STATUS_HOLD],
                         'assignedUserId' => User::getAuthUser()->userId,
                     ]);
+                    if (count($open) == 0) return '';
                     return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },
             ],
@@ -39,6 +40,7 @@ class Nav
                 'url' => '/taskManager',
                 'badge' => function() {
                     $open = Task::findFiltered(['status' => [Task::STATUS_PENDING, Task::STATUS_OPEN, Task::STATUS_HOLD]]);
+                    if (count($open) == 0) return '';
                     return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },
             ],
@@ -57,6 +59,7 @@ class Nav
                 'url' => '/invoiceManager',
                 'badge' => function() {
                     $open = Invoice::findFiltered(['status' => [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID]]);
+                    if (count($open) == 0) return '';
                     return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },
             ],
@@ -85,34 +88,29 @@ class Nav
                 'url' => '/salesReport',
             ],
 
-            'Admin' => [
+            'System' => [
                 'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
             ],
-            'Application' => [
-                'icon' => 'ri-apps-2-fill',
-                'File Manager' => [
-                    'icon' => 'ri-archive-drawer-line',
-                    'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_ADMIN),
-                    'url' => '/fileManager',
-                ],
-            ],
-            'Dev' => [
+            'Admin' => [
                 'icon' => 'ri-bug-line',
-                'visible' => fn($i) => Config::isDev() && $this->getUser()->isStaff(),
+                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                 'PHP Info' => [
                     'icon' => 'ri-information-line',
                     'url' => '/info'
                 ],
                 'Tail Log' => [
                     'icon' => 'ri-terminal-box-fill',
+                    'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/tailLog'
                 ],
                 'Inline Image' => [
                     'icon' => 'fas fa-image',
+                    'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/util/inlineImage'
                 ],
                 'DB Search' => [
                     'icon' => 'fas fa-database',
+                    'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                     'url' => '/util/dbSearch'
                 ],
             ],
