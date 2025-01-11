@@ -48,6 +48,7 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $this->mpdf = new Mpdf([
             'margin_top' => 20,
         ]);
+
         $mpdf = $this->mpdf;
         $mpdf->setBasePath($url);
 

@@ -248,9 +248,9 @@ class Recurring extends Model
         }
         if (($filter['isDue'] ?? null) instanceof \DateTime) {
             $filter['isDue'] = $filter['isDue']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('active AND a.next_on IS NOT NULL AND a.next_on BETWEEN prev_on AND :isDue AND ');
+            $filter->appendWhere('a.active AND a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND :isDue AND ');
         } elseif (is_bool(truefalse($filter['isDue'] ?? null))) {
-            $filter->appendWhere('active AND a.next_on IS NOT NULL AND a.next_on BETWEEN prev_on AND CURRENT_DATE AND ');
+            $filter->appendWhere('a.active AND a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND CURRENT_DATE AND ');
         }
 
         return Db::query("

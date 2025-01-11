@@ -41,6 +41,7 @@ class Invoice
         $message->addStringAttachment($attach, $filename);
 
         // TODO Add a PDF of all tasks completed not just project ones.
+
         $items = $invoice->getItemList();
         $tasks = [];
         foreach ($items as $item) {
