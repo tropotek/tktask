@@ -29,18 +29,21 @@ class PdfProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
     {
         $url = Uri::create()->toString();
         $html = $this->show()->toString();
+
+        ini_set("memory_limit", "128M");
+
         $this->mpdf = new Mpdf(array(
             'margin_top' => 20,
         ));
-        $mpdf = $this->mpdf;
-        $mpdf->setBasePath($url);
+
+        $this->mpdf->setBasePath($url);
 
         $siteCompany = Factory::instance()->getOwnerCompany();
-        $mpdf->SetTitle('Profit & Loss Report');
-        $mpdf->SetAuthor($siteCompany->name);
+        $this->mpdf->SetTitle('Profit & Loss Report');
+        $this->mpdf->SetAuthor($siteCompany->name);
 
-        $mpdf->SetDisplayMode('fullpage');
-        $mpdf->WriteHTML($html);
+        $this->mpdf->SetDisplayMode('fullpage');
+        $this->mpdf->WriteHTML($html);
     }
 
     #[NoReturn] public function output(): void

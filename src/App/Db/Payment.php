@@ -42,7 +42,7 @@ class Payment extends Model implements StatusInterface
     public int        $paymentId  = 0;
     public int        $invoiceId  = 0;
     public Money      $amount;
-    public string     $method     = self::METHOD_CASH;
+    public string     $method     = self::METHOD_DEPOSIT;
     public string     $status     = self::STATUS_CLEARED;
     public \DateTime  $receivedAt;
     public ?string    $notes      = null;

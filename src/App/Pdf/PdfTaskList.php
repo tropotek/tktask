@@ -36,20 +36,22 @@ class PdfTaskList extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displa
     protected function init(): void
     {
         $url = Uri::create()->toString();
-
         $html = $this->show()->toString();
+
+        ini_set("memory_limit", "128M");
+
         $this->mpdf = new Mpdf([
             'margin_top' => 20,
         ]);
-        $mpdf = $this->mpdf;
-        $mpdf->setBasePath($url);
+
+        $this->mpdf->setBasePath($url);
 
         $siteCompany = Factory::instance()->getOwnerCompany();
-        $mpdf->SetTitle('Task List');
-        $mpdf->SetAuthor($siteCompany->name);
+        $this->mpdf->SetTitle('Task List');
+        $this->mpdf->SetAuthor($siteCompany->name);
 
-        $mpdf->SetDisplayMode('fullpage');
-        $mpdf->WriteHTML($html);
+        $this->mpdf->SetDisplayMode('fullpage');
+        $this->mpdf->WriteHTML($html);
     }
 
     public function getFilename(): string

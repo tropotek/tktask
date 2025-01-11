@@ -45,25 +45,26 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $url = Uri::create()->toString();
         $html = $this->show()->toString();
 
+        ini_set("memory_limit", "128M");
+
         $this->mpdf = new Mpdf([
             'margin_top' => 20,
         ]);
 
-        $mpdf = $this->mpdf;
-        $mpdf->setBasePath($url);
+        $this->mpdf->setBasePath($url);
 
         $siteCompany = Factory::instance()->getOwnerCompany();
-        $mpdf->SetTitle($siteCompany->name . ' - Invoice');
-        $mpdf->SetAuthor($siteCompany->name);
+        $this->mpdf->SetTitle($siteCompany->name . ' - Invoice');
+        $this->mpdf->SetAuthor($siteCompany->name);
 
         if ($this->watermark) {
-            $mpdf->SetWatermarkText($this->watermark);
-            $mpdf->showWatermarkText = true;
-            $mpdf->watermark_font = 'DejaVuSansCondensed';
-            $mpdf->watermarkTextAlpha = 0.1;
+            $this->mpdf->SetWatermarkText($this->watermark);
+            $this->mpdf->showWatermarkText = true;
+            $this->mpdf->watermark_font = 'DejaVuSansCondensed';
+            $this->mpdf->watermarkTextAlpha = 0.1;
         }
-        $mpdf->SetDisplayMode('fullpage');
-        $mpdf->WriteHTML($html);
+        $this->mpdf->SetDisplayMode('fullpage');
+        $this->mpdf->WriteHTML($html);
     }
 
     /**
@@ -235,12 +236,8 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
 }
 .payment-methods td {
   vertical-align: top;
-  text-align: center;
   line-height: 1.4em;
   font-size: 0.8em;
-}
-.payment-methods td.left-col {
-    text-align: left;
 }
 .payment-methods td p {
     margin-top: 40px;
