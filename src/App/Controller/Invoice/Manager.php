@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Invoice;
 
+use App\Component\CompanySelectDialog;
 use App\Db\Company;
 use App\Db\Invoice;
 use App\Db\User;
@@ -13,14 +14,13 @@ use Tk\Form\Field\Input;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
-use Tk\Table\Action\Delete;
-use Tk\Table\Action\Select;
 use Tk\Uri;
 use Tk\Db;
 
 class Manager extends ControllerAdmin
 {
     protected ?Table $table = null;
+    protected CompanySelectDialog $createDialog;
 
     public function doDefault(): void
     {
@@ -31,6 +31,8 @@ class Manager extends ControllerAdmin
             Alert::addWarning('You do not have permission to access this page');
             User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
         }
+
+        $this->createDialog = new CompanySelectDialog();
 
         // init table
         $this->table = new Table();
@@ -142,9 +144,29 @@ class Manager extends ControllerAdmin
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        // TODO: create a dialog to select a company for a new invoice
-
         $template->appendTemplate('content', $this->table->show());
+
+        $template->setAttr('create', 'data-bs-toggle', 'modal');
+        $template->setAttr('create', 'data-bs-target', '#'.$this->createDialog->getDialogId());
+        $template->appendTemplate('content', $this->createDialog->doDefault());
+
+        $js = <<<JS
+
+jQuery(function($) {
+    const dialog = '#{$this->createDialog->getDialogId()}';
+
+    $(dialog).on('companySelect', function(e, a) {
+        console.log('Company Selected');
+        console.log(e);
+        console.log($(a).data());
+        console.log(tkConfig.baseUrl + '/invoiceEdit?companyId=' + $(a).data('companyId'));
+        location = tkConfig.baseUrl + '/invoiceEdit?companyId=' + $(a).data('companyId');
+    });
+
+});
+JS;
+        $template->appendJs($js);
+
 
         return $template;
     }

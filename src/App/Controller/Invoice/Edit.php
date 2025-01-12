@@ -13,6 +13,7 @@ use App\Db\StatusLog;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Registry;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Date;
@@ -47,6 +48,8 @@ class Edit extends ControllerAdmin
             $company = Company::find($companyId);
             if ($company instanceof Company) {
                 $this->invoice = Invoice::getOpenInvoice($company);
+                Breadcrumbs::popCrumb();
+                Uri::create()->reset()->set('invoiceId', $this->invoice->invoiceId)->redirect();
             }
         }
 
