@@ -208,7 +208,8 @@ class File extends Model
             $filter->appendWhere('a.mime IN :mime AND ', $filter['mime']);
         }
 
-        if (is_bool($filter['selected'])) {
+        if (is_bool(truefalse($filter['selected'] ?? null))) {
+            $filter['selected'] = truefalse($filter['selected']);
             $filter->appendWhere('a.selected = :selected AND ');
         }
 

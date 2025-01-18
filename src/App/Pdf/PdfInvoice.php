@@ -45,7 +45,7 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $url = Uri::create()->toString();
         $html = $this->show()->toString();
 
-        ini_set("memory_limit", "128M");
+        @ini_set("memory_limit", "128M");
 
         $this->mpdf = new Mpdf([
             'margin_top' => 20,

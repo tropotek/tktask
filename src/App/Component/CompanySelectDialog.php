@@ -51,7 +51,6 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
         foreach ($this->companies as $company) {
             $row = $template->getRepeat('row');
             $row->setText('name', $company->name);
-            vd($company);
             $row->setAttr('name', 'data-company-id', $company->companyId);
             $row->appendRepeat();
         }

@@ -47,12 +47,19 @@ class Manager extends ControllerAdmin
                 return sprintf('<a href="%s">%s</a>', $url, $obj->description);
             });
 
-        $this->table->appendCell('productId')
+        $this->table->appendCell('companyId')
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(Recurring $obj, Cell $cell) {
-                return $obj->getProduct()->name;
+                return $obj->getCompany()->name;
             });
+
+//        $this->table->appendCell('productId')
+//            ->addCss('text-nowrap')
+//            ->setSortable(true)
+//            ->addOnValue(function(Recurring $obj, Cell $cell) {
+//                return $obj->getProduct()->name;
+//            });
 
         $this->table->appendCell('price')
             ->addCss('text-nowrap text-end')

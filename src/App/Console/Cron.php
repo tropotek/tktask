@@ -1,6 +1,7 @@
 <?php
 namespace App\Console;
 
+use App\Db\Invoice;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,13 +57,8 @@ class Cron extends Console
     {
         $this->writeComment(' - Invoicing Recurring Items', OutputInterface::VERBOSITY_VERBOSE);
 
-        $now = true;
-//        if ($this->getConfig()->isDebug()) {
-//            $now = \Tk\Date::floor(\Tk\Date::create('2025-05-01'));
-//        }
-
         $items = \App\Db\Recurring::findFiltered([
-            'isDue' => $now
+            'isDue' => true
         ]);
 
         $invoiceList = [];
@@ -71,12 +67,9 @@ class Cron extends Console
         $noIssue = [];
 
         foreach ($items as $recurring) {
-//            if ($this->getConfig()->isDebug()) {
-//                $invoice = $recurring->invoice($now);
-//            } else {
-                $invoice = $recurring->invoice();
-//            }
-            if ($invoice) {
+            $invoice = $recurring->invoice();
+
+            if ($invoice instanceof Invoice) {
                 $this->writeComment('   - [' .$recurring->getId(). '] Added Invoice Item: ' . $recurring->description . ' - ' . $recurring->getCompany()->name);
                 $invoiceList[$invoice->invoiceId] = $invoice;
                 if (!$recurring->issue) {

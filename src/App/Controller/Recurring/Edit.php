@@ -83,8 +83,12 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('startOn', 'date'));
         $this->form->appendField(new Input('endOn', 'date'));
 
-        $this->form->appendField(new Checkbox('issue'))->setPersistent();
-        $this->form->appendField(new Checkbox('active'))->setPersistent();
+        $this->form->appendField(new Checkbox('issue'))
+            ->setPersistent()
+            ->setNotes("Automatically issue invoice after recurring items added");
+        $this->form->appendField(new Checkbox('active'))
+            ->setPersistent()
+            ->setNotes("Inactive recurring items are not added to an invoice, however dates are incremented");
 
         $this->form->appendField(new Textarea('notes'));
 

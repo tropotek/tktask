@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS recurring (
   end_on DATE NULL DEFAULT NULL,             -- (optional) date to end the recurring invoicing
   prev_on DATE NULL DEFAULT NULL,            -- date the line item was last invoiced
   next_on DATE NOT NULL,                     -- date the line item will be invoiced next
-  active BOOL NOT NULL DEFAULT TRUE,         -- If inactive this record should still be updated (next_on) just not invoiced, as if paid automatically
+  active BOOL NOT NULL DEFAULT TRUE,         -- if inactive this record should still be updated (next_on) just not invoiced
   issue BOOL NOT NULL DEFAULT FALSE,         -- if set, the current invoice is issued after the recurring items are added for that company
   description TEXT,
   notes TEXT,

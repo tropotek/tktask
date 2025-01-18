@@ -93,33 +93,38 @@ class Recurring extends Model
             $lastInvoice = $now;
         }
 
+        $invoice      = null;
         $this->prevOn = $this->nextOn;
         $this->nextOn = self::createNextDate($this->prevOn, $this->cycle);
-        $description = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_MED_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_MED_DATE) . ']';
+        $description  = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_MED_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_MED_DATE) . ']';
 
-        $invoice = Invoice::getOpenInvoice($this->getCompany());
 
-        $code = '';
-        if ($this->getProduct()) {
-            $code = $this->getProduct()->code;
+        if ($this->active) {
+            $invoice = Invoice::getOpenInvoice($this->getCompany());
+
+            $code = '';
+            if ($this->getProduct()) {
+                $code = $this->getProduct()->code;
+            }
+
+            $item = InvoiceItem::create($code, $description, $this->price);
+            $invoice->addItem($item);
+            $this->count++;
+
+            // Notify users
+            $users = User::findFiltered(['active' => true, 'type' => User::TYPE_STAFF]);
+            foreach ($users as $user) {
+                Notify::create(
+                    $user->userId,
+                    'Recurring product invoiced',
+                    $description,
+                    Uri::create('/invoiceEdit')->set('invoiceId', $invoice->invoiceId)->toString(),
+                    $user->getImageUrl()
+                );
+            }
         }
 
-        $item = InvoiceItem::create($code, $description, $this->price);
-        $invoice->addItem($item);
-        $this->count++;
         $this->save();
-
-        // Notify users
-        $users = User::findFiltered(['active' => true, 'type' => User::TYPE_STAFF]);
-        foreach ($users as $user) {
-            Notify::create(
-                $user->userId,
-                'Recurring product invoiced',
-                $description,
-                Uri::create('/invoiceEdit')->set('invoiceId', $invoice->invoiceId)->toString(),
-                $user->getImageUrl()
-            );
-        }
 
         return $invoice;
     }
@@ -248,9 +253,9 @@ class Recurring extends Model
         }
         if (($filter['isDue'] ?? null) instanceof \DateTime) {
             $filter['isDue'] = $filter['isDue']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.active AND a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND :isDue AND ');
+            $filter->appendWhere('a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND :isDue AND ');
         } elseif (is_bool(truefalse($filter['isDue'] ?? null))) {
-            $filter->appendWhere('a.active AND a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND CURRENT_DATE AND ');
+            $filter->appendWhere('a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND CURRENT_DATE AND ');
         }
 
         return Db::query("

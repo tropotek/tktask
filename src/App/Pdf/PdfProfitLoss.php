@@ -30,7 +30,7 @@ class PdfProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
         $url = Uri::create()->toString();
         $html = $this->show()->toString();
 
-        ini_set("memory_limit", "128M");
+        @ini_set("memory_limit", "128M");
 
         $this->mpdf = new Mpdf(array(
             'margin_top' => 20,

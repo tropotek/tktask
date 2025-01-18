@@ -7,18 +7,7 @@ use Tk\Config;
 return function (Config $config) {
 
     /**
-     * Set environment type to prevent destructive functions on production sites
-     * options are 'dev' | 'prod'
-     */
-    $config['env.type'] = 'prod';
-
-    /**
-     * Enable to view more verbose log messages
-     */
-    $config['debug'] = false;
-
-    /**
-     * side-nav (default) use config to load top nav template
+     * Set the default page templates
      */
     $config->set('path.template.admin', '/html/minton/sn-admin.html');
     $config->set('path.template.user', $config->get('path.template.admin'));
