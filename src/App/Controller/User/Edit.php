@@ -60,14 +60,14 @@ class Edit extends ControllerAdmin
             $this->setAccess(User::PERM_MANAGE_MEMBERS);
         }
 
-        // send inactive user activation email
-        if (isset($_GET['a']) && !$this->user->active) {
+        // Request user to reset their password
+        if ($this->user->userId && isset($_GET['r'])) {
             if (\App\Email\User::sendRecovery($this->user)) {
-                Alert::addSuccess('An email has been sent to ' . $this->user->nameShort . ' to create their password.');
+                Alert::addSuccess('An email has been sent to ' . $this->user->nameShort . ' to reset their password.');
             } else {
-                Alert::addError('Failed to send email to ' . $this->user->nameShort . ' to create their password.');
+                Alert::addError('Failed to send email to ' . $this->user->nameShort . ' to reset their password.');
             }
-            Uri::create()->remove('a')->redirect();
+            Uri::create()->remove('r')->redirect();
         }
 
         // Get the form template
@@ -230,10 +230,10 @@ class Edit extends ControllerAdmin
             $template->setVisible('msq');
         }
 
-        if ($this->user->userId && !$this->user->active) {
-            $url = Uri::create()->set('a');
-            $template->setAttr('activate', 'href', $url);
-            $template->setVisible('activate');
+        if ($this->user->userId) {
+            $url = Uri::create()->set('r');
+            $template->setAttr('reset', 'href', $url);
+            $template->setVisible('reset');
         }
 
         $this->form->getField('title')->addFieldCss('col-1');
@@ -279,7 +279,7 @@ class Edit extends ControllerAdmin
       <a href="/" title="Masquerade" data-confirm="Masquerade as this user" class="btn btn-outline-secondary me-1" choice="msq"><i class="fa fa-user-secret"></i> Masquerade</a>
       <a href="/" title="Convert user to staff" data-confirm="Convert this user to staff" class="btn btn-outline-secondary me-1" choice="to-staff"><i class="fa fa-retweet"></i> Convert To Staff</a>
       <a href="/" title="Convert user to member" data-confirm="Convert this user to member" class="btn btn-outline-secondary me-1" choice="to-member"><i class="fa fa-retweet"></i> Convert To Member</a>
-      <a href="/" title="Send Activation Email" data-confirm="Re-send the user activation email?" class="btn btn-outline-secondary me-1" choice="activate"><i class="fa fa-fw fa-envelope"></i> Send Activate Email</a>
+      <a href="/" title="Request Password Reset Email" data-confirm="Send an email to request user to reset their password?<br>Note: This will activate any inactive account." class="btn btn-outline-secondary" choice="reset"><i class="fa fa-fw fa-envelope"></i> Send Password Reset Email</a>
     </div>
   </div>
   <div class="card mb-3">
