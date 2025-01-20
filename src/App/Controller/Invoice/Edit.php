@@ -347,34 +347,34 @@ class Edit extends ControllerAdmin
         <div class="page-actions card mb-3">
             <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
             <div class="card-body" var="actions">
-                <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+                <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
 
-                <a href="#" class="btn btn-outline-secondary me-1" title="PDF" target="_blank" var="btn-pdf">
+                <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">
                     <i class="fa fa-download"></i>
                     <span>PDF</span>
                 </a>
-                <a href="#" class="btn btn-outline-secondary me-1" title="Email" var="btn-email" data-confirm="Are you sure you want to email this invoice to the client?">
+                <a href="#" class="btn btn-outline-secondary" title="Email" var="btn-email" data-confirm="Are you sure you want to email this invoice to the client?">
                     <i class="fas fa-envelope"></i>
                     <span>Email</span>
                 </a>
 
-                <a href="#" class="btn btn-danger float-end me-1" title="Cancel" choice="btn-cancel" data-confirm="Are you sure you want to cancel this invoice?">
+                <a href="#" class="btn btn-danger float-end" title="Cancel" choice="btn-cancel" data-confirm="Are you sure you want to cancel this invoice?">
                     <i class="fas fa-bell-slash"></i>
                     <span>Cancel</span>
                 </a>
-                <a href="#" class="btn btn-primary float-end me-1" data-bs-toggle="modal" data-bs-target="" title="Add a new invoice item" choice="btn-edit">
+                <a href="#" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="" title="Add a new invoice item" choice="btn-edit">
                     <i class="fa fa-edit"></i>
                     <span>Edit</span>
                 </a>
-                <a href="#" class="btn btn-success float-end me-1" data-bs-toggle="modal" title="Add a new payment" choice="btn-pay">
+                <a href="#" class="btn btn-success float-end" data-bs-toggle="modal" title="Add a new payment" choice="btn-pay">
                     <i class="fas fa-dollar-sign"></i>
                     <span>Add Payment</span>
                 </a>
-                <a href="#" class="btn btn-success float-end me-1" title="Issue Invoice" choice="btn-issue" data-confirm="Are you sure you want to issue this invoice?">
+                <a href="#" class="btn btn-success float-end" title="Issue Invoice" choice="btn-issue" data-confirm="Are you sure you want to issue this invoice?">
                     <i class="fas fa-bell"></i>
                     <span>Issue</span>
                 </a>
-                <a href="#" class="btn btn-warning float-end me-1" data-bs-toggle="modal" data-bs-target="" title="Add a new invoice item" choice="btn-add-item">
+                <a href="#" class="btn btn-warning float-end" data-bs-toggle="modal" data-bs-target="" title="Add a new invoice item" choice="btn-add-item">
                     <i class="fa fa-plus-circle"></i>
                     <span>Add Item</span>
                 </a>

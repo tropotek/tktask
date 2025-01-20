@@ -168,8 +168,8 @@ class Manager extends ControllerAdmin
   <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="#" title="Create Task Log" class="btn btn-outline-secondary me-1" choice="add-log"><i class="fa fa-plus"></i> Add Log</a>
+      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+      <a href="#" title="Create Task Log" class="btn btn-outline-secondary" choice="add-log"><i class="fa fa-plus"></i> Add Log</a>
     </div>
   </div>
   <div class="card mb-3">

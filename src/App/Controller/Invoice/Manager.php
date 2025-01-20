@@ -178,8 +178,8 @@ JS;
   <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="#" title="Create Invoice" class="btn btn-outline-secondary me-1" var="create"><i class="fa fa-plus"></i> Create Invoice</a>
+      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+      <a href="#" title="Create Invoice" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Invoice</a>
     </div>
   </div>
   <div class="card mb-3">

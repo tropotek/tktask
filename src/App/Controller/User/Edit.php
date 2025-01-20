@@ -275,10 +275,10 @@ class Edit extends ControllerAdmin
   <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="/" title="Masquerade" data-confirm="Masquerade as this user" class="btn btn-outline-secondary me-1" choice="msq"><i class="fa fa-user-secret"></i> Masquerade</a>
-      <a href="/" title="Convert user to staff" data-confirm="Convert this user to staff" class="btn btn-outline-secondary me-1" choice="to-staff"><i class="fa fa-retweet"></i> Convert To Staff</a>
-      <a href="/" title="Convert user to member" data-confirm="Convert this user to member" class="btn btn-outline-secondary me-1" choice="to-member"><i class="fa fa-retweet"></i> Convert To Member</a>
+      <a href="" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+      <a href="/" title="Masquerade" data-confirm="Masquerade as this user" class="btn btn-outline-secondary" choice="msq"><i class="fa fa-user-secret"></i> Masquerade</a>
+      <a href="/" title="Convert user to staff" data-confirm="Convert this user to staff" class="btn btn-outline-secondary" choice="to-staff"><i class="fa fa-retweet"></i> Convert To Staff</a>
+      <a href="/" title="Convert user to member" data-confirm="Convert this user to member" class="btn btn-outline-secondary" choice="to-member"><i class="fa fa-retweet"></i> Convert To Member</a>
       <a href="/" title="Request Password Reset Email" data-confirm="Send an email to request user to reset their password?<br>Note: This will activate any inactive account." class="btn btn-outline-secondary" choice="reset"><i class="fa fa-fw fa-envelope"></i> Send Password Reset Email</a>
     </div>
   </div>

@@ -212,14 +212,14 @@ class Settings extends ControllerAdmin
   <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary me-1" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
-      <a href="/sessions" title="View Active Sessions" class="btn btn-outline-secondary me-1" choice="admin"><i class="fa fa-fw fa-server"></i> Sessions</a>
-      <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary me-1" choice="staff"><i class="fa fa-fw fa-users"></i> Staff</a>
-      <a href="/companyManager" title="Manage Companies" class="btn btn-outline-secondary me-1"><i class="fa fa-fw fa-building"></i> Companies</a>
-      <a href="/taskCategoryManager" title="Manage Task Categories" class="btn btn-outline-secondary me-1"><i class="fa fa-fw fa-folder-open"></i> Task Categories</a>
-      <a href="/productCategoryManager" title="Manage Product Categories" class="btn btn-outline-secondary me-1"><i class="fa fa-fw fa-folder-open"></i> Product Categories</a>
-      <a href="/productManager" title="Manage Products" class="btn btn-outline-secondary me-1"><i class="fa fa-fw fa-shopping-cart"></i> Products</a>
-      <a href="/expenseCategoryManager" title="Manage Expense Categories" class="btn btn-outline-secondary me-1"><i class="fa fa-fw fa-folder-open"></i> Expense Categories</a>
+      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
+      <a href="/sessions" title="View Active Sessions" class="btn btn-outline-secondary" choice="admin"><i class="fa fa-fw fa-server"></i> Sessions</a>
+      <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary" choice="staff"><i class="fa fa-fw fa-users"></i> Staff</a>
+      <a href="/companyManager" title="Manage Companies" class="btn btn-outline-secondary"><i class="fa fa-fw fa-building"></i> Companies</a>
+      <a href="/taskCategoryManager" title="Manage Task Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Task Categories</a>
+      <a href="/productCategoryManager" title="Manage Product Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Product Categories</a>
+      <a href="/productManager" title="Manage Products" class="btn btn-outline-secondary"><i class="fa fa-fw fa-shopping-cart"></i> Products</a>
+      <a href="/expenseCategoryManager" title="Manage Expense Categories" class="btn btn-outline-secondary"><i class="fa fa-fw fa-folder-open"></i> Expense Categories</a>
     </div>
   </div>
   <div class="card mb-3">

@@ -6,6 +6,10 @@
   pointer-events: none;
 }
 
+.card.page-actions .btn {
+  margin-right: 0.5em;
+}
+
 /*********** B O O T S T R A P *************/
 .modal-header-success .modal-title,
 .modal-header-warning .modal-title,
