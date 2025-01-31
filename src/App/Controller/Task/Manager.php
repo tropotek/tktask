@@ -21,11 +21,7 @@ class Manager extends ControllerAdmin
     {
         Breadcrumbs::reset();
         $this->getPage()->setTitle('Task Manager');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-            User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->table = new \App\Table\Task();
         $this->table->setOrderBy('-created');

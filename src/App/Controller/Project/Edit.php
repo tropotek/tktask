@@ -22,11 +22,7 @@ class Edit extends ControllerAdmin
         $projectId = intval($_GET['projectId'] ?? 0);
 
         $this->getPage()->setTitle('Edit Project');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access the page');
-            Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->project = new Project();
         $this->project->userId = User::getAuthUser()->userId;

@@ -26,11 +26,7 @@ class Manager extends ControllerAdmin
     {
         Breadcrumbs::reset();
         $this->getPage()->setTitle('Invoice Manager');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-            User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->createDialog = new CompanySelectDialog();
 

@@ -36,11 +36,7 @@ class Edit extends ControllerAdmin
     public function doDefault(): void
     {
         $this->getPage()->setTitle('Edit Expense');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-            User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $expenseId = intval($_GET['expenseId'] ?? 0);
 

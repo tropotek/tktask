@@ -32,11 +32,7 @@ class Edit extends ControllerAdmin
     public function doDefault(): void
     {
         $this->getPage()->setTitle('Edit Recurring');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-                User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $recurringId = intval($_GET['recurringId'] ?? 0);
 

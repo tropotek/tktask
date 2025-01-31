@@ -25,11 +25,7 @@ class Manager extends ControllerAdmin
     {
         Breadcrumbs::reset();
         $this->getPage()->setTitle('Project Manager');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-                User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         // init table
         $this->table = new Table();

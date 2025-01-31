@@ -31,7 +31,7 @@ class Edit extends ControllerAdmin
     {
         $this->getPage()->setTitle('Edit Product');
 
-        $this->setAccess(User::PERM_SYSADMIN);
+        $this->setUserAccess(User::PERM_SYSADMIN);
 
         $productId = intval($_GET['productId'] ?? 0);
 

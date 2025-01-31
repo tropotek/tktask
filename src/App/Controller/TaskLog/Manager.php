@@ -28,11 +28,7 @@ class Manager extends ControllerAdmin
         $this->task = Task::find($taskId);
 
         $this->getPage()->setTitle('Task Log Manager');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-            User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         // init table
         $this->table = new Table();

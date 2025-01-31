@@ -27,7 +27,7 @@ class Manager extends ControllerAdmin
     {
         $this->getPage()->setTitle('Product Manager');
 
-        $this->setAccess(User::PERM_SYSADMIN);
+        $this->setUserAccess(User::PERM_SYSADMIN);
 
         // init table
         $this->table = new Table();

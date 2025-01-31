@@ -33,10 +33,10 @@ class Manager extends ControllerAdmin
         $this->getPage()->setTitle(ucwords($this->type) . ' Manager');
 
         if ($this->type == User::TYPE_STAFF) {
-            $this->setAccess(User::PERM_MANAGE_STAFF);
+            $this->setUserAccess(User::PERM_MANAGE_STAFF);
         }
         if ($this->type == User::TYPE_MEMBER) {
-            $this->setAccess(User::PERM_MANAGE_MEMBERS);
+            $this->setUserAccess(User::PERM_MANAGE_MEMBERS);
         }
 
         if (isset($_GET[Masquerade::QUERY_MSQ])) {

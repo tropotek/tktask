@@ -317,6 +317,8 @@ HTML;
 
     protected function isVisible(array $item): bool
     {
+        if (is_bool($item['visible'] ?? '')) return $item['visible'];
+
         if (is_callable($item['visible'] ?? '')) {
             return $item['visible']($item) ?? false;
         }

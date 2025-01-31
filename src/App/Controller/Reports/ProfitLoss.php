@@ -25,11 +25,7 @@ class ProfitLoss extends ControllerAdmin
     {
         Breadcrumbs::reset();
         $this->getPage()->setTitle('Profit & Loss Report');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access the page');
-            Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->dateSet = Date::getFinancialYear(new \DateTime($_GET['date'] ?? 'now'));
 

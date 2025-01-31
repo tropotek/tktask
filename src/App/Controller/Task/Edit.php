@@ -19,11 +19,7 @@ class Edit extends ControllerAdmin
     public function doDefault(): mixed
     {
         $this->getPage()->setTitle('Edit Task');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-            User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $taskId = intval($_GET['taskId'] ?? 0);
 

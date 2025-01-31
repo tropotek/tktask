@@ -32,7 +32,7 @@ class Edit extends ControllerAdmin
     {
         $this->getPage()->setTitle('Edit Expense Category');
 
-        $this->setAccess(User::PERM_SYSADMIN);
+        $this->setUserAccess(User::PERM_SYSADMIN);
 
         $expenseCategoryId = intval($_GET['expenseCategoryId'] ?? 0);
 

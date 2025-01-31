@@ -36,7 +36,7 @@ class Edit extends ControllerAdmin
             }
         }
 
-        $this->setAccess(User::PERM_SYSADMIN);
+        $this->setUserAccess(User::PERM_SYSADMIN);
 
         // Get the form template
         $this->form = new Form();

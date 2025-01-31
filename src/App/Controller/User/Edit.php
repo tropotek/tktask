@@ -54,10 +54,10 @@ class Edit extends ControllerAdmin
         $this->auth = $this->user->getAuth();
 
         if ($this->type == User::TYPE_STAFF) {
-            $this->setAccess(User::PERM_MANAGE_STAFF);
+            $this->setUserAccess(User::PERM_MANAGE_STAFF);
         }
         if ($this->type == User::TYPE_MEMBER) {
-            $this->setAccess(User::PERM_MANAGE_MEMBERS);
+            $this->setUserAccess(User::PERM_MANAGE_MEMBERS);
         }
 
         // Request user to reset their password

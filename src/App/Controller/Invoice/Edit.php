@@ -33,11 +33,7 @@ class Edit extends ControllerAdmin
     public function doDefault(): mixed
     {
         $this->getPage()->setTitle('Edit Invoice');
-
-        if (!User::getAuthUser()?->isStaff()) {
-            Alert::addWarning('You do not have permission to access this page');
-            User::getAuthUser()?->getHomeUrl()->redirect() ?? Uri::create('/')->redirect();
-        }
+        $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $invoiceId = intval($_GET['invoiceId'] ?? 0);
         $companyId = intval($_GET['companyId'] ?? 0);
