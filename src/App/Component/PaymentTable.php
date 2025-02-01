@@ -12,7 +12,6 @@ use Tk\Log;
 class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
     protected Table    $table;
-    protected Db\Model $model;
     protected ?Invoice $invoice  = null;
 
 

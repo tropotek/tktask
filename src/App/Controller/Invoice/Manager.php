@@ -152,10 +152,6 @@ jQuery(function($) {
     const dialog = '#{$this->createDialog->getDialogId()}';
 
     $(dialog).on('companySelect', function(e, a) {
-        console.log('Company Selected');
-        console.log(e);
-        console.log($(a).data());
-        console.log(tkConfig.baseUrl + '/invoiceEdit?companyId=' + $(a).data('companyId'));
         location = tkConfig.baseUrl + '/invoiceEdit?companyId=' + $(a).data('companyId');
     });
 
