@@ -2,7 +2,6 @@
 namespace App\Component;
 
 use App\Db\Company;
-use App\Db\ExpenseCategory;
 use App\Db\User;
 use Bs\Mvc\Form;
 use Dom\Template;
@@ -16,11 +15,11 @@ use Tk\Uri;
 
 class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string       $dialogId = 'company-add-item';
-    protected ?Form        $form     = null;
-    protected array        $hxEvents = [];
-    protected ?Company     $company  = null;
-    protected string       $type     = Company::TYPE_SUPPLIER;
+    protected string   $dialogId = 'company-add-item';
+    protected ?Form    $form     = null;
+    protected array    $hxEvents = [];
+    protected ?Company $company  = null;
+    protected string   $type     = Company::TYPE_SUPPLIER;
 
 
     public function doDefault(): ?Template

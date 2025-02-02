@@ -42,7 +42,6 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
         return $this->show();
     }
 
-
     public function show(): ?Template
     {
         $template = $this->getTemplate();
