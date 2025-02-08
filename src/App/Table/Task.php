@@ -185,7 +185,10 @@ class Task extends Table
         // Add Table actions
         $this->appendAction(Csv::create())
             ->addOnCsv(function(Csv $action, array $selected) {
-                $action->setExcluded(['id', 'actions']);
+                $action->setExcluded(['actions']);
+                if (!$this->getCell(\App\Db\Task::getPrimaryProperty())) {
+                    $this->prependCell(\App\Db\Task::getPrimaryProperty())->setHeader('id');
+                }
                 $this->getCell('subject')->getOnValue()->reset();
                 $this->getCell('status')->getOnValue()->reset();
                 $this->getCell('priority')->getOnValue()->reset();

@@ -103,11 +103,11 @@ class Manager extends ControllerAdmin
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['actions']);
-                $filter = $this->table->getDbFilter();
                 if (!$this->table->getCell(Invoice::getPrimaryProperty())) {
                     $this->table->prependCell(Invoice::getPrimaryProperty())->setHeader('id');
                 }
                 $this->table->getCell('client')->getOnValue()->reset();
+                $filter = $this->table->getDbFilter();
                 if ($selected) {
                     $rows = Invoice::findFiltered($filter);
                 } else {

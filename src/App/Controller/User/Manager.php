@@ -138,7 +138,10 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(Csv::create()
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
-                $action->setExcluded(['id', 'actions', 'permissions']);
+                $action->setExcluded(['actions', 'permissions']);
+                if (!$this->table->getCell(User::getPrimaryProperty())) {
+                    $this->table->prependCell(User::getPrimaryProperty())->setHeader('id');
+                }
                 $this->table->getCell('username')->getOnValue()->reset();
                 $this->table->getCell('email')->getOnValue()->reset();    // remove html from cell
                 $filter = $this->table->getDbFilter();

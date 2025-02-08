@@ -110,9 +110,12 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(Csv::create()
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
-                $action->setExcluded(['id', 'actions']);
-                $filter = $this->table->getDbFilter();
+                $action->setExcluded(['actions']);
+                if (!$this->table->getCell(Product::getPrimaryProperty())) {
+                    $this->table->prependCell(Product::getPrimaryProperty())->setHeader('id');
+                }
                 $this->table->getCell('name')->getOnValue()->reset();
+                $filter = $this->table->getDbFilter();
                 if ($selected) {
                     $rows = Product::findFiltered($filter);
                 } else {

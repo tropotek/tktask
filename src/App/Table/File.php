@@ -71,7 +71,10 @@ class File extends Table
         $this->appendAction(Csv::create()
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
-                $action->setExcluded(['id', 'actions', 'permissions']);
+                $action->setExcluded(['actions', 'permissions']);
+                if (!$this->getCell(\App\Db\File::getPrimaryProperty())) {
+                    $this->prependCell(\App\Db\File::getPrimaryProperty())->setHeader('id');
+                }
                 $this->getCell('username')->getOnValue()->reset();
                 $filter = $this->getDbFilter();
                 if (count($selected)) {
