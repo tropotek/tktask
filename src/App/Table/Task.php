@@ -45,12 +45,9 @@ use Tk\Table\Cell;
  */
 class Task extends Table
 {
-    protected ?TaskLogAddDialog $logAddDialog = null;
 
     public function init(): static
     {
-        $this->logAddDialog = new TaskLogAddDialog();
-
         $this->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
@@ -59,9 +56,10 @@ class Task extends Table
                 }
                 $disabled = $obj->isOpen() ? '' : 'disabled';
                 $url = Uri::create('/taskEdit')->set('taskId', $obj->taskId);
+                $dialogId = TaskLogAddDialog::CONTAINER_ID;
                 return <<<HTML
                     <button class="btn btn-primary $disabled" type="button" title="Add Log" $disabled
-                        data-bs-target="#{$this->logAddDialog->getDialogId()}"
+                        data-bs-target="#{$dialogId}"
                         data-bs-toggle="modal"
                         data-task-id="{$obj->taskId}">
                         <i class="far fa-fw fa-clock"></i>
@@ -207,10 +205,19 @@ class Task extends Table
     {
         $template = $this->getTemplate();
 
-        if ($this->logAddDialog) {
-            $tpl = $this->logAddDialog->doDefault();
-            if ($tpl) $template->appendTemplate('table', $tpl);
-        }
+        $htmx = <<<HTML
+<div hx-get="/component/taskLogAddDialog" hx-trigger="load" hx-swap="outerHTML"></div>
+HTML;
+        $template->appendHtml('table', $htmx);
+
+        $js = <<<JS
+jQuery(function ($) {
+    $(document).on('tkForm:afterSubmit', function() {
+        location = location.href;
+    });
+});
+JS;
+        $template->appendJs($js);
 
         return parent::show();
     }

@@ -140,6 +140,9 @@ return function (CollectionConfigurator $routes) {
     $routes->add('com-company-add-dialog', '/component/companyAddDialog')
         ->controller([\App\Component\CompanyAddDialog::class, 'doDefault']);
 
+    $routes->add('com-company-select-dialog', '/component/companySelectDialog')
+        ->controller([\App\Component\CompanySelectDialog::class, 'doDefault']);
+
     $routes->add('com-files', '/component/files')
         ->controller([\App\Component\Files::class, 'doDefault']);
 

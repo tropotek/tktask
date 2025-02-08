@@ -22,7 +22,8 @@ use Tk\Uri;
 
 class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string       $dialogId = 'invoice-add-item';
+    const string CONTAINER_ID = 'invoice-add-item-dialog';
+
     protected ?Form        $form     = null;
     protected array        $hxEvents = [];
     protected ?Invoice     $invoice  = null;
@@ -110,42 +111,19 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->getRenderer()->getTemplate()->removeCss('fields', 'g-3 mt-1')->addCss('fields', 'g-2');
 
         $template->appendTemplate('content', $this->form->show());
-        $unpaidTotal = json_encode($this->invoice->unpaidTotal->toFloatString());
 
-        $js = <<<JS
-jQuery(function($) {
-    const dialog = '#{$this->getDialogId()}';
-    const form   = '#{$this->form->getId()}';
-    const unpaid = {$unpaidTotal};
-
-    // reload page after successfull submit
-    $(document).on('tkForm:afterSubmit', function(e) {
-        if (!$(e.detail.elt).is(form)) return;
-        $(dialog).modal('hide');
-        location = location.href;
-    });
-
-    // reset form fields
-    $(dialog).on('show.bs.modal', function(e) {
-        $('[name=method]', this).val('eft');
-        $('[name=amount]', this).val(unpaid);
-        $('[name=notes]', this).val('');
-        $('.is-invalid', this).removeClass('is-invalid');
-    });
-
-});
-JS;
-        $template->appendJs($js);
         return $template;
     }
 
     public function getDialogId(): string
     {
-        return $this->dialogId;
+        return self::CONTAINER_ID;
     }
 
     public function __makeTemplate(): ?Template
     {
+        $unpaidTotal = $this->invoice->unpaidTotal->toFloatString();
+
         $html = <<<HTML
 <div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -157,6 +135,28 @@ JS;
       <div class="modal-body" var="content"></div>
     </div>
   </div>
+<script>
+  jQuery(function($) {
+    const dialog = '#{$this->getDialogId()}';
+    const form   = '#{$this->form->getId()}';
+    const unpaid = '{$unpaidTotal}';
+
+    // reload page after successfull submit
+    $(document).on('tkForm:afterSubmit', function(e) {
+        if (!$(e.detail.elt).is(form)) return;
+        $(dialog).modal('hide');
+    });
+
+    // reset form fields
+    $(dialog).on('show.bs.modal', function(e) {
+        $('[name=method]', this).val('eft');
+        $('[name=amount]', this).val(unpaid);
+        $('[name=notes]', this).val('');
+        $('.is-invalid', this).removeClass('is-invalid');
+    });
+
+});
+</script>
 </div>
 HTML;
         return Template::load($html);

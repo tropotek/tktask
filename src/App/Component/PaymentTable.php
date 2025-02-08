@@ -21,13 +21,14 @@ class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
 
         $invoiceId = (int)($_POST['invoiceId'] ?? $_GET['invoiceId'] ?? 0);
         $this->invoice = Invoice::find($invoiceId);
+
         if (!($this->invoice instanceof Invoice)) {
             Log::error("invalid invoice ID {$invoiceId}");
             return null;
         }
 
         // init table
-        $this->table = new Table();
+        $this->table = new Table('payments-tbl');
         $this->table->hideReset();
         $this->table->setOrderBy('-created');
         $this->table->setLimit(25);
@@ -62,7 +63,7 @@ class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $template = $this->getTemplate();
 
         $this->table->getRenderer()->setFooterEnabled(false);
-        $template->appendTemplate('content', $this->table->show());
+        $template->appendTemplate('content', Table::toHtmxTable($this->table));
 
         return $template;
     }

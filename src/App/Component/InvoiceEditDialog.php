@@ -16,13 +16,15 @@ use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\InputGroup;
+use Tk\Form\Field\Select;
 use Tk\Form\Field\Textarea;
 use Tk\Log;
 use Tk\Uri;
 
 class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string       $dialogId = 'invoice-edit';
+    const string CONTAINER_ID = 'invoice-edit-dialog';
+
     protected ?Form        $form     = null;
     protected array        $hxEvents = [];
     protected ?Invoice     $invoice  = null;
@@ -54,7 +56,8 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->appendField(new InputGroup('purchaseOrder', '#'));
 
         $list = \App\Db\Invoice::STATUS_LIST;
-        $this->form->appendField(new StatusSelect('status', $list));
+        //$this->form->appendField(new StatusSelect('status', $list))->setAttr('data-message-text', 'off');
+        $this->form->appendField(new Select('status', $list));
 
         $this->form->appendField(new Textarea('notes'))->addCss('mce-min');
 
@@ -112,10 +115,35 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
         $template->appendTemplate('content', $this->form->show());
 
+        $js = <<<JS
+
+JS;
+        $template->appendJs($js);
+        return $template;
+    }
+
+    public function getDialogId(): string
+    {
+        return self::CONTAINER_ID;
+    }
+
+    public function __makeTemplate(): ?Template
+    {
         $baseUrl = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString();
 
-        $js = <<<JS
-jQuery(function($) {
+        $html = <<<HTML
+<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Item</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" var="content"></div>
+    </div>
+  </div>
+<script>
+  jQuery(function($) {
     const dialog    = '#{$this->getDialogId()}';
     const form      = '#{$this->form->getId()}';
     const baseUrl   = '$baseUrl';
@@ -124,6 +152,7 @@ jQuery(function($) {
     $(document).on('htmx:afterSettle', function(e) {
         if (!$(e.detail.elt).is(form)) return;
         if (e.detail.requestConfig.verb === 'get') {
+            console.log('initing form');
             tkInit(form);
         }
     });
@@ -138,7 +167,6 @@ jQuery(function($) {
     $(document).on('tkForm:afterSubmit', function(e) {
         if (!$(e.detail.elt).is(form)) return;
         $(dialog).modal('hide');
-        location = location.href;
     });
 
     // reset form fields
@@ -152,29 +180,7 @@ jQuery(function($) {
     });
 
 });
-JS;
-        $template->appendJs($js);
-        return $template;
-    }
-
-    public function getDialogId(): string
-    {
-        return $this->dialogId;
-    }
-
-    public function __makeTemplate(): ?Template
-    {
-        $html = <<<HTML
-<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Add Item</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" var="content"></div>
-    </div>
-  </div>
+</script>
 </div>
 HTML;
         return Template::load($html);

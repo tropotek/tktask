@@ -15,25 +15,13 @@ jQuery(function ($) {
 
   app.initNotifications();
   app.initCheckSelect();
+  app.initStatusSelect();
+  app.initTimeSelect();
 
 });
 
 let app = function () {
   "use strict";
-
-  /**
-   * Form checkbox dropdown select plugin
-   */
-  let initCheckSelect = function () {
-    if ($.fn.tkCheckSelect === undefined) return;
-
-    tkRegisterInit(function () {
-      $('select.tk-checkselect', this).tkCheckSelect({
-        search: true,
-        selectAll: true,
-      });
-    });
-  };
 
   /**
    * @see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format
@@ -47,7 +35,6 @@ let app = function () {
   //     });
   //   });
   // };
-
 
   /**
    * Enable browser notifications using the systems Notify object
@@ -113,10 +100,75 @@ let app = function () {
     }
   }; // end initNotifications()
 
+  /**
+   * Form checkbox dropdown select plugin
+   */
+  let initCheckSelect = function () {
+    if ($.fn.tkCheckSelect === undefined) return;
+
+    tkRegisterInit(function () {
+      $('select.tk-checkselect', this).tkCheckSelect({
+        search: true,
+        selectAll: true,
+      });
+    });
+  }; // end initCheckSelect()
+
+  /**
+   * Init \App\Form\Field\StatusSelect fields
+   */
+  let initStatusSelect = function () {
+    tkRegisterInit(function () {
+      $('.tk-status-select', this).each(function () {
+        var select = $('select', this);
+        var msg = $('textarea', this);
+        var cb = $('[type="checkbox"]', this);
+
+        select.data('cs-current-val', select.val());
+        msg.hide();
+        cb.prop('checked', false);
+
+        select.on('change', function () {
+          if ($(this).val() === $(this).data('cs-current-val')) {
+            cb.prop('checked', false);
+            if (select.data('messageText') !== 'off')
+              msg.hide();
+          } else {
+            cb.prop('checked', true);
+            if (select.data('messageText') !== 'off')
+              msg.show();
+          }
+
+          if (select.data('messageText') !== 'off') {
+            $(this).blur();
+            msg.focus();
+          }
+        });
+      });
+    });
+  }; // end initStatusSelect()
+
+  let initTimeSelect = function () {
+    tkRegisterInit(function () {
+        $('.tk-minutes', this).each(function() {
+            let field = $(this);
+
+            $('.tk-hrs-opts a', this).on('click', function() {
+                $('input.hrs', field).val($(this).text());
+            });
+            $('.tk-mins-opts a', this).on('click', function() {
+                $('input.mins', field).val($(this).text());
+            });
+        });
+    });
+  }; // end initTimeSelect()
+
 
   return {
     initNotifications: initNotifications,
     initCheckSelect: initCheckSelect,
+    initStatusSelect: initStatusSelect,
+    initTimeSelect: initTimeSelect,
   }
 
 }();

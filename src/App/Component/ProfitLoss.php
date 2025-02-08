@@ -7,6 +7,13 @@ use Dom\Template;
 use Tk\Db\Filter;
 use Tk\Money;
 
+
+/**
+ * Display the Profit and loss report table
+ *
+ * @todo, does this need to be in its own file??? I would not think so.
+ * @todo This is not an HTMX component, this is a renderer and should be in a forlder /App/Renderers or /App/Ui
+ */
 class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
 

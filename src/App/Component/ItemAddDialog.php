@@ -19,7 +19,8 @@ use Tk\Uri;
 
 class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string       $dialogId = 'invoice-add-item';
+    const string CONTAINER_ID = 'invoice-add-item-dialog';
+
     protected ?Form        $form     = null;
     protected array        $hxEvents = [];
     protected ?Invoice     $invoice  = null;
@@ -32,6 +33,7 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
 
         $invoiceId = (int)($_POST['invoiceId'] ?? $_GET['invoiceId'] ?? 0);
         $this->invoice = Invoice::find($invoiceId);
+
         if (!($this->invoice instanceof Invoice)) {
             Log::error("invalid invoice ID {$invoiceId}");
             return null;
@@ -110,8 +112,30 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
 
         $template->appendTemplate('content', $this->form->show());
 
-        $js = <<<JS
-jQuery(function($) {
+        return $template;
+    }
+
+    public function getDialogId(): string
+    {
+        return self::CONTAINER_ID;
+    }
+
+    public function __makeTemplate(): ?Template
+    {
+        $html = <<<HTML
+<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Item</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" var="content"></div>
+    </div>
+  </div>
+  
+<script>
+  jQuery(function($) {
     const dialog = '#{$this->getDialogId()}';
     const form   = '#{$this->form->getId()}';
 
@@ -123,7 +147,7 @@ jQuery(function($) {
     });
 
     // reset form fields
-    $(dialog).on('show.bs.modal', function(e) {
+    $(dialog).on('show.bs.modal', function() {
         $('[name=description]', this).val('');
         $('[name=productCode]', this).val('');
         $('[name=price]', this).val('0.00');
@@ -152,30 +176,8 @@ jQuery(function($) {
             });
         }
     });
-});
-JS;
-        $template->appendJs($js);
-        return $template;
-    }
-
-    public function getDialogId(): string
-    {
-        return $this->dialogId;
-    }
-
-    public function __makeTemplate(): ?Template
-    {
-        $html = <<<HTML
-<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Add Item</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" var="content"></div>
-    </div>
-  </div>
+  });
+</script>
 </div>
 HTML;
         return Template::load($html);

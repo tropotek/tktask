@@ -116,7 +116,9 @@ class Edit extends ControllerAdmin
       </div>
   </div>
   <div class="col-5" choice="secondary">
-    <div hx-get="/component/taskLogTable" hx-trigger="load" hx-swap="outerHTML" var="logTable"></div>
+    <div hx-get="/component/taskLogTable" hx-trigger="load" hx-swap="outerHTML" var="logTable">
+      <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+    </div>
   </div>
 </div>
 HTML;

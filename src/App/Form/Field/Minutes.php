@@ -47,25 +47,9 @@ class Minutes extends FieldInterface implements DisplayInterface, RendererInterf
         $t->setAttr('hrs', 'value', $values['hours'] ?? '0');
         $t->setAttr('mins', 'value', $values['minutes'] ?? '0');
 
-        $js = <<<JS
-jQuery(function($) {
 
-    tkRegisterInit(function () {
-        $('.tk-minutes', this).each(function() {
-            let field = $(this);
+        // See the app.js for script code....
 
-            $('.tk-hrs-opts a', this).on('click', function() {
-                $('input.hrs', field).val($(this).text());
-            });
-            $('.tk-mins-opts a', this).on('click', function() {
-                $('input.mins', field).val($(this).text());
-            });
-        });
-    });
-
-});
-JS;
-        $t->appendJs($js);
 
         return $t;
     }

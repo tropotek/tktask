@@ -26,7 +26,8 @@ use Tk\Uri;
 
 class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string       $dialogId = 'task-add-log';
+    const string CONTAINER_ID = 'task-add-log-dialog';
+
     protected ?Form        $form     = null;
     protected array        $hxEvents = [];
     protected ?Task        $task     = null;
@@ -40,6 +41,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $taskId = (int)($_POST['taskId'] ?? $_GET['taskId'] ?? 0);
         $this->task = Task::find($taskId);
 
+        // use blank task if we do not get supplied a taskId
         if (is_null($this->task)) $this->task = new Task();
 
         $this->log = TaskLog::create($this->task);
@@ -140,7 +142,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
     public function getDialogId(): string
     {
-        return $this->dialogId;
+        return self::CONTAINER_ID;
     }
 
     public function __makeTemplate(): ?Template
@@ -153,7 +155,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Item</h4>
+        <h4 class="modal-title" id="add-log-title">Add Task Log: </h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" var="content"></div>
@@ -187,7 +189,6 @@ jQuery(function($) {
     $(document).on('tkForm:afterSubmit', function(e) {
         if (!$(e.detail.elt).is(form)) return;
         $(dialog).modal('hide');
-        location = location.href;
     });
 
     // reset form values

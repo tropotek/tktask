@@ -23,11 +23,6 @@ use Tk\Uri;
 class Edit extends ControllerAdmin
 {
     protected ?Invoice           $invoice           = null;
-    protected ?StatusLogTable    $statusLog         = null;
-    protected ?PaymentTable      $paymentTable      = null;
-    protected ?ItemAddDialog     $itemAddDialog     = null;
-    protected ?InvoiceEditDialog $invoiceEditDialog = null;
-    protected ?PaymentAddDialog  $paymentAddDialog  = null;
 
 
     public function doDefault(): mixed
@@ -56,21 +51,6 @@ class Edit extends ControllerAdmin
 
         if ($_GET['act'] ?? false) {
             return $this->doAction();
-        }
-
-        // Show status log component
-        $this->statusLog = new StatusLogTable($this->invoice);
-        if ($this->invoice->status == Invoice::STATUS_OPEN) {
-            $this->itemAddDialog = new ItemAddDialog();
-        }
-
-        $this->invoiceEditDialog = new InvoiceEditDialog();
-
-        if ($this->invoice->status == Invoice::STATUS_UNPAID) {
-            $this->paymentAddDialog = new PaymentAddDialog();
-        }
-        if ($this->invoice->paidTotal->getAmount() > 0) {
-            $this->paymentTable = new PaymentTable();
         }
 
         return null;
@@ -148,35 +128,43 @@ class Edit extends ControllerAdmin
         $pdf = Uri::create()->set('act', 'pdf');
         $template->setAttr('btn-pdf', 'href', $pdf);
 
-        if ($this->paymentTable) {
-            $html = $this->paymentTable->doDefault();
-            $template->appendHtml('components', $html);
+
+        if ($this->invoice->paidTotal->getAmount() > 0) {
+            $url = Uri::create('/component/paymentTable', ['invoiceId' => $this->invoice->invoiceId]);
+            $template->setAttr('paymentsTable', 'hx-get', $url);
+            $template->setVisible('paymentsTable');
         }
 
-        if ($this->statusLog) {
-            $html = $this->statusLog->doDefault();
-            $template->appendHtml('components', $html);
-        }
+        $url = Uri::create('/component/statusLogTable', ['fid' => $this->invoice->invoiceId, 'fkey' => $this->invoice::class]);
+        $template->setAttr('statusTable', 'hx-get', $url);
 
-        if ($this->itemAddDialog) {
-            $template->setAttr('btn-add-item', 'data-bs-target', "#{$this->itemAddDialog->getDialogId()}");
-            $tpl = $this->itemAddDialog->doDefault();
-            if ($tpl) $template->appendTemplate('dialogs', $tpl);
-        }
+        $url = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId]);
+        $template->setAttr('invoiceEditDialog', 'hx-get', $url);
+        $template->setAttr('btn-edit', 'data-bs-target', '#'.InvoiceEditDialog::CONTAINER_ID);
 
-        if ($this->invoiceEditDialog) {
-            $template->setAttr('btn-edit', 'data-bs-target', "#{$this->invoiceEditDialog->getDialogId()}");
-            $tpl = $this->invoiceEditDialog->doDefault();
-            if ($tpl) $template->appendTemplate('dialogs', $tpl);
+        if ($this->invoice->status == Invoice::STATUS_OPEN) {
+            $url = Uri::create('/component/itemAddDialog', ['invoiceId' => $this->invoice->invoiceId]);
+            $template->setAttr('itemAddDialog', 'hx-get', $url);
+            $template->setAttr('btn-add-item', 'data-bs-target', '#'.ItemAddDialog::CONTAINER_ID);
+            $template->setVisible('itemAddDialog');
         }
-
-        if ($this->paymentAddDialog) {
-            $template->setAttr('btn-pay', 'data-bs-target', "#{$this->paymentAddDialog->getDialogId()}");
-            $tpl = $this->paymentAddDialog->doDefault();
-            if ($tpl) $template->appendTemplate('dialogs', $tpl);
+        if ($this->invoice->status == Invoice::STATUS_UNPAID) {
+            $url = Uri::create('/component/paymentAddDialog', ['invoiceId' => $this->invoice->invoiceId]);
+            $template->setAttr('paymentAddDialog', 'hx-get', $url);
+            $template->setAttr('btn-pay', 'data-bs-target', '#'.PaymentAddDialog::CONTAINER_ID);
+            $template->setVisible('paymentAddDialog');
         }
 
         $this->showInvoice($template);
+
+        $js = <<<JS
+jQuery(function ($) {
+    $(document).on('tkForm:afterSubmit', function(e) {
+        location = location.href;
+    });
+});
+JS;
+        $template->appendJs($js);
 
         return $template;
     }
@@ -349,12 +337,12 @@ class Edit extends ControllerAdmin
                     <i class="fa fa-download"></i>
                     <span>PDF</span>
                 </a>
-                <a href="#" class="btn btn-outline-secondary" title="Email" var="btn-email" data-confirm="Are you sure you want to email this invoice to the client?">
+                <a href="#" class="btn btn-outline-secondary" title="Email" data-confirm="Are you sure you want to email this invoice to the client?" var="btn-email">
                     <i class="fas fa-envelope"></i>
                     <span>Email</span>
                 </a>
 
-                <a href="#" class="btn btn-danger float-end" title="Cancel" choice="btn-cancel" data-confirm="Are you sure you want to cancel this invoice?">
+                <a href="#" class="btn btn-danger float-end" title="Cancel" data-confirm="Are you sure you want to cancel this invoice?" choice="btn-cancel">
                     <i class="fas fa-bell-slash"></i>
                     <span>Cancel</span>
                 </a>
@@ -366,7 +354,7 @@ class Edit extends ControllerAdmin
                     <i class="fas fa-dollar-sign"></i>
                     <span>Add Payment</span>
                 </a>
-                <a href="#" class="btn btn-success float-end" title="Issue Invoice" choice="btn-issue" data-confirm="Are you sure you want to issue this invoice?">
+                <a href="#" class="btn btn-success float-end" title="Issue Invoice" data-confirm="Are you sure you want to issue this invoice?" choice="btn-issue">
                     <i class="fas fa-bell"></i>
                     <span>Issue</span>
                 </a>
@@ -518,10 +506,21 @@ class Edit extends ControllerAdmin
     </div>
     <!-- END: Invoice Template -->
 
-    <div class="col-4" var="components"></div>
+    <div class="col-4" var="components">
+        <div hx-get="/component/paymentTable" hx-trigger="load" hx-swap="outerHTML" choice="paymentsTable">
+          <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+        </div>
+        <div hx-get="/component/statusLogTable" hx-trigger="load" hx-swap="outerHTML" var="statusTable">
+          <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+        </div>
+        
+    </div>
 
-<!--    <div hx-get="/component/addItemDialog" hx-trigger="load" hx-swap="outerHTML" var="addItemDialog"></div>-->
-    <div class="dialog-container" var="dialogs"></div>
+    <div class="dialog-container" var="dialogs">
+        <div hx-get="/component/invoiceEditDialog" hx-trigger="load" hx-swap="outerHTML" var="invoiceEditDialog"></div>
+        <div hx-get="/component/itemAddDialog" hx-trigger="load" hx-swap="outerHTML" choice="itemAddDialog"></div>
+        <div hx-get="/component/paymentAddDialog" hx-trigger="load" hx-swap="outerHTML" choice="paymentAddDialog"></div>
+    </div>
 </div>
 HTML;
         return $this->loadTemplate($html);

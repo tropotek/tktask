@@ -20,15 +20,12 @@ use Tk\Db;
 class Manager extends ControllerAdmin
 {
     protected ?Table $table = null;
-    protected CompanySelectDialog $createDialog;
 
     public function doDefault(): void
     {
         Breadcrumbs::reset();
         $this->getPage()->setTitle('Invoice Manager');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
-
-        $this->createDialog = new CompanySelectDialog();
 
         // init table
         $this->table = new Table();
@@ -37,15 +34,6 @@ class Manager extends ControllerAdmin
 
         $rowSelect = RowSelect::create('id', 'invoiceId');
         $this->table->appendCell($rowSelect);
-
-//        $this->table->appendCell('actions')
-//            ->addCss('text-nowrap text-center')
-//            ->addOnValue(function(Invoice $obj, Cell $cell) {
-//                $url = Uri::create('/invoiceEdit')->set('invoiceId', $obj->invoiceId);
-//                return <<<HTML
-//                    <a class="btn btn-outline-success" href="$url" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
-//                HTML;
-//            });
 
         $this->table->appendCell('invoiceId')
             ->setHeader('ID')
@@ -114,9 +102,12 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(Csv::create()
             ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
-                $action->setExcluded(['id', 'actions']);
+                $action->setExcluded(['actions']);
                 $filter = $this->table->getDbFilter();
-                //$this->table->getCell('name')->getOnValue()->reset();
+                if (!$this->table->getCell(Invoice::getPrimaryProperty())) {
+                    $this->table->prependCell(Invoice::getPrimaryProperty())->setHeader('id');
+                }
+                $this->table->getCell('client')->getOnValue()->reset();
                 if ($selected) {
                     $rows = Invoice::findFiltered($filter);
                 } else {
@@ -142,19 +133,18 @@ class Manager extends ControllerAdmin
 
         $template->appendTemplate('content', $this->table->show());
 
+        $dialogId = CompanySelectDialog::CONTAINER_ID;
         $template->setAttr('create', 'data-bs-toggle', 'modal');
-        $template->setAttr('create', 'data-bs-target', '#'.$this->createDialog->getDialogId());
-        $template->appendTemplate('content', $this->createDialog->doDefault());
+        $template->setAttr('create', 'data-bs-target', '#'.$dialogId);
+
 
         $js = <<<JS
-
 jQuery(function($) {
-    const dialog = '#{$this->createDialog->getDialogId()}';
+    const dialog = '#{$dialogId}';
 
-    $(dialog).on('companySelect', function(e, a) {
-        location = tkConfig.baseUrl + '/invoiceEdit?companyId=' + $(a).data('companyId');
+    $(dialog).on('companySelect', function(e, companyId, name) {
+        location = tkConfig.baseUrl + '/invoiceEdit?companyId=' + companyId;
     });
-
 });
 JS;
         $template->appendJs($js);
@@ -178,6 +168,8 @@ JS;
     <div class="card-header"><i class="far fa-credit-card"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
+  
+  <div hx-get="/component/companySelectDialog" hx-trigger="load" hx-swap="outerHTML" var="companySelect"></div>
 </div>
 HTML;
         return Template::load($html);

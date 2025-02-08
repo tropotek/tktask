@@ -5,21 +5,25 @@ use App\Db\Company;
 use App\Db\ExpenseCategory;
 use App\Db\User;
 use Bs\Mvc\Form;
+use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Collection;
+use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Exception;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Input;
+use Tk\Table\Cell;
 use Tk\Uri;
 
 class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string       $dialogId  = 'company-select';
-    protected array        $hxEvents  = [];
-    protected string       $type      = Company::TYPE_CLIENT;
-    protected array        $companies = [];
+    const string CONTAINER_ID = 'company-select-dialog';
+
+    protected array  $hxEvents  = [];
+    protected string $type      = Company::TYPE_CLIENT;
+    protected Table  $table;
 
 
     public function doDefault(): ?Template
@@ -31,8 +35,39 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
             throw new Exception("Invalid company type");
         }
 
-        $this->companies = Company::findFiltered(Filter::create(['active' => true, 'type' => $this->type], 'name'));
+        $this->table = new Table('company-select-tbl');
+        $this->table->hideReset();
+        $this->table->setOrderBy('name');
+        $this->table->setLimit(10);
+        $this->table->addCss('tk-table-sm');
 
+        $this->table->appendCell('name')
+            ->addCss('text-nowrap')
+            ->setSortable(true)
+            ->addHeaderCss('max-width')
+            ->addOnValue(function(\App\Db\Company $obj, Cell $cell) {
+                return sprintf('<a class="company-item" data-company-id="%s" href="#" title="Select %s">%s</a>',
+                    $obj->companyId,
+                    $obj->name,
+                    $obj->name
+                );
+            });
+
+        // Add Filter Fields
+        $this->table->getForm()->appendField(new Input('search'))
+            ->setAttr('placeholder', 'Search');
+
+        // execute table
+        $this->table->execute();
+
+        // Set the table rows
+        $filter = $this->table->getDbFilter();
+        $filter->replace([
+            'active' => true,
+            'type' => $this->type,
+        ]);
+        $rows = Company::findFiltered($filter);
+        $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
         // Send HX event headers
         if (count($this->hxEvents)) {
@@ -46,25 +81,9 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
     {
         $template = $this->getTemplate();
         $template->setAttr('dialog', 'id', $this->getDialogId());
+        $template->setText('title', 'Select ' . $this->type);
 
-        foreach ($this->companies as $company) {
-            $row = $template->getRepeat('row');
-            $row->setText('name', $company->name);
-            $row->setAttr('name', 'data-company-id', $company->companyId);
-            $row->appendRepeat();
-        }
-
-        $js = <<<JS
-jQuery(function($) {
-    const dialog = '#{$this->getDialogId()}';
-
-    $('.company-item a', dialog).on('click', function() {
-        $(dialog).trigger('companySelect', this);
-    });
-
-});
-JS;
-        $template->appendJs($js);
+        $template->appendTemplate('content', Table::toHtmxTable($this->table));
 
         return $template;
     }
@@ -76,25 +95,25 @@ JS;
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Select Client</h4>
+        <h4 class="modal-title" var="title">Select Client</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body" var="content">
-
-        <table class="table">
-          <thead>
-            <tr><th class="text-start">Name</th></tr>
-          </thead>
-          <tbody>
-            <tr repeat="row">
-              <td class="company-item"><a href="javascript:;" var="name"></a></td>
-            </tr>
-          </tbody>
-        </table>
-
-      </div>
+      <div class="modal-body" var="content"> </div>
     </div>
   </div>
+  
+<script>
+  jQuery(function($) {
+    const dialog = '#{$this->getDialogId()}';
+
+    $(dialog).on('click', '.company-item', function() {
+        $(dialog).trigger('companySelect', [
+            $(this).data('companyId'), 
+            $(this).text()
+        ]);
+    });
+  });
+</script>
 </div>
 HTML;
         return Template::load($html);
@@ -102,7 +121,7 @@ HTML;
 
     public function getDialogId(): string
     {
-        return $this->dialogId;
+        return self::CONTAINER_ID;
     }
 
 }

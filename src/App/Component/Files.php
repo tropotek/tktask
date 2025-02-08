@@ -12,6 +12,7 @@ use Tk\Exception;
 use Tk\FileUtil;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Action\Submit;
+use Tk\Log;
 use Tk\Table\Cell;
 use Tk\Uri;
 
@@ -21,28 +22,23 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
     protected Form      $form;
     protected ?Db\Model $model = null;
 
-    public function __construct(?Db\Model $model = null)
-    {
-        $this->model = $model;
-    }
 
-    public function doDefault(): string
+    public function doDefault(): ?Template
     {
-        if (!User::getAuthUser()->isStaff()) return '';
+        if (!User::getAuthUser()->isStaff()) return null;
 
-        if ($this->model instanceof Db\Model) {
-            $fkey = $this->model::class;
-            $fkey = $this->model->getId();
-        } else {
-            $fkey = trim($_GET['fkey'] ?? '');
-            if ($fkey && !class_exists($fkey)) {
-                throw new Exception("File type not found!");
-            }
-            $fid = intval($_GET['fid'] ?? 0);
-            $this->model = $fkey::find($fid);
-            if (!($this->model instanceof Db\Model)) {
-                throw new Exception("File model not found!");
-            }
+        $fid = (int)($_POST['fid'] ?? $_GET['fid'] ?? 0);
+        $fkey = trim($_POST['fkey'] ?? $_GET['fkey'] ?? '');
+
+        if (!class_exists($fkey)) {
+            Log::error("failed to find model {$fkey}");
+            return null;
+        }
+
+        $this->model = $fkey::findDbModel($fid);
+        if (!$this->model) {
+            Log::error("failed to find model {$fkey} with id {$fid}");
+            return null;
         }
 
         if (($_GET['act'] ?? '') == 'file-del') {
@@ -74,7 +70,7 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
 
 
         // files table
-        $this->table = new Table();
+        $this->table = new Table('files-comp');
         $this->table->setOrderBy('-created');
         $this->table->setLimit(10);
         $this->table->addCss('tk-table-sm');
@@ -124,7 +120,7 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
         $rows = File::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
-        return $this->show()->toString();
+        return $this->show();
     }
 
     public function doDelete(): void
@@ -165,9 +161,10 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
     {
         $template = $this->getTemplate();
 
-        $this->table->getRenderer()->setFooterEnabled(false);
-        $template->appendTemplate('content', $this->table->show());
+        $this->table->getRenderer()->setMaxPages(3);
+        $template->appendTemplate('content', Table::toHtmxTable($this->table));
 
+        $this->form->addCss('mt-4');
         $template->appendTemplate('content', $this->form->show());
 
         return $template;

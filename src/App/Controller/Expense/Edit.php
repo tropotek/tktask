@@ -28,9 +28,6 @@ class Edit extends ControllerAdmin
 {
     protected ?Expense $expense = null;
     protected ?Form    $form    = null;
-    protected ?Files   $files   = null;
-
-    protected ?CompanyAddDialog $companyDialog = null;
 
 
     public function doDefault(): void
@@ -48,9 +45,6 @@ class Edit extends ControllerAdmin
             }
         }
 
-        $this->companyDialog = new CompanyAddDialog();
-
-
         // Get the form template
         $this->form = new Form();
 
@@ -59,10 +53,11 @@ class Edit extends ControllerAdmin
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_SUPPLIER], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
         $this->form->appendField((new SelectBtn('companyId', $list))
+            ->setLabel('Supplier')
             ->prependOption('-- Select --', '')
             ->setBtnAttr('title', 'Add Supplier')
             ->setBtnAttr('data-bs-toggle', 'modal')
-            ->setBtnAttr('data-bs-target', '#'.$this->companyDialog->getDialogId())
+            ->setBtnAttr('data-bs-target', '#'.CompanyAddDialog::CONTAINER_ID)
             ->setBtnText('<i class="fas fa-plus"></i>')
         );
 
@@ -85,10 +80,6 @@ class Edit extends ControllerAdmin
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
-
-        if ($this->expense->expenseId) {
-            $this->files = new Files($this->expense);
-        }
 
     }
 
@@ -128,21 +119,21 @@ class Edit extends ControllerAdmin
         $template->appendTemplate('content', $this->form->show());
 
         $cssCol = 'col-12';
-        if ($this->files) {
-            $html = $this->files->doDefault();
-            $template->appendHtml('secondary', $html);
+
+        if ($this->expense->expenseId) {
+            $url = Uri::create('/component/files', ['fkey' => $this->expense::class, 'fid' => $this->expense->expenseId]);
+            $template->setAttr('files', 'hx-get', $url);
             $template->setVisible('secondary');
             $cssCol = 'col-7';
         }
         $template->addCss('primary', $cssCol);
 
-        if ($this->companyDialog) {
-            $template->appendTemplate('primary', $this->companyDialog->doDefault());
+        $companyDialogId = CompanyAddDialog::CONTAINER_ID;
 
-            $js = <<<JS
+        $js = <<<JS
 jQuery(function($) {
-    const dialog        = '#{$this->companyDialog->getDialogId()}';
-    const dialogForm    = $('form', dialog);
+    const dialog        = '#{$companyDialogId}';
+    const dialogForm    = '#' + $('form', dialog).attr('id');
     const companySelect = $('#form_companyId');
 
     // reload select options after company creation
@@ -155,11 +146,11 @@ jQuery(function($) {
         }
         // select created company
         companySelect.val(e.detail.companyId);
+        
     });
 });
 JS;
-            $template->appendJs($js);
-        }
+        $template->appendJs($js);
 
         return $template;
     }
@@ -179,10 +170,17 @@ JS;
   <div var="primary">
     <div class="card mb-3">
       <div class="card-header"><i class="fas fa-money-check-alt"></i> <span var="title"></span></div>
-      <div class="card-body" var="content"></div>
+      <div class="card-body" var="content">
+      </div>
     </div>
   </div>
-  <div class="col-5" choice="secondary"></div>
+  <div class="col-5" choice="secondary">
+     <div hx-get="/component/files" hx-trigger="load" hx-swap="outerHTML" var="files">
+       <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+     </div>
+  </div>
+  
+  <div hx-get="/component/companyAddDialog" hx-trigger="load" hx-swap="outerHTML" var="companyAdd"></div>
 </div>
 HTML;
         return Template::load($html);

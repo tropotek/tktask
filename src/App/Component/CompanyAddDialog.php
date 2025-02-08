@@ -15,7 +15,8 @@ use Tk\Uri;
 
 class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected string   $dialogId = 'company-add-item';
+    const string CONTAINER_ID = 'company-add-item-dialog';
+
     protected ?Form    $form     = null;
     protected array    $hxEvents = [];
     protected ?Company $company  = null;
@@ -34,7 +35,7 @@ class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->company = new Company();
         $this->company->type = $this->type;
 
-        $this->form = new Form($this->company);
+        $this->form = new Form($this->company, 'company-add-form');
         $this->form->setAction('');
         $this->form->setAttr('hx-post', Uri::create('/component/companyAddDialog'));
         $this->form->setAttr('hx-swap', 'outerHTML');
@@ -94,6 +95,7 @@ class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
     {
         $template = $this->getTemplate();
         $template->setAttr('dialog', 'id', $this->getDialogId());
+        $template->setText('title', 'Add ' . $this->type);
 
         $this->form->getField('name')->addFieldCss('col-6');
         $this->form->getField('email')->addFieldCss('col-6');
@@ -111,7 +113,28 @@ class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
         $template->appendTemplate('content', $this->form->show());
 
-        $js = <<<JS
+        return $template;
+    }
+
+    public function getDialogId(): string
+    {
+        return self::CONTAINER_ID;
+    }
+
+    public function __makeTemplate(): ?Template
+    {
+        $html = <<<HTML
+<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" var="title">Add Company</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" var="content"></div>
+    </div>
+  </div>
+<script>
 jQuery(function($) {
     const dialog = '#{$this->getDialogId()}';
     const form   = '#{$this->form->getId()}';
@@ -132,32 +155,8 @@ jQuery(function($) {
         $('[name=address]', this).val('');
         $('.is-invalid', this).removeClass('is-invalid');
     });
-
 });
-JS;
-        $template->appendJs($js);
-
-        return $template;
-    }
-
-    public function getDialogId(): string
-    {
-        return $this->dialogId;
-    }
-
-    public function __makeTemplate(): ?Template
-    {
-        $html = <<<HTML
-<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Add Company</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" var="content"></div>
-    </div>
-  </div>
+</script>
 </div>
 HTML;
         return Template::load($html);

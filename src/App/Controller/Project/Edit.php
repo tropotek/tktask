@@ -14,7 +14,6 @@ class Edit extends ControllerAdmin
 {
     protected ?Project $project = null;
     protected ?\App\Form\Project $form = null;
-    protected ?StatusLogTable $statusLog = null;
 
 
     public function doDefault(): void
@@ -36,7 +35,6 @@ class Edit extends ControllerAdmin
         $this->form = new \App\Form\Project($this->project);
         $this->form->execute($_POST);
 
-        $this->statusLog = new StatusLogTable($this->project);
     }
 
     public function show(): ?Template
@@ -47,8 +45,8 @@ class Edit extends ControllerAdmin
 
         $template->appendTemplate('content', $this->form->show());
 
-        $html = $this->statusLog->doDefault();
-        $template->appendHtml('components', $html);
+        $url = Uri::create('/component/statusLogTable', ['fid' => $this->project->getId(), 'fkey' => $this->project::class]);
+        $template->setAttr('statusTable', 'hx-get', $url);
 
         return $template;
     }
@@ -72,7 +70,9 @@ class Edit extends ControllerAdmin
     </div>
   </div>
   <div class="col-4" var="components">
-
+    <div hx-get="/component/statusLogTable" hx-trigger="load" hx-swap="outerHTML" var="statusTable">
+      <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+    </div>
   </div>
 </div>
 HTML;

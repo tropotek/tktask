@@ -28,7 +28,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         if (!$this->task) return null;
 
         // init table
-        $this->table = new Table();
+        $this->table = new Table('task-log-tbl');
         $this->table->setOrderBy('-created');
         $this->table->setLimit(10);
         $this->table->addCss('tk-table-sm');

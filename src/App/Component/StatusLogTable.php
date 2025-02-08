@@ -6,24 +6,34 @@ use App\Db\User;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Db;
+use Tk\Log;
 
 class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
     protected Table   $table;
-    protected Db\Model $model;
+    protected ?Db\Model $model = null;
 
 
-    public function __construct(Db\Model $model)
+    public function doDefault(): ?Template
     {
-        $this->model = $model;
-    }
+        if (!User::getAuthUser()->isStaff()) return null;
 
-    public function doDefault(): string
-    {
-        if (!User::getAuthUser()->isStaff()) return '';
+        $fid = (int)($_POST['fid'] ?? $_GET['fid'] ?? 0);
+        $fkey = trim($_POST['fkey'] ?? $_GET['fkey'] ?? '');
+
+        if (!class_exists($fkey)) {
+            Log::error("failed to find model {$fkey}");
+            return null;
+        }
+
+        $this->model = $fkey::findDbModel($fid);
+        if (!$this->model) {
+            Log::error("failed to find model {$fkey} with id {$fid}");
+            return null;
+        }
 
         // init table
-        $this->table = new Table();
+        $this->table = new Table('status-log-tbl');
         $this->table->hideReset();
         $this->table->setOrderBy('-created');
         $this->table->setLimit(25);
@@ -51,7 +61,7 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         $rows = StatusLog::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
-        return $this->show()->toString();
+        return $this->show();
     }
 
     public function show(): ?Template
@@ -59,7 +69,7 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         $template = $this->getTemplate();
 
         $this->table->getRenderer()->setFooterEnabled(false);
-        $template->appendTemplate('content', $this->table->show());
+        $template->appendTemplate('content', Table::toHtmxTable($this->table));
 
         return $template;
     }
