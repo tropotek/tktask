@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller\Task;
 
-use App\Component\TaskLogTable;
 use App\Db\Task;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
@@ -13,7 +12,6 @@ class Edit extends ControllerAdmin
 {
     protected ?Task $task = null;
     protected ?\App\Form\Task $form = null;
-    protected ?TaskLogTable $taskLog = null;
 
 
     public function doDefault(): mixed
@@ -38,10 +36,6 @@ class Edit extends ControllerAdmin
 
         $this->form = new \App\Form\Task($this->task);
         $this->form->execute($_POST);
-
-        if ($this->task->taskId) {
-            $this->taskLog = new TaskLogTable($this->task);
-        }
 
         if (!$this->task->isEditable()) {
             foreach ($this->form->getFields() as $field) {
@@ -86,9 +80,9 @@ class Edit extends ControllerAdmin
         $template->appendTemplate('content', $this->form->show());
 
         $cssCol = 'col-12';
-        if ($this->taskLog) {
-            $html = $this->taskLog->doDefault();
-            $template->appendHtml('secondary', $html);
+        if ($this->task->taskId) {
+            $url = Uri::create('/component/taskLogTable')->set('taskId', $this->task->taskId);
+            $template->setAttr('logTable', 'hx-get', $url);
             $template->setVisible('secondary');
             $cssCol = 'col-7';
         }
@@ -121,7 +115,9 @@ class Edit extends ControllerAdmin
         <div class="card-body" var="content"></div>
       </div>
   </div>
-  <div class="col-5" choice="secondary"></div>
+  <div class="col-5" choice="secondary">
+    <div hx-get="/component/taskLogTable" hx-trigger="load" hx-swap="outerHTML" var="logTable"></div>
+  </div>
 </div>
 HTML;
         return $this->loadTemplate($html);

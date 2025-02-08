@@ -14,24 +14,24 @@ use Tk\Uri;
 
 class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    protected Table   $table;
-    protected Task    $task;
+    protected Table $table;
+    protected ?Task $task = null;
 
-    public function __construct(Task $task)
-    {
-        $this->task = $task;
-    }
 
-    public function doDefault(): string
+    public function doDefault(): ?Template
     {
-        if (!User::getAuthUser()->isStaff()) return '';
+        if (!User::getAuthUser()->isStaff()) return null;
+
+        $taskId = (int)($_POST['taskId'] ?? $_GET['taskId'] ?? 0);
+
+        $this->task = Task::find($taskId);
+        if (!$this->task) return null;
 
         // init table
         $this->table = new Table();
         $this->table->setOrderBy('-created');
         $this->table->setLimit(10);
         $this->table->addCss('tk-table-sm');
-
 
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
@@ -73,14 +73,15 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $rows = TaskLog::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
-        return $this->show()->toString();
+        return $this->show();
     }
 
     public function show(): ?Template
     {
         $template = $this->getTemplate();
 
-        $template->appendTemplate('content', $this->table->show());
+        $this->table->getRenderer()->setMaxPages(3);
+        $template->appendTemplate('content', Table::toHtmxTable($this->table));
 
         return $template;
     }
