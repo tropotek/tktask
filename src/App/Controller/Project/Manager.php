@@ -119,20 +119,14 @@ class Manager extends ControllerAdmin
 
         // Add Table actions
         $this->table->appendAction(Csv::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnCsv(function(Csv $action, array $selected) {
+            ->addOnCsv(function(Csv $action) {
                 $action->setExcluded(['actions']);
                 if (!$this->table->getCell(Project::getPrimaryProperty())) {
                     $this->table->prependCell(Project::getPrimaryProperty())->setHeader('id');
                 }
                 $this->table->getCell('name')->getOnValue()->reset();
-                $filter = $this->table->getDbFilter();
-                if ($selected) {
-                    $rows = Project::findFiltered($filter);
-                } else {
-                    $rows = Project::findFiltered($filter->resetLimits());
-                }
-                return $rows;
+                $filter = $this->table->getDbFilter()->resetLimits();
+                return Project::findFiltered($filter);
             }));
 
         // execute table

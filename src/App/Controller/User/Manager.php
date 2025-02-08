@@ -136,23 +136,17 @@ class Manager extends ControllerAdmin
         );
 
         $this->table->appendAction(Csv::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnCsv(function(Csv $action, array $selected) {
+            ->addOnCsv(function(Csv $action) {
                 $action->setExcluded(['actions', 'permissions']);
                 if (!$this->table->getCell(User::getPrimaryProperty())) {
                     $this->table->prependCell(User::getPrimaryProperty())->setHeader('id');
                 }
                 $this->table->getCell('username')->getOnValue()->reset();
                 $this->table->getCell('email')->getOnValue()->reset();    // remove html from cell
-                $filter = $this->table->getDbFilter();
-                if ($selected) {
-                    $filter['type'] = $this->type;
-                    $filter['userId'] = $selected;
-                    $rows = User::findFiltered($filter);
-                } else {
-                    $rows = User::findFiltered($filter->resetLimits());
-                }
-                return $rows;
+
+                $filter = $this->table->getDbFilter()->resetLimits();
+                $filter['type'] = $this->type;
+                return User::findFiltered($filter);
             })
         );
 

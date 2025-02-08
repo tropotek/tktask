@@ -27,7 +27,7 @@ class Manager extends ControllerAdmin
         $this->setUserAccess(User::PERM_SYSADMIN);
 
         // init table
-        $this->table = new Table();
+        $this->table = new Table('companyMgr');
         $this->table->setOrderBy('name');
         $this->table->setLimit(25);
 
@@ -97,19 +97,15 @@ class Manager extends ControllerAdmin
         );
 
         $this->table->appendAction(Csv::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnCsv(function(Csv $action, array $selected) {
+            ->addOnCsv(function(Csv $action) {
                 $action->setExcluded(['actions']);
                 if (!$this->table->getCell(Company::getPrimaryProperty())) {
                     $this->table->prependCell(Company::getPrimaryProperty())->setHeader('id');
                 }
-                $filter = $this->table->getDbFilter();
-                if ($selected) {
-                    $rows = Company::findFiltered($filter);
-                } else {
-                    $rows = Company::findFiltered($filter->resetLimits());
-                }
-                return $rows;
+                $this->table->getCell('name')->getOnValue()->reset();
+
+                $filter = $this->table->getDbFilter()->resetLimits();
+                return Company::findFiltered($filter);
             }));
 
         // execute table to init filter object
