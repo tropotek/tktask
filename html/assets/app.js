@@ -12,6 +12,7 @@ jQuery(function ($) {
   tkbase.initTkFormTabs();
   tkbase.initDatepicker();
   tkbase.initPasswordToggle();
+  tkbase.initHtmxConfirmDialog();
 
   app.initNotifications();
   app.initCheckSelect();

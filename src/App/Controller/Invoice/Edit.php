@@ -158,7 +158,7 @@ class Edit extends ControllerAdmin
         $this->showInvoice($template);
 
         $js = <<<JS
-jQuery(function ($) {
+jQuery(function ($) {    
     $(document).on('tkForm:afterSubmit', function(e) {
         location = location.href;
     });
