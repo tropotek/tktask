@@ -29,6 +29,7 @@ class Edit extends ControllerAdmin
     protected ?Auth  $auth = null;
     protected ?Form  $form = null;
     protected string $type = User::TYPE_MEMBER;
+    protected bool   $templateSelectEnabled = false;
 
 
     public function doDefault(mixed $request, string $type): void
@@ -37,6 +38,7 @@ class Edit extends ControllerAdmin
 
         $userId  = intval($_GET['userId'] ?? 0);
         $newType = trim($_GET['cv'] ?? '');
+        $this->templateSelectEnabled = str_contains($this->getPage()->getTemplatePath(), '/minton/');
 
         if (isset($_GET[Masquerade::QUERY_MSQ])) {
             $this->doMsq(intval($_GET[Masquerade::QUERY_MSQ] ?? 0));
@@ -103,6 +105,23 @@ class Edit extends ControllerAdmin
             $l2->addCss('tk-input-lock');
         }
 
+        if ($this->user->userId) {
+            $this->form->appendField(new Checkbox('active', ['1' => 'active']))
+                ->setLabel('')
+                ->setNotes('User Login Enabled')
+                ->setGroup($group);
+        }
+
+        if ($this->templateSelectEnabled) {
+            $list = ['sn-admin' => 'Side Menu', 'tn-admin' => 'Top Menu'];
+            $this->form->appendField((new \Tk\Form\Field\Select('template', $list))
+                ->prependOption('-- Site Default --', '')
+                ->setLabel('Template Layout')
+                ->setNotes('Select a side-menu or top-menu template as the default site layout.')
+                ->setGroup($group)
+            );
+        }
+
         if ($this->type == User::TYPE_STAFF) {
             $list = User::PERMISSION_LIST;
             $field = $this->form->appendField(new Checkbox('perm', $list))
@@ -113,13 +132,6 @@ class Edit extends ControllerAdmin
                 $field->setNotes('You require "Manage Staff" to modify permissions');
                 $field->setDisabled();
             }
-        }
-
-        if ($this->user->userId) {
-            $this->form->appendField(new Checkbox('active', ['1' => 'active']))
-                ->setLabel('')
-                ->setNotes('User Login Enabled')
-                ->setGroup($group);
         }
 
         // Form Actions

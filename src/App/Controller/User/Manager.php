@@ -61,20 +61,16 @@ class Manager extends ControllerAdmin
                 HTML;
             });
 
-        $this->table->appendCell('username')
+        $this->table->appendCell('nameShort')
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
             ->setSortable(true)
             ->addOnValue(function(User $user, Cell $cell) {
                 $url = Uri::create('/user/'.$user->type.'Edit', ['userId' => $user->userId]);
-                return sprintf('<a href="%s">%s</a>', $url, $user->username);
+                return sprintf('<a href="%s">%s</a>', $url, $user->nameShort);
             });
 
-        $this->table->appendCell('givenName')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
-
-        $this->table->appendCell('familyName')
+        $this->table->appendCell('username')
             ->addCss('text-nowrap')
             ->setSortable(true);
 
@@ -86,6 +82,7 @@ class Manager extends ControllerAdmin
 
         if (Auth::getAuthUser()->hasPermission(User::PERM_ADMIN) && $this->type == User::TYPE_STAFF) {
             $this->table->appendCell('permissions')
+                ->addCss('text-nowrap')
                 ->addOnValue(function (User $user, Cell $cell) {
                     if ($user->hasPermission(User::PERM_ADMIN)) {
                         $list = User::PERMISSION_LIST;
@@ -106,11 +103,6 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
-
-        $this->table->appendCell('created')
-            ->addCss('text-nowrap')
-            ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
 
         // Add Filter Fields

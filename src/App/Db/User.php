@@ -63,6 +63,7 @@ class User extends Model implements UserInterface
     public string     $state         = '';
     public string     $postcode      = '';
     public string     $country       = '';
+    public string     $template      = '';
     public string     $dataPath      = '';
 
     public int        $permissions   = 0;
@@ -175,6 +176,11 @@ class User extends Model implements UserInterface
 
         if (!$this->givenName) {
             $errors['givenName'] = 'Invalid field value';
+        }
+
+        $list = ['sn-admin', 'tn-admin'];
+        if ($this->template && !in_array($this->template, $list)) {
+            $errors['template'] = 'Invalid template selected';
         }
 
         return $errors;

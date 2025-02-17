@@ -25,9 +25,9 @@ use Tk\Uri;
  */
 class Profile extends ControllerAdmin
 {
-
     protected ?Form $form = null;
     protected ?User $user = null;
+    protected bool  $templateSelectEnabled = false;
 
 
     public function doDefault(): void
@@ -67,6 +67,16 @@ class Profile extends ControllerAdmin
             ->setDisabled()
             ->setReadonly()
             ->setRequired();
+
+        if ($this->templateSelectEnabled) {
+            $list = ['sn-admin' => 'Side Menu', 'tn-admin' => 'Top Menu'];
+            $this->form->appendField((new \Tk\Form\Field\Select('template', $list))
+                ->prependOption('-- Site Default --', '')
+                ->setLabel('Template Layout')
+                ->setNotes('Select a side-menu or top-menu template as the default site layout.')
+                ->setGroup($tab)
+            );
+        }
 
         if ($this->user->isType(User::TYPE_STAFF)) {
             $list = User::PERMISSION_LIST;

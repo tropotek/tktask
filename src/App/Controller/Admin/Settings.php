@@ -24,7 +24,7 @@ use Tk\Uri;
 class Settings extends ControllerAdmin
 {
     protected ?Form $form   = null;
-    protected bool  $templateSelect = false;
+    protected bool  $templateSelectEnabled = false;
 
 
     public function doDefault(): void
@@ -36,7 +36,7 @@ class Settings extends ControllerAdmin
 
         Factory::instance()->getRegistry()->save();
 
-        $this->templateSelect = str_contains($this->getPage()->getTemplatePath(), '/minton/');
+        $this->templateSelectEnabled = str_contains($this->getPage()->getTemplatePath(), '/minton/');
 
         $this->form = new Form();
 
@@ -53,19 +53,19 @@ class Settings extends ControllerAdmin
             ->setRequired()
             ->setGroup($tab);
 
-        if ($this->templateSelect) {
-            $list = ['/html/minton/sn-admin.html' => 'Side Menu', '/html/minton/tn-admin.html' => 'Top Menu'];
-            $this->form->appendField(new Select('minton.template', $list))
-                ->setLabel('Template Layout')
-                ->setNotes('Select Side-menu or top-menu template layout')
-                ->setGroup($tab);
-        }
-
         $this->form->appendField(new Input('site.email'))
             ->setLabel('Site Email')
             ->setRequired()
             ->setNotes('The default sender address when sending system emails.')
             ->setGroup($tab);
+
+        $this->form->appendField(new Textarea('site.email.sig'))
+            ->setLabel('Email Signature')
+            ->setNotes('Set the email signature to appear at the footer of all system emails.')
+            ->addCss('mce-min')
+            ->setGroup($tab);
+
+        $tab = 'Invoicing';
 
         $list = Company::findFiltered(Filter::create(['active' => true], 'name'));
         $list = Collection::toSelectList($list, 'companyId');
@@ -76,25 +76,20 @@ class Settings extends ControllerAdmin
             ->setNotes('Select the owner company of this site')
             ->setGroup($tab));
 
-        $list = array('' => '-- System Default --', '1' => 'Yes', '0' => 'No');
+        $list = ['' => '-- System Default --', '1' => 'Yes', '0' => 'No'];
         $this->form->appendField(new Select('site.taskLog.billable.default', $list))
             ->setLabel('Log Default Billable')
             ->setNotes('Set the default billable status when creating Task Logs. None means force the user to choose.')
             ->setGroup($tab);
 
-        $this->form->appendField(new Textarea('site.email.sig'))
-            ->setLabel('Email Signature')
-            ->setNotes('Set the email signature to appear at the footer of all system emails.')
-            ->addCss('mce-min')
-            ->setGroup($tab);
-
-        $tab = 'Setup';
         $this->form->appendField((new Checkbox('site.invoice.enable', ['1' => 'Enable task invoicing, products and recurring invoicing systems.']))
             ->setLabel('')
+            ->setSwitch(true)
             ->setGroup($tab));
 
         $this->form->appendField((new Checkbox('site.expenses.enable', ['1' => 'Enable expenses and profit reporting.']))
             ->setLabel('')
+            ->setSwitch(true)
             ->setGroup($tab));
 
         $this->form->appendField(new Textarea('site.invoice.payment'))
@@ -103,7 +98,16 @@ class Settings extends ControllerAdmin
             ->addCss('mce')
             ->setGroup($tab);
 
-        $tab = 'Metadata';
+        $tab = 'Page Content';
+
+        if ($this->templateSelectEnabled) {
+            $list = ['' => '-- Default --', 'sn-admin' => 'Side Menu', 'tn-admin' => 'Top Menu'];
+            $this->form->appendField(new \Tk\Form\Field\Select('minton.template', $list))
+                ->setLabel('Template Layout')
+                ->setNotes('Select a side-menu or top-menu template as the default site layout. Users can customise their own selection.')
+                ->setGroup($tab);
+        }
+
         $this->form->appendField(new Input('system.meta.keywords'))
             ->setLabel('Metadata Keywords')
             ->setNotes('Set meta tag SEO keywords for this site. ')
@@ -129,15 +133,17 @@ class Settings extends ControllerAdmin
             ->setGroup($tab);
 
         $tab = 'Maintenance';
-        $this->form->appendField(new Checkbox('system.maintenance.enabled', ['1' => 'Enable maintenance mode to disable site access']))
+        $this->form->appendField((new Checkbox('system.maintenance.enabled', ['1' => 'Maintenance Mode Enabled']))
             ->addCss('check-enable')
+            ->setSwitch(true)
             ->setLabel('')
-            ->setNotes('Logged in admin users can still access the site.')
-            ->setGroup($tab);
+            ->setNotes('Enable maintenance mode. Admin users will still have access to the site.')
+            ->setGroup($tab)
+        );
 
         $this->form->appendField(new Textarea('system.maintenance.message'))
             ->addCss('mce-min')
-            ->setLabel('Message')
+            ->setLabel('Maintenance Message')
             ->setNotes('Set the message public users will see when in maintenance mode.')
             ->setGroup($tab);
 

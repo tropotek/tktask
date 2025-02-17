@@ -1233,7 +1233,7 @@ html[data-layout-position=scrollable]:not([data-sidebar-size=condensed]):not([da
 }
 @media (min-width: 1200px) {
   html[data-layout-mode=horizontal] .container-fluid {
-    max-width: 90%;
+    max-width: 100%;
   }
 }
 html[data-layout-mode=horizontal] .navbar-custom {
