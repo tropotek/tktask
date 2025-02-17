@@ -33,11 +33,9 @@ class Profile extends ControllerAdmin
     public function doDefault(): void
     {
         $this->getPage()->setTitle('My Profile');
+        $this->setUserAccess();
 
-        if (!Auth::getAuthUser()) {
-            Alert::addError('You do not have access to this page.');
-            Uri::create('/')->redirect();
-        }
+        $this->templateSelectEnabled = str_contains($this->getPage()->getTemplatePath(), '/minton/');
 
         // Get the form template
         $this->user = User::getAuthUser();
@@ -157,7 +155,7 @@ class Profile extends ControllerAdmin
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create('/profile'));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Uri::create('/'));
+            $action->setRedirect($this->getBackUrl());
         }
     }
 
