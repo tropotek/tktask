@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS product_category (
 
 CREATE TABLE IF NOT EXISTS product (
   product_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  category_id INT UNSIGNED NOT NULL DEFAULT 0,
+  product_category_id INT UNSIGNED NOT NULL DEFAULT 0,
   cycle ENUM('each', 'week','fortnight','month','quarter','year','biannual') DEFAULT NULL,  -- recurring billing cycle (each = none)
   name VARCHAR(128) NOT NULL DEFAULT '',
   code VARCHAR(64) NOT NULL DEFAULT '',
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS product (
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY (code),
-  CONSTRAINT fk_product__category_id FOREIGN KEY (category_id) REFERENCES product_category (product_category_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT fk_product__product_category_id FOREIGN KEY (product_category_id) REFERENCES product_category (product_category_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS task_category
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS task (
   task_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   company_id INT UNSIGNED NOT NULL DEFAULT 0,
   project_id INT UNSIGNED NULL DEFAULT NULL,
-  category_id INT UNSIGNED NOT NULL DEFAULT 1,
+  task_category_id INT UNSIGNED NOT NULL DEFAULT 1,
   creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
   assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
   closed_user_id INT UNSIGNED NULL DEFAULT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS task (
   KEY status (status),
   CONSTRAINT fk_task__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT fk_task__category_id FOREIGN KEY (category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__task_category_id FOREIGN KEY (task_category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -279,7 +279,7 @@ CREATE TABLE expense_category (
 
 CREATE TABLE expense (
   expense_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  category_id INT UNSIGNED NOT NULL DEFAULT 0,
+  expense_category_id INT UNSIGNED NOT NULL DEFAULT 0,
   company_id INT UNSIGNED NOT NULL,
   invoice_no VARCHAR(64) NOT NULL,
   receipt_no VARCHAR(64) NOT NULL DEFAULT '',
@@ -288,7 +288,7 @@ CREATE TABLE expense (
   total INT NOT NULL DEFAULT 0,
   modified DATETIME ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_expense__category_id FOREIGN KEY (category_id) REFERENCES expense_category (expense_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_expense__expense_category_id FOREIGN KEY (expense_category_id) REFERENCES expense_category (expense_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_expense__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

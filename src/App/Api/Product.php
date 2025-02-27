@@ -25,7 +25,7 @@ class Product
             'productId' => $product->productId,
             'code' => $product->code,
             'name' => $product->name,
-            'category' => $product->getCategory()->name,
+            'category' => $product->getProductCategory()->name,
             'price' => $product->price->toFloatString(),
             'description' => $product->description,
             'cycle' => $product->cycle,

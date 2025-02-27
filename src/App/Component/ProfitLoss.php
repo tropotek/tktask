@@ -57,7 +57,7 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $expenseList = \App\Db\Expense::findFiltered(array(
                 'dateStart' => $this->dateSet[0],
                 'dateEnd' => $this->dateSet[1],
-                'categoryId' => $category->expenseCategoryId
+                'expenseCategoryId' => $category->expenseCategoryId
             ));
             $catTotal = \Tk\Money::create();
             foreach ($expenseList as $expense) {

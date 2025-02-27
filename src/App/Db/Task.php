@@ -67,7 +67,7 @@ class Task extends Model implements StatusInterface
     public int        $taskId         = 0;
     public int        $companyId      = 0;
     public ?int       $projectId      = null;
-    public int        $categoryId     = self::CATEGORY_DEFAULT;
+    public int        $taskCategoryId = self::CATEGORY_DEFAULT;
     public int        $creatorUserId  = 0;
     public int        $assignedUserId = 0;
     public ?int       $closedUserId   = null;
@@ -76,7 +76,7 @@ class Task extends Model implements StatusInterface
     public string     $comments       = '';
     public int        $priority       = self::PRIORITY_MED;
     public int        $minutes        = 0;
-    public ?\DateTime $invoiced       = null;       // TODO not used anywhere ??? Remove ???
+    public ?\DateTime $invoiced       = null;       // TODO if not used anywhere, Remove ???
     public \DateTime  $modified;
     public \DateTime  $created;
 
@@ -318,9 +318,9 @@ class Task extends Model implements StatusInterface
             $filter->appendWhere('a.project_id = :projectId AND ');
         }
 
-        if (!empty($filter['categoryId'])) {
-            if (!is_array($filter['categoryId'])) $filter['categoryId'] = [$filter['categoryId']];
-            $filter->appendWhere('a.category_id IN :categoryId AND ');
+        if (!empty($filter['taskCategoryId'])) {
+            if (!is_array($filter['taskCategoryId'])) $filter['taskCategoryId'] = [$filter['taskCategoryId']];
+            $filter->appendWhere('a.task_category_id IN :taskCategoryId AND ');
         }
 
         if (!empty($filter['creatorUserId'])) {
@@ -369,8 +369,8 @@ class Task extends Model implements StatusInterface
             $errors['companyId'] = 'Invalid value: companyId';
         }
 
-        if (!$this->categoryId) {
-            $errors['categoryId'] = 'Invalid value: categoryId';
+        if (!$this->taskCategoryId) {
+            $errors['taskCategoryId'] = 'Invalid value: taskCategoryId';
         }
 
         if (!$this->creatorUserId) {

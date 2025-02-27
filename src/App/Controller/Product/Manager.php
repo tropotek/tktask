@@ -46,11 +46,11 @@ class Manager extends ControllerAdmin
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
 
-        $this->table->appendCell('categoryId')
+        $this->table->appendCell('expenseCategoryId')
             ->setSortable(true)
             ->addCss('text-nowrap')
             ->addOnValue(function(Product $obj, Cell $cell) {
-                return $obj->getCategory()->name;
+                return $obj->getProductCategory()->name;
             });
 
         $this->table->appendCell('cycle')
@@ -86,7 +86,7 @@ class Manager extends ControllerAdmin
 
         $cats = ProductCategory::findFiltered(Db\Filter::create([], 'name'));
         $list = Collection::toSelectList($cats, 'productCategoryId');
-        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('categoryId', $list))
+        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('productCategoryId', $list))
             ->prependOption('-- Category --', ''));
 
         $this->table->getForm()->appendField((new \Tk\Form\Field\Select('cycle', Product::CYCLE_LIST))

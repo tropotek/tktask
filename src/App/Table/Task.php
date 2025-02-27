@@ -160,7 +160,7 @@ class Task extends Table
 
         $cats = TaskCategory::findFiltered(Db\Filter::create(['active' => true], 'order_by'));
         $list = Collection::toSelectList($cats, 'taskCategoryId');
-        $this->getForm()->appendField((new \Tk\Form\Field\Select('categoryId', $list))
+        $this->getForm()->appendField((new \Tk\Form\Field\Select('taskCategoryId', $list))
             ->prependOption('-- Category --', ''));
 
         $this->getForm()->appendField((new \Tk\Form\Field\Select('status', \App\Db\Task::STATUS_LIST))

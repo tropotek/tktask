@@ -37,14 +37,14 @@ class Product extends Model
         self::CYCLE_BIANNUAL  => 'Biannually',
     ];
 
-    public int     $productId   = 0;
-    public int     $categoryId  = 0;
-    public string  $cycle       = self::CYCLE_EACH;
-    public string  $name        = '';
-    public string  $code        = '';
-    public string  $description = '';
-    public string  $notes       = '';
-    public bool    $active      = true;
+    public int     $productId         = 0;
+    public int     $productCategoryId = 0;
+    public string  $cycle             = self::CYCLE_EACH;
+    public string  $name              = '';
+    public string  $code              = '';
+    public string  $description       = '';
+    public string  $notes             = '';
+    public bool    $active            = true;
 
     public Money    $price;
     public DateTime $modified;
@@ -59,14 +59,6 @@ class Product extends Model
         $this->created  = new DateTime();
         $this->price    = Money::create();
         $this->code     = 'TK-'.$this->getCreated('Y').'-0000-00';
-    }
-
-    public function getCategory(): ?ProductCategory
-    {
-        if (!$this->_category) {
-            $this->_category = ProductCategory::find($this->categoryId);
-        }
-        return $this->_category;
     }
 
     public function save(): void
@@ -161,8 +153,8 @@ class Product extends Model
             $filter->appendWhere('a.product_id NOT IN :exclude AND ', $filter['exclude']);
         }
 
-        if (!empty($filter['categoryId'])) {
-            $filter->appendWhere('a.category_id = :categoryId AND ');
+        if (!empty($filter['productCategoryId'])) {
+            $filter->appendWhere('a.product_category_id = :productCategoryId AND ');
         }
         if (!empty($filter['cycle'])) {
             $filter->appendWhere('a.cycle = :cycle AND ');
@@ -195,8 +187,8 @@ class Product extends Model
             $errors['productId'] = 'Invalid value: productId';
         }
 
-        if (!$this->categoryId) {
-            $errors['categoryId'] = 'Invalid value: categoryId';
+        if (!$this->productCategoryId) {
+            $errors['productCategoryId'] = 'Invalid value: productCategoryId';
         }
 
         if (!$this->name) {

@@ -54,7 +54,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
 
         if (Registry::instance()->get('site.invoice.enable', true)) {
-            $products = Product::findFiltered(Db\Filter::create(['active' => true, 'categoryId' => Product::LABOR_CAT_ID]));
+            $products = Product::findFiltered(Db\Filter::create(['active' => true, 'productCategoryId' => Product::LABOR_CAT_ID]));
             $list = Collection::toSelectList($products, 'productId');
             $this->form->appendField((new Select('productId', $list))
                 ->prependOption('-- Select --', ''));

@@ -9,7 +9,7 @@ trait ExpenseCategoryTrait
 
     public function getExpenseCategory(): ?ExpenseCategory
     {
-        if (!$this->_expenseCategory) $this->_expenseCategory = ExpenseCategory::find($this->categoryId);
+        if (!$this->_expenseCategory) $this->_expenseCategory = ExpenseCategory::find($this->expenseCategoryId);
         return $this->_expenseCategory;
     }
 

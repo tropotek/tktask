@@ -9,7 +9,7 @@ trait TaskCategoryTrait
 
     public function getTaskCategory(): ?TaskCategory
     {
-        if (!$this->_taskCategory) $this->_taskCategory = TaskCategory::find($this->categoryId);
+        if (!$this->_taskCategory) $this->_taskCategory = TaskCategory::find($this->taskCategoryId);
         return $this->_taskCategory;
     }
 

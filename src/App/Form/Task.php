@@ -67,7 +67,7 @@ class Task extends Form
 
         $categories = TaskCategory::findFiltered(Filter::create(['active' => true], 'order_by'));
         $list = Collection::toSelectList($categories, 'taskCategoryId', 'label');
-        $this->appendField(new Select('categoryId', $list))->prependOption('-- Select --', '');
+        $this->appendField(new Select('taskCategoryId', $list))->prependOption('-- Select --', '');
 
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_CLIENT], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
@@ -135,7 +135,7 @@ class Task extends Form
     {
         // Setup field group widths with bootstrap classes
         $this->getField('subject')->addFieldCss('col-8');
-        $this->getField('categoryId')->addFieldCss('col-4');
+        $this->getField('taskCategoryId')->addFieldCss('col-4');
         $this->getField('companyId')->addFieldCss('col-6');
         $this->getField('assignedUserId')->addFieldCss('col-6');
         $this->getField('minutes')->addFieldCss('col-4');

@@ -3,6 +3,7 @@ namespace App\Controller\Expense;
 
 use App\Db\Company;
 use App\Db\Expense;
+use App\Db\ExpenseCategory;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
@@ -76,7 +77,7 @@ class Manager extends ControllerAdmin
 //            ->addCss('text-nowrap')
 //            ->setSortable(true);
 
-        $this->table->appendCell('categoryId')
+        $this->table->appendCell('expenseCategoryId')
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(Expense $obj, Cell $cell) {
@@ -97,10 +98,15 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
 
-        $cats = Company::findFiltered(Db\Filter::create(['type' => Company::TYPE_SUPPLIER], '-active, name'));
+        $cats = Company::findFiltered(Db\Filter::create(['type' => Company::TYPE_SUPPLIER, 'active' => true], 'name'));
         $list = Collection::toSelectList($cats, 'companyId', fn($obj) => ($obj->active ? '' : '- ') . $obj->name);
         $this->table->getForm()->appendField((new \Tk\Form\Field\Select('companyId', $list))
             ->prependOption('-- Company --', ''));
+
+        $cats = ExpenseCategory::findFiltered(Db\Filter::create(['active' => true], 'name'));
+        $list = Collection::toSelectList($cats, 'expense_category_id', fn($obj) => ($obj->active ? '' : '- ') . $obj->name);
+        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('expenseCategoryId', $list))
+            ->prependOption('-- Category --', ''));
 
 
         // Add Table actions

@@ -48,7 +48,7 @@ class Edit extends ControllerAdmin
 
         $categories = ProductCategory::findFiltered([]);
         $list = Collection::toSelectList($categories, 'productCategoryId');
-        $this->form->appendField(new Select('categoryId', $list))->prependOption('-- Select --', '');
+        $this->form->appendField(new Select('productCategoryId', $list))->prependOption('-- Select --', '');
 
         $this->form->appendField(new Input('name'));
         $this->form->appendField(new Input('code'));

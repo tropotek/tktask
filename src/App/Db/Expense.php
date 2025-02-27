@@ -16,7 +16,7 @@ class Expense extends Model
     use CompanyTrait;
 
     public int        $expenseId   = 0;
-    public int        $categoryId  = 0;
+    public int        $expenseCategoryId  = 0;
     public int        $companyId   = 0;
     public string     $invoiceNo   = '';
     public string     $receiptNo   = '';
@@ -134,8 +134,8 @@ class Expense extends Model
             $filter->appendWhere('a.expense_id NOT IN :exclude AND ', $filter['exclude']);
         }
 
-        if (!empty($filter['categoryId'])) {
-            $filter->appendWhere('a.category_id = :categoryId AND ');
+        if (!empty($filter['expenseCategoryId'])) {
+            $filter->appendWhere('a.expense_category_id = :expenseCategoryId AND ');
         }
 
         if (!empty($filter['companyId'])) {
@@ -176,8 +176,8 @@ class Expense extends Model
             $errors['expenseId'] = 'Invalid value: expenseId';
         }
 
-        if (!$this->categoryId) {
-            $errors['categoryId'] = 'Invalid value: categoryId';
+        if (!$this->expenseCategoryId) {
+            $errors['expenseCategoryId'] = 'Invalid value: expenseCategoryId';
         }
 
         if (!$this->companyId) {

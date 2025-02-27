@@ -63,7 +63,7 @@ class Edit extends ControllerAdmin
 
         $categories = ExpenseCategory::findFiltered(Filter::create([], 'name'));
         $list = Collection::toSelectList($categories, 'expenseCategoryId');
-        $this->form->appendField(new Select('categoryId', $list))->prependOption('-- Select --', '');
+        $this->form->appendField(new Select('expenseCategoryId', $list))->prependOption('-- Select --', '');
 
         $this->form->appendField(new InputGroup('total', '$'));
 
@@ -106,7 +106,7 @@ class Edit extends ControllerAdmin
     {
         // Setup field group widths with bootstrap classes
         $this->form->getField('companyId')->addFieldCss('col-6');
-        $this->form->getField('categoryId')->addFieldCss('col-6');
+        $this->form->getField('expenseCategoryId')->addFieldCss('col-6');
         $this->form->getField('total')->addFieldCss('col-6');
         $this->form->getField('purchasedOn')->addFieldCss('col-6');
         $this->form->getField('invoiceNo')->addFieldCss('col-6');
@@ -146,7 +146,7 @@ jQuery(function($) {
         }
         // select created company
         companySelect.val(e.detail.companyId);
-        
+
     });
 });
 JS;
@@ -179,7 +179,7 @@ JS;
        <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
      </div>
   </div>
-  
+
   <div hx-get="/component/companyAddDialog" hx-trigger="load" hx-swap="outerHTML" var="companyAdd"></div>
 </div>
 HTML;
