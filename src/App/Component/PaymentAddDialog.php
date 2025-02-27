@@ -22,7 +22,7 @@ use Tk\Uri;
 
 class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    const string CONTAINER_ID = 'invoice-add-item-dialog';
+    const string CONTAINER_ID = 'invoice-add-payment-dialog';
 
     protected ?Form        $form     = null;
     protected array        $hxEvents = [];
@@ -129,7 +129,7 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Item</h4>
+        <h4 class="modal-title">Add Payment</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" var="content"></div>

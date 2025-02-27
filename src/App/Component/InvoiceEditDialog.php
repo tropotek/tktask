@@ -25,9 +25,9 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 {
     const string CONTAINER_ID = 'invoice-edit-dialog';
 
-    protected ?Form        $form     = null;
-    protected array        $hxEvents = [];
-    protected ?Invoice     $invoice  = null;
+    protected ?Form    $form     = null;
+    protected array    $hxEvents = [];
+    protected ?Invoice $invoice  = null;
 
 
     public function doDefault(): ?Template
@@ -136,7 +136,7 @@ JS;
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Item</h4>
+        <h4 class="modal-title">Invoice Edit</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" var="content"></div>
@@ -152,7 +152,6 @@ JS;
     $(document).on('htmx:afterSettle', function(e) {
         if (!$(e.detail.elt).is(form)) return;
         if (e.detail.requestConfig.verb === 'get') {
-            console.log('initing form');
             tkInit(form);
         }
     });

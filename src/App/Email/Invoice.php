@@ -18,7 +18,7 @@ class Invoice
         $siteCompany = Factory::instance()->getOwnerCompany();
 
         // Email client the new invoice
-        $message = Factory::instance()->createMessage();
+        $message = Factory::instance()->createMailMessage();
         $message->addTo($company->email);
         if ($company->accountsEmail) {
             $message->addCc($company->accountsEmail);
@@ -64,7 +64,7 @@ class Invoice
         $company = $payment->getInvoice()->getCompany();
         if (!($company instanceof Company)) return false;
 
-        $message = Factory::instance()->createMessage();
+        $message = Factory::instance()->createMailMessage();
         $message->addTo($company->email);
         if ($company->accountsEmail) {
             $message->addCc($company->accountsEmail);

@@ -22,7 +22,7 @@ use Tk\Uri;
 
 class Edit extends ControllerAdmin
 {
-    protected ?Invoice           $invoice           = null;
+    protected ?Invoice $invoice = null;
 
 
     public function doDefault(): mixed
@@ -158,7 +158,7 @@ class Edit extends ControllerAdmin
         $this->showInvoice($template);
 
         $js = <<<JS
-jQuery(function ($) {    
+jQuery(function ($) {
     $(document).on('tkForm:afterSubmit', function(e) {
         location = location.href;
     });
@@ -513,7 +513,7 @@ JS;
         <div hx-get="/component/statusLogTable" hx-trigger="load" hx-swap="outerHTML" var="statusTable">
           <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
         </div>
-        
+
     </div>
 
     <div class="dialog-container" var="dialogs">
