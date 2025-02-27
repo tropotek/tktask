@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Expense;
 
+use App\Db\Company;
 use App\Db\Expense;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
@@ -8,6 +9,7 @@ use Bs\Mvc\Table;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Collection;
 use Tk\Form\Field\Input;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
@@ -66,17 +68,13 @@ class Manager extends ControllerAdmin
                 HTML;
             });
 
-        $this->table->appendCell('total')
-            ->addCss('text-nowrap text-end')
-            ->setSortable(true);
+//        $this->table->appendCell('invoiceNo')
+//            ->addCss('text-nowrap')
+//            ->setSortable(true);
 
-        $this->table->appendCell('invoiceNo')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
-
-        $this->table->appendCell('receiptNo')
-            ->addCss('text-nowrap')
-            ->setSortable(true);
+//        $this->table->appendCell('receiptNo')
+//            ->addCss('text-nowrap')
+//            ->setSortable(true);
 
         $this->table->appendCell('categoryId')
             ->addCss('text-nowrap')
@@ -90,10 +88,19 @@ class Manager extends ControllerAdmin
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::onValue');
 
+        $this->table->appendCell('total')
+            ->addCss('text-nowrap text-end')
+            ->setSortable(true);
+
 
         // Add Filter Fields
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
+
+        $cats = Company::findFiltered(Db\Filter::create(['type' => Company::TYPE_SUPPLIER], '-active, name'));
+        $list = Collection::toSelectList($cats, 'companyId', fn($obj) => ($obj->active ? '' : '- ') . $obj->name);
+        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('companyId', $list))
+            ->prependOption('-- Company --', ''));
 
 
         // Add Table actions
