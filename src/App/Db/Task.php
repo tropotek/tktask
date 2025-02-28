@@ -6,7 +6,6 @@ use App\Db\Traits\ProjectTrait;
 use App\Db\Traits\TaskCategoryTrait;
 use App\Form\DataMap\Minutes;
 use Bs\Registry;
-use Bs\Traits\TimestampTrait;
 use Tk\DataMap\DataMap;
 use Tk\Db\Model;
 use Tk\Db;
@@ -16,7 +15,6 @@ use Tk\Money;
 
 class Task extends Model implements StatusInterface
 {
-    use TimestampTrait;
     use CompanyTrait;
     use ProjectTrait;
     use TaskCategoryTrait;
@@ -133,7 +131,7 @@ class Task extends Model implements StatusInterface
     public function getDataPath(): string
     {
         if (!$this->taskId) throw new Exception("object without task_id");
-        return sprintf('/task/%s/%s', $this->getCreated('Y'), $this->taskId);
+        return sprintf('/task/%s/%s', $this->created->format('Y'), $this->taskId);
     }
 
     public function getCreator(): ?User

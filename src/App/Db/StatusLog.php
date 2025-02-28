@@ -3,7 +3,6 @@ namespace App\Db;
 
 use App\Db\Traits\UserTrait;
 use Bs\Traits\ForeignModelTrait;
-use Bs\Traits\TimestampTrait;
 use Tk\DataMap\DataMap;
 use Tk\DataMap\Db\Json;
 use Tk\Db\Model;
@@ -14,7 +13,6 @@ use Tk\Exception;
 class StatusLog extends Model
 {
     use UserTrait;
-    use TimestampTrait;
     use ForeignModelTrait;
 
     public int        $statusLogId = 0;

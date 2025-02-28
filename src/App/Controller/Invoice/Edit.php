@@ -109,6 +109,12 @@ class Edit extends ControllerAdmin
         $template = $this->getTemplate();
         $template->setAttr('back', 'href', $this->getBackUrl());
 
+        if ($this->invoice->invoiceId) {
+            $template->setVisible('edit');
+            $template->setText('modified', $this->invoice->modified->format(Date::FORMAT_LONG_DATETIME));
+            $template->setText('created', $this->invoice->created->format(Date::FORMAT_LONG_DATETIME));
+        }
+
         //$template->setVisible('btn-edit', in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID, Invoice::STATUS_CANCELLED]));
         $template->setVisible('btn-edit', true);
         $template->setVisible('btn-cancel', in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID]));
@@ -371,7 +377,14 @@ JS;
     <div class="col-8" id="tk-invoice-container">
         <div class="card mb-3">
             <div class="card-header">
-                <i class="far fa-credit-card"></i> Invoice #: <span var="invoiceId">00000</span>
+              <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+                <div class="dropdown-menu dropdown-menu-end">
+                  <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+                  <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+                </div>
+              </div>
+              <i class="far fa-credit-card"></i> Invoice #: <span var="invoiceId">00000</span>
             </div>
             <div class="card-body" var="content">
                 <form role="form" class="tk-form">

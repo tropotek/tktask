@@ -2,7 +2,6 @@
 namespace App\Db;
 
 use App\Db\Traits\InvoiceTrait;
-use Bs\Traits\TimestampTrait;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -10,7 +9,6 @@ use Tk\Money;
 
 class InvoiceItem extends Model
 {
-    use TimestampTrait;
     use InvoiceTrait;
 
     public int       $invoiceItemId = 0;

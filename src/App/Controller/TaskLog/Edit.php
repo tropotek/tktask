@@ -7,6 +7,7 @@ use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Date;
 use Tk\Uri;
 
 class Edit extends ControllerAdmin
@@ -58,6 +59,12 @@ class Edit extends ControllerAdmin
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl()->set('taskId', $this->task->taskId));
 
+        if ($this->taskLog->taskLogId) {
+            $template->setVisible('edit');
+            $template->setText('modified', $this->taskLog->modified->format(Date::FORMAT_LONG_DATETIME));
+            $template->setText('created', $this->taskLog->created->format(Date::FORMAT_LONG_DATETIME));
+        }
+
         $template->appendTemplate('content', $this->form->show());
 
         return $template;
@@ -74,7 +81,16 @@ class Edit extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fas fa-tasks"></i> <span var="title"></span></div>
+    <div class="card-header">
+      <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+        <div class="dropdown-menu dropdown-menu-end">
+          <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+          <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+        </div>
+      </div>
+      <i class="fas fa-tasks"></i> <span var="title"></span>
+    </div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

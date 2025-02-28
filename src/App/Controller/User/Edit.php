@@ -10,6 +10,7 @@ use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
+use Tk\Date;
 use Tk\Exception;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
@@ -220,6 +221,12 @@ class Edit extends ControllerAdmin
         $template = $this->getTemplate();
         $template->setAttr('back', 'href', $this->getBackUrl());
 
+        if ($this->user->userId) {
+            $template->setVisible('edit');
+            $template->setText('modified', $this->user->modified->format(Date::FORMAT_LONG_DATETIME));
+            $template->setText('created', $this->user->created->format(Date::FORMAT_LONG_DATETIME));
+        }
+
         if ($this->user->hasPermission(User::PERM_ADMIN)) {
             if ($this->user->isType(User::TYPE_MEMBER)) {
                 $url = Uri::create()->set('cv', User::TYPE_STAFF);
@@ -295,7 +302,16 @@ class Edit extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header" var="title"><i class="fa fa-users"></i> </div>
+    <div class="card-header" var="title">
+      <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+        <div class="dropdown-menu dropdown-menu-end">
+          <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+          <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+        </div>
+      </div>
+      <i class="fa fa-users"></i> <span var="title"></span>
+    </div>
     <div class="card-body" var="content">
       <p choice="new-user"><b>NOTE:</b> New users will be sent an email requesting them to activate their account and create a new password.</p>
     </div>

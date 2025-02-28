@@ -6,6 +6,7 @@ use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Date;
 use Tk\Uri;
 
 class Edit extends ControllerAdmin
@@ -59,6 +60,12 @@ class Edit extends ControllerAdmin
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
+        if ($this->task->taskId) {
+            $template->setVisible('edit');
+            $template->setText('modified', $this->task->modified->format(Date::FORMAT_LONG_DATETIME));
+            $template->setText('created', $this->task->created->format(Date::FORMAT_LONG_DATETIME));
+        }
+
         if ($this->task->isEditable()) {
             $url = Uri::create('/taskLogEdit')->set('taskId', $this->task->taskId);
             $template->setAttr('add-log', 'href', $url);
@@ -109,8 +116,16 @@ class Edit extends ControllerAdmin
   <div var="primary">
       <div class="card mb-3">
         <div class="card-header">
+          <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+            <div class="dropdown-menu dropdown-menu-end">
+              <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+              <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+            </div>
+          </div>
+
             <i class="fas fa-tasks"></i> <span var="title"></span>
-            <div class="float-end" choice="billable">Billable: $0.00</div>
+            <div class="float-end me-2" choice="billable">Billable: $0.00</div>
         </div>
         <div class="card-body" var="content"></div>
       </div>

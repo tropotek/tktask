@@ -3,7 +3,6 @@ namespace App\Db;
 
 use Bs\Registry;
 use Bs\Traits\ForeignModelTrait;
-use Bs\Traits\TimestampTrait;
 use Tk\DataMap\DataMap;
 use Tk\DataMap\Db\Date;
 use Tk\DataMap\Form\Percent;
@@ -16,7 +15,6 @@ use Tk\Uri;
 
 class Invoice extends Model implements StatusInterface
 {
-    use TimestampTrait;
     use ForeignModelTrait;
 
     CONST int DEFAULT_DUE_DAYS = 14;

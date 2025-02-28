@@ -2,7 +2,6 @@
 namespace App\Db;
 
 use App\Db\Traits\UserTrait;
-use Bs\Traits\CreatedTrait;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Db\Model;
@@ -20,7 +19,6 @@ use Tk\Exception;
 class Notify extends Model
 {
     use UserTrait;
-    use CreatedTrait;
 
     const int DEFAULT_TTL = 60*12;
 

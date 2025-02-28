@@ -2,7 +2,6 @@
 namespace App\Db;
 
 use App\Db\Traits\ProductCategoryTrait;
-use Bs\Traits\TimestampTrait;
 use DateTime;
 use Tk\Config;
 use Tk\Db\Model;
@@ -13,7 +12,6 @@ use Tk\Money;
 
 class Product extends Model
 {
-    use TimestampTrait;
     use ProductCategoryTrait;
 
     const int    LABOR_CAT_ID    = 1;
@@ -58,7 +56,7 @@ class Product extends Model
         $this->modified = new DateTime();
         $this->created  = new DateTime();
         $this->price    = Money::create();
-        $this->code     = 'TK-'.$this->getCreated('Y').'-0000-00';
+        $this->code     = 'TK-'.$this->created->format('Y').'-0000-00';
     }
 
     public function save(): void

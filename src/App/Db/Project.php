@@ -3,7 +3,6 @@ namespace App\Db;
 
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\UserTrait;
-use Bs\Traits\TimestampTrait;
 use DateTime;
 use Tk\DataMap\DataMap;
 use Tk\Date;
@@ -14,7 +13,6 @@ use Tk\Money;
 
 class Project extends Model implements StatusInterface
 {
-    use TimestampTrait;
     use UserTrait;
     use CompanyTrait;
 

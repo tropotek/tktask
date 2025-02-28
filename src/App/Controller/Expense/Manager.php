@@ -104,7 +104,7 @@ class Manager extends ControllerAdmin
             ->prependOption('-- Company --', ''));
 
         $cats = ExpenseCategory::findFiltered(Db\Filter::create(['active' => true], 'name'));
-        $list = Collection::toSelectList($cats, 'expense_category_id', fn($obj) => ($obj->active ? '' : '- ') . $obj->name);
+        $list = Collection::toSelectList($cats, 'expenseCategoryId', fn($obj) => ($obj->active ? '' : '- ') . $obj->name);
         $this->table->getForm()->appendField((new \Tk\Form\Field\Select('expenseCategoryId', $list))
             ->prependOption('-- Category --', ''));
 

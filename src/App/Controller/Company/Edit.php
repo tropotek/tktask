@@ -9,6 +9,7 @@ use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
+use Tk\Date;
 use Tk\Exception;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\SubmitExit;
@@ -126,6 +127,12 @@ class Edit extends ControllerAdmin
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', Factory::instance()->getBackUrl());
 
+        if ($this->company->companyId) {
+            $template->setVisible('edit');
+            $template->setText('modified', $this->company->modified->format(Date::FORMAT_LONG_DATETIME));
+            $template->setText('created', $this->company->created->format(Date::FORMAT_LONG_DATETIME));
+        }
+
         $template->appendTemplate('content', $this->form->show());
 
         return $template;
@@ -142,7 +149,16 @@ class Edit extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-building"></i> <span var="title"></span></div>
+    <div class="card-header">
+      <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+        <div class="dropdown-menu dropdown-menu-end">
+          <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+          <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+        </div>
+      </div>
+      <i class="fa fa-building"></i> <span var="title"></span>
+    </div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

@@ -5,7 +5,6 @@ use App\Db\Traits\ProductTrait;
 use App\Db\Traits\TaskTrait;
 use App\Db\Traits\UserTrait;
 use App\Form\DataMap\Minutes;
-use Bs\Traits\TimestampTrait;
 use Tk\Config;
 use Tk\DataMap\DataMap;
 use Tk\DataMap\Form\Boolean;
@@ -16,7 +15,6 @@ use Tk\Exception;
 
 class TaskLog extends Model
 {
-    use TimestampTrait;
     use TaskTrait;
     use UserTrait;
     use ProductTrait;

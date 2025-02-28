@@ -1,7 +1,6 @@
 <?php
 namespace App\Db;
 
-use Bs\Traits\TimestampTrait;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -9,8 +8,6 @@ use Tk\Money;
 
 class Company extends Model
 {
-    use TimestampTrait;
-
     const string TYPE_CLIENT   = 'Client';
     const string TYPE_SUPPLIER = 'Supplier';
 

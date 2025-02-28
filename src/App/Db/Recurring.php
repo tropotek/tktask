@@ -3,7 +3,6 @@ namespace App\Db;
 
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\ProductTrait;
-use Bs\Traits\TimestampTrait;
 use Tk\DataMap\DataMap;
 use Tk\DataMap\Db\Date;
 use Tk\Db\Model;
@@ -14,7 +13,6 @@ use Tk\Uri;
 
 class Recurring extends Model
 {
-    use TimestampTrait;
     use CompanyTrait;
     use ProductTrait;
 

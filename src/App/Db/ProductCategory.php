@@ -1,15 +1,12 @@
 <?php
 namespace App\Db;
 
-use Bs\Traits\TimestampTrait;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
 
 class ProductCategory extends Model
 {
-    use TimestampTrait;
-
     public int     $productCategoryId = 0;
     public string  $name              = '';
     public string  $description       = '';

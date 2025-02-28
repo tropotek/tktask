@@ -1,7 +1,6 @@
 <?php
 namespace App\Db;
 
-use Bs\Traits\TimestampTrait;
 use Tk\DataMap\DataMap;
 use Tk\Db\Model;
 use Tk\Db;
@@ -9,8 +8,6 @@ use Tk\Db\Filter;
 
 class ExpenseCategory extends Model
 {
-    use TimestampTrait;
-
     public int       $expenseCategoryId = 0;
     public string    $name              = '';
     public string    $description       = '';

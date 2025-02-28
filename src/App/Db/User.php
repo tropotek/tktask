@@ -4,7 +4,6 @@ namespace App\Db;
 use Bs\Auth;
 use Bs\Traits\AuthTrait;
 use Bs\Db\UserInterface;
-use Bs\Traits\TimestampTrait;
 use Tk\Color;
 use Tk\Config;
 use Tk\Image;
@@ -16,7 +15,6 @@ use Tk\Db\Model;
 class User extends Model implements UserInterface
 {
     use AuthTrait;
-    use TimestampTrait;
 
     /**
      * permission values

@@ -2,13 +2,10 @@
 namespace App\Db;
 
 use Bs\Auth;
-use Bs\Traits\CreatedTrait;
 use Bs\Traits\ForeignModelTrait;
 use Bs\Traits\SystemTrait;
 use Tk\Config;
-use Tk\DataMap\Db\Date;
 use Tk\Exception;
-use Tk\Log;
 use Tk\Uri;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -18,7 +15,6 @@ class File extends Model
 {
     use SystemTrait;
     use ForeignModelTrait;
-    use CreatedTrait;
 
     public int        $fileId   = 0;
     public ?int       $userId   = null;
