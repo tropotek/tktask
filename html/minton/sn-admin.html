@@ -24,6 +24,7 @@
   <script src="/html/minton/assets/js/config.js"></script>
   <script src="/vendor/components/jquery/jquery.min.js"></script>
   <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
+  <script src="/vendor/htmx/htmx/htmx.min.js"></script>
   <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/html/minton/assets/js/libs/simplebar/simplebar.min.js"></script>
   <script src="/html/minton/assets/js/libs/node-waves/waves.min.js"></script>
@@ -37,14 +38,13 @@
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/elfinder/tinymceElfinder.js"></script>
   <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/components/htmx.min.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkTabs.js"></script>
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkCheckSelect.js"></script>
   <!-- App js -->
   <script src="/vendor/ttek/tk-table/templates/tkTable.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/tkbase.js" defer></script>
-  <script src="/html/assets/app.js" defer></script>
+  <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
+  <script src="/html/assets/app.js"></script>
 
 </head>
 
@@ -253,7 +253,7 @@
           <div class="col-12">
             <div class="page-title-box">
 
-              <h4 class="page-title" var="page-title"></h4>
+              <h4 class="page-title"><i var="page-icon"></i> <span var="page-title"></span></h4>
 
               <!-- Breadcrumbs -->
               <div class="page-title-right" var="crumbs"></div>

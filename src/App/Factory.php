@@ -37,7 +37,7 @@ class Factory extends \Bs\Factory
         // So we can change the mintion template from the settings page
         if (str_contains($templatePath, '/minton/')) {
             $selected = $this->getRegistry()->get('minton.template', 'sn-admin');
-            if (User::getAuthUser()->template) {
+            if (User::getAuthUser()?->template) {
                 $selected = User::getAuthUser()->template;
             }
             $templatePath = sprintf('/html/minton/%s.html', preg_replace('|[^0-9a-z_-]|i', '', $selected));

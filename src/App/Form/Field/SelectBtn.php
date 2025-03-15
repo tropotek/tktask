@@ -77,7 +77,7 @@ class SelectBtn extends Select implements DisplayInterface, RendererInterface
   <label class="form-label" var="label"></label>
   <div class="input-group input-group-merge" var="is-error input-group">
     <select class="form-select" var="element">
-      <optgroup repeat="optgroup">
+      <optgroup repeat="optgroup" label="">
         <option repeat="option"></option>
       </optgroup>
       <option repeat="option"></option>

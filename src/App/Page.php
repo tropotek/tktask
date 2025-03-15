@@ -10,6 +10,8 @@ use Bs\Registry;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Date;
+use Tk\System;
 use Tk\Uri;
 
 class Page extends \Bs\Mvc\Page
@@ -54,6 +56,7 @@ class Page extends \Bs\Mvc\Page
         $this->showCrumbs();
         $this->showAlert();
         $this->showLogoutDialog();
+        $this->showAbout();
         //$this->showMaintenanceRibbon();
 
         $notify = new Notify();
@@ -119,6 +122,60 @@ JS;
         $template->appendJs($js);
 
         $this->getTemplate()->prependTemplate('content', $template);
+    }
+
+    /**
+     * To open the dialog:
+     *     <a href="#" data-bs-toggle="modal" data-bs-target="#about-modal">About</a>
+     */
+    protected function showAbout(): void
+    {
+        $html = <<<HTML
+<div id="about-modal" class="modal fade" tabindex="-1" aria-labelledby="about-modal-title" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-5" id="about-modal-title"><span var="site-name"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <dl class="row">
+          <dt class="col-sm-3">Version</dt>
+          <dd class="col-sm-9" var="version"></dd>
+
+          <dt class="col-sm-3">Released</dt>
+          <dd class="col-sm-9" var="released"></dd>
+
+          <dt class="col-sm-3">Licence</dt>
+          <dd class="col-sm-9">Registered</dd>
+
+          <dt class="col-sm-3">Author</dt>
+          <dd class="col-sm-9"><a href="https://www.tropotek.com.au/" target="_blank" var="author">tropotek.com.au</a></dd>
+        </dl>
+
+        <p class="float-end mb-0"><small><a href="https://www.tropotek.com/" target="_blank" var="copyright">Tropotek</a></small></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+HTML;
+        $template = $this->loadTemplate($html);
+
+        $template->setText('site-name', Registry::instance()->getSiteName());
+        $template->setText('year', date('Y'));
+        $template->setText('version', System::getVersion());
+        $template->setText('released', System::getReleaseDate()->format(Date::FORMAT_LONG_DATETIME));
+
+        $template->setHtml('copyright', 'Copyright &copy; ' . \date('Y') . ' ' . $this->getConfig()->get('developer.name', 'Undefined'));
+        $template->setAttr('copyright', 'href', Uri::create($this->getConfig()->get('developer.web', 'Undefined')));
+
+        $template->setHtml('author', $this->getConfig()->get('developer.name', 'Undefined'));
+        $template->setAttr('author', 'href', Uri::create($this->getConfig()->get('developer.web', 'Undefined')));
+
+        $this->getTemplate()->appendBodyTemplate($template);
     }
 
     protected function showMintonParams(Template $template): void

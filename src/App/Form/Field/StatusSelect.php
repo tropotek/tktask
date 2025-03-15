@@ -94,7 +94,7 @@ class StatusSelect extends Select implements DisplayInterface, RendererInterface
       <input type="checkbox" title="Check To Send Notifications" class="form-check-input mt-0" value="1" var="checkbox">
     </div>
     <select class="form-select" var="element">
-      <optgroup repeat="optgroup">
+      <optgroup repeat="optgroup" label="">
         <option repeat="option"></option>
       </optgroup>
       <option repeat="option"></option>

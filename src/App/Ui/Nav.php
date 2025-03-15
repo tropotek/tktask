@@ -122,23 +122,27 @@ class Nav
     {
         $html = <<<HTML
 <div class="dropdown-menu dropdown-menu-end profile-dropdown">
-    <a href="/profile" class="dropdown-item notify-item">
-        <i class="fe-user me-1"></i>
-        <span>My Account</span>
-    </a>
-    <a href="/settings" class="dropdown-item notify-item" choice="sysadmin">
-        <i class="fe-settings me-1"></i>
-        <span>Settings</span>
-    </a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item notify-item" data-bs-toggle="offcanvas" href="#theme-settings-offcanvas" choice="sysadmin">
-        <i class="ri-palette-line me-1"></i>
-        <span>Customizer</span>
-    </a>
-    <a href="/logout" class="dropdown-item notify-item btn-logout">
-        <i class="fe-log-out me-1"></i>
-        <span>Logout</span>
-    </a>
+  <a href="/profile" class="dropdown-item notify-item">
+    <i class="fe-user me-1"></i>
+    <span>My Account</span>
+  </a>
+  <a href="/settings" class="dropdown-item notify-item" choice="sysadmin">
+    <i class="fe-settings me-1"></i>
+    <span>Settings</span>
+  </a>
+  <div class="dropdown-divider"></div>
+  <a class="dropdown-item notify-item" data-bs-toggle="offcanvas" href="#theme-settings-offcanvas" choice="sysadmin">
+    <i class="ri-palette-line me-1"></i>
+    <span>Customizer</span>
+  </a>
+  <a href="#" class="dropdown-item notify-item" data-bs-toggle="modal" data-bs-target="#about-modal">
+    <i class="fa fa-info-circle me-1"></i>
+    <span>About</span>
+  </a>
+  <a href="/logout" class="dropdown-item notify-item btn-logout">
+    <i class="fe-log-out me-1"></i>
+    <span>Logout</span>
+  </a>
 </div>
 HTML;
         $template = Template::load($html);
