@@ -51,7 +51,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create('/productCategoryManager')));
 
-        $load = $this->form->unmapModel($this->productCategory);
+        $load = $this->productCategory->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -60,7 +60,8 @@ class Edit extends ControllerAdmin
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->productCategory);
+        $values = $form->getFieldValues();
+        $this->productCategory->mapForm($values);
 
         $form->addFieldErrors($this->productCategory->validate());
         if ($form->hasErrors()) {

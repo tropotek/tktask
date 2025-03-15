@@ -87,7 +87,7 @@ class Project extends Form
         $this->init();
 
         // Load form with object values
-        $load = $this->unmapModel($this->getProject());
+        $load = $this->getProject()->unmapForm();
         $this->setFieldValues($load);
 
         parent::execute($values);
@@ -96,7 +96,8 @@ class Project extends Form
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->getProject());
+        $values = $form->getFieldValues();
+        $this->getProject()->mapForm($values);
 
         $form->addFieldErrors($this->getProject()->validate());
         if ($form->hasErrors()) {

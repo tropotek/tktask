@@ -68,7 +68,7 @@ class TaskLog extends Form
         $this->init();
 
         // Load form with object values
-        $load = $this->unmapModel($this->getTaskLog());
+        $load = $this->getTaskLog()->unmapForm();
         $this->setFieldValues($load);
 
         parent::execute($values);
@@ -77,7 +77,8 @@ class TaskLog extends Form
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->getTaskLog());
+        $values = $form->getFieldValues();
+        $this->getTaskLog()->mapForm($values);
 
         $form->addFieldErrors($this->getTaskLog()->validate());
         if ($form->hasErrors()) {

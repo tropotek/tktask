@@ -92,7 +92,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create('/recurringManager')));
 
-        $load = $this->form->unmapModel($this->recurring);
+        $load = $this->recurring->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -100,7 +100,8 @@ class Edit extends ControllerAdmin
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->recurring);
+        $values = $form->getFieldValues();
+        $this->recurring->mapForm($values);
 
         $form->addFieldErrors($this->recurring->validate());
         if ($form->hasErrors()) {

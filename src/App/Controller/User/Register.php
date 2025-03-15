@@ -76,7 +76,7 @@ class Register extends ControllerDomInterface
         $user->type = User::TYPE_MEMBER;
 
         // set object values from fields
-        $form->mapModel($user);
+        $user->mapForm($form->getFieldValues());
 
         if (!$form->getFieldValue('name')) {
             $form->addFieldError('name', 'Please enter a valid name');
@@ -112,7 +112,7 @@ class Register extends ControllerDomInterface
         $user->save();
 
         $auth = $user->getAuth();
-        $form->mapModel($auth);
+        $user->mapForm($form->getFieldValues());
         $auth->active = false;
         $auth->save();
 

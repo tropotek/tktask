@@ -59,7 +59,7 @@ class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->appendField(new Submit('save', [$this, 'onSubmit']))
             ->addCss('float-end');
 
-        $load = $this->form->unmapModel($this->company);
+        $load = $this->company->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -74,8 +74,8 @@ class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->company);
-
+        $values = $form->getFieldValues();
+        $this->company->mapForm($values);
 
         $form->addFieldErrors($this->company->validate());
         if ($form->hasErrors()) {

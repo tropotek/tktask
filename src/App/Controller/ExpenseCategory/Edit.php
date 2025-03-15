@@ -56,7 +56,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create('/expenseCategoryManager')));
 
-        $load = $this->form->unmapModel($this->expenseCategory);
+        $load = $this->expenseCategory->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -65,7 +65,8 @@ class Edit extends ControllerAdmin
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->expenseCategory);
+        $values = $form->getFieldValues();
+        $this->expenseCategory->mapForm($values);
 
         $form->addFieldErrors($this->expenseCategory->validate());
         if ($form->hasErrors()) {

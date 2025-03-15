@@ -80,7 +80,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->appendField(new Submit('save', [$this, 'onSubmit']))
             ->addCss('float-end');
 
-        $load = $this->form->unmapModel($this->log);
+        $load = $this->log->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -95,7 +95,8 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->log);
+        $values = $form->getFieldValues();
+        $this->log->mapForm($values);
 
         if (!Registry::instance()->get('site.invoice.enable', true)) {
             $this->log->productId = Product::getDefaultLaborProduct()->productId;

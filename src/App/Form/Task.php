@@ -106,7 +106,7 @@ class Task extends Form
         $this->init();
 
         // Load form with object values
-        $load = $this->unmapModel($this->getTask());
+        $load = $this->getTask()->unmapForm();
         $this->setFieldValues($load);
 
         parent::execute($values);
@@ -115,7 +115,8 @@ class Task extends Form
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->getTask());
+        $values = $form->getFieldValues();
+        $this->getTask()->mapForm($values);
 
         $form->addFieldErrors($this->getTask()->validate());
         if ($form->hasErrors()) {

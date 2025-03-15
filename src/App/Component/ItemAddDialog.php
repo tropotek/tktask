@@ -61,7 +61,7 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
         $this->form->appendField(new Submit('save', [$this, 'onSubmit']))
             ->addCss('float-end');
 
-        $load = $this->form->unmapModel($this->item);
+        $load = $this->item->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -76,13 +76,13 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $vals = $form->getFieldValues();
+        $values = $form->getFieldValues();
 
         $this->item = \App\Db\InvoiceItem::create(
-            $vals['productCode'] ?? '',
-            $vals['description'] ?? '',
-            \Tk\Money::parseFromString($vals['price'] ?? '0'),
-            floatval($vals['qty'] ?? 1)
+            $values['productCode'] ?? '',
+            $values['description'] ?? '',
+            \Tk\Money::parseFromString($values['price'] ?? '0'),
+            floatval($values['qty'] ?? 1)
         );
 
         $form->addFieldErrors($this->item->validate());
@@ -133,7 +133,7 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
       <div class="modal-body" var="content"></div>
     </div>
   </div>
-  
+
 <script>
   jQuery(function($) {
     const dialog = '#{$this->getDialogId()}';

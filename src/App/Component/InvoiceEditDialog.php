@@ -68,7 +68,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->appendField(new Submit('save', [$this, 'onSubmit']))
             ->addCss('float-end');
 
-        $load = $this->form->unmapModel($this->invoice);
+        $load = $this->invoice->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -83,7 +83,8 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->invoice);
+        $values = $form->getFieldValues();
+        $this->invoice->mapForm($values);
 
         $form->addFieldErrors($this->invoice->validate());
         if ($form->hasErrors()) {

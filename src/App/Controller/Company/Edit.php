@@ -84,7 +84,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create('/companyManager')));
 
-        $load = $this->form->unmapModel($this->company);
+        $load = $this->company->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -93,14 +93,15 @@ class Edit extends ControllerAdmin
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->company);
+        $values = $form->getFieldValues();
+        $this->company->mapForm($values);
 
         $form->addFieldErrors($this->company->validate());
         if ($form->hasErrors()) {
             return;
         }
 
-        $isNew = ($this->company->companyId == 0);
+        $isNew = ($this->comzpany->companyId == 0);
         $this->company->save();
 
         Alert::addSuccess('Form save successfully.');

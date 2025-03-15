@@ -63,7 +63,7 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->appendField(new Submit('save', [$this, 'onSubmit']))
             ->addCss('float-end');
 
-        $load = $this->form->unmapModel($this->payment);
+        $load = $this->payment->unmapForm();
         $this->form->setFieldValues($load);
 
         $this->form->execute($_POST);
@@ -78,7 +78,8 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $form->mapModel($this->payment);
+        $values = $form->getFieldValues();
+        $this->payment->mapForm($values);
 
         // Check that the invoice is in the unpaid status.
         if ($this->invoice->getStatus() != \App\Db\Invoice::STATUS_UNPAID) {
