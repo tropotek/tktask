@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb9addb4517014e269bb1aad7c8e18dc",
+    "content-hash": "4485a4f116eb48f69d4e656a5edb77fe",
     "packages": [
         {
             "name": "components/font-awesome",
@@ -182,6 +182,15 @@
                 "source": "https://github.com/components/jqueryui/tree/master"
             },
             "time": "2016-09-16T05:47:55+00:00"
+        },
+        {
+            "name": "htmx/htmx",
+            "version": "2.0.4",
+            "dist": {
+                "type": "file",
+                "url": "https://unpkg.com/htmx.org/dist/htmx.min.js"
+            },
+            "type": "library"
         },
         {
             "name": "mpdf/mpdf",
@@ -1038,12 +1047,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "799445db3f15768ecc382ac5699e6da0520a0a04"
+                "reference": "2e4af9c952617cc3f9559ff706aee420a8464c36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/799445db3f15768ecc382ac5699e6da0520a0a04",
-                "reference": "799445db3f15768ecc382ac5699e6da0520a0a04",
+                "url": "https://api.github.com/repos/symfony/console/zipball/2e4af9c952617cc3f9559ff706aee420a8464c36",
+                "reference": "2e4af9c952617cc3f9559ff706aee420a8464c36",
                 "shasum": ""
             },
             "require": {
@@ -1124,7 +1133,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-07T12:07:30+00:00"
+            "time": "2025-03-03T17:16:38+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1200,12 +1209,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/error-handler.git",
-                "reference": "d916392aa2e658ce1df0ac34ec69a11f5d57b3c0"
+                "reference": "070e14ba8214e793a989d93c98e28445c0607afe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/error-handler/zipball/d916392aa2e658ce1df0ac34ec69a11f5d57b3c0",
-                "reference": "d916392aa2e658ce1df0ac34ec69a11f5d57b3c0",
+                "url": "https://api.github.com/repos/symfony/error-handler/zipball/070e14ba8214e793a989d93c98e28445c0607afe",
+                "reference": "070e14ba8214e793a989d93c98e28445c0607afe",
                 "shasum": ""
             },
             "require": {
@@ -1218,9 +1227,11 @@
                 "symfony/http-kernel": "<6.4"
             },
             "require-dev": {
+                "symfony/console": "^6.4|^7.0",
                 "symfony/deprecation-contracts": "^2.5|^3",
                 "symfony/http-kernel": "^6.4|^7.0",
-                "symfony/serializer": "^6.4|^7.0"
+                "symfony/serializer": "^6.4|^7.0",
+                "symfony/webpack-encore-bundle": "^1.0|^2.0"
             },
             "bin": [
                 "Resources/bin/patch-type-declarations"
@@ -1267,7 +1278,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-02T20:28:54+00:00"
+            "time": "2025-03-03T11:20:06+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -2269,12 +2280,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "a75110076ac661a4a52792b5a1d286d113653a70"
+                "reference": "76adbe1f1d73d2d85dc69b4aeb26b3625499c37b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/a75110076ac661a4a52792b5a1d286d113653a70",
-                "reference": "a75110076ac661a4a52792b5a1d286d113653a70",
+                "url": "https://api.github.com/repos/symfony/string/zipball/76adbe1f1d73d2d85dc69b4aeb26b3625499c37b",
+                "reference": "76adbe1f1d73d2d85dc69b4aeb26b3625499c37b",
                 "shasum": ""
             },
             "require": {
@@ -2348,7 +2359,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-24T14:05:52+00:00"
+            "time": "2025-03-08T15:49:38+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -2356,12 +2367,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "3736ce35859e1be51b4b0cb38a944700dab97706"
+                "reference": "cf2f52a50df4f8c340a000cf03e5ea5ffc3a48c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/3736ce35859e1be51b4b0cb38a944700dab97706",
-                "reference": "3736ce35859e1be51b4b0cb38a944700dab97706",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/cf2f52a50df4f8c340a000cf03e5ea5ffc3a48c6",
+                "reference": "cf2f52a50df4f8c340a000cf03e5ea5ffc3a48c6",
                 "shasum": ""
             },
             "require": {
@@ -2432,20 +2443,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-25T07:55:36+00:00"
+            "time": "2025-03-08T15:49:38+00:00"
         },
         {
             "name": "tinymce/tinymce",
-            "version": "7.7.0",
+            "version": "7.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "4b04481b24137029525f6dc372706fa9d3168f14"
+                "reference": "c92b29a72c467c07799fd09dc9e0add45cf504a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/4b04481b24137029525f6dc372706fa9d3168f14",
-                "reference": "4b04481b24137029525f6dc372706fa9d3168f14",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/c92b29a72c467c07799fd09dc9e0add45cf504a1",
+                "reference": "c92b29a72c467c07799fd09dc9e0add45cf504a1",
                 "shasum": ""
             },
             "type": "component",
@@ -2489,9 +2500,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/7.7.0"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.7.1"
             },
-            "time": "2025-02-20T08:31:02+00:00"
+            "time": "2025-03-05T00:36:32+00:00"
         },
         {
             "name": "ttek/tk-base",
@@ -2499,12 +2510,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "e56f215b79514118fbe9265b6e71c102dd2be7f1"
+                "reference": "dd36da8f65f9cbe3069204fe04f096070267e8fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/e56f215b79514118fbe9265b6e71c102dd2be7f1",
-                "reference": "e56f215b79514118fbe9265b6e71c102dd2be7f1",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/dd36da8f65f9cbe3069204fe04f096070267e8fc",
+                "reference": "dd36da8f65f9cbe3069204fe04f096070267e8fc",
                 "shasum": ""
             },
             "require": {
@@ -2560,12 +2571,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-domtemplate.git",
-                "reference": "ab53662be0abde35e7aebe418f1ba6443c2a53b8"
+                "reference": "ac9771afc48ab6f015fa1d1165676364dfbf29e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/ab53662be0abde35e7aebe418f1ba6443c2a53b8",
-                "reference": "ab53662be0abde35e7aebe418f1ba6443c2a53b8",
+                "url": "https://api.github.com/repos/tropotek/tk-domtemplate/zipball/ac9771afc48ab6f015fa1d1165676364dfbf29e3",
+                "reference": "ac9771afc48ab6f015fa1d1165676364dfbf29e3",
                 "shasum": ""
             },
             "require": {
@@ -2619,12 +2630,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-form.git",
-                "reference": "a3476abd5e64a4c1b303786dbe44c000c61c299d"
+                "reference": "2dbc42918eac3055c81b8707669b542ee9a35189"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/a3476abd5e64a4c1b303786dbe44c000c61c299d",
-                "reference": "a3476abd5e64a4c1b303786dbe44c000c61c299d",
+                "url": "https://api.github.com/repos/tropotek/tk-form/zipball/2dbc42918eac3055c81b8707669b542ee9a35189",
+                "reference": "2dbc42918eac3055c81b8707669b542ee9a35189",
                 "shasum": ""
             },
             "require": {
@@ -2668,12 +2679,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "c4c7a8db2b7623f754ab9c47e9da6c9c24f9c850"
+                "reference": "9a4cef83b4ec235f69e1665a4859bc13a2de9953"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/c4c7a8db2b7623f754ab9c47e9da6c9c24f9c850",
-                "reference": "c4c7a8db2b7623f754ab9c47e9da6c9c24f9c850",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/9a4cef83b4ec235f69e1665a4859bc13a2de9953",
+                "reference": "9a4cef83b4ec235f69e1665a4859bc13a2de9953",
                 "shasum": ""
             },
             "require": {
@@ -2792,12 +2803,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-table.git",
-                "reference": "cea9e6cd55138ebbbe2299eb3a75c4909534e212"
+                "reference": "c173e3e28769b5fab39147fba9130ba54b737b1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/cea9e6cd55138ebbbe2299eb3a75c4909534e212",
-                "reference": "cea9e6cd55138ebbbe2299eb3a75c4909534e212",
+                "url": "https://api.github.com/repos/tropotek/tk-table/zipball/c173e3e28769b5fab39147fba9130ba54b737b1c",
+                "reference": "c173e3e28769b5fab39147fba9130ba54b737b1c",
                 "shasum": ""
             },
             "require": {
@@ -2893,12 +2904,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6"
+                "reference": "f65c239c970e7f072f067ab78646e9f0b2935175"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
-                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/f65c239c970e7f072f067ab78646e9f0b2935175",
+                "reference": "f65c239c970e7f072f067ab78646e9f0b2935175",
                 "shasum": ""
             },
             "require": {
@@ -2946,7 +2957,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/ca-bundle/issues",
-                "source": "https://github.com/composer/ca-bundle/tree/1.5.5"
+                "source": "https://github.com/composer/ca-bundle/tree/1.5.6"
             },
             "funding": [
                 {
@@ -2962,7 +2973,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-08T16:17:16+00:00"
+            "time": "2025-03-06T14:30:56+00:00"
         },
         {
             "name": "composer/class-map-generator",
@@ -3044,12 +3055,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "d7139f4d86931513e6d8e4b5ce441e33f3bd62b2"
+                "reference": "71e8395ebdb68d9179fae53e7fa3a303d6e438f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/d7139f4d86931513e6d8e4b5ce441e33f3bd62b2",
-                "reference": "d7139f4d86931513e6d8e4b5ce441e33f3bd62b2",
+                "url": "https://api.github.com/repos/composer/composer/zipball/71e8395ebdb68d9179fae53e7fa3a303d6e438f3",
+                "reference": "71e8395ebdb68d9179fae53e7fa3a303d6e438f3",
                 "shasum": ""
             },
             "require": {
@@ -3151,7 +3162,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-25T12:03:50+00:00"
+            "time": "2025-03-06T15:48:02+00:00"
         },
         {
             "name": "composer/metadata-minifier",
@@ -4275,12 +4286,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "2b42be26326a4fae4313751b40a2ecb60e619311"
+                "reference": "d65479e099c5e23ce6d9f1d975faeeaad90b1c5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/2b42be26326a4fae4313751b40a2ecb60e619311",
-                "reference": "2b42be26326a4fae4313751b40a2ecb60e619311",
+                "url": "https://api.github.com/repos/symfony/process/zipball/d65479e099c5e23ce6d9f1d975faeeaad90b1c5b",
+                "reference": "d65479e099c5e23ce6d9f1d975faeeaad90b1c5b",
                 "shasum": ""
             },
             "require": {
@@ -4328,7 +4339,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-14T16:23:49+00:00"
+            "time": "2025-03-13T12:25:57+00:00"
         }
     ],
     "aliases": [],

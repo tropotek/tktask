@@ -4,7 +4,6 @@
 
 jQuery(function ($) {
   // Init page javascript functions
-  tkbase.initSugar();
   tkbase.initDialogConfirm();
   tkbase.initTkInputLock();
   tkbase.initDataToggle();

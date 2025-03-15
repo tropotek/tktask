@@ -33,6 +33,20 @@
     }
   },
 
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "htmx/htmx",
+				"version": "2.0.4",
+				"dist": {
+					"url": "https://unpkg.com/htmx.org/dist/htmx.min.js",
+					"type": "file"
+				}
+			}
+		}
+	],
+
   "require": {
     "php": "^8.3",
     "ext-curl": "*",
@@ -44,6 +58,7 @@
 
     "ttek/tk-base": "~8.0.0",
 
+		"htmx/htmx": "2.0.4",
     "components/jquery": "~3.6.0",
     "components/jqueryui": "~1.12.0",
     "components/font-awesome": "~6.2.0",
