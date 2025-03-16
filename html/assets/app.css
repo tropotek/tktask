@@ -1,10 +1,9 @@
 
-
-
-.htmx-request
+body .htmx-request
 {
-  opacity: 0.7;
-  pointer-events: none;
+  transition: opacity 500ms ease-in;
+  opacity: 0.7 !important;
+  pointer-events: none !important;
 }
 
 #sidebar-menu > ul > li ul {
@@ -23,11 +22,19 @@
   margin-right: 0.5em;
   margin-top: 0.5em;
 }
+
+.card-header > .info-dropdown {
+  float: right;
+}
 .info-dropdown .dropdown-item {
   margin: 0;
 }
 .info-dropdown .dropdown-item .d-inline-block {
   width: 4.5em;
+}
+
+table.tk-table-sm tr.inactive {
+  opacity: 0.5 !important;
 }
 
 .page-title-box .breadcrumb {

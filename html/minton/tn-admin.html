@@ -43,8 +43,8 @@
   <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkCheckSelect.js"></script>
   <!-- App js -->
   <script src="/vendor/ttek/tk-table/templates/tkTable.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/tkbase.js" defer></script>
-  <script src="/html/assets/app.js" defer></script>
+  <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
+  <script src="/html/assets/app.js"></script>
 
 </head>
 <body>
@@ -211,17 +211,8 @@
         <div class="row">
           <div class="col-12">
             <div class="page-title-box page-title-box-alt">
-
               <h4 class="page-title"><i var="page-icon"></i> <span var="page-title"></span></h4>
-
-              <!-- Breadcrumbs -->
-              <div class="page-title-right">
-                <ol class="breadcrumb m-0" var="crumbs">
-                  <li class="breadcrumb-item"><a href="/">Home</a></li>
-                  <li class="breadcrumb-item"><a href="javascript: void(0);">Extras</a></li>
-                  <li class="breadcrumb-item active">Starter</li>
-                </ol>
-              </div>
+              <div class="page-title-right" var="crumbs"></div>
             </div>
           </div>
         </div>
@@ -242,8 +233,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-6">
-            <script data-inline>document.write(new Date().getFullYear())</script> &copy;
-            <a href="https://www.tropotek.com/" target="_blank">Tropotek</a>
+            <a href="https://www.tropotek.com/" target="_blank" var="copyright">Tropotek</a>
           </div>
           <div class="col-md-6">
             <div class="text-md-end footer-links d-none d-sm-block">
