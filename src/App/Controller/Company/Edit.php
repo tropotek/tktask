@@ -101,7 +101,7 @@ class Edit extends ControllerAdmin
             return;
         }
 
-        $isNew = ($this->comzpany->companyId == 0);
+        $isNew = ($this->company->companyId == 0);
         $this->company->save();
 
         Alert::addSuccess('Form save successfully.');
