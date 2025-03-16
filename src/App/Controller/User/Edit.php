@@ -153,7 +153,7 @@ class Edit extends ControllerAdmin
 
         $this->form->execute($_POST);
 
-        if (Auth::getAuthUser()->hasPermission(User::PERM_ADMIN) && !empty($newType)) {
+        if (Auth::getAuthUser()->hasPermission(User::PERM_SYSADMIN) && !empty($newType)) {
             if ($newType == User::TYPE_STAFF) {
                 $this->user->type = User::TYPE_STAFF;
                 Alert::addSuccess('User now set to type STAFF, please select and save the users new permissions.');
@@ -170,7 +170,7 @@ class Edit extends ControllerAdmin
     public function onSubmit(Form $form, SubmitExit $action): void
     {
         // non admin cannot change permissions
-        if (!Auth::getAuthUser()->isAdmin()) {
+        if (!Auth::getAuthUser()->hasPermission(User::PERM_SYSADMIN)) {
             $form->removeField('perm');
         }
 
