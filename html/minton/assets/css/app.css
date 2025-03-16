@@ -6,7 +6,7 @@ Website: https://coderthemes.com/
 Contact: support@coderthemes.com
 File: Main Css File (Default Demo)
 */
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 :root, [data-bs-theme=light] {
   --bs-theme-border-width: 1px;
   --bs-theme-card-border-color: #e7eaed;
@@ -1233,7 +1233,7 @@ html[data-layout-position=scrollable]:not([data-sidebar-size=condensed]):not([da
 }
 @media (min-width: 1200px) {
   html[data-layout-mode=horizontal] .container-fluid {
-    max-width: 100%;
+    max-width: 90%;
   }
 }
 html[data-layout-mode=horizontal] .navbar-custom {
@@ -3657,10 +3657,10 @@ html[data-bs-theme=dark] .auth-logo .logo-dark {
 }
 /*!
  * Waves v0.7.6
- * http://fian.my.id/Waves
- *
- * Copyright 2014-2018 Alfiana E. Sibuea and other contributors
- * Released under the MIT license
+ * http://fian.my.id/Waves 
+ * 
+ * Copyright 2014-2018 Alfiana E. Sibuea and other contributors 
+ * Released under the MIT license 
  * https://github.com/fians/Waves/blob/master/LICENSE */
 .waves-effect {
   position: relative;
