@@ -38,9 +38,9 @@ class ProfitLoss extends ControllerAdmin
             Uri::create('/')->redirect();
         }
 
-        $start = clone $firstInvoice->created;
+        $start = Date::getFinancialYear($firstInvoice->created)[0];
         $end   = \Tk\Date::create();
-        $val   = $end->format('Y-m-d');
+        $val   = $this->dateSet[0]->format('Y-m-d');
         $list  = [];
 
         while ($start->format('Y') <= $end->format('Y')) {
@@ -57,27 +57,6 @@ class ProfitLoss extends ControllerAdmin
 
         $this->report = new \App\Component\ProfitLoss($this->dateSet);
 
-        if ($_GET['act'] ?? false) {
-            return $this->doAction();
-        }
-
-        return null;
-    }
-
-    public function doAction(): mixed
-    {
-        $action = trim($_GET['post'] ?? $_GET['act'] ?? '');
-        switch ($action) {
-            case 'pdf':
-                $ren = new \App\Pdf\PdfProfitLoss($this->dateSet);
-                $ren->output();
-                break;
-            case 'html':
-                $ren = new \App\Pdf\PdfProfitLoss($this->dateSet);
-                return $ren->show();
-                break;
-        }
-
         return null;
     }
 
@@ -90,8 +69,7 @@ class ProfitLoss extends ControllerAdmin
         $template->appendTemplate('content', $this->form->show());
         $template->appendTemplate('content', $this->report->show());
 
-
-        $pdf = Uri::create()->set('act', 'pdf');
+        $pdf = Uri::create('/pdf/profitLoss')->set('date', $this->dateSet[0]->format('Y-m-d'))->set('o', 'pdf');
         $template->setAttr('btn-pdf', 'href', $pdf);
 
 

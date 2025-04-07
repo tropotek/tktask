@@ -83,7 +83,7 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
         $template->setAttr('dialog', 'id', $this->getDialogId());
         $template->setText('title', 'Select ' . $this->type);
 
-        $template->appendTemplate('content', Table::toHtmxTable($this->table));
+        $template->appendTemplate('content', $this->table->htmxShow());
 
         return $template;
     }
@@ -101,14 +101,14 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
       <div class="modal-body" var="content"> </div>
     </div>
   </div>
-  
+
 <script>
   jQuery(function($) {
     const dialog = '#{$this->getDialogId()}';
 
     $(dialog).on('click', '.company-item', function() {
         $(dialog).trigger('companySelect', [
-            $(this).data('companyId'), 
+            $(this).data('companyId'),
             $(this).text()
         ]);
     });

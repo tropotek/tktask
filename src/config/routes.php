@@ -147,6 +147,15 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Component\Files::class, 'doDefault']);
 
 
+    // PDF
+    $routes->add('pdf-invoice', '/pdf/invoice')
+        ->controller([\App\Pdf\Invoice::class, 'doDefault']);
+    $routes->add('pdf-task-list', '/pdf/taskList')
+        ->controller([\App\Pdf\TaskList::class, 'doDefault']);
+    $routes->add('pdf-profit-loss', '/pdf/profitLoss')
+        ->controller([\App\Pdf\ProfitLoss::class, 'doDefault']);
+
+
     // API
     $routes->add('api-notify', '/api/notify/getNotifications')
         ->controller([\App\Api\Notify::class, 'doGetNotifications']);

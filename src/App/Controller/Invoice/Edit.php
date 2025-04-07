@@ -60,11 +60,6 @@ class Edit extends ControllerAdmin
     {
         $action = trim($_GET['post'] ?? $_GET['act'] ?? '');
         switch ($action) {
-            case 'pdf':
-                $ren = new \App\Pdf\PdfInvoice($this->invoice);
-                $ren->output();
-                //return $ren->show();  // to show HTML
-                break;
             case 'issue':
                 $this->invoice->doIssue();
                 Alert::addSuccess("Invoiced issued to client");
@@ -131,9 +126,8 @@ class Edit extends ControllerAdmin
         $issue = Uri::create()->set('act', 'issue');
         $template->setAttr('btn-issue', 'href', $issue);
 
-        $pdf = Uri::create()->set('act', 'pdf');
+        $pdf = Uri::create('/pdf/invoice')->set('invoiceId', $this->invoice->invoiceId); //->set('o', 'html');
         $template->setAttr('btn-pdf', 'href', $pdf);
-
 
         if ($this->invoice->paidTotal->getAmount() > 0) {
             $url = Uri::create('/component/paymentTable', ['invoiceId' => $this->invoice->invoiceId]);

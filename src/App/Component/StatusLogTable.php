@@ -69,7 +69,7 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         $template = $this->getTemplate();
 
         $this->table->getRenderer()->setFooterEnabled(false);
-        $template->appendTemplate('content', Table::toHtmxTable($this->table));
+        $template->appendTemplate('content', $this->table->htmxShow());
 
         return $template;
     }

@@ -1,111 +1,68 @@
 <?php
+
 namespace App\Pdf;
 
-use App\Db\Invoice;
 use App\Factory;
 use Bs\Registry;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
-use JetBrains\PhpStorm\NoReturn;
-use Mpdf\Mpdf;
 use Tk\Config;
-use Tk\Uri;
+use Tk\Log;
 
-class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class Invoice extends PdfInterface
 {
-    protected Mpdf    $mpdf;
-    protected string  $watermark = '';
-    protected bool    $rendered  = false;
-    protected Invoice $invoice;
+    protected ?\App\Db\Invoice $invoice = null;
 
-
-    public function __construct(Invoice $invoice, ?string $watermark = null)
+    public function doDefault(): string
     {
-        $this->invoice = $invoice;
+        //@ini_set("memory_limit", "128M");
 
-        if (is_null($watermark)) {
+        $invoiceId = intval($_GET['invoiceId'] ?? $_POST['invoiceId'] ?? 0);
+        $output    = trim($_GET['o'] ?? $_POST['o'] ?? PdfInterface::OUTPUT_PDF);
+
+        $this->invoice = \App\Db\Invoice::find($invoiceId);
+        if (!($this->invoice instanceof \App\Db\Invoice)) {
+            Log::error("invalid invoice id {$invoiceId}");
+            Breadcrumbs::getBackUrl()->redirect();
+        }
+
+        if (!$this->getWatermark()) {
             switch ($this->invoice->status) {
-                case Invoice::STATUS_OPEN:
-                    $watermark = 'Open';
+                case \App\Db\Invoice::STATUS_OPEN:
+                    $this->setWatermark('Open');
                     break;
-                case Invoice::STATUS_PAID:
-                    $watermark = 'Paid';
+                case \App\Db\Invoice::STATUS_PAID:
+                    $this->setWatermark('Paid');
                     break;
-                case Invoice::STATUS_CANCELLED:
-                    $watermark = 'Cancelled';
+                case \App\Db\Invoice::STATUS_CANCELLED:
+                    $this->setWatermark('Cancelled');
                     break;
             }
         }
-        $this->watermark = $watermark ?? '';
-
-        $this->initPdf();
-    }
-
-    protected function initPdf(): void
-    {
-        $url = Uri::create()->toString();
-        $html = $this->show()->toString();
-
-        @ini_set("memory_limit", "128M");
-
-        $this->mpdf = new Mpdf([
-            'margin_top' => 20,
-        ]);
-
-        $this->mpdf->setBasePath($url);
 
         $siteCompany = Factory::instance()->getOwnerCompany();
-        $this->mpdf->SetTitle($siteCompany->name . ' - Invoice');
+        $this->setTitle($siteCompany->name . ' - Invoice');
         $this->mpdf->SetAuthor($siteCompany->name);
+        $this->setFilename('Invoice-' . $this->invoice->invoiceId . '.pdf');
 
-        if ($this->watermark) {
-            $this->mpdf->SetWatermarkText($this->watermark);
-            $this->mpdf->showWatermarkText = true;
-            $this->mpdf->watermark_font = 'DejaVuSansCondensed';
-            $this->mpdf->watermarkTextAlpha = 0.1;
-        }
-        $this->mpdf->SetDisplayMode('fullpage');
-        $this->mpdf->WriteHTML($html);
+        $this->mpdf->WriteHTML($this->show()->toString());
+        return match ($output) {
+            PdfInterface::OUTPUT_PDF => $this->getPdf() ?? '',
+            PdfInterface::OUTPUT_ATTACH => $this->getPdfAttachment(),
+            default => $this->getTemplate()->toString()
+        };
     }
 
-    /**
-     * Output the pdf to the browser
-     */
-    #[NoReturn] public function output(): void
-    {
-        $filename = 'Invoice-' . $this->invoice->invoiceId . '.pdf';
-        $this->mpdf->Output($filename, \Mpdf\Output\Destination::INLINE);
-        exit;
-    }
-
-    /**
-     * Return the PDF as a string to attach to an email message
-     */
-    public function getPdfAttachment(string $filename = ''): string
-    {
-        if (!$filename) {
-            $filename = 'Invoice-' . $this->invoice->invoiceId . '.pdf';
-        }
-        return $this->mpdf->Output($filename, \Mpdf\Output\Destination::STRING_RETURN);
-    }
-
-    /**
-     * Execute the renderer.
-     * Return an object that your framework can interpret and display.
-     */
-    public function show(): ?Template
+    function show(): ?Template
     {
         $template = $this->getTemplate();
 
-        if ($this->rendered) return $template;
-        $this->rendered = true;
-
         $siteCompany = Factory::instance()->getOwnerCompany();
-
         $company = $this->invoice->getCompany();
 
         // Setup page
         $template->setTitleText('Invoice No: ' . $this->invoice->invoiceId);
-        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', Invoice::DEFAULT_DUE_DAYS)));
+        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', \App\Db\Invoice::DEFAULT_DUE_DAYS)));
 
         $paymentText = Registry::instance()->get('site.invoice.payment', '');
         if ($paymentText) {
@@ -151,7 +108,6 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $template->setVisible('v-purchaseOrder');
         }
 
-
         // totals
         if (($this->invoice->discount) > 0 ||
             ($this->invoice->tax > 0) ||
@@ -188,7 +144,7 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $template->setText('total', $this->invoice->total);
 
         $template->setText('status', $this->invoice->getStatus());
-        $template->addCss('status', 'badge-' . Invoice::STATUS_CSS[$this->invoice->getStatus()]);
+        $template->addCss('status', 'badge-' . \App\Db\Invoice::STATUS_CSS[$this->invoice->getStatus()]);
 
         $template->setText('payments', $this->invoice->paidTotal);
         if (!in_array($this->invoice->status, [\App\Db\Invoice::STATUS_OPEN, \App\Db\Invoice::STATUS_CANCELLED])) {
@@ -210,8 +166,10 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $row->appendRepeat();
         }
 
-        $pdfStyles = file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
-        $template->appendCss($pdfStyles);
+        if (is_file(Config::makePath('/src/App/Pdf/pdfStyles.css'))) {
+            $pdfStyles = file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
+            $template->appendCss($pdfStyles);
+        }
 
         return $template;
     }
@@ -288,7 +246,6 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
   <sethtmlpageheader name="myheader" value="on" show-this-page="1" />
   <sethtmlpagefooter name="myfooter" value="on" />
 
-
   <table class="tk-table w-100" style="font-family: serif; font-size: 0.9em; line-height: 1.3em;">
     <tr>
       <td style="border: 0.05mm solid #888888; width: 47%; padding: 10px; vertical-align: top;">
@@ -313,7 +270,6 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
       </td>
     </tr>
   </table>
-
 
   <table class="tk-table w-100" style="line-height: 1.4em; margin-top: 10px; margin-bottom: 0; font-family: serif;">
     <tr>
@@ -401,7 +357,6 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     Late payments may incur a 10% fee.
   </small></p>
 
-
   <table class="outstanding-totals">
     <tr>
       <td class="box">
@@ -426,9 +381,9 @@ class PdfInvoice extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     </tr>
   </table>
 
-   <br/>
-   <hr/>
-   <div var="invoice-payment" style="page-break-inside: avoid; border: 1px solid #EFEFEF; padding: 10px;"></div>
+  <br/>
+  <hr/>
+  <div var="invoice-payment" style="page-break-inside: avoid; border: 1px solid #EFEFEF; padding: 10px;"></div>
 
 </body>
 </html>

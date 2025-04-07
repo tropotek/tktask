@@ -82,7 +82,7 @@ class Nav
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/profitReport',
             ],
-            'Sales' => [
+            'Client Sales' => [
                 'icon' => 'fas fa-chart-line',
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/salesReport',

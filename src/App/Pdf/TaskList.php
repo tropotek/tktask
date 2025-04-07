@@ -1,88 +1,78 @@
 <?php
+
 namespace App\Pdf;
 
 use App\Db\Project;
 use App\Db\Task;
-use App\Db\TaskCategory;
+use App\Db\User;
 use App\Factory;
 use Bs\Registry;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
-use JetBrains\PhpStorm\NoReturn;
-use Mpdf\Mpdf;
-use Mpdf\Output\Destination;
 use Tk\Config;
 use Tk\Date;
+use Tk\Db\Filter;
+use Tk\Log;
 use Tk\Str;
-use Tk\Uri;
 
-class PdfTaskList extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class TaskList extends PdfInterface
 {
-    protected Mpdf     $mpdf;
-    protected bool     $rendered  = false;
-    protected array    $taskList;
-    protected ?Project $project   = null;
-
-
     /**
-     * @param array<int,Task> $taskList
+     * @var array<int,Task>
      */
-    public function __construct(array $taskList, ?Project $project = null)
+    protected array    $taskList = [];
+    protected ?Project $project  = null;
+    protected ?User    $user     = null;
+
+    public function doDefault(): string
     {
-        $this->taskList = $taskList;
-        $this->project = $project;
-        $this->init();
-    }
+        //@ini_set("memory_limit", "128M");
 
-    protected function init(): void
-    {
-        $url = Uri::create()->toString();
-        $html = $this->show()->toString();
+        $projectId = intval($_GET['projectId'] ?? $_POST['projectId'] ?? 0);
+        $userId    = intval($_GET['userId'] ?? $_POST['userId'] ?? 0);
+        $output    = trim($_GET['o'] ?? $_POST['o'] ?? PdfInterface::OUTPUT_PDF);
 
-        @ini_set("memory_limit", "128M");
+        $this->project = Project::find($projectId);
+        if ($projectId && !($this->project instanceof Project)) {
+            Log::error("invalid project id {$projectId}");
+            Breadcrumbs::getBackUrl()->redirect();
+        }
 
-        $this->mpdf = new Mpdf([
-            'margin_top' => 20,
-        ]);
+        $this->user = User::find($userId);
+        if ($userId && !($this->user instanceof User)) {
+            Log::error("invalid user id {$userId}");
+            Breadcrumbs::getBackUrl()->redirect();
+        }
 
-        $this->mpdf->setBasePath($url);
+        $filter = [
+            'status' => [
+                Task::STATUS_PENDING,
+                Task::STATUS_HOLD,
+                Task::STATUS_OPEN,
+            ]
+        ];
+        if ($userId) {
+            $filter['userId'] = $userId;
+        }
+        $this->taskList = Task::findFiltered(Filter::create($filter, '-created'));
 
         $siteCompany = Factory::instance()->getOwnerCompany();
-        $this->mpdf->SetTitle('Task List');
+        $this->SetTitle('Task List');
         $this->mpdf->SetAuthor($siteCompany->name);
-
-        $this->mpdf->SetDisplayMode('fullpage');
-        $this->mpdf->WriteHTML($html);
-    }
-
-    public function getFilename(): string
-    {
         $dateStr = Date::create()->format(Date::FORMAT_ISO_DATE);
-        return 'TaskList_' . $dateStr . '.pdf';
+        $this->setFilename('TaskList_' . $dateStr . '.pdf');
+
+        $this->mpdf->WriteHTML($this->show()->toString());
+        return match ($output) {
+            PdfInterface::OUTPUT_PDF => $this->getPdf() ?? '',
+            PdfInterface::OUTPUT_ATTACH => $this->getPdfAttachment(),
+            default => $this->getTemplate()->toString()
+        };
     }
 
-    #[NoReturn] public function output(): void
-    {
-        $this->mpdf->Output($this->getFilename(), Destination::INLINE);
-        exit;
-    }
-
-    #[NoReturn] public function download(): void
-    {
-        $this->mpdf->Output($this->getFilename(), Destination::DOWNLOAD);
-        exit;
-    }
-
-    public function getPdfAttachment(string $filename = ''): string
-    {
-        if (!$filename) $filename = $this->getFilename();
-        return $this->mpdf->Output($filename, Destination::STRING_RETURN);
-    }
-
-    public function show(): ?Template
+    function show(): ?Template
     {
         $template = $this->getTemplate();
-        if ($this->rendered) return $template;
-        $this->rendered = true;
 
         foreach ($this->taskList as $i => $task) {
             $css = (($i%2) == 0) ? 'even' : 'odd';
@@ -92,15 +82,17 @@ class PdfTaskList extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displa
             $row->setText('taskId', $task->taskId);
             $row->setText('subject', $task->subject);
 
-            if (is_null($this->project)) {
+            $project = $this->project;
+            if (is_null($project)) {
                 $project = Project::find(intval($task->projectId));
-                if ($this->project instanceof Project) {
-                    $row->setText('project', $project->name);
-                } else {
-                    $row->setText('project', 'N/A');
-                }
-                $row->setVisible('project');
             }
+
+            if ($project instanceof Project) {
+                $row->setText('project', $project->name);
+            } else {
+                $row->setText('project', 'N/A');
+            }
+            $row->setVisible('project');
 
 //            $cat = $task->getTaskCategory();
 //            if ($cat instanceof TaskCategory) {
@@ -148,7 +140,6 @@ class PdfTaskList extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displa
             $desc->appendRepeat('hook');
         }
 
-
         if (count($this->taskList) && truefalse(Registry::instance()->get('site.invoice.enable', false))) {
             $template->setVisible('is-billable');
         }
@@ -188,8 +179,10 @@ class PdfTaskList extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displa
             $template->setVisible('not-project');
         }
 
-        $pdfStyles = file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
-        $template->appendCss($pdfStyles);
+        if (is_file(Config::makePath('/src/App/Pdf/pdfStyles.css'))) {
+            $pdfStyles = file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
+            $template->appendCss($pdfStyles);
+        }
 
         return $template;
     }
@@ -242,8 +235,6 @@ class PdfTaskList extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displa
            </td>
          </tr>
        </table>
-
-
      </htmlpagefooter>
      <sethtmlpageheader name="myheader" value="on" show-this-page="1" />
      <sethtmlpagefooter name="myfooter" value="on" />
@@ -312,7 +303,6 @@ HTML;
 
         return Template::load($xhtml);
     }
-
 
     protected function secondsToDHM($minutes): string
     {

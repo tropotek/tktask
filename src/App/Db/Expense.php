@@ -61,7 +61,7 @@ class Expense extends Model
         return File::findFiltered(Filter::create(['model' => $this], '-created'));
     }
 
-    function getRatio(): int
+    function getRatio(): float
     {
         $type = $this->getExpenseCategory();
         if ($type) return $type->ratio;

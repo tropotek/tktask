@@ -30,7 +30,7 @@ class Sales extends ControllerAdmin
     public function doDefault(): void
     {
         Breadcrumbs::reset();
-        $this->getPage()->setTitle('Sales Report');
+        $this->getPage()->setTitle('Client Sales Report');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->dateSet = Date::getFinancialYear(new \DateTime($_GET['date'] ?? 'now'));

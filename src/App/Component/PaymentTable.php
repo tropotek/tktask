@@ -63,7 +63,7 @@ class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $template = $this->getTemplate();
 
         $this->table->getRenderer()->setFooterEnabled(false);
-        $template->appendTemplate('content', Table::toHtmxTable($this->table));
+        $template->appendTemplate('content', $this->table->htmxShow());
 
         return $template;
     }

@@ -1,71 +1,54 @@
 <?php
+
 namespace App\Pdf;
 
+use App\Db\Project;
+use App\Db\Task;
+use App\Db\User;
 use App\Factory;
-use Dom\Renderer\Renderer;
+use Bs\Registry;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
-use JetBrains\PhpStorm\NoReturn;
-use Mpdf\Mpdf;
 use Tk\Config;
 use Tk\Date;
-use Tk\Uri;
+use Tk\Db\Filter;
+use Tk\Log;
+use Tk\Str;
 
-class PdfProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class ProfitLoss extends PdfInterface
 {
-    protected Mpdf  $mpdf;
-    protected bool  $rendered = false;
+
     protected ?\App\Component\ProfitLoss $report = null;
-    protected array $dateSet;
+    protected array $dateSet = [];
 
-
-    public function __construct(array $dateset)
+    public function doDefault(): string
     {
-        $this->dateSet = $dateset;
-        $this->report = new \App\Component\ProfitLoss($dateset);
-        $this->init();
-    }
+        //@ini_set("memory_limit", "128M");
 
-    protected function init(): void
-    {
-        $url = Uri::create()->toString();
-        $html = $this->show()->toString();
+        $date      = trim($_GET['date'] ?? $_POST['date'] ?? 'now');
+        $output    = trim($_GET['o'] ?? $_POST['o'] ?? PdfInterface::OUTPUT_PDF);
 
-        @ini_set("memory_limit", "128M");
-
-        $this->mpdf = new Mpdf(array(
-            'margin_top' => 20,
-        ));
-
-        $this->mpdf->setBasePath($url);
+        $this->dateSet = Date::getFinancialYear(new \DateTime($date));
+        $this->report = new \App\Component\ProfitLoss($this->dateSet);
 
         $siteCompany = Factory::instance()->getOwnerCompany();
-        $this->mpdf->SetTitle('Profit & Loss Report');
+        $this->SetTitle('Profit & Loss Report');
         $this->mpdf->SetAuthor($siteCompany->name);
 
-        $this->mpdf->SetDisplayMode('fullpage');
-        $this->mpdf->WriteHTML($html);
+        $dateStr = Date::create()->format(Date::FORMAT_ISO_DATE);
+        $this->setFilename('ProfitReport-' . $dateStr . '.pdf');
+
+        $this->mpdf->WriteHTML($this->show()->toString());
+        return match ($output) {
+            PdfInterface::OUTPUT_PDF => $this->getPdf() ?? '',
+            PdfInterface::OUTPUT_ATTACH => $this->getPdfAttachment(),
+            default => $this->getTemplate()->toString()
+        };
     }
 
-    #[NoReturn] public function output(): void
-    {
-        $dateStr = (new \DateTime())->format(Date::FORMAT_ISO_DATE);
-        $filename = 'ProfitReport-' . $dateStr . '.pdf';
-        $this->mpdf->Output($filename, \Mpdf\Output\Destination::INLINE);
-        exit;
-    }
-
-    public function getPdfAttachment(string $filename = ''): string
-    {
-        $dateStr = (new \DateTime())->format(Date::FORMAT_ISO_DATE);
-        if (!$filename) $filename = 'ProfitReport-' . $dateStr . '.pdf';
-        return $this->mpdf->Output($filename, \Mpdf\Output\Destination::STRING_RETURN);
-    }
-
-    public function show(): ?Template
+    function show(): ?Template
     {
         $template = $this->getTemplate();
-        if ($this->rendered) return $template;
-        $this->rendered = true;
 
         $siteCompany = Factory::instance()->getOwnerCompany();
         $template->setText('shop-name', $siteCompany->name);
@@ -83,11 +66,14 @@ class PdfProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
             $template->appendTemplate('table', $this->report->show());
         }
 
-        $pdfStyles = file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
-        $template->appendCss($pdfStyles);
+        if (is_file(Config::makePath('/src/App/Pdf/pdfStyles.css'))) {
+            $pdfStyles = file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
+            $template->appendCss($pdfStyles);
+        }
 
         return $template;
     }
+
 
     public function __makeTemplate(): Template
     {

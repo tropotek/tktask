@@ -162,7 +162,7 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
         $template = $this->getTemplate();
 
         $this->table->getRenderer()->setMaxPages(3);
-        $template->appendTemplate('content', Table::toHtmxTable($this->table));
+        $template->appendTemplate('content', $this->table->htmxShow());
 
         $this->form->addCss('mt-4');
         $template->appendTemplate('content', $this->form->show());

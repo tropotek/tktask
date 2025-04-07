@@ -33,27 +33,6 @@ class Manager extends ControllerAdmin
         $rows = Task::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
-        if ($_GET['act'] ?? false) {
-            return $this->doAction($rows);
-        }
-
-        return null;
-    }
-
-    public function doAction(array $rows): mixed
-    {
-        $action = trim($_GET['post'] ?? $_GET['act'] ?? '');
-        switch ($action) {
-            case 'pdf':
-                $ren = new \App\Pdf\PdfTaskList($rows, Project::find(1));
-                $ren->output();
-                break;
-            case 'html':
-                $ren = new \App\Pdf\PdfTaskList($rows, Project::find(1));
-                return $ren->show();  // to show HTML
-                break;
-        }
-
         return null;
     }
 
@@ -63,7 +42,9 @@ class Manager extends ControllerAdmin
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        $template->setAttr('btn-pdf', 'href', Uri::create()->set('act', 'pdf'));
+        //$url = Uri::create()->set('act', 'pdf');
+        $url = Uri::create('/pdf/taskList')->set('', 'pdf');
+        $template->setAttr('btn-pdf', 'href', $url);
 
         $template->appendTemplate('content', $this->table->show());
 

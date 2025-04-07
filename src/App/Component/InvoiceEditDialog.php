@@ -130,7 +130,7 @@ JS;
 
     public function __makeTemplate(): ?Template
     {
-        $baseUrl = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString();
+        $baseUrl = json_encode(Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString());
 
         $html = <<<HTML
 <div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
@@ -147,9 +147,9 @@ JS;
   jQuery(function($) {
     const dialog    = '#{$this->getDialogId()}';
     const form      = '#{$this->form->getId()}';
-    const baseUrl   = '$baseUrl';
+    const baseUrl   = $baseUrl;
 
-    // reload page after successfull submit
+    // reload init form on load
     $(document).on('htmx:afterSettle', function(e) {
         if (!$(e.detail.elt).is(form)) return;
         if (e.detail.requestConfig.verb === 'get') {
