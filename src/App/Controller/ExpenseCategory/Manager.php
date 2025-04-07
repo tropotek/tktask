@@ -43,12 +43,13 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('ratio')
+            ->setHeader('Claim %')
             ->setSortable(true)
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap text-center');
 
         $this->table->appendCell('active')
             ->setSortable(true)
-            ->addCss('text-nowrap')
+            ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->table->appendCell('modified')
