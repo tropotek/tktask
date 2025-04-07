@@ -45,7 +45,10 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('ratio')
             ->setHeader('Claim %')
             ->setSortable(true)
-            ->addCss('text-nowrap text-center');
+            ->addCss('text-nowrap text-center')
+            ->addOnValue(function(ExpenseCategory $obj, Cell $cell) {
+                return round($obj->ratio * 100) . '%';
+            });
 
         $this->table->appendCell('active')
             ->setSortable(true)

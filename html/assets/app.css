@@ -201,9 +201,9 @@ td a {
   display: block;
   width: 100%;
 }
-th a {
+th a.desc,
+th a.asc {
   padding-right: 1.5rem;
-  /*position: relative;*/
 }
 th a:before,
 th a:after {
