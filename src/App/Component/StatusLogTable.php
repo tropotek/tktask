@@ -40,6 +40,7 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         $this->table->addCss('tk-table-sm');
 
         $this->table->appendCell('message')
+            ->addHeaderCss('text-start')
             ->addHeaderCss('max-width');
 
         $this->table->appendCell('name')

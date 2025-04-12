@@ -96,8 +96,8 @@ class Invoice extends PdfInterface
         $issued = '--';
         $due = '--';
         if ($this->invoice->issuedOn) {
-            $issued = $this->invoice->issuedOn->format(\Tk\Date::FORMAT_SHORT_DATE);
-            $due = $this->invoice->getDateDue()->format(\Tk\Date::FORMAT_SHORT_DATE);
+            $issued = $this->invoice->issuedOn->format(\Tk\Date::FORMAT_AU_DATE);
+            $due = $this->invoice->getDateDue()->format(\Tk\Date::FORMAT_AU_DATE);
         }
         $template->setText('dateIssued', $issued);
         $template->setText('date-due', $due);
@@ -109,13 +109,6 @@ class Invoice extends PdfInterface
         }
 
         // totals
-        if (($this->invoice->discount) > 0 ||
-            ($this->invoice->tax > 0) ||
-            ($this->invoice->shipping->getAmount() > 0)
-        ) {
-            $template->setText('subTotal-amount', $this->invoice->subTotal);
-            $template->setVisible('subTotal');
-        }
 
         if ($this->invoice->discount > 0) {
             $template->setText('discount-pcnt', round($this->invoice->discount * 100, 2) . '%');
@@ -134,23 +127,28 @@ class Invoice extends PdfInterface
             $template->setVisible('shipping');
         }
 
-        $template->setText('total-amount', $this->invoice->total);
+        $template->setText('subTotal-amount', $this->invoice->total);
 
         if ($this->invoice->paidTotal->getAmount() > 0) {
             $template->setText('paid-amount', '-'.$this->invoice->paidTotal);
             $template->setVisible('paid');
         }
 
-        $template->setText('total', $this->invoice->total);
+        $template->setText('total-amount', $this->invoice->unpaidTotal);
 
         $template->setText('status', $this->invoice->getStatus());
         $template->addCss('status', 'badge-' . \App\Db\Invoice::STATUS_CSS[$this->invoice->getStatus()]);
 
-        $template->setText('payments', $this->invoice->paidTotal);
-        if (!in_array($this->invoice->status, [\App\Db\Invoice::STATUS_OPEN, \App\Db\Invoice::STATUS_CANCELLED])) {
-            $template->setText('outstanding', $this->invoice->unpaidTotal);
-        } else {
-            $template->setText('outstanding', '--');
+        if ($this->invoice->status == \App\Db\Invoice::STATUS_UNPAID) {
+            $outstanding = $this->invoice->getOutstandingAmount();
+            if ($outstanding->getAmount() > 0) {
+                $template->setText('outstanding-amount', $outstanding->toString());
+                $template->setVisible('outstanding');
+            }
+
+            $payable = $outstanding->add($this->invoice->unpaidTotal);
+            $template->setText('total-payable-amount', $payable);
+            $template->setVisible('total-payable');
         }
 
         // render item list
@@ -318,11 +316,6 @@ class Invoice extends PdfInterface
         <td class="money bb-1" var="total">$0.00</td>
       </tr>
 
-      <tr choice="subTotal">
-        <td colspan="2"></td>
-        <td class="text-end" colspan="2">Subtotal:</td>
-        <td class="bak-grey money" var="subTotal-amount">0.00</td>
-      </tr>
       <tr choice="discount">
         <td colspan="2"></td>
         <td class="text-end " colspan="2">Discount (<span var="discount-pcnt"></span>):</td>
@@ -340,15 +333,19 @@ class Invoice extends PdfInterface
       </tr>
       <tr>
         <td colspan="2"></td>
-        <td class="text-end" colspan="2">Total:</td>
-        <td class="bak-grey money" var="total">$0.00</td>
+        <td class="text-end" colspan="2">Subtotal:</td>
+        <td class="bak-grey money" var="subTotal-amount">0.00</td>
       </tr>
       <tr choice="paid">
         <td colspan="2"></td>
         <td class="text-end" colspan="2">Paid:</td>
-        <td class="bak-grey money" var="paid-amount">-$0.00</td>
+        <td class="bak-grey money" var="paid-amount">$0.00</td>
       </tr>
-
+      <tr>
+        <td colspan="2"></td>
+        <td class="text-end" colspan="2">Total:</td>
+        <td class="bak-grey money" var="total-amount">$0.00</td>
+      </tr>
     </tbody>
   </table>
 
@@ -364,19 +361,14 @@ class Invoice extends PdfInterface
         <span var="date-due">12/05/2014</span>
       </td>
       <td class="sep">&nbsp;</td>
-      <td class="box">
-        Total<br/>
-        <span var="total">$0.00</span>
-      </td>
-      <td class="sep">&nbsp;</td>
-      <td class="box">
-        Payments<br/>
-        <span var="payments">$0.00</span>
-      </td>
-      <td class="sep">&nbsp;</td>
-      <td class="box text-strong">
+      <td class="box" choice="outstanding">
         Outstanding<br/>
-        <span var="outstanding">$0.00</span>
+        <span var="outstanding-amount">$0.00</span>
+      </td>
+      <td class="sep" choice="outstanding">&nbsp;</td>
+      <td class="box text-strong">
+        Payable<br/>
+        <span var="total-payable-amount">$0.00</span>
       </td>
     </tr>
   </table>

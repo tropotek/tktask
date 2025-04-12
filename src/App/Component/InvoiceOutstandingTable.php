@@ -6,10 +6,13 @@ use App\Db\Payment;
 use App\Db\User;
 use Bs\Mvc\Table;
 use Dom\Template;
+use Tk\Date;
 use Tk\Db;
 use Tk\Log;
+use Tk\Table\Cell;
+use Tk\Uri;
 
-class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class InvoiceOutstandingTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
     protected Table    $table;
     protected ?Invoice $invoice  = null;
@@ -28,32 +31,38 @@ class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         }
 
         // init table
-        $this->table = new Table('payments-tbl');
+        $this->table = new Table('outstanding-tbl');
         $this->table->hideReset();
         $this->table->setOrderBy('-created');
         $this->table->setLimit(25);
         $this->table->addCss('tk-table-sm');
 
-        $this->table->appendCell('method')
+        $this->table->appendCell('issuedOn')
             ->addHeaderCss('text-start')
             ->addCss('max-width text-nowrap')
-            ->setSortable(true);
+            ->addOnValue(function(Invoice $obj, Cell $cell) {
+                $url = Uri::create('/invoiceEdit')->set('invoiceId', $obj->invoiceId);
+                return <<<HTML
+                    <a href="$url">{$obj->issuedOn->format(Date::FORMAT_LONG_DATE)}</a>
+                HTML;
+            });
 
-        $this->table->appendCell('amount')
+        $this->table->appendCell('total')
+            ->addCss('text-end');
+
+        $this->table->appendCell('unpaidTotal')
             ->addCss('text-end');
 
         $this->table->appendCell('created')
             ->addCss('text-nowrap text-center')
-            ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
 
         // execute table
         $this->table->execute();
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
-        $filter['invoiceId'] = $invoiceId;
-        $rows = Payment::findFiltered($filter);
+        $rows = Invoice::findOutstanding($invoiceId, $filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
         return $this->show();
@@ -75,7 +84,7 @@ class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $html = <<<HTML
 <div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fas fa-money-bill"></i> <span var="title">Invoice Payments</span></div>
+    <div class="card-header"><i class="fas fa-money-bill"></i> <span var="title">Outstanding Invoices</span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

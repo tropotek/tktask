@@ -12,6 +12,7 @@ use Dom\Template;
 use Tk\Config;
 use Tk\Date;
 use Tk\Db\Filter;
+use Tk\Db\Session;
 use Tk\Log;
 use Tk\Str;
 
@@ -30,6 +31,7 @@ class TaskList extends PdfInterface
 
         $projectId = intval($_GET['projectId'] ?? $_POST['projectId'] ?? 0);
         $userId    = intval($_GET['userId'] ?? $_POST['userId'] ?? 0);
+        $sesTasks  = boolval($_GET['ses'] ?? $_POST['ses'] ?? false);   // get task list from session
         $output    = trim($_GET['o'] ?? $_POST['o'] ?? PdfInterface::OUTPUT_PDF);
 
         $this->project = Project::find($projectId);
@@ -44,17 +46,21 @@ class TaskList extends PdfInterface
             Breadcrumbs::getBackUrl()->redirect();
         }
 
-        $filter = [
-            'status' => [
-                Task::STATUS_PENDING,
-                Task::STATUS_HOLD,
-                Task::STATUS_OPEN,
-            ]
-        ];
-        if ($userId) {
-            $filter['userId'] = $userId;
+        if ($sesTasks) {
+            $this->taskList = Session::instance()->get('pdf.tasks', []);
+        } else {
+            $filter = [
+                'status' => [
+                    Task::STATUS_PENDING,
+                    Task::STATUS_HOLD,
+                    Task::STATUS_OPEN,
+                ]
+            ];
+            if ($userId) {
+                $filter['userId'] = $userId;
+            }
+            $this->taskList = Task::findFiltered(Filter::create($filter, '-created'));
         }
-        $this->taskList = Task::findFiltered(Filter::create($filter, '-created'));
 
         $siteCompany = Factory::instance()->getOwnerCompany();
         $this->SetTitle('Task List');

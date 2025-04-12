@@ -6,6 +6,9 @@ use App\Db\Company;
 use App\Db\Payment;
 use App\Factory;
 use Bs\Registry;
+use Tk\Db\Session;
+use Tk\Mail\Mailer;
+use Tk\Uri;
 
 class Invoice
 {
@@ -32,8 +35,12 @@ class Invoice
         $content = Registry::instance()->get('site.email.invoice.unpaid', '');
         $message->setContent($content);
 
-        $ren = new \App\Pdf\PdfInvoice($invoice);
-        $attach = $ren->getPdfAttachment();
+        $url = Uri::create('/pdf/invoice', [
+            'invoiceId' => $invoice->invoiceId,
+            'o' => \App\Pdf\Invoice::OUTPUT_ATTACH,
+        ]);
+        $attach = file_get_contents($url);
+
         $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
         if ($invoice->issuedOn instanceof \DateTime) {
             $filename = $invoice->issuedOn->format('Y-m-d') . '_' . $filename;
@@ -48,12 +55,32 @@ class Invoice
             $tasks[] = $task;
         }
         if (count($tasks)) {
-            $pdf = new \App\Pdf\PdfTaskList($tasks);
+            Session::instance()->set('pdf.tasks', $tasks);
+            $url = Uri::create('/pdf/taskList', [
+                'o' => \App\Pdf\Invoice::OUTPUT_ATTACH,
+                'ses' => 1,
+            ]);
+
+            // todo: not sure if this is the best way to send tasks to the pdf, will do for now!
+            // Allow session in request
+            $opts = null;
+            if ($_SERVER['HTTP_COOKIE'] ?? '') {
+                $opts = [
+                    'http' => array('header'=> 'Cookie: '.$_SERVER['HTTP_COOKIE']."\r\n"),
+                    'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
+                ];
+            }
+            $context = stream_context_create($opts);
+            session_write_close(); // unlock the file
+            $attach = file_get_contents($url, false, $context);
+            session_start(); // Lock the file
+
+
             $filename = str_replace([' ', '/', '\\'], '', $invoice->invoiceId . '-TaskList.pdf');
-            $message->addStringAttachment($pdf->getPdfAttachment($filename), $filename);
+            $message->addStringAttachment($attach, $filename);
         }
 
-        return Factory::instance()->getMailGateway()->send($message);
+        return Mailer::instance()->send($message);
     }
 
     public static function sendPaymentReceipt(\App\Db\Payment $payment): bool
@@ -78,7 +105,7 @@ class Invoice
             'payment.id' => $payment->paymentId,
             'account.id' => $company->accountId,
             'payment.amount' => $payment->amount->toString(),
-            'payment.received' => $payment->receivedAt->format(\Tk\Date::FORMAT_SHORT_DATETIME),
+            'payment.received' => $payment->receivedAt->format(\Tk\Date::FORMAT_AU_DATETIME),
             'payment.method' => Payment::METHOD_LIST[$payment->method],
         );
         $message->replace($data);
@@ -86,14 +113,18 @@ class Invoice
         $content = Registry::instance()->get('site.email.payment.cleared');
         $message->setContent($content);
 
-        $ren = new \App\Pdf\PdfInvoice($invoice);
-        $attach = $ren->getPdfAttachment();
+        $url = Uri::create('/pdf/invoice', [
+            'invoiceId' => $invoice->invoiceId,
+            'o' => \App\Pdf\Invoice::OUTPUT_ATTACH,
+        ]);
+        $attach = file_get_contents($url);
+
         $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
         if ($invoice->issuedOn instanceof \DateTime) {
             $filename = $invoice->issuedOn->format('Y-m-d') . '_' . $filename;
         }
         $message->addStringAttachment($attach, $filename);
 
-        return Factory::instance()->getMailGateway()->send($message);
+        return Mailer::instance()->send($message);
     }
 }

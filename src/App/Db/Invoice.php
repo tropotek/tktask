@@ -278,6 +278,20 @@ class Invoice extends Model implements StatusInterface
         return $now > $this->getDateDue();
     }
 
+    public function getOutstanding(): array
+    {
+        return self::findOutstanding($this->invoiceId);
+    }
+
+    public function getOutstandingAmount(): Money
+    {
+        $outstanding = $this->getOutstanding();
+        $total = new Money();
+        foreach ($outstanding as $invoice) {
+            $total = $total->add($invoice->unpaidTotal);
+        }
+        return $total;
+    }
 
     public static function find(int $invoiceId): ?self
     {
@@ -299,6 +313,31 @@ class Invoice extends Model implements StatusInterface
             SELECT *
             FROM v_invoice",
             [],
+            self::class
+        );
+    }
+
+    /**
+     * Return any outstanding invoice from the same company as the supplied invoiceId
+     * Does not include the supplied invoiceId
+     * @return array<int,Invoice>
+     */
+    public static function findOutstanding(int $invoiceId, array|Filter $filter = []): array
+    {
+        $filter = Filter::create($filter);
+        $filter->replace([
+            'invoiceId' => $invoiceId,
+            'status' => self::STATUS_UNPAID,
+        ]);
+        $filter->appendWhere('i.invoice_id != ex.invoice_id AND ');
+        $filter->appendWhere('i.status = :status AND ');
+
+        return Db::query("
+            SELECT i.*
+            FROM v_invoice i
+            LEFT JOIN v_invoice ex ON (ex.fkey = i.fkey AND ex.fid = i.fid AND ex.invoice_id = :invoiceId)
+            {$filter->getSql()}",
+            $filter->all(),
             self::class
         );
     }

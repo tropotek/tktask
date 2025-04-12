@@ -13,7 +13,6 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
     const string OUTPUT_ATTACH = 'attach';
 
     protected ?Mpdf   $mpdf      = null;
-    protected ?string $watermark = null;
     protected string  $filename  = 'untitled.pdf';
     protected string  $title     = 'Untitled';
 
@@ -36,14 +35,12 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
         $this->mpdf->SetTitle($this->title);
         $this->mpdf->SetAuthor(Registry::instance()->get('site.name', 'Unknown'));
         $this->mpdf->curlAllowUnsafeSslRequests = true;
-        //$this->mpdf->showImageErrors = true;s
+        //$this->mpdf->showImageErrors = true;
 
-        if ($this->watermark) {
-            $this->mpdf->SetWatermarkText($this->watermark);
-            $this->mpdf->showWatermarkText = true;
-            $this->mpdf->watermark_font = 'DejaVuSansCondensed';
-            $this->mpdf->watermarkTextAlpha = 0.08;
-        }
+        $this->mpdf->showWatermarkText = true;
+        $this->mpdf->watermark_font = 'DejaVuSansCondensed';
+        $this->mpdf->watermarkTextAlpha = 0.08;
+
         $this->mpdf->SetDisplayMode('fullpage');
 
     }
@@ -77,12 +74,18 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
 
     public function getWatermark(): ?string
     {
-        return $this->watermark;
+        return $this->mpdf->watermarkText;
     }
 
     public function setWatermark(string $watermark): PdfInterface
     {
-        $this->watermark = $watermark;
+        $this->mpdf->SetWatermarkText($watermark);
+
+        if (!empty($this->getWatermark())) {
+            $this->mpdf->showWatermarkText = true;
+        } else {
+            $this->mpdf->showWatermarkText = false;
+        }
         return $this;
     }
 

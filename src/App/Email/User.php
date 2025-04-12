@@ -5,6 +5,7 @@ use Bs\Db\GuestToken;
 use Bs\Factory;
 use Tk\Config;
 use Bs\Registry;
+use Tk\Mail\Mailer;
 use Tk\Uri;
 
 class User
@@ -37,7 +38,7 @@ class User
         ], 60);
         $message->set('activate-url', $gt->getUrl()->toString());
 
-        return Factory::instance()->getMailGateway()->send($message);
+        return Mailer::instance()->send($message);
     }
 
 
@@ -70,7 +71,7 @@ class User
         ], 20);
         $message->set('activate-url', $gt->getUrl()->toString());
 
-        return Factory::instance()->getMailGateway()->send($message);
+        return Mailer::instance()->send($message);
     }
 
 }

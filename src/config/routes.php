@@ -130,6 +130,8 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('com-invoice-edit-dialog', '/component/invoiceEditDialog')
         ->controller([\App\Component\InvoiceEditDialog::class, 'doDefault']);
+    $routes->add('com-invoice-outstanding-table', '/component/invoiceOutstandingTable')
+        ->controller([\App\Component\InvoiceOutstandingTable::class, 'doDefault']);
 
     $routes->add('com-payment-add-dialog', '/component/paymentAddDialog')
         ->controller([\App\Component\PaymentAddDialog::class, 'doDefault']);

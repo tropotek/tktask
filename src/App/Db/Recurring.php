@@ -94,7 +94,7 @@ class Recurring extends Model
         $invoice      = null;
         $this->prevOn = $this->nextOn;
         $this->nextOn = self::createNextDate($this->prevOn, $this->cycle);
-        $description  = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_MED_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_MED_DATE) . ']';
+        $description  = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_AU_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_AU_DATE) . ']';
 
 
         if ($this->active) {

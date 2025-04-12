@@ -135,6 +135,14 @@ class Edit extends ControllerAdmin
             $template->setVisible('paymentsTable');
         }
 
+        if (count($this->invoice->getOutstanding())) {
+            $url = Uri::create('/component/invoiceOutstandingTable', ['invoiceId' => $this->invoice->invoiceId]);
+            $template->setAttr('outstandingTable', 'hx-get', $url);
+            $template->setVisible('outstandingTable');
+        }
+
+
+
         $url = Uri::create('/component/statusLogTable', ['fid' => $this->invoice->invoiceId, 'fkey' => $this->invoice::class]);
         $template->setAttr('statusTable', 'hx-get', $url);
 
@@ -201,12 +209,12 @@ JS;
         }
 
         if ($this->invoice->issuedOn) {
-            $template->setText('issuedOn', $this->invoice->issuedOn->format(Date::FORMAT_MED_DATE));
+            $template->setText('issuedOn', $this->invoice->issuedOn->format(Date::FORMAT_AU_DATE));
             $template->setVisible('v-issuedOn');
         }
 
         if ($this->invoice->getDateDue()) {
-            $template->setText('issuedOn', $this->invoice->getDateDue()->format(Date::FORMAT_MED_DATE));
+            $template->setText('issuedOn', $this->invoice->getDateDue()->format(Date::FORMAT_AU_DATE));
             $template->setVisible('v-dueOn');
         }
 
@@ -283,15 +291,6 @@ JS;
             $row->appendRepeat();
         }
 
-        // totals footer
-        if (($this->invoice->discount) > 0 ||
-            ($this->invoice->tax > 0) ||
-            ($this->invoice->shipping->getAmount() > 0)
-        ) {
-            $template->setText('subTotal-amount', $this->invoice->subTotal);
-            $template->setVisible('subTotal');
-        }
-
         if ($this->invoice->discount > 0) {
             $template->setText('discount-pcnt', round($this->invoice->discount * 100, 2) . '%');
             $template->setText('discount-amount', $this->invoice->discountTotal);
@@ -309,16 +308,25 @@ JS;
             $template->setVisible('shipping');
         }
 
-        $template->setText('total-amount', $this->invoice->total);
+        $template->setText('subTotal-amount', $this->invoice->total);
 
         if ($this->invoice->paidTotal->getAmount() > 0) {
             $template->setText('paid-amount', '-'.$this->invoice->paidTotal);
             $template->setVisible('paid');
         }
 
+        $template->setText('total-amount', $this->invoice->unpaidTotal);
+
         if ($this->invoice->status == Invoice::STATUS_UNPAID) {
-            $template->setText('outstanding-amount', $this->invoice->unpaidTotal);
-            $template->setVisible('outstanding');
+            $outstanding = $this->invoice->getOutstandingAmount();
+            if ($outstanding->getAmount() > 0) {
+                $template->setText('outstanding-amount', $outstanding->toString());
+                $template->setVisible('outstanding');
+            }
+
+            $payable = $outstanding->add($this->invoice->unpaidTotal);
+            $template->setText('total-payable-amount', $payable);
+            $template->setVisible('total-payable');
         }
 
     }
@@ -474,35 +482,44 @@ JS;
                             </div>
                         </div> <!-- end col -->
                         <div class="col-sm-6 ps-2">
-                            <div class="float-end pe-1">
-                                <p choice="subTotal">
-                                    <b>Sub-total: </b>
-                                    <span class="float-end ms-1" var="subTotal-amount">$0.00</span>
-                                </p>
-                                <p choice="discount">
-                                    <b>Discount (<span var="discount-pcnt"></span>): </b>
-                                    <span class="float-end ms-1" var="discount-amount">$0.00</span>
-                                </p>
-                                <p choice="tax">
-                                    <b>Tax (<span var="tax-pcnt"></span>): </b>
-                                    <span class="float-end ms-1" var="tax-amount">$0.00</span>
-                                </p>
-                                <p choice="shipping">
-                                    <b>Shipping: </b>
-                                    <span class="float-end ms-1" var="shipping-amount">$0.00</span>
-                                </p>
-                                <p>
-                                    <b>Total: </b>
-                                    <span class="float-end ms-1" var="total-amount">$0.00</span>
-                                </p>
-                                <p choice="paid">
-                                    <b>Paid: </b>
-                                    <span class="float-end ms-1" var="paid-amount">-$0.00</span>
-                                </p>
-
-                                <h3 choice="outstanding"><span var="outstanding-amount">$0.00</span></h3>
-                            </div>
-                            <div class="clearfix"></div>
+                            <table class="table table-borderless totals">
+                                <tr choice="discount">
+                                    <td>Discount (<span var="discount-pcnt"></span>):</td>
+                                    <td var="discount-amount">$0.00</td>
+                                </tr>
+                                <tr choice="tax">
+                                    <td>Tax (<span var="tax-pcnt"></span>):</td>
+                                    <td var="tax-amount">$0.00</td>
+                                </tr>
+                                <tr choice="shipping">
+                                    <td>Shipping:</td>
+                                    <td var="shipping-amount">$0.00</td>
+                                </tr>
+                                <tr choice="shipping">
+                                    <td>Shipping:</td>
+                                    <td var="shipping-amount">$0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Sub-total:</td>
+                                    <td var="subTotal-amount">$0.00</td>
+                                </tr>
+                                <tr choice="paid">
+                                    <td>Paid:</td>
+                                    <td var="paid-amount">$0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Total:</td>
+                                    <td class="text-strong" var="total-amount">$0.00</td>
+                                </tr>
+                                <tr choice="outstanding">
+                                    <td>Outstanding Invoices:</td>
+                                    <td var="outstanding-amount">$0.00</td>
+                                </tr>
+                                <tr choice="total-payable">
+                                    <td>Total Payable:</td>
+                                    <td var="total-payable-amount">$0.00</td>
+                                </tr>
+                            </table>
                         </div> <!-- end col -->
                     </div>
                     <!-- end row -->
@@ -514,6 +531,9 @@ JS;
     <!-- END: Invoice Template -->
 
     <div class="col-4" var="components">
+        <div hx-get="/component/invoiceOutstandingTable" hx-trigger="load" hx-swap="outerHTML" choice="outstandingTable">
+          <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+        </div>
         <div hx-get="/component/paymentTable" hx-trigger="load" hx-swap="outerHTML" choice="paymentsTable">
           <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
         </div>
@@ -528,6 +548,23 @@ JS;
         <div hx-get="/component/itemAddDialog" hx-trigger="load" hx-swap="outerHTML" choice="itemAddDialog"></div>
         <div hx-get="/component/paymentAddDialog" hx-trigger="load" hx-swap="outerHTML" choice="paymentAddDialog"></div>
     </div>
+
+<style>
+table.totals td:first-child {
+    font-weight: bold;
+    text-align: right;
+    width: 100%;
+}
+table.totals tr:last-child{
+    font-weight: bold;
+    text-align: right;
+    font-size: 2em;
+}
+table.totals td:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+</style>
 </div>
 HTML;
         return $this->loadTemplate($html);
