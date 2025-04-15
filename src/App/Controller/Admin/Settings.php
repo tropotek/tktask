@@ -2,6 +2,7 @@
 namespace App\Controller\Admin;
 
 use App\Db\Company;
+use App\Db\Product;
 use App\Db\User;
 use App\Factory;
 use Bs\Auth;
@@ -76,10 +77,29 @@ class Settings extends ControllerAdmin
             ->setNotes('Select the owner company of this site')
             ->setGroup($tab));
 
+        $list = Product::findFiltered(Filter::create(['active' => true, 'cycle' => Product::CYCLE_EACH], 'category_name,name'));
+        $list = Collection::toSelectList($list, 'productId',
+            function (Product $product) {
+                return $product->categoryName . ' -> ' . $product->name . ' [' . $product->price->toString() . ']';
+            }
+        );
+        $this->form->appendField((new Select('site.product.labor.default', $list))
+            ->setLabel('Default Labour Product')
+            ->prependOption('-- None --', '')
+            ->setRequired()
+            ->setNotes('Select the default product to use when completing tasks')
+            ->setGroup($tab));
+
         $list = ['' => '-- System Default --', '1' => 'Yes', '0' => 'No'];
         $this->form->appendField(new Select('site.taskLog.billable.default', $list))
             ->setLabel('Log Default Billable')
             ->setNotes('Set the default billable status when creating Task Logs. None means force the user to choose.')
+            ->setGroup($tab);
+
+        $list = ['14' => '14 Days', '28' => '28 Days', '30' => '30 Days', '60' => '60 Days', '90' => '90 Days'];
+        $this->form->appendField(new Select('site.account.overdue.days', $list))
+            ->setLabel('Invoice Payment Due Days')
+            ->setNotes('After this number of days the invoice is flagged as payment overdue.')
             ->setGroup($tab);
 
         $this->form->appendField((new Checkbox('site.invoice.enable', ['1' => 'Enable task invoicing, products and recurring invoicing systems.']))

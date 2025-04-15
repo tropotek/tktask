@@ -17,7 +17,7 @@ class Invoice extends Model implements StatusInterface
 {
     use ForeignModelTrait;
 
-    CONST int DEFAULT_DUE_DAYS = 14;
+    CONST int DEFAULT_OVERDUE_DAYS = 14;
 
     const string STATUS_OPEN      = 'open';
     const string STATUS_UNPAID    = 'unpaid';
@@ -257,14 +257,11 @@ class Invoice extends Model implements StatusInterface
         return $this;
     }
 
-    /**
-     * @todo `account.due.days` is not in the registry or settings page
-     */
     public function getDateDue(): ?\DateTime
     {
         $due = null;
         if ($this->issuedOn) {
-            $days = intval(Registry::instance()->get('account.due.days', self::DEFAULT_DUE_DAYS));
+            $days = (int)Registry::instance()->get('site.account.overdue.days', self::DEFAULT_OVERDUE_DAYS);
             $interval = new \DateInterval('P' . $days . 'D');
             $due = $this->issuedOn->add($interval);
         }

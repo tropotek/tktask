@@ -11,7 +11,8 @@ class ExpenseCategory extends Model
     public int       $expenseCategoryId = 0;
     public string    $name              = '';
     public string    $description       = '';
-    public float     $ratio             = 1;
+    /** amount claimable for tax */
+    public float     $claim             = 1;
     public bool      $active            = true;
     public \DateTime $modified;
     public \DateTime $created;
@@ -26,7 +27,7 @@ class ExpenseCategory extends Model
     public static function getFormMap(): DataMap
     {
         $map = parent::getFormMap();
-        $map->addType(DataMap::makeFormType('percent', 'ratio'));
+        $map->addType(DataMap::makeFormType('percent', 'claim'));
         return $map;
     }
 
@@ -105,8 +106,8 @@ class ExpenseCategory extends Model
         if (!empty($filter['name'])) {
             $filter->appendWhere('a.name = :name AND ');
         }
-        if (!empty($filter['ratio'])) {
-            $filter->appendWhere('a.ratio = :ratio AND ');
+        if (!empty($filter['claim'])) {
+            $filter->appendWhere('a.claim = :claim AND ');
         }
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
@@ -134,8 +135,8 @@ class ExpenseCategory extends Model
             $errors['name'] = 'Invalid value: name';
         }
 
-        if (!$this->ratio) {
-            $errors['ratio'] = 'Invalid value: ratio';
+        if (!$this->claim) {
+            $errors['claim'] = 'Invalid value: claim';
         }
 
         return $errors;

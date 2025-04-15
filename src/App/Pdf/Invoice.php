@@ -62,7 +62,7 @@ class Invoice extends PdfInterface
 
         // Setup page
         $template->setTitleText('Invoice No: ' . $this->invoice->invoiceId);
-        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', \App\Db\Invoice::DEFAULT_DUE_DAYS)));
+        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', \App\Db\Invoice::DEFAULT_OVERDUE_DAYS)));
 
         $paymentText = Registry::instance()->get('site.invoice.payment', '');
         if ($paymentText) {

@@ -2,6 +2,7 @@
 namespace App\Db;
 
 use App\Db\Traits\ProductCategoryTrait;
+use Bs\Registry;
 use DateTime;
 use Tk\Config;
 use Tk\Db\Model;
@@ -43,6 +44,7 @@ class Product extends Model
     public string  $description       = '';
     public string  $notes             = '';
     public bool    $active            = true;
+    public string  $categoryName      = '';
 
     public Money    $price;
     public DateTime $modified;
@@ -78,8 +80,7 @@ class Product extends Model
 
     public static function getDefaultLaborProduct(): static
     {
-        $config = Config::instance();
-        $id = (int)$config->get('site.product.labor.default', self::DEFAULT_LABOUR_PRODUCT);
+        $id = (int)Registry::instance()->get('site.product.labor.default', self::DEFAULT_LABOUR_PRODUCT);
         $obj = self::find($id);
         if (!($obj instanceof Product)) throw new Exception("Failed to find product id {$id}");
         return $obj;
@@ -89,7 +90,7 @@ class Product extends Model
     {
         return Db::queryOne("
             SELECT *
-            FROM product
+            FROM v_product
             WHERE product_id = :productId",
             compact('productId'),
             self::class
@@ -100,7 +101,7 @@ class Product extends Model
     {
         return Db::queryOne("
             SELECT *
-            FROM product
+            FROM v_product
             WHERE code = :productCode",
             compact('productCode'),
             self::class
@@ -114,7 +115,7 @@ class Product extends Model
     {
         return Db::query("
             SELECT *
-            FROM product",
+            FROM v_product",
             [],
             self::class
         );
@@ -170,7 +171,7 @@ class Product extends Model
 
         return Db::query("
             SELECT *
-            FROM product a
+            FROM v_product a
             {$filter->getSql()}",
             $filter->all(),
             self::class

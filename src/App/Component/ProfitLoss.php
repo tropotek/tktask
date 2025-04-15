@@ -60,8 +60,10 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
                 'expenseCategoryId' => $category->expenseCategoryId
             ));
             $catTotal = \Tk\Money::create();
+            $catClaim = \Tk\Money::create();
             foreach ($expenseList as $expense) {
-                $catTotal = $catTotal->add($expense->getBusinessTotal());
+                $catTotal = $catTotal->add($expense->getClaimableAmount());
+                // todo
             }
             if ($catTotal->getAmount() <= 0) continue;
 
@@ -91,38 +93,52 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
     {
         $html = <<<HTML
 <div class="profit-loss">
-  <table style="border-collapse: collapse;">
+<style>
+table td.currency {
+    text-align: right;
+}
+table .head td {
+    background-color: #F9F9F9;
+}
+</style>
+
+  <table class="table table-borderless" style="border-collapse: collapse;">
     <tr>
-      <td colspan="2">&nbsp;</td>
+      <td class="text-start" colspan="3"><h3>Income</h3></td>
     </tr>
     <tr>
       <td class="w-100">Gross Profit</td>
-      <td class="currency" var="profit">_$0.00</td>
+      <td class="text-center" var="profit-claim"></td>
+      <td class="currency" var="profit">$0.00</td>
     </tr>
-    <tr class="header">
-      <td colspan="2"><b>Expenses</b></td>
+    <tr>
+      <td class="text-start" colspan="3"><h3>Expenses</h3></td>
     </tr>
     <tr repeat="expenseRow">
-      <td var="categoryName">_Test</td>
-      <td class="currency" var="total">_$0.00</td>
+      <td var="categoryName">Test</td>
+      <td class="currency text-nowrap" var="total-claim">$0.00</td>
+      <td class="currency" var="total">$0.00</td>
     </tr>
-    <tr class="header">
+    <tr class="head">
       <td><b>Total Expenses</b></td>
-      <td class="currency" var="totalExpenses">_$0.00</td>
+      <td class="currency" var="totalExpenses-claim">$0.00</td>
+      <td class="currency" var="totalExpenses">$0.00</td>
     </tr>
     <tr>
-      <td colspan="2">&nbsp;</td>
+      <td colspan="3">&nbsp;</td>
     </tr>
-    <tr>
+    <tr class="head">
       <td><b>Net Profit</b></td>
-      <td class="currency" var="netProfit">_$0.00</td>
+      <td class="text-center" var="netProfit-claim"></td>
+      <td class="currency" var="netProfit">$0.00</td>
     </tr>
     <tr>
-      <td colspan="2">&nbsp;</td>
+      <td colspan="3">&nbsp;</td>
     </tr>
-    <tr choice="v-tax">
+    <tr class="head" choice="v-tax">
       <td><b>Payable Tax Est <span var="tax-ratio"></span></b></td>
-      <td class="currency" var="tax">_$0.00</td>
+      <td class="text-center" var="tax-claim"></td>
+      <td class="currency" var="tax">$0.00</td>
     </tr>
   </table>
 </div>

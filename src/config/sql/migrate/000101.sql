@@ -271,7 +271,7 @@ CREATE TABLE expense_category (
   expense_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(128) NOT NULL,
   description TEXT,
-  ratio FLOAT UNSIGNED NOT NULL DEFAULT 1.0,
+  claim FLOAT UNSIGNED NOT NULL DEFAULT 1.0,
   active BOOL NOT NULL DEFAULT TRUE,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -304,10 +304,6 @@ INSERT INTO user (type, given_name) VALUES ('staff', 'admin');
 INSERT INTO auth (fkey, fid, permissions, username, email, timezone, active) VALUES
   ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne', false);
 
--- TODO: remove for production release (remember to set password `./bin/cmd pwd tropotek`)
-INSERT INTO user (type, given_name) VALUES ('staff', 'Tropotek');
-INSERT INTO auth (fkey, fid, permissions, username, email, timezone, active) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'tropotek', 'godar@dev.ttek.org', 'Australia/Melbourne', true);
 
 INSERT INTO task_category (name, label) VALUES
   ('task', 'Task'),
@@ -317,6 +313,7 @@ INSERT INTO task_category (name, label) VALUES
   ('other', 'Other')
 ;
 UPDATE task_category SET order_by = task_category_id WHERE TRUE;
+
 
 SET SQL_SAFE_UPDATES = 1;
 SET FOREIGN_KEY_CHECKS = 1;

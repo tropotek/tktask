@@ -61,19 +61,19 @@ class Expense extends Model
         return File::findFiltered(Filter::create(['model' => $this], '-created'));
     }
 
-    function getRatio(): float
+    function getClaimRatio(): float
     {
         $type = $this->getExpenseCategory();
-        if ($type) return $type->ratio;
+        if ($type) return $type->claim;
         return 0;
     }
 
     /**
-     * Get the amount chargeable to the business
+     * Get the amount claimable for tax
      */
-    function getBusinessTotal(): Money
+    function getClaimableAmount(): Money
     {
-        return $this->total->multiply($this->getRatio());
+        return $this->total->multiply($this->getClaimRatio());
     }
 
 

@@ -188,7 +188,7 @@ JS;
         $this->invoice->reload();
 
         $template->setText('invoiceId', $this->invoice->getId());
-        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', Invoice::DEFAULT_DUE_DAYS)));
+        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', Invoice::DEFAULT_OVERDUE_DAYS)));
         $template->setText('clientName', $company->name);
         $template->setAttr('clientName', 'href', Uri::create('/companyEdit', ['companyId' => $company->companyId]));
 

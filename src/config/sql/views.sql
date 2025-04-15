@@ -39,6 +39,15 @@ SELECT
 FROM file f
 ;
 
+-- \App\Db\Product
+CREATE OR REPLACE VIEW v_product AS
+SELECT
+  p.*,
+  pc.name AS category_name
+FROM product p
+JOIN product_category pc USING (product_category_id)
+;
+
 -- \App\Db\Company
 CREATE OR REPLACE VIEW v_company AS
 SELECT

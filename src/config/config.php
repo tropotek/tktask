@@ -45,6 +45,14 @@ return function (Config $config) {
     $config['auth.registration.enable'] = false;
 
     /**
+     * The site developer information
+     * Use this for online support contact forms and copyright
+     */
+    $config['developer.name']  = 'Tropotek';
+    $config['developer.web']   = 'https://tropotek.com.au/';
+    $config['developer.email'] = 'apd-support@tropotek.com.au';
+
+    /**
      * Validate user passwords on input
      * - Must include at least one number
      * - Must include at least one letter
@@ -57,24 +65,9 @@ return function (Config $config) {
      */
     //$config['auth.password.strict'] = false;
 
-    /**
-     * The site developer information
-     * Use this for online support contact forms and copyright
-     */
-    $config['developer.name']  = 'Tropotek';
-    $config['developer.web']   = 'https://tropotek.com.au/';
-    $config['developer.email'] = 'apd-support@tropotek.com.au';
-
 
     /**
-     * Set the default labor product that will be set for tasks and logs
-     * (Default: 1)
-     */
-    //$config['site.product.labor.default'] = 1;
-
-
-    /**
-     * Whitelist URLS:
+     * Single Sign In (SSI) Whitelist URLS:
      *   - https://domain.com/_ssi  <- main oauth uri
      *   - https://domain.com/login
      *   - https://domain.com/logout

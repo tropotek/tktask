@@ -5,6 +5,7 @@ namespace App\Email;
 use App\Db\Company;
 use App\Db\Payment;
 use App\Factory;
+use App\Pdf\PdfInterface;
 use Bs\Registry;
 use Tk\Db\Session;
 use Tk\Mail\Mailer;
@@ -37,15 +38,24 @@ class Invoice
 
         $url = Uri::create('/pdf/invoice', [
             'invoiceId' => $invoice->invoiceId,
-            'o' => \App\Pdf\Invoice::OUTPUT_ATTACH,
+            'o' => PdfInterface::OUTPUT_ATTACH,
         ]);
         $attach = file_get_contents($url);
 
         $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
-        if ($invoice->issuedOn instanceof \DateTime) {
-            $filename = $invoice->issuedOn->format('Y-m-d') . '_' . $filename;
-        }
         $message->addStringAttachment($attach, $filename);
+
+        $outstanding = $invoice->getOutstanding();
+        foreach ($outstanding as $inv) {
+            $url = Uri::create('/pdf/invoice', [
+                'invoiceId' => $inv->invoiceId,
+                'o' => PdfInterface::OUTPUT_ATTACH,
+            ]);
+            $a = file_get_contents($url);
+
+            $filename = 'outstanding-invoice-' . $inv->invoiceId.'.pdf';
+            $message->addStringAttachment($a, $filename);
+        }
 
         $items = $invoice->getItemList();
         $tasks = [];
@@ -55,13 +65,13 @@ class Invoice
             $tasks[] = $task;
         }
         if (count($tasks)) {
+
+            // todo: not sure if the session is the best way to send tasks to the pdf, will do for now!
             Session::instance()->set('pdf.tasks', $tasks);
             $url = Uri::create('/pdf/taskList', [
-                'o' => \App\Pdf\Invoice::OUTPUT_ATTACH,
+                'o' => PdfInterface::OUTPUT_ATTACH,
                 'ses' => 1,
             ]);
-
-            // todo: not sure if this is the best way to send tasks to the pdf, will do for now!
             // Allow session in request
             $opts = null;
             if ($_SERVER['HTTP_COOKIE'] ?? '') {
@@ -74,7 +84,6 @@ class Invoice
             session_write_close(); // unlock the file
             $attach = file_get_contents($url, false, $context);
             session_start(); // Lock the file
-
 
             $filename = str_replace([' ', '/', '\\'], '', $invoice->invoiceId . '-TaskList.pdf');
             $message->addStringAttachment($attach, $filename);
@@ -115,7 +124,7 @@ class Invoice
 
         $url = Uri::create('/pdf/invoice', [
             'invoiceId' => $invoice->invoiceId,
-            'o' => \App\Pdf\Invoice::OUTPUT_ATTACH,
+            'o' => PdfInterface::OUTPUT_ATTACH,
         ]);
         $attach = file_get_contents($url);
 

@@ -47,7 +47,7 @@ class Manager extends ControllerAdmin
             ->setSortable(true)
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(ExpenseCategory $obj, Cell $cell) {
-                return round($obj->ratio * 100) . '%';
+                return round($obj->claim * 100) . '%';
             });
 
         $this->table->appendCell('active')
