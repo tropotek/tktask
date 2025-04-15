@@ -66,11 +66,11 @@ class Edit extends ControllerAdmin
             $template->setText('created', $this->task->created->format(Date::FORMAT_LONG_DATETIME));
         }
 
-        if ($this->task->isEditable()) {
+        if ($this->task->taskId && $this->task->isEditable()) {
             $url = Uri::create('/taskLogEdit')->set('taskId', $this->task->taskId);
             $template->setAttr('add-log', 'href', $url);
             $template->setVisible('add-log');
-        } else {
+        } elseif ($this->task->status == Task::STATUS_CLOSED) {
             $url = Uri::create()->set('ro', $this->task->taskId);
             $template->setAttr('re-open', 'href', $url);
             $template->setVisible('re-open');

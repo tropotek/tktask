@@ -45,6 +45,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $this->table->appendCell('comment')
             ->addHeaderCss('max-width')
             ->addOnValue(function(TaskLog $obj, Cell $cell) {
+                $cell->setAttr('title', 'User: ' . $obj->getUser()->nameShort);
                 return $obj->comment;
             });
 
