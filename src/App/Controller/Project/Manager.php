@@ -74,7 +74,8 @@ class Manager extends ControllerAdmin
         // Progress
         // todo wait until Task exist
         $this->table->appendCell('progress')
-            ->addCss('text-nowrap');
+            ->addCss('text-nowrap')
+            ->getRowAttrs()->setAttr('style', 'vertical-align: middle');
 
         // Open Tasks
         // todo wait until Task exist

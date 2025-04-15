@@ -43,9 +43,9 @@ class Sales extends ControllerAdmin
             Uri::create('/')->redirect();
         }
 
-        $start = clone $firstInvoice->created;
+        $start = Date::getFinancialYear($firstInvoice->created)[0];
         $end   = \Tk\Date::create();
-        $val   = $end->format('Y-m-d');
+        $val   = $this->dateSet[0]->format('Y-m-d');
         $list  = [];
 
         while ($start->format('Y') <= $end->format('Y')) {

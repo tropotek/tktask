@@ -63,8 +63,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $this->table->appendCell('created')
             ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
-
-
+        
         // execute table
         $this->table->execute();
 
@@ -86,7 +85,6 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
 
         return $template;
     }
-
 
     public function __makeTemplate(): ?Template
     {

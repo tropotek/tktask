@@ -108,6 +108,7 @@ class Task extends Table
         $this->appendCell('progress')
             ->addCss('text-nowrap')
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                $cell->getTable()->getRowAttrs()->setAttr('style', 'vertical-align: middle');
                 $pcnt = 0;
                 if ($obj->minutes) {
                     $completed = $obj->getCompletedTime();
