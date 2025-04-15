@@ -18,7 +18,7 @@ use Tk\Str;
 class ProfitLoss extends PdfInterface
 {
 
-    protected ?\App\Component\ProfitLoss $report = null;
+    protected ?\App\Ui\ProfitLoss $report = null;
     protected array $dateSet = [];
 
     public function doDefault(): string
@@ -29,7 +29,7 @@ class ProfitLoss extends PdfInterface
         $output    = trim($_GET['o'] ?? $_POST['o'] ?? PdfInterface::OUTPUT_PDF);
 
         $this->dateSet = Date::getFinancialYear(new \DateTime($date));
-        $this->report = new \App\Component\ProfitLoss($this->dateSet);
+        $this->report = new \App\Ui\ProfitLoss($this->dateSet);
 
         $siteCompany = Factory::instance()->getOwnerCompany();
         $this->SetTitle('Profit & Loss Report');

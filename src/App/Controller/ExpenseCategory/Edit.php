@@ -47,12 +47,16 @@ class Edit extends ControllerAdmin
 
         // Get the form template
         $this->form = new Form();
-        $this->form->appendField(new Input('name'));
+        $this->form->appendField(new Input('name'))
+            ->addFieldCss('col-4');
         $this->form->appendField(new InputGroup('claim', '%'))
             ->setLabel('Claim %')
-            ->setNotes('Set the percentage of tax claimable for all items in this category');
+            ->setNotes('Set the percentage of tax claimable for all items in this category')
+            ->addFieldCss('col-4');
 
-        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('&nbsp;');
+        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))
+            ->setLabel('&nbsp;')
+            ->addFieldCss('col-4');
         $this->form->appendField(new Textarea('description'));
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
@@ -87,11 +91,6 @@ class Edit extends ControllerAdmin
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        $this->form->getField('name')->addFieldCss('col-4');
-        $this->form->getField('ratio')->addFieldCss('col-4');
-        $this->form->getField('active')->addFieldCss('col-4');
-
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', Factory::instance()->getBackUrl());

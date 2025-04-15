@@ -1,5 +1,5 @@
 <?php
-namespace App\Component;
+namespace App\Ui;
 
 use App\Db\Payment;
 use App\Db\User;
@@ -10,9 +10,6 @@ use Tk\Money;
 
 /**
  * Display the Profit and loss report table
- *
- * @todo, does this need to be in its own file??? I would not think so.
- * @todo This is not an HTMX component, this is a renderer and should be in a forlder /App/Renderers or /App/Ui
  */
 class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
@@ -50,6 +47,7 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
 
         // Expenses
         $total = \Tk\Money::create();
+        $claimTotal = \Tk\Money::create();
 
         $categoryList = \App\Db\ExpenseCategory::findFiltered(Filter::create([], 'name'));
         foreach ($categoryList as $category) {
@@ -62,20 +60,24 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
             $catTotal = \Tk\Money::create();
             $catClaim = \Tk\Money::create();
             foreach ($expenseList as $expense) {
-                $catTotal = $catTotal->add($expense->getClaimableAmount());
-                // todo
+                $catTotal = $catTotal->add($expense->total);
+                $catClaim = $catClaim->add($expense->getClaimableAmount());
             }
             if ($catTotal->getAmount() <= 0) continue;
 
+            $repeat->setText('expense-claim', sprintf('[%s%%] ', ($category->claim*100)));
             $repeat->setText('total', $catTotal->toString());
+            $repeat->setText('total-claim', $catClaim->toString());
             $repeat->setText('categoryName', $category->name);
             $total = $total->add($catTotal);
+            $claimTotal = $claimTotal->add($catClaim);
 
             $repeat->appendRepeat();
         }
         $netProfit = $grossProfit->subtract($total);
 
         $template->setText('totalExpenses', $total->toString());
+        $template->setText('totalExpenses-claim', $claimTotal->toString());
         $template->setText('netProfit', $netProfit->toString());
 
         // Estimate the amount of tax payable for year
@@ -104,39 +106,50 @@ table .head td {
 
   <table class="table table-borderless" style="border-collapse: collapse;">
     <tr>
-      <td class="text-start" colspan="3"><h3>Income</h3></td>
+      <td class="text-start" colspan="4"><h3>Income</h3></td>
     </tr>
     <tr>
       <td class="w-100">Gross Profit</td>
+      <td></td>
       <td class="text-center" var="profit-claim"></td>
       <td class="currency" var="profit">$0.00</td>
     </tr>
     <tr>
-      <td class="text-start" colspan="3"><h3>Expenses</h3></td>
+      <td class="text-start" colspan="4"><h3>Expenses</h3></td>
+    </tr>
+    <tr>
+      <th class="text-start">Description</th>
+      <th>Claim&nbsp;%</th>
+      <th>Claimable</th>
+      <th>Total</th>
     </tr>
     <tr repeat="expenseRow">
       <td var="categoryName">Test</td>
+      <td class="text-end text-muted" var="expense-claim">0%</td>
       <td class="currency text-nowrap" var="total-claim">$0.00</td>
       <td class="currency" var="total">$0.00</td>
     </tr>
     <tr class="head">
       <td><b>Total Expenses</b></td>
+      <td></td>
       <td class="currency" var="totalExpenses-claim">$0.00</td>
       <td class="currency" var="totalExpenses">$0.00</td>
     </tr>
     <tr>
-      <td colspan="3">&nbsp;</td>
+      <td colspan="4">&nbsp;</td>
     </tr>
     <tr class="head">
       <td><b>Net Profit</b></td>
+      <td></td>
       <td class="text-center" var="netProfit-claim"></td>
       <td class="currency" var="netProfit">$0.00</td>
     </tr>
     <tr>
-      <td colspan="3">&nbsp;</td>
+      <td colspan="4">&nbsp;</td>
     </tr>
     <tr class="head" choice="v-tax">
       <td><b>Payable Tax Est <span var="tax-ratio"></span></b></td>
+      <td></td>
       <td class="text-center" var="tax-claim"></td>
       <td class="currency" var="tax">$0.00</td>
     </tr>

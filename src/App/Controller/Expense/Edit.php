@@ -56,6 +56,7 @@ class Edit extends ControllerAdmin
         $this->form->appendField((new SelectBtn('companyId', $list))
             ->setLabel('Supplier')
             ->prependOption('-- Select --', '')
+            ->setAttr('data-toggle', 'select2')
             ->setBtnAttr('title', 'Add Supplier')
             ->setBtnAttr('data-bs-toggle', 'modal')
             ->setBtnAttr('data-bs-target', '#'.CompanyAddDialog::CONTAINER_ID)
@@ -64,7 +65,9 @@ class Edit extends ControllerAdmin
 
         $categories = ExpenseCategory::findFiltered(Filter::create([], 'name'));
         $list = Collection::toSelectList($categories, 'expenseCategoryId');
-        $this->form->appendField(new Select('expenseCategoryId', $list))->prependOption('-- Select --', '');
+        $this->form->appendField(new Select('expenseCategoryId', $list))
+            ->prependOption('-- Select --', '')
+            ->setAttr('data-toggle', 'select2');
 
         $this->form->appendField(new InputGroup('total', '$'));
 

@@ -21,7 +21,6 @@ use Tk\Uri;
 class Sales extends ControllerAdmin
 {
 
-    protected ?\App\Component\ProfitLoss $report = null;
     protected array $dateSet = [];
     protected Form  $form;
     protected Table $table;
@@ -162,10 +161,10 @@ JS;
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
       <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">
-        <i class="fa fa-download"></i>
-        <span>PDF</span>
-      </a>
+<!--      <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">-->
+<!--        <i class="fa fa-download"></i>-->
+<!--        <span>PDF</span>-->
+<!--      </a>-->
     </div>
   </div>
 

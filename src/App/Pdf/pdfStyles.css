@@ -9,7 +9,6 @@ tbody th {
   padding-right: 5px;
 }
 
-
 .primary, .badge-primary, .label-primary { color: #0399e2; }
 .secondary, .badge-secondary, .label-secondary { color: #5d6a72; }
 .success, .badge-success, .label-success { color: #7cb044; }
@@ -44,6 +43,12 @@ tbody th {
 }
 .text-strong {
   font-weight: bold;
+}
+.text-muted {
+  color: #999;
+}
+.text-nowrap {
+  white-space: nowrap;
 }
 .mt-1 {
   margin-top: 1em;

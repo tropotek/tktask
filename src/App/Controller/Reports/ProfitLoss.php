@@ -16,7 +16,7 @@ use Tk\Uri;
 class ProfitLoss extends ControllerAdmin
 {
 
-    protected ?\App\Component\ProfitLoss $report = null;
+    protected ?\App\Ui\ProfitLoss $report = null;
     protected array $dateSet = [];
     protected Form  $form;
 
@@ -55,7 +55,7 @@ class ProfitLoss extends ControllerAdmin
 
         $this->form->execute($_GET);
 
-        $this->report = new \App\Component\ProfitLoss($this->dateSet);
+        $this->report = new \App\Ui\ProfitLoss($this->dateSet);
 
         return null;
     }
