@@ -70,7 +70,8 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         );
 
         $list = \App\Db\Task::STATUS_LIST;
-        $this->form->appendField(new StatusSelect('status', $list));
+        $this->form->appendField(new StatusSelect('status', $list))
+            ->setAttr('data-message', 'off');
 
         $this->form->appendField(new Textarea('comment'))->addCss('mce-min');
 

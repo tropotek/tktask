@@ -48,6 +48,7 @@ class Edit extends ControllerAdmin
             $template->setVisible('edit');
             $template->setText('modified', $this->project->modified->format(Date::FORMAT_LONG_DATETIME));
             $template->setText('created', $this->project->created->format(Date::FORMAT_LONG_DATETIME));
+            $template->setVisible('components');
         }
 
         $template->appendTemplate('content', $this->form->show());
@@ -70,7 +71,7 @@ class Edit extends ControllerAdmin
       </div>
     </div>
   </div>
-  <div class="col-8">
+  <div class="col">
     <div class="card mb-3">
       <div class="card-header">
         <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -85,7 +86,7 @@ class Edit extends ControllerAdmin
       <div class="card-body" var="content"></div>
     </div>
   </div>
-  <div class="col-4" var="components">
+  <div class="col-4" choice="components">
     <div hx-get="/component/statusLogTable" hx-trigger="load" hx-swap="outerHTML" var="statusTable">
       <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
     </div>

@@ -86,14 +86,11 @@ class Edit extends ControllerAdmin
 
         $template->appendTemplate('content', $this->form->show());
 
-        $cssCol = 'col-12';
         if ($this->task->taskId) {
             $url = Uri::create('/component/taskLogTable')->set('taskId', $this->task->taskId);
             $template->setAttr('logTable', 'hx-get', $url);
-            $template->setVisible('secondary');
-            $cssCol = 'col-7';
+            $template->setVisible('components');
         }
-        $template->addCss('primary', $cssCol);
 
         return $template;
     }
@@ -108,12 +105,12 @@ class Edit extends ControllerAdmin
         <div class="card-body" var="actions">
           <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
           <a href="/taskLogEdit" title="Add a new Task Log" class="btn btn-outline-secondary" choice="add-log" data-toggle="modal"><i class="fa fa-fw fa-plus"></i> Add Log</a>
-          <a href="#" title="Re-Open this task" class="btn btn-outline-secondary" choice="re-open" data-confirm="Are you sure you want to re-open this task?"><i class="fa fa-fw fa-tasks"></i> Re-Open</a>
-          <a href="#" title="Manage Task Logs" class="btn btn-outline-secondary" var="logs"><i class="fa fa-fw fa-tasks"></i> Task Logs</a>
+          <a href="#" title="Re-Open this task" class="btn btn-outline-secondary warning" choice="re-open" data-confirm="Are you sure you want to re-open this task?"><i class="fa fa-fw fa-tasks"></i> Re-Open</a>
+          <a href="#" title="Manage Task Logs" class="btn btn-outline-secondary" var="logs" choice="edit"><i class="fa fa-fw fa-tasks"></i> Task Logs</a>
         </div>
       </div>
   </div>
-  <div var="primary">
+  <div class="col">
       <div class="card mb-3">
         <div class="card-header">
           <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -130,7 +127,7 @@ class Edit extends ControllerAdmin
         <div class="card-body" var="content"></div>
       </div>
   </div>
-  <div class="col-5" choice="secondary">
+  <div class="col-5" choice="components">
     <div hx-get="/component/taskLogTable" hx-trigger="load" hx-swap="outerHTML" var="logTable">
       <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
     </div>

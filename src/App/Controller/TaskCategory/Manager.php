@@ -36,15 +36,15 @@ class Manager extends ControllerAdmin
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('name')
+            ->addHeaderCss('text-start')
             ->addCss('text-nowrap')
-            ->addHeaderCss('max-width')
             ->addOnValue(function(TaskCategory $obj, Cell $cell) {
                 $url = Uri::create('/taskCategoryEdit', ['taskCategoryId' => $obj->taskCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
 
-        $this->table->appendCell('label')
-            ->addCss('text-nowrap');
+        $this->table->appendCell('description')
+            ->addHeaderCss('max-width text-start');
 
         $this->table->appendCell('active')
             ->addCss('text-nowrap')

@@ -148,7 +148,6 @@ CREATE TABLE IF NOT EXISTS task_category
 (
   task_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(128) NOT NULL DEFAULT '',
-  label VARCHAR(128) NOT NULL DEFAULT '',
   description VARCHAR(512) NOT NULL DEFAULT '',
   order_by INT UNSIGNED NOT NULL DEFAULT 0,
   active BOOL NOT NULL DEFAULT TRUE,
@@ -304,13 +303,12 @@ INSERT INTO user (type, given_name) VALUES ('staff', 'admin');
 INSERT INTO auth (fkey, fid, permissions, username, email, timezone, active) VALUES
   ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne', false);
 
-
-INSERT INTO task_category (name, label) VALUES
-  ('task', 'Task'),
-  ('feature', 'Feature'),
-  ('bug', 'Bug'),
-  ('support', 'Support'),
-  ('other', 'Other')
+INSERT INTO task_category (name) VALUES
+  ('Task'),
+  ('Feature'),
+  ('Bug'),
+  ('Support'),
+  ('Other')
 ;
 UPDATE task_category SET order_by = task_category_id WHERE TRUE;
 

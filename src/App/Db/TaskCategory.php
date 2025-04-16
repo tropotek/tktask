@@ -10,7 +10,6 @@ class TaskCategory extends Model
 
     public int    $taskCategoryId = 0;
     public string $name           = '';
-    public string $label          = '';
     public string $description    = '';
     public int    $orderBy        = 0;
     public bool   $active         = true;
@@ -77,7 +76,6 @@ class TaskCategory extends Model
         if (!empty($filter['search'])) {
             $filter['search'] = '%' . $filter['search'] . '%';
             $w  = 'LOWER(a.name) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.label) LIKE LOWER(:search) OR ';
             $w .= 'a.task_category_id = :search OR ';
             if (is_numeric($filter['search'])) {
                 $w .= 'a.task_category_id = :search OR ';
@@ -100,9 +98,6 @@ class TaskCategory extends Model
 
         if (!empty($filter['name'])) {
             $filter->appendWhere('a.name = :name AND ');
-        }
-        if (!empty($filter['label'])) {
-            $filter->appendWhere('a.label = :label AND ');
         }
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
@@ -128,10 +123,6 @@ class TaskCategory extends Model
 
         if (!$this->name) {
             $errors['name'] = 'Invalid value: name';
-        }
-
-        if (!$this->label) {
-            $errors['label'] = 'Invalid value: label';
         }
 
         return $errors;

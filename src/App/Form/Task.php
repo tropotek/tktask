@@ -66,7 +66,7 @@ class Task extends Form
         $this->appendField(new Input('subject'));
 
         $categories = TaskCategory::findFiltered(Filter::create(['active' => true], 'order_by'));
-        $list = Collection::toSelectList($categories, 'taskCategoryId', 'label');
+        $list = Collection::toSelectList($categories, 'taskCategoryId', 'name');
         $this->appendField(new Select('taskCategoryId', $list))->prependOption('-- Select --', '');
 
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_CLIENT], 'name'));

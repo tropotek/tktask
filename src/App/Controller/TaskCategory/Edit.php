@@ -42,7 +42,6 @@ class Edit extends ControllerAdmin
         // Get the form template
         $this->form = new Form();
         $this->form->appendField(new Input('name'));
-        $this->form->appendField(new Input('label'));
         $this->form->appendField(new Input('description'));
         $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('');
 
@@ -78,10 +77,6 @@ class Edit extends ControllerAdmin
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        $this->form->getField('name')->addFieldCss('col-6');
-        $this->form->getField('label')->addFieldCss('col-6');
-
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', Factory::instance()->getBackUrl());

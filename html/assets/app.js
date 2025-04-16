@@ -120,9 +120,10 @@ let app = function () {
   let initStatusSelect = function () {
     tkRegisterInit(function () {
       $('.tk-status-select', this).each(function () {
-        var select = $('select', this);
-        var msg = $('textarea', this);
-        var cb = $('[type="checkbox"]', this);
+        let select = $('select', this);
+        let showMessage = select.data('message') !== 'off';
+        let msg = $('textarea', this);
+        let cb = $('[type="checkbox"]', this);
 
         select.data('cs-current-val', select.val());
         msg.hide();
@@ -131,15 +132,17 @@ let app = function () {
         select.on('change', function () {
           if ($(this).val() === $(this).data('cs-current-val')) {
             cb.prop('checked', false);
-            if (select.data('messageText') !== 'off')
+            if (showMessage) {
               msg.hide();
+            }
           } else {
             cb.prop('checked', true);
-            if (select.data('messageText') !== 'off')
+            if (showMessage) {
               msg.show();
+            }
           }
 
-          if (select.data('messageText') !== 'off') {
+          if (showMessage) {
             $(this).blur();
             msg.focus();
           }

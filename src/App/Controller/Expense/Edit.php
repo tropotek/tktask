@@ -127,15 +127,11 @@ class Edit extends ControllerAdmin
 
         $template->appendTemplate('content', $this->form->show());
 
-        $cssCol = 'col-12';
-
         if ($this->expense->expenseId) {
             $url = Uri::create('/component/files', ['fkey' => $this->expense::class, 'fid' => $this->expense->expenseId]);
             $template->setAttr('files', 'hx-get', $url);
-            $template->setVisible('secondary');
-            $cssCol = 'col-7';
+            $template->setVisible('components');
         }
-        $template->addCss('primary', $cssCol);
 
         $companyDialogId = CompanyAddDialog::CONTAINER_ID;
 
@@ -177,7 +173,7 @@ JS;
     </div>
   </div>
 
-  <div var="primary">
+  <div class="col">
     <div class="card mb-3">
       <div class="card-header">
         <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -193,7 +189,7 @@ JS;
     </div>
   </div>
 
-  <div class="col-5" choice="secondary">
+  <div class="col-5" choice="components">
      <div hx-get="/component/files" hx-trigger="load" hx-swap="outerHTML" var="files">
        <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
      </div>
