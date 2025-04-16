@@ -65,7 +65,7 @@ class Manager extends ControllerAdmin
                 $url = Uri::create('/companyEdit')->set('companyId', $obj->companyId);
                 $str = e($obj->getCompany()->name);
                 return <<<HTML
-                    <a href="$url" target="_blank" title="Company Edit">$str</a>
+                    <a href="$url" title="Company Edit">$str</a>
                 HTML;
             });
 

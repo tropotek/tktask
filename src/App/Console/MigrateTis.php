@@ -31,7 +31,7 @@ class MigrateTis extends Console
 
         $options = $config->get('migrate.tis', []);
         $oldDsn = $options['db.mysql.src'] ?? '';
-        $srcDataPath = Config::makePath($options['srcData'] ?? '');
+        $srcDataPath = $options['srcData'] ?? '';
 
         if (!$oldDsn) {
             $this->output->writeln("<error>Original APD DB DSN not found in /config.php, add an entry `\$config['migrate.tis'] = ['db.mysql.src' => 'localhost:3306/{user}/{pass}/{dbname}]'; </error>");
@@ -42,22 +42,56 @@ class MigrateTis extends Console
             return self::FAILURE;
         }
 
+        $confirm = $this->askConfirmation('Replace the existing database, with fresh migration of tis [N]: ', false);
+        if (!$confirm) {
+            $this->output->writeln("Migration terminated.");
+            return self::SUCCESS;
+        }
+
         if (!$this->migrateDB(Db::parseDsn($oldDsn)['dbName'] ?? '', Db::getDbName())) {
             $this->output->writeln('<error>ERROR migrating old DB to new DB</error>');
             return self::FAILURE;
         }
 
         if (!$this->migrateDataFiles($srcDataPath)) {
-            $this->output->writeln('<error>ERROR migrating data files to new structure</error>');
+            $this->output->writeln("<error>ERROR migrating data files to new structure, check 'srcData' in config</error>");
             return self::FAILURE;
         }
 
         return self::SUCCESS;
     }
 
+    /**
+     * execute the migrateTis.sql
+     */
+    protected function migrateDB(string $srcDb, string $destDb): bool
+    {
+        $this->output->writeln("<comment>Migrating database [{$srcDb} -> {$destDb}]</comment>");
+        try {
+            $sql = file_get_contents(getcwd() . '/_notes/migrateTis.sql');
+
+            // update the src and dest db's in the SQL file
+            $sql = str_replace('dev_tktis.', $srcDb.'.', $sql);
+            $sql = str_replace('dev_tktask.', $destDb.'.', $sql);
+
+            if (false === Db::execute($sql)) {
+                Log::error(implode("\n", Db::getLastStatement()->errorInfo()));
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::error($e->__toString());
+            return false;
+        }
+
+        return true;
+    }
+
     protected function migrateDataFiles(string $src): bool
     {
         $this->output->writeln("<comment>Migrating data files</comment>");
+        if (!is_dir($src)) {
+            return false;
+        }
         try {
             $this->output->writeln("  <comment>- Migrate media files</comment>");
             FileUtil::mkdir(Config::makeDataPath(''));
@@ -92,35 +126,7 @@ class MigrateTis extends Console
             return false;
         }
 
-
         return true;
     }
-
-    /**
-     * execute the migrateTis.sql
-     */
-    protected function migrateDB(string $srcDb, string $destDb): bool
-    {
-        $this->output->writeln("<comment>Migrating database [tktis -> tktask]</comment>");
-        try {
-            $sql = file_get_contents(getcwd() . '/_notes/migrateTis.sql');
-
-            // update the src and dest db's in the SQL file
-            $sql = str_replace('dev_tktis.', $srcDb.'.', $sql);
-            $sql = str_replace('dev_tktask.', $destDb.'.', $sql);
-
-            if (false === Db::execute($sql)) {
-                Log::error(implode("\n", Db::getLastStatement()->errorInfo()));
-                return false;
-            }
-        } catch (\Exception $e) {
-            Log::error($e->__toString());
-            return false;
-        }
-
-        return true;
-    }
-
-
 
 }
