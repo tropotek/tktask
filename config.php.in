@@ -13,6 +13,11 @@ return function (Config $config) {
     $config['db.mysql'] = '{db.mysql}';
 
     /**
+     * System hostname
+     */
+    //$config['hostname'] = '';
+
+    /**
      * Enable error email notifications
      */
     $config['system.email.exception'] = ['user@example.net'];

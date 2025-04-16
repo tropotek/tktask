@@ -159,6 +159,11 @@ class File extends Model
         );
     }
 
+    public static function findByModel(Model $model): ?self
+    {
+        return self::findFiltered(['model' => $model])[0] ?? null;
+    }
+
     public static function findByHash(string $hash): ?self
     {
         return self::findFiltered(['hash' => $hash])[0] ?? null;
