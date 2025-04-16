@@ -149,9 +149,9 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
             return;
         }
 
-        $dataPath = Config::makePath(Config::getDataPath() . '/' . $this->model->getDataPath());
+        $dataPath = Config::makePath(Config::getDataPath() . '/' . $this->model->dataPath);
         if ($fileField->move($dataPath)) {
-            $path = $this->model->getDataPath() . '/' . $upload['name'];
+            $path = $this->model->dataPath . '/' . $upload['name'];
             $file = File::create($path, $this->model, User::getAuthUser()->userId);
             $file->save();
 

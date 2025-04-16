@@ -92,7 +92,9 @@ class Task extends Form
             ->setDisabled()
             ->addCss('form-control disabled');
 
-        $this->appendField(new Textarea('comments'))->addCss('mce-min');
+        $this->appendField(new Textarea('comments'))
+            ->setAttr('data-elfinder-path', $this->getTask()->dataPath . '/media')
+            ->addCss('mce-min');
 
         $this->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->appendField(new Link('cancel', Factory::instance()->getBackUrl()));

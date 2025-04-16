@@ -21,6 +21,7 @@ class Expense extends Model
     public string     $description = '';
     public \DateTime  $purchasedOn;
     public Money      $total;
+    public string     $dataPath    = '';
     public ?\DateTime $modified    = null;
     public ?\DateTime $created     = null;
 
@@ -81,7 +82,7 @@ class Expense extends Model
     {
         return Db::queryOne("
             SELECT *
-            FROM expense
+            FROM v_expense
             WHERE expense_id = :expenseId",
             compact('expenseId'),
             self::class
@@ -95,7 +96,7 @@ class Expense extends Model
     {
         return Db::query("
             SELECT *
-            FROM expense",
+            FROM v_expense",
             [],
             self::class
         );
@@ -159,7 +160,7 @@ class Expense extends Model
 
         return Db::query("
             SELECT *
-            FROM expense a
+            FROM v_expense a
             {$filter->getSql()}",
             $filter->all(),
             self::class

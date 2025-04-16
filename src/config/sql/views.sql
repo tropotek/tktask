@@ -56,6 +56,28 @@ SELECT
 FROM company c
 ;
 
+-- \App\Db\Expense
+CREATE OR REPLACE VIEW v_expense AS
+SELECT
+  e.*,
+  CONCAT('/expense/', YEAR(e.created), '/' , e.expense_id) AS data_path
+FROM expense e;
+
+-- \App\Db\Task
+CREATE OR REPLACE VIEW v_task AS
+SELECT
+  t.*,
+  CONCAT('/task/', YEAR(t.created), '/' , t.task_id) AS data_path
+FROM task t;
+
+-- \App\Db\TaskLog
+CREATE OR REPLACE VIEW v_task_log AS
+SELECT
+  tl.*,
+  t.data_path
+FROM task_log tl
+JOIN v_task t USING (task_id);
+
 -- \App\Db\InvoiceItem
 CREATE OR REPLACE VIEW v_invoice_item AS
 SELECT

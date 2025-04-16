@@ -54,7 +54,9 @@ class TaskLog extends Form
             ->setStrict(true)
         );
 
-        $this->appendField(new Textarea('comment'))->addCss('mce-min');
+        $this->appendField(new Textarea('comment'))
+            ->setAttr('data-elfinder-path', $this->getTaskLog()->dataPath . '/media')
+            ->addCss('mce-min');
 
         $this->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->appendField(new Link('cancel', $this->getBackUrl()->set('taskId', $this->getTaskLog()->taskId)));

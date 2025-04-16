@@ -31,6 +31,7 @@ class TaskLog extends Model
     public int       $minutes       = 0;
     public string    $comment       = '';
     public string    $notes         = '';
+    public string    $dataPath      = '';
     public \DateTime $modified;
     public \DateTime $created;
 
@@ -104,7 +105,7 @@ class TaskLog extends Model
     {
         return Db::queryOne("
             SELECT *
-            FROM task_log
+            FROM v_task_log
             WHERE task_log_id = :taskLogId",
             compact('taskLogId'),
             self::class
@@ -118,7 +119,7 @@ class TaskLog extends Model
     {
         return Db::query("
             SELECT *
-            FROM task_log",
+            FROM v_task_log",
             [],
             self::class
         );
@@ -181,7 +182,7 @@ class TaskLog extends Model
 
         return Db::query("
             SELECT *
-            FROM task_log a
+            FROM v_task_log a
             {$filter->getSql()}",
             $filter->all(),
             self::class

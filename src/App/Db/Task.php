@@ -75,6 +75,7 @@ class Task extends Model implements StatusInterface
     public int        $priority       = self::PRIORITY_MED;
     public int        $minutes        = 0;
     public ?\DateTime $invoiced       = null;       // TODO if not used anywhere, Remove ???
+    public string     $dataPath       = '';
     public \DateTime  $modified;
     public \DateTime  $created;
 
@@ -128,11 +129,12 @@ class Task extends Model implements StatusInterface
         return $this->isOpen();
     }
 
-    public function getDataPath(): string
-    {
-        if (!$this->taskId) throw new Exception("object without task_id");
-        return sprintf('/task/%s/%s', $this->created->format('Y'), $this->taskId);
-    }
+    // todo use $this->dataPath
+//    public function getDataPath(): string
+//    {
+//        if (!$this->taskId) throw new Exception("object without task_id");
+//        return sprintf('/task/%s/%s', $this->created->format('Y'), $this->taskId);
+//    }
 
     public function getCreator(): ?User
     {
@@ -257,7 +259,7 @@ class Task extends Model implements StatusInterface
     {
         return Db::queryOne("
             SELECT *
-            FROM task
+            FROM v_task
             WHERE task_id = :taskId",
             compact('taskId'),
             self::class
@@ -271,7 +273,7 @@ class Task extends Model implements StatusInterface
     {
         return Db::query("
             SELECT *
-            FROM task",
+            FROM v_task",
             [],
             self::class
         );
@@ -348,7 +350,7 @@ class Task extends Model implements StatusInterface
 
         return Db::query("
             SELECT *
-            FROM task a
+            FROM v_task a
             {$filter->getSql()}",
             $filter->all(),
             self::class
