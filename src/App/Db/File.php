@@ -3,9 +3,10 @@ namespace App\Db;
 
 use Bs\Auth;
 use Bs\Traits\ForeignModelTrait;
-use Bs\Traits\SystemTrait;
 use Tk\Config;
 use Tk\Exception;
+use Tk\FileUtil;
+use Tk\Log;
 use Tk\Uri;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -13,7 +14,6 @@ use Tk\Db\Model;
 
 class File extends Model
 {
-    use SystemTrait;
     use ForeignModelTrait;
 
     public int        $fileId   = 0;
@@ -37,42 +37,27 @@ class File extends Model
     }
 
     /**
-     * Create a File object form an existing file
-     * Only the relative path of the file is stored
+     * Create a File object form an existing file path
+     * Only the relative path from the system data path is stored
      *
      * @param string $filename Full/Relative data path to a valid file
      */
-    public static function create(string $filename, ?Model $model = null, int $userId = 0): self
+    public static function create(string $filename, ?Model $model = null, ?int $userId = null): self
     {
         if (empty($filename)) {
-            throw new Exception('Invalid file and path.');
+            throw new Exception('Invalid file path.');
         }
 
         $obj = new self();
-
         $obj->filename = $filename;
-        $dataPath = Config::makePath(Config::getDataPath());
-        if (str_starts_with($filename, $dataPath)) {
-            $obj->filename = str_replace($dataPath, '', $filename);
-        }
-
-        $obj->label = \Tk\FileUtil::removeExtension(basename($filename));
-        if ($model) {
+        $obj->label = basename($filename);
+        if ($model instanceof Model) {
             $obj->setDbModel($model);
         }
-        if (!$userId) {
-            if ($model && property_exists($model, 'userId')) {
-                $userId = $model->userId;
-            } else if (Auth::getAuthUser()) {
-                $userId = Auth::getAuthUser()->fid;
-            }
+        if (is_null($userId) && Auth::getAuthUser()) {
+            $userId = Auth::getAuthUser()->fid;
         }
         $obj->userId = $userId;
-
-        if (is_file($obj->getFullPath())) {
-            $obj->bytes = intval(filesize($obj->getFullPath()));
-            $obj->mime = \Tk\FileUtil::getMimeType($obj->getFullPath());
-        }
 
         return $obj;
     }
@@ -80,6 +65,15 @@ class File extends Model
     public function save(): void
     {
         $map = static::getDataMap();
+
+        if (is_file($this->getFullPath())) {
+            if (!$this->bytes) {
+                $this->bytes = intval(filesize($this->getFullPath()));
+            }
+            if (!$this->mime) {
+                $this->mime = \Tk\FileUtil::getMimeType($this->getFullPath());
+            }
+        }
 
         $values = $map->getArray($this);
         if ($this->fileId) {
@@ -107,6 +101,11 @@ class File extends Model
         return Config::makePath(Config::getDataPath() . $this->filename);
     }
 
+    public function getExtension(): string
+    {
+        return FileUtil::getExtension($this->filename);
+    }
+
     public function getUrl(): Uri
     {
         return Uri::create(Config::makeUrl(Config::getDataPath() . $this->filename));
@@ -122,7 +121,7 @@ class File extends Model
         $errors = [];
 
         if (!$this->filename) {
-            $errors['filename'] = 'Please enter a valid filename';
+            $errors['path'] = 'Please enter a valid path';
         }
         if (!$this->bytes) {
             $errors['bytes'] = 'Please enter a file size';
@@ -170,6 +169,9 @@ class File extends Model
         return self::findFiltered(['filename' => $filename])[0] ?? null;
     }
 
+    /**
+     * @return array<int,self>
+     */
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
@@ -234,6 +236,54 @@ class File extends Model
             $filter->all(),
             self::class
         );
+    }
+
+    public static function optimizePdf(string $path, int $dpi = 130): bool
+    {
+        $temp = dirname($path).'/tmp.pdf';
+
+        $cmd = str_replace("\n", "", sprintf('/usr/bin/gs
+          -q -dNOPAUSE -dBATCH -dSAFER
+          -sDEVICE=pdfwrite
+          -dCompatibilityLevel=1.3
+          -dPDFSETTINGS=/screen
+          -dEmbedAllFonts=true
+          -dSubsetFonts=true
+          -dAutoRotatePages=/None
+          -dColorImageDownsampleType=/Bicubic
+          -dColorImageResolution=%s
+          -dGrayImageDownsampleType=/Bicubic
+          -dGrayImageResolution=%s
+          -dMonoImageDownsampleType=/Subsample
+          -dMonoImageResolution=%s
+          -sOutputFile=%s
+          %s', $dpi, $dpi, $dpi, escapeshellarg($temp), escapeshellarg($path) ));
+
+        $ok = exec(escapeshellcmd($cmd));
+        if ($ok === false) {
+            Log::warning("Failed to optimize PDF file {$path}");
+            return false;
+        }
+
+        $srcBytes  = filesize($path);
+        $destBytes = filesize($temp);
+
+        if (Config::isDebug()) {
+            $fs = FileUtil::bytes2String($srcBytes);
+            $fd = FileUtil::bytes2String($destBytes);
+            Log::debug("- compressing: {$path} [$fs => $fd]");
+        }
+
+        // copy smaller file to dest
+        if ($destBytes > 0 && $destBytes < $srcBytes) {
+            rename($temp, $path);
+        }
+
+        if (is_file($temp)) {
+            unlink($temp);
+        }
+
+        return true;
     }
 
     public static function getIcon(string $filename): string

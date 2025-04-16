@@ -46,7 +46,6 @@ JS;
 
         $template->setText('unread', strval($unread));
         $template->setVisible('unread');
-        $template->setVisible('view-all');
         $template->setVisible('show-all');
 
         $clearUrl = Uri::create()->set('clear-all');
@@ -58,6 +57,7 @@ JS;
             $item->setHtml('message', $note->message);
             if ($note->url) {
                 $item->setAttr('notice', 'href', Uri::create($note->url));
+                $item->setAttr('notice', 'data-notify-id', $note->notifyId);
             }
             if ($note->icon) {
                 $item->setVisible('icon');
@@ -91,7 +91,7 @@ JS;
         </div>
         <div class="noti-scroll" data-simplebar="">
             <!-- item-->
-            <a href="javascript:void(0);" class="dropdown-item notify-item" repeat="notice">
+            <a href="#" class="dropdown-item notify-item notify-click" repeat="notice">
                 <div class="notify-icon" choice="icon">
                     <img src="#" class="img-fluid rounded-circle" alt="" var="icon-src"/>
                 </div>
@@ -99,7 +99,7 @@ JS;
                 <p class="text-muted mb-0 user-msg" var="message"></p>
             </a>
         </div>
-        <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all" choice="view-all">
+        <a href="/notifications" class="dropdown-item text-center text-primary notify-item notify-all">
             View all <i class="fe-arrow-right"></i>
         </a>
     </div>

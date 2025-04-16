@@ -42,6 +42,8 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
     $routes->add('user-profile', '/profile')
         ->controller([\App\Controller\User\Profile::class, 'doDefault']);
+    $routes->add('notify-list', '/notifications')
+        ->controller([\App\Controller\Notify\View::class, 'doDefault']);
 
 
     // User Staff

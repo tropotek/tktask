@@ -89,6 +89,7 @@ class Factory extends \Bs\Factory
 
             $app->add(new \App\Console\Cron());
             if (Config::isDev()) {
+                $app->add(new \App\Console\MigrateTis());
                 $app->add(new \App\Console\Test());
             }
         }

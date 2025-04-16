@@ -23,7 +23,7 @@ class Notify extends Model
     const int DEFAULT_TTL = 60*12;
 
     public int        $notifyId   = 0;
-    public int        $userId     = 0;
+    public ?int       $userId     = null;
     public string     $title      = '';
     public string     $message    = '';
     public string     $url        = '';         // note: popup blockers will request permission
@@ -86,6 +86,22 @@ class Notify extends Model
         $obj->save();
 
         return $obj;
+    }
+
+    public static function notifyByPermission(
+        int $permission,
+        string $title,
+        string $message,
+        string $url = '',
+        string $icon = '',
+        int $ttlMins = self::DEFAULT_TTL
+    ): bool
+    {
+        $users = User::findFiltered(['permission' => $permission, 'active' => true]);
+        foreach ($users as $user) {
+            self::create($user->userId, $title, $message, $url, $icon, $ttlMins)->save();
+        }
+        return true;
     }
 
     public static function setNotified(array $notifyIds): bool

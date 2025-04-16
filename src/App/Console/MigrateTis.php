@@ -8,6 +8,10 @@ use Tk\Config;
 
 class MigrateTis extends Console
 {
+    protected string $oldDsn       = '';
+    protected string $srcDataPath  = '';
+    protected string $pathCasePath = '/pathCase';
+    protected string $mediaPath    = '/media';
 
     protected function configure(): void
     {
@@ -22,7 +26,6 @@ class MigrateTis extends Console
 //            $this->writeError('Error: Only run this command in a debug environment.');
 //            return self::FAILURE;
 //        }
-
 
 
 
