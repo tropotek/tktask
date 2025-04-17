@@ -50,18 +50,21 @@ class Project extends Form
 
     public function init(): static
     {
-        $this->appendField(new Input('name'));
+        $this->appendField(new Input('name'))
+            ->setRequired();
 
         $cats = Company::findFiltered(Filter::create(['active' => true, 'type' => Company::TYPE_CLIENT], 'name'));
         $list = Collection::toSelectList($cats, 'companyId');
         $this->appendField((new Select('companyId', $list))
-            ->prependOption('-- Company --', ''));
+            ->prependOption('-- Company --', ''))
+        ->setRequired();
 
         $cats = User::findFiltered(Filter::create(['active' => true, 'type' => User::TYPE_STAFF], 'name_short'));
         $list = Collection::toSelectList($cats, 'userId', 'nameShort');
         $this->appendField(new Select('userId', $list))
             ->prependOption('-- Select --', '')
-            ->setLabel('Lead');
+            ->setLabel('Lead')
+            ->setRequired();
 
         $this->appendField(new InputGroup('quote', '$'));
 

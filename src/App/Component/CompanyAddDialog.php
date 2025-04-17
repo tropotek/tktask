@@ -42,15 +42,23 @@ class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->setAttr('hx-target', "#{$this->form->getId()}");
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
 
-        $this->form->appendField(new Input('name'));
-        $this->form->appendField(new Input('email'));
+        $this->form->appendField(new Input('name'))
+            ->setRequired();
+
+        $this->form->appendField(new Input('email'))
+            ->setRequired();
+
         if ($this->type == Company::TYPE_CLIENT) {
             $this->form->appendField(new Input('accountsEmail'));
             $this->form->appendField(new Input('contact'));
         }
+
         $this->form->appendField(new Input('phone'));
+
         $this->form->appendField(new Input('abn'));
+
         $this->form->appendField(new Input('website'));
+
         $this->form->appendField(new Input('address'));
 
         $this->form->appendField(new Link('cancel', Uri::create('#')))

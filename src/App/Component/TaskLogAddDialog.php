@@ -60,7 +60,9 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
                 ->prependOption('-- Select --', ''));
         }
 
-        $this->form->appendField(new Minutes('minutes'))->setLabel('Time Worked');
+        $this->form->appendField(new Minutes('minutes'))
+            ->setLabel('Time Worked')
+            ->setRequired();
 
         // todo This should be a date-time field
         $this->form->appendField(new Input('startAt', 'date'));
@@ -73,7 +75,10 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->appendField(new StatusSelect('status', $list))
             ->setAttr('data-message', 'off');
 
-        $this->form->appendField(new Textarea('comment'))->addCss('mce-min');
+        $this->form->appendField(new Textarea('comment'))
+            ->addCss('mce-min')
+            ->setAttr('data-elfinder-path', $this->task->dataPath . '/media')
+            ->setRequired();
 
         $this->form->appendField(new Link('cancel', Uri::create('#')))
             ->setAttr('data-bs-dismiss', 'modal')

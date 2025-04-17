@@ -44,7 +44,8 @@ class TaskLog extends Form
 
     public function init(): static
     {
-        $this->appendField(new Minutes('minutes'));
+        $this->appendField(new Minutes('minutes'))
+            ->setRequired();
 
         // TODO: implement a date time selector
         //$this->appendField(new Input('startAt', 'datetime'));

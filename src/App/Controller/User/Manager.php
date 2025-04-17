@@ -20,13 +20,7 @@ class Manager extends ControllerAdmin
 {
 
     protected ?Table $table = null;
-    protected string $type  = '';
-
-    public function doByType(mixed $request, string $type): void
-    {
-        $this->type = $type;
-        $this->doDefault();
-    }
+    protected string $type  = User::TYPE_STAFF;
 
     public function doDefault(): void
     {
@@ -34,9 +28,6 @@ class Manager extends ControllerAdmin
 
         if ($this->type == User::TYPE_STAFF) {
             $this->setUserAccess(User::PERM_MANAGE_STAFF);
-        }
-        if ($this->type == User::TYPE_MEMBER) {
-            $this->setUserAccess(User::PERM_MANAGE_MEMBERS);
         }
 
         if (isset($_GET[Masquerade::QUERY_MSQ])) {
@@ -171,14 +162,8 @@ class Manager extends ControllerAdmin
         $template->appendText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', $this->getBackUrl());
 
-        if ($this->type == User::TYPE_STAFF) {
-            $template->setAttr('create-staff', 'href', Uri::create('/user/staffEdit'));
-            $template->setVisible('create-staff');
-        }
-        if ($this->type == User::TYPE_MEMBER) {
-            $template->setAttr('create-member', 'href', Uri::create('/user/memberEdit'));
-            $template->setVisible('create-member');
-        }
+        $template->setAttr('create-staff', 'href', Uri::create('/user/staffEdit'));
+        $template->setVisible('create-staff');
 
         $template->appendTemplate('content', $this->table->show());
 
@@ -192,9 +177,7 @@ class Manager extends ControllerAdmin
   <div class="page-actions card mb-3">
     <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       <a href="/" title="Create Staff" class="btn btn-outline-secondary" choice="create-staff"><i class="fa fa-user"></i> Create Staff</a>
-      <a href="/" title="Create Member" class="btn btn-outline-secondary" choice="create-member"><i class="fa fa-user"></i> Create Member</a>
     </div>
   </div>
   <div class="card mb-3">

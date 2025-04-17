@@ -219,7 +219,6 @@ class Settings extends ControllerAdmin
         $template->setAttr('back', 'href', $this->getBackUrl());
 
         $template->setVisible('staff', Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF));
-        $template->setVisible('member', Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_MEMBERS));
         $template->setVisible('admin', Auth::getAuthUser()->hasPermission(User::PERM_ADMIN));
 
         $this->form->getField('site.name')->addFieldCss('col-6');

@@ -29,10 +29,9 @@ class Nav
                     return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },
             ],
-            'Site Settings' => [
-                'icon' => 'ri-settings-2-line',
-                'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
-                'url' => '/settings',
+
+            'System' => [
+                'visible' => $this->getUser()?->isStaff(),
             ],
             'Tasks' => [
                 'icon' => 'fas fa-tasks',
@@ -49,9 +48,14 @@ class Nav
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/projectManager',
             ],
+            'Clients' => [
+                'icon' => 'fa fa-fw fa-building',
+                'visible' => fn($i) => $this->getUser()?->isStaff(),
+                'url' => '/companyManager',
+            ],
 
             'Accounts' => [
-                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                'visible' => $this->getUser()?->isStaff(),
             ],
             'Invoices' => [
                 'icon' => 'far fa-credit-card',
@@ -75,7 +79,7 @@ class Nav
             ],
 
             'Reports' => [
-                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
+                'visible' =>$this->getUser()?->isStaff(),
             ],
             'Profit & Loss' => [
                 'icon' => 'fas fa-dollar-sign',
@@ -88,10 +92,15 @@ class Nav
                 'url' => '/salesReport',
             ],
 
-            'System' => [
-                'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
-            ],
             'Admin' => [
+                'visible' => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
+            ],
+            'Settings' => [
+                'icon' => 'ri-settings-2-line',
+                'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
+                'url' => '/settings',
+            ],
+            'Tools' => [
                 'icon' => 'ri-bug-line',
                 'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),
                 'PHP Info' => [

@@ -41,7 +41,8 @@ class Edit extends ControllerAdmin
 
         // Get the form template
         $this->form = new Form();
-        $this->form->appendField(new Input('name'));
+        $this->form->appendField(new Input('name'))
+            ->setRequired();
         $this->form->appendField(new Input('description'));
         $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('');
 

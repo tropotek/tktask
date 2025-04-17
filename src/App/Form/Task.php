@@ -63,16 +63,24 @@ class Task extends Form
             }
         }
 
-        $this->appendField(new Input('subject'));
+        $this->appendField(new Input('subject'))
+            ->addFieldCss('col-8')
+            ->setRequired();
 
         $categories = TaskCategory::findFiltered(Filter::create(['active' => true], 'order_by'));
         $list = Collection::toSelectList($categories, 'taskCategoryId', 'name');
-        $this->appendField(new Select('taskCategoryId', $list))->prependOption('-- Select --', '');
+        $this->appendField(new Select('taskCategoryId', $list))
+            ->prependOption('-- Select --', '')
+            ->addFieldCss('col-4')
+            ->setRequired();
 
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_CLIENT], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
         $fld = $this->appendField(new Select('companyId', $list))
-            ->prependOption('-- Select --', '');
+            ->setLabel('Client')
+            ->prependOption('-- Select --', '')
+            ->addFieldCss('col-6')
+            ->setRequired();
 
         if ($this->getTask()->taskId != 0) {
             $fld->setDisabled();
@@ -81,16 +89,22 @@ class Task extends Form
         $users = User::findFiltered(Filter::create(['active' => true, 'type' => User::TYPE_STAFF], 'name_short'));
         $list = Collection::toSelectList($users, 'userId', 'nameShort');
         $this->appendField(new Select('assignedUserId', $list))
-            ->prependOption('-- Select --', '');
+            ->prependOption('-- Select --', '')
+            ->addFieldCss('col-6')
+            ->setRequired();
 
-        $this->appendField(new Minutes('minutes'))->setLabel('Est. Duration');
+        $this->appendField(new Minutes('minutes'))
+            ->setLabel('Est. Duration')
+            ->addFieldCss('col-4');
 
         $this->appendField(new Select('priority', \App\Db\Task::PRIORITY_LIST))
-            ->prependOption('-- Select --', '');
+            ->prependOption('-- Select --', '')
+            ->addFieldCss('col-4');
 
         $this->appendField(new Html('status', $this->getTask()->status))
             ->setDisabled()
-            ->addCss('form-control disabled');
+            ->addCss('form-control disabled')
+            ->addFieldCss('col-4');
 
         $this->appendField(new Textarea('comments'))
             ->setAttr('data-elfinder-path', $this->getTask()->dataPath . '/media')
@@ -136,15 +150,6 @@ class Task extends Form
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        $this->getField('subject')->addFieldCss('col-8');
-        $this->getField('taskCategoryId')->addFieldCss('col-4');
-        $this->getField('companyId')->addFieldCss('col-6');
-        $this->getField('assignedUserId')->addFieldCss('col-6');
-        $this->getField('minutes')->addFieldCss('col-4');
-        $this->getField('priority')->addFieldCss('col-4');
-        $this->getField('status')->addFieldCss('col-4');
-
         $renderer = $this->getRenderer();
 
         return $renderer->show();

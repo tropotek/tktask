@@ -49,13 +49,23 @@ class Edit extends ControllerAdmin
 
         $categories = ProductCategory::findFiltered([]);
         $list = Collection::toSelectList($categories, 'productCategoryId');
-        $this->form->appendField(new Select('productCategoryId', $list))->prependOption('-- Select --', '');
+        $this->form->appendField(new Select('productCategoryId', $list))
+            ->prependOption('-- Select --', '')
+            ->setRequired();
 
-        $this->form->appendField(new Input('name'));
-        $this->form->appendField(new Input('code'));
-        $this->form->appendField(new InputGroup('price', '$'));
-        $this->form->appendField(new Select('cycle', Product::CYCLE_LIST))->setLabel('Recurring');
-        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))->setLabel('&nbsp;');
+        $this->form->appendField(new Input('name'))
+            ->addFieldCss('col-6')
+            ->setRequired();
+        $this->form->appendField(new Input('code'))
+            ->addFieldCss('col-6');
+        $this->form->appendField(new InputGroup('price', '$'))
+            ->addFieldCss('col-4');
+        $this->form->appendField(new Select('cycle', Product::CYCLE_LIST))
+            ->setLabel('Recurring')
+            ->addFieldCss('col-4');
+        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))
+            ->setLabel('&nbsp;')
+            ->addFieldCss('col-4');
 
         $this->form->appendField(new Textarea('description'))->addCss('mce-min');
 
@@ -91,12 +101,6 @@ class Edit extends ControllerAdmin
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        $this->form->getField('name')->addFieldCss('col-6');
-        $this->form->getField('code')->addFieldCss('col-6');
-        $this->form->getField('price')->addFieldCss('col-4');
-        $this->form->getField('cycle')->addFieldCss('col-4');
-        $this->form->getField('active')->addFieldCss('col-4');
 
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());

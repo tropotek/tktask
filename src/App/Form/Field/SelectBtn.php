@@ -82,9 +82,9 @@ class SelectBtn extends Select implements DisplayInterface, RendererInterface
       </optgroup>
       <option repeat="option"></option>
     </select>
-    <div class="invalid-feedback" choice="error"></div>
     <a class="btn btn-white" target="_blank" type="button" var="button"></a>
   </div>
+  <div class="invalid-feedback" choice="error"></div>
   <div class="form-text text-secondary" choice="notes"></div>
 </div>
 HTML;

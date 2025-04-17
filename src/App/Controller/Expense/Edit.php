@@ -49,7 +49,8 @@ class Edit extends ControllerAdmin
         // Get the form template
         $this->form = new Form();
 
-        $this->form->appendField(new Input('description'));
+        $this->form->appendField(new Input('description'))
+            ->setRequired();
 
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_SUPPLIER], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
@@ -60,20 +61,32 @@ class Edit extends ControllerAdmin
             ->setBtnAttr('data-bs-toggle', 'modal')
             ->setBtnAttr('data-bs-target', '#'.CompanyAddDialog::CONTAINER_ID)
             ->setBtnText('<i class="fas fa-plus"></i>')
+            ->addFieldCss('col-6')
+            ->setRequired()
         );
 
         $categories = ExpenseCategory::findFiltered(Filter::create([], 'name'));
         $list = Collection::toSelectList($categories, 'expenseCategoryId');
         $this->form->appendField(new Select('expenseCategoryId', $list))
-            ->prependOption('-- Select --', '');
+            ->prependOption('-- Select --', '')
+            ->addFieldCss('col-6')
+            ->setRequired();
 
-        $this->form->appendField(new InputGroup('total', '$'));
+        $this->form->appendField(new InputGroup('total', '$'))
+            ->addFieldCss('col-6')
+            ->setRequired();
 
-        $this->form->appendField(new Input('purchasedOn', 'date'));
+        $this->form->appendField(new Input('purchasedOn', 'date'))
+            ->addFieldCss('col-6')
+            ->setRequired();
 
-        $this->form->appendField(new Input('invoiceNo'));
+        $this->form->appendField(new Input('invoiceNo'))
+            ->addFieldCss('col-6')
+            ->setRequired();
 
-        $this->form->appendField(new Input('receiptNo'));
+        $this->form->appendField(new Input('receiptNo'))
+            ->addFieldCss('col-6')
+            ->setRequired();
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create('/expenseManager')));
@@ -107,14 +120,6 @@ class Edit extends ControllerAdmin
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        $this->form->getField('companyId')->addFieldCss('col-6');
-        $this->form->getField('expenseCategoryId')->addFieldCss('col-6');
-        $this->form->getField('total')->addFieldCss('col-6');
-        $this->form->getField('purchasedOn')->addFieldCss('col-6');
-        $this->form->getField('invoiceNo')->addFieldCss('col-6');
-        $this->form->getField('receiptNo')->addFieldCss('col-6');
-
         $template = $this->getTemplate();
         $template->setText('title', $this->getPage()->getTitle());
         $template->setAttr('back', 'href', Factory::instance()->getBackUrl());

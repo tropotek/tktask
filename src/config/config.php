@@ -85,7 +85,7 @@ return function (Config $config) {
      */
     $config['auth.microsoft.enabled']         = false;
     $config['auth.microsoft.createUser']      = false;
-    $config['auth.microsoft.userType']        = \App\Db\User::TYPE_MEMBER;
+    $config['auth.microsoft.userType']        = \App\Db\User::TYPE_STAFF;
     $config['auth.microsoft.scope']           = 'User.Read';
     $config['auth.microsoft.endpointLogout']  = 'https://login.microsoftonline.com/common/oauth2/v2.0/logout';
     $config['auth.microsoft.endpointToken']   = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
@@ -105,7 +105,7 @@ return function (Config $config) {
      */
     $config['auth.google.enabled']         = false;
     $config['auth.google.createUser']      = false;
-    $config['auth.google.userType']        = \App\Db\User::TYPE_MEMBER;
+    $config['auth.google.userType']        = \App\Db\User::TYPE_STAFF;
     $config['auth.google.scope']           = 'https://www.googleapis.com/auth/userinfo.email';
     $config['auth.google.endpointLogout']  = 'https://www.google.com/accounts/Logout';
     $config['auth.google.endpointToken']   = 'https://www.googleapis.com/oauth2/v4/token';
@@ -128,7 +128,7 @@ return function (Config $config) {
      */
     $config['auth.facebook.enabled']         = false;
     $config['auth.facebook.createUser']      = false;
-    $config['auth.facebook.userType']        = \App\Db\User::TYPE_MEMBER;
+    $config['auth.facebook.userType']        = \App\Db\User::TYPE_STAFF;
     $config['auth.facebook.scope']           = 'email';
     $config['auth.facebook.endpointLogout']  = '';
     $config['auth.facebook.endpointToken']   = 'https://graph.facebook.com/oauth/access_token';

@@ -45,7 +45,8 @@ class Edit extends ControllerAdmin
         // Get the form template
         $this->form = new Form();
 
-        $this->form->appendField(new Input('name'));
+        $this->form->appendField(new Input('name'))
+            ->setRequired();
         $this->form->appendField(new Textarea('description'));
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));

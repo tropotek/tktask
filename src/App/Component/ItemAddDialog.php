@@ -50,8 +50,10 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
 
         $products = Product::findFiltered(Db\Filter::create(['active' => true]));
         $list = Collection::toSelectList($products, 'productId', 'name');
-        $this->form->appendField(new Datalist('description', $list));
-        $this->form->appendField(new Input('productCode'));
+        $this->form->appendField(new Datalist('description', $list))
+            ->setRequired();
+        $this->form->appendField(new Input('productCode'))
+            ->setRequired();
         $this->form->appendField(new InputGroup('price', '$'));
         $this->form->appendField(new Input('qty', 'number'));
 

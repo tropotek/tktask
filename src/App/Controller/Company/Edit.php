@@ -49,14 +49,17 @@ class Edit extends ControllerAdmin
         $tab = "";
 
         $this->form->appendField(new Input('name'))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->setRequired();
 
         $this->form->appendField((new Select('type', Collection::listCombine(Company::TYPE_LIST)))
             ->prependOption('-- Select --', ''))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->setRequired();
 
         $this->form->appendField(new Input('email'))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->setRequired();
         $this->form->appendField(new Input('accountsEmail'))
             ->setGroup($tab);
 

@@ -51,8 +51,11 @@ class Edit extends ControllerAdmin
         $cats = Company::findFiltered(Filter::create(['type' => Company::TYPE_CLIENT], '-active, name'));
         $list = Collection::toSelectList($cats, 'companyId');
         $this->form->appendField((new Select('companyId', $list))
-            ->prependOption('-- Select --', ''));
-        $this->form->appendField(new Select('cycle', Recurring::CYCLE_LIST));
+            ->prependOption('-- Select --', ''))
+        ->setRequired();
+
+        $this->form->appendField(new Select('cycle', Recurring::CYCLE_LIST))
+            ->setRequired();
 
 
         $cats = Product::findFiltered(Filter::create([], 'name'));
@@ -73,11 +76,16 @@ class Edit extends ControllerAdmin
                 }
             })
         );
-        $this->form->appendField(new InputGroup('price', '$'));
 
-        $this->form->appendField(new Input('description'));
+        $this->form->appendField(new InputGroup('price', '$'))
+            ->setRequired();
 
-        $this->form->appendField(new Input('startOn', 'date'));
+        $this->form->appendField(new Input('description'))
+            ->setRequired();
+
+        $this->form->appendField(new Input('startOn', 'date'))
+            ->setRequired();
+
         $this->form->appendField(new Input('endOn', 'date'));
 
         $this->form->appendField(new Checkbox('issue'))

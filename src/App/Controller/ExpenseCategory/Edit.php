@@ -48,11 +48,13 @@ class Edit extends ControllerAdmin
         // Get the form template
         $this->form = new Form();
         $this->form->appendField(new Input('name'))
-            ->addFieldCss('col-4');
+            ->addFieldCss('col-4')
+            ->setRequired();
         $this->form->appendField(new InputGroup('claim', '%'))
             ->setLabel('Claim %')
             ->setNotes('Set the percentage of tax claimable for all items in this category')
-            ->addFieldCss('col-4');
+            ->addFieldCss('col-4')
+            ->setRequired();
 
         $this->form->appendField(new Checkbox('active', ['1' => 'Active']))
             ->setLabel('&nbsp;')

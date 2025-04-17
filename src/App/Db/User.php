@@ -21,24 +21,19 @@ class User extends Model implements UserInterface
      * permissions are bit masks that can include on or more bits
      * requests for permission are ANDed with the user's permissions
      * if the result is non-zero the user has permission.
-     *
-     * @todo move all permission functions to app level
      */
-    const int PERM_ADMIN            = 0x1; // Admin
-    const int PERM_SYSADMIN         = 0x2; // Change system settings
-    const int PERM_MANAGE_STAFF     = 0x4; // Manage staff
-    const int PERM_MANAGE_MEMBERS   = 0x8; // Manage members
-    //                            0x10; // available
+    const int PERM_ADMIN            = 0x1;      // Admin
+    const int PERM_SYSADMIN         = 0x2;      // Change system settings
+    const int PERM_MANAGE_STAFF     = 0x4;      // Manage staff
+    //const int PERM_   = 0x8;    // available
 
     const array PERMISSION_LIST = [
         self::PERM_ADMIN            => "Admin",
         self::PERM_SYSADMIN         => "Manage Settings",
         self::PERM_MANAGE_STAFF     => "Manage Staff",
-        self::PERM_MANAGE_MEMBERS   => "Manage Members",
     ];
 
     const string TYPE_STAFF = 'staff';
-    const string TYPE_MEMBER = 'member';
 
     const array TITLE_LIST = [
         'Mr', 'Mrs', 'Ms', 'Dr',
@@ -48,7 +43,7 @@ class User extends Model implements UserInterface
 
     public int        $userId        = 0;
     public string     $uid           = '';
-    public string     $type          = self::TYPE_MEMBER;
+    public string     $type          = self::TYPE_STAFF;
 
     public string     $title         = '';
     public string     $givenName     = '';
@@ -88,12 +83,6 @@ class User extends Model implements UserInterface
     public function save(): void
     {
         $map = static::getDataMap();
-
-        // Remove permissions for non-staff users
-        if ($this->userId && $this->isType(self::TYPE_MEMBER)) {
-            $this->getAuth()->permissions = Auth::PERM_NONE;
-            $this->getAuth()->save();
-        }
 
         $values = $map->getArray($this);
         if ($this->userId) {
@@ -140,11 +129,6 @@ class User extends Model implements UserInterface
     public function isStaff(): bool
     {
         return $this->isType(self::TYPE_STAFF);
-    }
-
-    public function isMember(): bool
-    {
-        return $this->isType(self::TYPE_MEMBER);
     }
 
     public function isType(string|array $type): bool

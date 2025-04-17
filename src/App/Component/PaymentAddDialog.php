@@ -51,9 +51,12 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
 
         $this->form->appendField((new Select('method', Payment::METHOD_LIST))
-            ->prependOption('-- Select --', ''));
+            ->prependOption('-- Select --', ''))
+            ->setRequired();
 
-        $this->form->appendField(new InputGroup('amount', '$'))->setLabel('Payment Amount');
+        $this->form->appendField(new InputGroup('amount', '$'))
+            ->setLabel('Payment Amount')
+            ->setRequired();
 
         $this->form->appendField(new Textarea('notes'));
 

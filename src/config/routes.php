@@ -49,12 +49,10 @@ return function (CollectionConfigurator $routes) {
     // User Staff
     $routes->add('settings-edit', '/settings')
         ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
-    $routes->add('user-type-manager', '/user/{type}Manager')
-        ->controller([\App\Controller\User\Manager::class, 'doByType'])
-        ->defaults(['type' => \App\Db\User::TYPE_MEMBER]);
-    $routes->add('user-type-edit', '/user/{type}Edit')
-        ->controller([\App\Controller\User\Edit::class, 'doDefault'])
-        ->defaults(['type' => \App\Db\User::TYPE_MEMBER]);
+    $routes->add('user-type-manager', '/user/staffManager')
+        ->controller([\App\Controller\User\Manager::class, 'doDefault']);
+    $routes->add('user-type-edit', '/user/staffEdit')
+        ->controller([\App\Controller\User\Edit::class, 'doDefault']);
 
     $routes->add('company-manager', '/companyManager')
         ->controller([\App\Controller\Company\Manager::class, 'doDefault']);

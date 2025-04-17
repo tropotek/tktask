@@ -143,6 +143,14 @@ form textarea {
 	--bs-gradient: none;
 }
 
+form .input-group.is-invalid .btn,
+form .input-group.is-invalid .input-group-text,
+form .was-validated .input-group:invalid .btn,
+form .was-validated .input-group:invalid .input-group-text
+{
+  border-color: var(--bs-danger) !important;
+}
+
 /***************** T A B L E ******************/
 .tk-form-inline {
   margin-bottom: .5rem;
