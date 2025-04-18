@@ -130,3 +130,27 @@ SELECT
 FROM invoice i
 LEFT JOIN totals t USING (invoice_id)
 ;
+
+-- \App\Db\Domain
+CREATE OR REPLACE VIEW v_domain AS
+WITH latest_pings AS (
+  SELECT
+    domain_id,
+    status,
+    site_name,
+    bytes,
+    created,
+		ROW_NUMBER() OVER (PARTITION BY domain_id ORDER BY created DESC) AS latest
+  FROM domain_ping
+)
+SELECT
+  d.*,
+  c.name AS company_name,
+  IFNULL(lp.status, FALSE) AS status,
+  IFNULL(lp.bytes, 0) AS bytes,
+  IFNULL(lp.site_name, '') AS site_name,
+  lp.created AS last_ping_time
+FROM domain d
+JOIN company c USING (company_id)
+LEFT JOIN latest_pings lp ON (d.domain_id = lp.domain_id AND lp.latest = 1)
+;

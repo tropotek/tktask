@@ -100,6 +100,11 @@ class Nav
                 'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
                 'url' => '/settings',
             ],
+            'Monitor' => [
+                'icon' => 'fas fa-network-wired',
+                'visible' => fn($i) => $this->getUser()?->hasPermission(User::PERM_SYSADMIN),
+                'url' => '/domainManager',
+            ],
             'Tools' => [
                 'icon' => 'ri-bug-line',
                 'visible' => $this->getUser()?->hasPermission(User::PERM_ADMIN),

@@ -114,6 +114,11 @@ return function (CollectionConfigurator $routes) {
     $routes->add('sales-profit', '/salesReport')
         ->controller([\App\Controller\Reports\Sales::class, 'doDefault']);
 
+    $routes->add('domain-manager', '/domainManager')
+        ->controller([\App\Controller\Domain\Manager::class, 'doDefault']);
+    $routes->add('domain-edit', '/domainEdit')
+        ->controller([\App\Controller\Domain\Edit::class, 'doDefault']);
+
 
     // Components
     $routes->add('com-status-table', '/component/statusLogTable')

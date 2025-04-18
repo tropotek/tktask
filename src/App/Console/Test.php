@@ -2,10 +2,12 @@
 namespace App\Console;
 
 
+use App\Db\Domain;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Bs\Console\Console;
 use Tk\Config;
+use Tk\FileUtil;
 use Tk\Uri;
 
 class Test extends Console
@@ -24,36 +26,32 @@ class Test extends Console
             return self::FAILURE;
         }
 
-        //$url = Uri::create('http://php.net');
-        //$url = Uri::create('https://tropotek.com.au');
-        $url = Uri::create('https://godar.ttek.org/Projects/tktask/tkping');
-        $opts = [
-            'http' => [
-                //'header' => 'Cookie: '.$_SERVER['HTTP_COOKIE']."\r\n",
-                'method' => 'HEAD'
-            ],
-            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-        ];
-        $context = stream_context_create($opts);
-        $data = file_get_contents($url, false, $context);
-        if ($data === false) {
-            vd('404 Not Found');
-        } else {
-            vd($data, json_encode($data));
-        }
+        $this->write("Pining All Domains");
+        Domain::pingAllDomains();
+        $this->write("Finished");
 
-//        $fd = fopen($url, 'rb', false, $context);
-//        if ($fd === false) {
+
+//        $url = Uri::create('https://godar.ttek.org/Projects/tktask/tkping');
+//        $opts = [
+//            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
+//        ];
+//        $context = stream_context_create($opts);
+//        $data = file_get_contents($url->toString(), false, $context);
+//        if ($data === false) {
 //            vd('404 Not Found');
+//            return self::FAILURE;
 //        } else {
-//            vd(stream_get_meta_data($fd));
-//            fclose($fd);
+//
+//            if (basename($url->getPath()) == 'tkping') {
+//                // has tk site data
+//                $data = json_decode($data, true);
+//                vd(FileUtil::bytes2String($data['bytes'] ?? 0));
+//            } else {
+//                // standard host with no data
+//                ;
+//            }
+//
 //        }
-
-
-
-
-
 
         return self::SUCCESS;
     }
