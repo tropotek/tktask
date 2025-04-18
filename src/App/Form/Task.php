@@ -52,8 +52,9 @@ class Task extends Form
             $projects = \App\Db\Project::findFiltered(Filter::create(['status' => \App\Db\Project::STATUS_OPEN], '-created'));
             if (count($projects)) {
                 $list = Collection::toSelectList($projects, 'projectId');
-                $this->form->appendField(new Select('projectId', $list))
-                    ->prependOption('-- Select --', '');
+                $this->form->appendField((new Select('projectId', $list))
+                    ->prependOption('-- Select --', '')
+                );
             }
         } else {
             // show project readonly field
@@ -69,18 +70,20 @@ class Task extends Form
 
         $categories = TaskCategory::findFiltered(Filter::create(['active' => true], 'order_by'));
         $list = Collection::toSelectList($categories, 'taskCategoryId', 'name');
-        $this->appendField(new Select('taskCategoryId', $list))
+        $this->appendField((new Select('taskCategoryId', $list))
             ->prependOption('-- Select --', '')
             ->addFieldCss('col-4')
-            ->setRequired();
+            ->setRequired()
+        );
 
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_CLIENT], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
-        $fld = $this->appendField(new Select('companyId', $list))
+        $fld = $this->appendField((new Select('companyId', $list))
             ->setLabel('Client')
             ->prependOption('-- Select --', '')
             ->addFieldCss('col-6')
-            ->setRequired();
+            ->setRequired()
+        );
 
         if ($this->getTask()->taskId != 0) {
             $fld->setDisabled();
@@ -88,18 +91,20 @@ class Task extends Form
 
         $users = User::findFiltered(Filter::create(['active' => true, 'type' => User::TYPE_STAFF], 'name_short'));
         $list = Collection::toSelectList($users, 'userId', 'nameShort');
-        $this->appendField(new Select('assignedUserId', $list))
+        $this->appendField((new Select('assignedUserId', $list))
             ->prependOption('-- Select --', '')
             ->addFieldCss('col-6')
-            ->setRequired();
+            ->setRequired()
+        );
 
         $this->appendField(new Minutes('minutes'))
             ->setLabel('Est. Duration')
             ->addFieldCss('col-4');
 
-        $this->appendField(new Select('priority', \App\Db\Task::PRIORITY_LIST))
+        $this->appendField((new Select('priority', \App\Db\Task::PRIORITY_LIST))
             ->prependOption('-- Select --', '')
-            ->addFieldCss('col-4');
+            ->addFieldCss('col-4')
+        );
 
         $this->appendField(new Html('status', $this->getTask()->status))
             ->setDisabled()

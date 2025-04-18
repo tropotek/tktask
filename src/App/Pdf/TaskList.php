@@ -70,7 +70,7 @@ class TaskList extends PdfInterface
 
         $this->mpdf->WriteHTML($this->show()->toString());
         return match ($output) {
-            PdfInterface::OUTPUT_PDF => $this->getPdf() ?? '',
+            PdfInterface::OUTPUT_PDF => $this->getPdf(),
             PdfInterface::OUTPUT_ATTACH => $this->getPdfAttachment(),
             default => $this->getTemplate()->toString()
         };
@@ -186,7 +186,7 @@ class TaskList extends PdfInterface
         }
 
         if (is_file(Config::makePath('/src/App/Pdf/pdfStyles.css'))) {
-            $pdfStyles = file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
+            $pdfStyles = (string)file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
             $template->appendCss($pdfStyles);
         }
 
@@ -310,7 +310,7 @@ HTML;
         return Template::load($xhtml);
     }
 
-    protected function secondsToDHM($minutes): string
+    protected function secondsToDHM(int $minutes): string
     {
         $s = (int)$minutes*60;
         $str = '';

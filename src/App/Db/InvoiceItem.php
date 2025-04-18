@@ -34,9 +34,9 @@ class InvoiceItem extends Model
         $this->created  = new \DateTime();
     }
 
-    public static function create(string $productCode, string $description, Money $price, float $qty = 1.0): static
+    public static function create(string $productCode, string $description, Money $price, float $qty = 1.0): self
     {
-        $obj = new static();
+        $obj = new self();
         $obj->productCode = $productCode;
         $obj->description = $description;
         $obj->price       = $price;
@@ -132,7 +132,7 @@ class InvoiceItem extends Model
             if (is_numeric($filter['search'])) {
                 $w .= 'a.invoice_item_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

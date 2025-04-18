@@ -270,8 +270,8 @@ class File extends Model
             return false;
         }
 
-        $srcBytes  = filesize($path);
-        $destBytes = filesize($temp);
+        $srcBytes  = (int)filesize($path);
+        $destBytes = (int)filesize($temp);
 
         if (Config::isDebug()) {
             $fs = FileUtil::bytes2String($srcBytes);

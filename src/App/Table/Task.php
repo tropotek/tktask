@@ -80,7 +80,7 @@ class Task extends Table
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
-                return $obj->getCompany()?->name ?? 'N/A';
+                return $obj->getCompany()->name ?? 'N/A';
             });
 
         $this->appendCell('status')
@@ -184,7 +184,7 @@ class Task extends Table
 
 
         // Add Table actions
-        $this->appendAction(Csv::create())
+        $this->appendAction(Csv::create()
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['actions']);
                 if (!$this->getCell(\App\Db\Task::getPrimaryProperty())) {
@@ -200,7 +200,8 @@ class Task extends Table
                     $rows = \App\Db\Task::findFiltered($filter->resetLimits());
                 }
                 return $rows;
-            });
+            })
+        );
 
         return $this;
     }

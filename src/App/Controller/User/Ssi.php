@@ -55,9 +55,9 @@ class Ssi extends ControllerAdmin
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $settings[$oAuth]['endpointToken']);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, [
                 'client_id' => $settings[$oAuth]['clientId'],
                 'client_secret' => $settings[$oAuth]['clientSecret'],
@@ -75,8 +75,8 @@ class Ssi extends ControllerAdmin
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $settings[$oAuth]['endpointScope']);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer '.$data['access_token']]);
             $data = json_decode(strval(curl_exec($ch)), true);
 

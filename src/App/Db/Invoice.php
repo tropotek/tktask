@@ -93,21 +93,21 @@ class Invoice extends Model implements StatusInterface
     /**
      * Create from a company
      */
-    public static function create(Model $client): static
+    public static function create(Model $client): self
     {
-        $invoice = new static();
+        $invoice = new self();
         $invoice->setDbModel($client);
         return $invoice;
     }
 
-    public static function getOpenInvoice(Model $client): ?static
+    public static function getOpenInvoice(Model $client): ?self
     {
         $invoice = null;
         try {
             // search for an existing open invoice for this account
             $invoice = self::findOpenInvoice($client);
             if (!($invoice instanceof Invoice)) {
-                $invoice = static::create($client);
+                $invoice = self::create($client);
                 $invoice->save();
             }
         } catch (\Exception $e) {
@@ -180,7 +180,7 @@ class Invoice extends Model implements StatusInterface
      */
     public function getPaymentList(): array
     {
-        return Payment::findFiltered(['invoiceId' => $this->invoiceId], '-created');
+        return Payment::findFiltered(Filter::create(['invoiceId' => $this->invoiceId], '-created'));
     }
 
     public function addPayment(Payment $payment): static
@@ -339,7 +339,7 @@ class Invoice extends Model implements StatusInterface
         );
     }
 
-    public static function getFirstInvoice(): ?static
+    public static function getFirstInvoice(): ?self
     {
         return Db::queryOne("
             SELECT *
@@ -351,7 +351,7 @@ class Invoice extends Model implements StatusInterface
         );
     }
 
-    public static function findOpenInvoice(Model $client): ?static
+    public static function findOpenInvoice(Model $client): ?self
     {
         return self::findFiltered(Filter::create([
             'model' => $client,
@@ -374,7 +374,7 @@ class Invoice extends Model implements StatusInterface
             if (is_numeric($filter['search'])) {
                 $w .= 'a.invoice_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

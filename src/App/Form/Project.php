@@ -61,10 +61,11 @@ class Project extends Form
 
         $cats = User::findFiltered(Filter::create(['active' => true, 'type' => User::TYPE_STAFF], 'name_short'));
         $list = Collection::toSelectList($cats, 'userId', 'nameShort');
-        $this->appendField(new Select('userId', $list))
+        $this->appendField((new Select('userId', $list))
             ->prependOption('-- Select --', '')
             ->setLabel('Lead')
-            ->setRequired();
+            ->setRequired()
+        );
 
         $this->appendField(new InputGroup('quote', '$'));
 

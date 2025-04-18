@@ -130,7 +130,7 @@ class Recurring extends Model
     /**
      * Build a date and add the recurring time difference to the date supplied
      */
-    public static function createNextDate($date, $cycle): \DateTime
+    public static function createNextDate(\DateTime $date, string $cycle): \DateTime
     {
         $date = clone $date;
         switch ($cycle) {
@@ -210,7 +210,7 @@ class Recurring extends Model
             if (is_numeric($filter['search'])) {
                 $w .= 'a.id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

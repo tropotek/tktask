@@ -9,7 +9,9 @@ trait ProductCategoryTrait
 
     public function getProductCategory(): ?ProductCategory
     {
-        if (!$this->_productCategory) $this->_productCategory = ProductCategory::find($this->productCategoryId);
+        if (is_null($this->_productCategory)) {
+            $this->_productCategory = ProductCategory::find($this->productCategoryId);
+        }
         return $this->_productCategory;
     }
 

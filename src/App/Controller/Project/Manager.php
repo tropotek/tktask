@@ -48,7 +48,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\Project $obj, Cell $cell) {
-                return $obj->getCompany()?->name ?? 'N/A';
+                return $obj->getCompany()->name ?? 'N/A';
             });
 
         $this->table->appendCell('status')
@@ -87,7 +87,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\Project $obj, Cell $cell) {
-                return $obj->getUser()?->nameShort ?? 'N/A';
+                return $obj->getUser()->nameShort ?? 'N/A';
             });
 
         $this->table->appendCell('startOn')

@@ -104,7 +104,7 @@ class Project extends Model implements StatusInterface
     {
         $filter = Filter::create($filter);
         $filter->set('projectId', $this->projectId);
-        return self::findFiltered($filter);
+        return Task::findFiltered($filter);
     }
 
     /**
@@ -201,7 +201,7 @@ class Project extends Model implements StatusInterface
             if (is_numeric($filter['search'])) {
                 $w .= 'a.project_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

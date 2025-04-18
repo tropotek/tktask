@@ -50,7 +50,7 @@ class Product extends Model
     public DateTime $modified;
     public DateTime $created;
 
-    private ?ProductCategory $_category = null;
+    private ?ProductCategory $_productCategory = null;
 
 
     public function __construct()
@@ -78,7 +78,7 @@ class Product extends Model
         $this->reload();
     }
 
-    public static function getDefaultLaborProduct(): static
+    public static function getDefaultLaborProduct(): self
     {
         $id = (int)Registry::instance()->get('site.product.labor.default', self::DEFAULT_LABOUR_PRODUCT);
         $obj = self::find($id);
@@ -136,7 +136,7 @@ class Product extends Model
             if (is_numeric($filter['search'])) {
                 $w .= 'a.product_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

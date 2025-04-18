@@ -69,7 +69,6 @@ class File extends Table
         );
 
         $this->appendAction(Csv::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
             ->addOnCsv(function(Csv $action, array $selected) {
                 $action->setExcluded(['actions', 'permissions']);
                 if (!$this->getCell(\App\Db\File::getPrimaryProperty())) {

@@ -75,7 +75,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\TaskLog $obj, Cell $cell) {
-                return $obj?->getProduct()?->name ?? 'N/A';
+                return $obj->getProduct()->name ?? 'N/A';
             });
 
         $this->table->appendCell('minutes')
@@ -99,7 +99,7 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        if($this?->task?->isEditable()) {
+        if($this->task->isEditable()) {
             $this->table->appendAction(Delete::create()
                 ->addOnGetSelected([$rowSelect, 'getSelected'])
                 ->addOnDelete(function (Delete $action, array $selected) {

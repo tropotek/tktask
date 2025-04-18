@@ -96,7 +96,7 @@ class DomainPing extends Model
             if (is_numeric($filter['search'])) {
                 $w .= 'a.domain_ping_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['always'])) {

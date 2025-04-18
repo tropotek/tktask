@@ -57,9 +57,9 @@ class StatusLog extends Model
         $this->reload();
     }
 
-    public static function create(Model $model, string $message = '', bool $notify = true): static
+    public static function create(Model $model, string $message = '', bool $notify = true): self
     {
-        $obj = new static();
+        $obj = new self();
         $obj->setDbModel($model);
 
         if (!($model instanceof StatusInterface)) {
@@ -77,7 +77,7 @@ class StatusLog extends Model
 
         // save log if status has changed
         $prev = $obj->getPrevious();
-        if (!($prev instanceof StatusLog) || $obj->name != $prev->name) {
+        if (!($prev instanceof self) || $obj->name != $prev->name) {
             $obj->save();
             $model->onStatusChanged($obj);
         }
@@ -85,7 +85,7 @@ class StatusLog extends Model
         return $obj;
     }
 
-    public function getPrevious(): ?static
+    public function getPrevious(): ?self
     {
         if (!$this->_previous) {
             $filter = array(
@@ -100,12 +100,12 @@ class StatusLog extends Model
 
     public function getPreviousName(): string
     {
-        return $this->getPrevious()?->name ?? '';
+        return $this->getPrevious()->name ?? '';
     }
 
     public function getLabel(): string
     {
-        return ucwords(preg_replace('/[A-Z]/', ' $0', \Tk\ObjectUtil::basename($this->fkey)));
+        return ucwords(preg_replace('/[A-Z]/', ' $0', (string)\Tk\ObjectUtil::basename($this->fkey)));
     }
 
     public static function find(int $statusLogId): ?self
@@ -148,7 +148,7 @@ class StatusLog extends Model
             if (is_numeric($filter['search'])) {
                 $w .= 'a.status_log_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

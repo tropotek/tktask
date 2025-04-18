@@ -9,7 +9,7 @@ use Tk\DataMap\DataTypeInterface;
 class Minutes extends DataTypeInterface
 {
 
-    public function getPropertyValue(array $array): string
+    public function getPropertyValue(array $array): int
     {
         $value = parent::getPropertyValue($array);
         return intval(

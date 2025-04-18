@@ -40,7 +40,7 @@ class Invoice
             'invoiceId' => $invoice->invoiceId,
             'o' => PdfInterface::OUTPUT_ATTACH,
         ]);
-        $attach = file_get_contents($url);
+        $attach = (string)file_get_contents($url);
 
         $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
         $message->addStringAttachment($attach, $filename);
@@ -51,7 +51,7 @@ class Invoice
                 'invoiceId' => $inv->invoiceId,
                 'o' => PdfInterface::OUTPUT_ATTACH,
             ]);
-            $a = file_get_contents($url);
+            $a = (string)file_get_contents($url);
 
             $filename = 'outstanding-invoice-' . $inv->invoiceId.'.pdf';
             $message->addStringAttachment($a, $filename);
@@ -82,7 +82,7 @@ class Invoice
             }
             $context = stream_context_create($opts);
             session_write_close(); // unlock the file
-            $attach = file_get_contents($url, false, $context);
+            $attach = (string)file_get_contents($url, false, $context);
             session_start(); // Lock the file
 
             $filename = str_replace([' ', '/', '\\'], '', $invoice->invoiceId . '-TaskList.pdf');
@@ -126,7 +126,7 @@ class Invoice
             'invoiceId' => $invoice->invoiceId,
             'o' => PdfInterface::OUTPUT_ATTACH,
         ]);
-        $attach = file_get_contents($url);
+        $attach = (string)file_get_contents($url);
 
         $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
         if ($invoice->issuedOn instanceof \DateTime) {

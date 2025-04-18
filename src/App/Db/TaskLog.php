@@ -88,7 +88,7 @@ class TaskLog extends Model
         return ($ok !== false);
     }
 
-    public static function create(?Task $task = null, ?Product $product = null): static
+    public static function create(?Task $task = null, ?Product $product = null): self
     {
         $obj = new self();
         if ($task) {
@@ -140,7 +140,7 @@ class TaskLog extends Model
             if (is_numeric($filter['search'])) {
                 $w .= 'a.task_log_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

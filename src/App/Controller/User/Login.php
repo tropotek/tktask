@@ -34,9 +34,8 @@ class Login extends ControllerAdmin
 
         // check and use remember me token if set
         $auth = Remember::retrieveMe();
-        if ($auth) {
-            if ($auth instanceof Auth) $auth->getHomeUrl()->redirect();
-            Uri::create('/')->redirect();
+        if ($auth instanceof Auth) {
+            $auth->getHomeUrl()->redirect();
         }
 
         $this->form = new Form();

@@ -56,9 +56,9 @@ class Payment extends Model implements StatusInterface
         $this->created = new \DateTime();
     }
 
-    public static function create(Money $amount, $method = self::METHOD_CASH, $status = self::STATUS_CLEARED): static
+    public static function create(Money $amount, string $method = self::METHOD_CASH, string $status = self::STATUS_CLEARED): self
     {
-        $obj = new static();
+        $obj = new self();
         $obj->amount = $amount;
         $obj->method = $method;
         $obj->status = $status;
@@ -127,7 +127,7 @@ class Payment extends Model implements StatusInterface
             if (is_numeric($filter['search'])) {
                 $w .= 'a.payment_id = :search OR ';
             }
-            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
         if (!empty($filter['id'])) {

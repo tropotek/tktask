@@ -73,7 +73,7 @@ class Register extends ControllerDomInterface
         }
 
         $user = new User();
-        $user->type = User::TYPE_MEMBER;
+        $user->type = User::TYPE_STAFF;
 
         // set object values from fields
         $user->mapForm($form->getFieldValues());

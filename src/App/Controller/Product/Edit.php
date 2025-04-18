@@ -49,9 +49,10 @@ class Edit extends ControllerAdmin
 
         $categories = ProductCategory::findFiltered([]);
         $list = Collection::toSelectList($categories, 'productCategoryId');
-        $this->form->appendField(new Select('productCategoryId', $list))
+        $this->form->appendField((new Select('productCategoryId', $list))
             ->prependOption('-- Select --', '')
-            ->setRequired();
+            ->setRequired()
+        );
 
         $this->form->appendField(new Input('name'))
             ->addFieldCss('col-6')
