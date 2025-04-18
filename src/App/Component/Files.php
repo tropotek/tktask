@@ -64,7 +64,7 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
         $field->setAttr('hx-swap', 'outerHTML');
         $field->setAttr('hx-target', "#files-container");
         $field->setAttr('hx-select', "#files-container");
-        $field->setAttr('hx-vals', json_encode([$save->getId() => $save->getName()]));
+        $field->setAttr('hx-vals', strval(json_encode([$save->getId() => $save->getName()])));
 
         $this->form->execute($_POST);
 
@@ -149,9 +149,9 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
             return;
         }
 
-        $dataPath = Config::makePath(Config::getDataPath() . '/' . $this->model->dataPath);
+        $dataPath = Config::makePath(Config::getDataPath() . '/' . $this->model->getDataPath());
         if ($fileField->move($dataPath)) {
-            $path = $this->model->dataPath . '/' . $upload['name'];
+            $path = $this->model->getDataPath() . '/' . $upload['name'];
             $file = File::create($path, $this->model, User::getAuthUser()->userId);
             $file->save();
 

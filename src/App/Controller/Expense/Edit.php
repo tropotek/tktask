@@ -67,10 +67,11 @@ class Edit extends ControllerAdmin
 
         $categories = ExpenseCategory::findFiltered(Filter::create([], 'name'));
         $list = Collection::toSelectList($categories, 'expenseCategoryId');
-        $this->form->appendField(new Select('expenseCategoryId', $list))
+        $this->form->appendField((new Select('expenseCategoryId', $list))
             ->prependOption('-- Select --', '')
             ->addFieldCss('col-6')
-            ->setRequired();
+            ->setRequired()
+        );
 
         $this->form->appendField(new InputGroup('total', '$'))
             ->addFieldCss('col-6')

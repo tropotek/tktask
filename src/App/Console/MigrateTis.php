@@ -68,7 +68,7 @@ class MigrateTis extends Console
     {
         $this->output->writeln("<comment>Migrating database [{$srcDb} -> {$destDb}]</comment>");
         try {
-            $sql = file_get_contents(getcwd() . '/_notes/migrateTis.sql');
+            $sql = strval(file_get_contents(getcwd() . '/_notes/migrateTis.sql'));
 
             // update the src and dest db's in the SQL file
             $sql = str_replace('dev_tktis.', $srcDb.'.', $sql);
@@ -104,7 +104,7 @@ class MigrateTis extends Console
             $this->output->writeln("  <comment>- Migrate expense files</comment>");
             $dirs = array_diff(scandir($src.'/expense'), array('..', '.'));
             foreach ($dirs as $expenseId) {
-                $expense = Expense::find($expenseId);
+                $expense = Expense::find((int)$expenseId);
                 if ($expense) {
                     $destPath = Config::makeDataPath($expense->dataPath);
                     FileUtil::mkdir(dirname($destPath));

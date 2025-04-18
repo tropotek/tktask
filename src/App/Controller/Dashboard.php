@@ -68,7 +68,7 @@ class Dashboard extends ControllerAdmin
             'assignedUserId' => User::getAuthUser()->userId,
             'status' => [Task::STATUS_OPEN, Task::STATUS_PENDING, Task::STATUS_HOLD],
         ]);
-        $template->setText('openTasks', count($tasks));
+        $template->setText('openTasks', (string)count($tasks));
 
         // Unpaid Invoices
         $unpaid = Invoice::findFiltered([

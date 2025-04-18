@@ -1,6 +1,6 @@
 parameters:
   level: 7
-  tmpDir: data/tmp/phpstan
+  tmpDir: data/private/tmp/phpstan
 #  checkGenericClassInNonGenericObjectType: false
   treatPhpDocTypesAsCertain: false
   bootstrapFiles:
@@ -8,11 +8,10 @@ parameters:
   excludePaths:
     - data
     - html
-    - vendor/ttek/tk-framework/Tk/EventDispatcher
-    - vendor/ttek/tk-framework/Tk/Http
     - vendor/ttek/tk-table/templates
     - vendor/ttek/tk-form/templates
     - vendor/ttek/tk-domtemplate/docs
+    - vendor/ttek/tk-base/Bs/Traits/OrderByTrait.php
   paths:
     - src
     - bin

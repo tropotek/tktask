@@ -91,13 +91,10 @@ class Cron extends Console
 
     }
 
-    private function sendInvoiceReminders(): void
-    {
-        $this->writeComment(' - Send invoice overdue reminder emails', OutputInterface::VERBOSITY_VERBOSE);
-
-        // todo Implement invoice reminder emails
-
-    }
+//    private function sendInvoiceReminders(): void
+//    {
+//        $this->writeComment(' - Send invoice overdue reminder emails', OutputInterface::VERBOSITY_VERBOSE);
+//    }
 
     private function closeExpiredRecurring(): void
     {
