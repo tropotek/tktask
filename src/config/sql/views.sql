@@ -135,6 +135,7 @@ LEFT JOIN totals t USING (invoice_id)
 CREATE OR REPLACE VIEW v_domain AS
 WITH latest_pings AS (
   SELECT
+    domain_ping_id,
     domain_id,
     status,
     site_name,
@@ -149,7 +150,7 @@ SELECT
   IFNULL(lp.status, FALSE) AS status,
   IFNULL(lp.bytes, 0) AS bytes,
   IFNULL(lp.site_name, '') AS site_name,
-  lp.created AS last_ping_time
+  lp.domain_ping_id AS last_ping_id
 FROM domain d
 JOIN company c USING (company_id)
 LEFT JOIN latest_pings lp ON (d.domain_id = lp.domain_id AND lp.latest = 1)

@@ -150,6 +150,9 @@ return function (CollectionConfigurator $routes) {
     $routes->add('com-company-select-dialog', '/component/companySelectDialog')
         ->controller([\App\Component\CompanySelectDialog::class, 'doDefault']);
 
+    $routes->add('com-ping-table', '/component/pingTable')
+        ->controller([\App\Component\PingTable::class, 'doDefault']);
+
     $routes->add('com-files', '/component/files')
         ->controller([\App\Component\Files::class, 'doDefault']);
 

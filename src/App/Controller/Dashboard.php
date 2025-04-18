@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Db\Domain;
 use App\Db\Invoice;
 use App\Db\Payment;
 use App\Db\Task;
@@ -29,6 +30,16 @@ class Dashboard extends ControllerAdmin
         if (!Auth::getAuthUser()) {
             Alert::addWarning('You do not have permission to access the page');
             Uri::create('/')->redirect();
+        }
+
+        // This will do for now, no need for warnings on every page
+        $pings = Domain::findFiltered(['status' => false, 'active' => true]);
+        if (count($pings)) {
+            $msg = '<strong>Sites Offline:</strong><br>';
+            foreach ($pings as $ping) {
+                $msg .= sprintf('%s - %s<br>', $ping->companyName, $ping->url);
+            }
+            Alert::addWarning($msg);
         }
 
         $this->table = new \App\Table\Task('mytasks');

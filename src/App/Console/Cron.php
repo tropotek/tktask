@@ -1,6 +1,7 @@
 <?php
 namespace App\Console;
 
+use App\Db\Domain;
 use App\Db\Invoice;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,6 +44,9 @@ class Cron extends Console
 
         // Closing Expired Recurring Items
         $this->closeExpiredRecurring();
+
+        // Ping all monitored domains
+        Domain::pingAllDomains();
 
         $this->release();   // release lock
 
@@ -91,7 +95,7 @@ class Cron extends Console
     {
         $this->writeComment(' - Send invoice overdue reminder emails', OutputInterface::VERBOSITY_VERBOSE);
 
-        // todo ...
+        // todo Implement invoice reminder emails
 
     }
 
