@@ -24,7 +24,7 @@ Features:
 1. First set up a database for the site and keep the login details handy.
 2. Make sure you have the latest version of composer [https://getcomposer.org/download/] installed.
 3. Use the following commands:
-    ```bash
+    ```
     $ git clone https://github.com/tropotek/tktask.git
     $ cd tktask
     $ composer install
@@ -32,7 +32,7 @@ Features:
 4. You will be asked a number of questions to set up the environment settings and DB.
 5. View/Edit the `/config.php` file after the command has finished and change to your required settings if needed.
 6. To enable debug mode and logging edit the `/config.php` file:
-```php
+```
     //  ...
     // Enable Debug in a dev environment
     $config['env.type'] = 'dev';
