@@ -1,4 +1,4 @@
-# tktask
+# TkTask
 
 __Author:__ Tropotek <http://www.tropotek.com/>
 
@@ -6,6 +6,18 @@ __Author:__ Tropotek <http://www.tropotek.com/>
 
 - [Installation](#installation)
 - [Introduction](#introduction)
+
+## About
+TkTask is a billing and task management system for developers. 
+
+Features:
+- Manage clients and suppliers
+- Manage large Project tasks
+- Issue invoice emails
+- Add recurring billing to client accounts (Hosting, domain name, etc)
+- Track expenses
+- Generate profit and loss report per financial year
+- Monitor client web sites, with email notification when offline
 
 ## Installation
 
@@ -17,10 +29,9 @@ __Author:__ Tropotek <http://www.tropotek.com/>
     $ cd tktask
     $ composer install
     ````
-4. You will be asked a number of questions to set up the environment settings.
-5. Edit the `/config.php` file to your required settings if needed.
-6. You may have to change the permissions of the `/data/` folder so your web server can read and write to it.
-7. To enable debug mode and logging edit the `/config.php` file:
+4. You will be asked a number of questions to set up the environment settings and DB.
+5. View/Edit the `/config.php` file after the command has finished and change to your required settings if needed.
+6. To enable debug mode and logging edit the `/config.php` file:
 ```php
     //  ...
     // Enable Debug in a dev environment
@@ -35,19 +46,23 @@ __Author:__ Tropotek <http://www.tropotek.com/>
         $config['auth.password.strict'] = false;
     }
 ```
-8. Browse to the location you installed the site.
-9. (TODO: creating a new system user for first use?)
+7. Browse to the location you installed the site.
+8. Set a password for the `admin` user with `./bin/cmd pwd admin`
+9. Install the cron script to ensure all features of the site work:
+```
+# Run the cron script every 2 hours
+0 */2 * * *  /{pathToSire}/bin/cmd cron
+```
+10. Now you should be able to use your new site.
 
 
 ## Upgrading
 
-Upgrade the site by the CLI command;
+Upgrade the site to the latest release version using the CLI command;
 ```bash
 $ cd {siteroot}
 $ ./bin/cmd ug
 ```
-
-## Introduction
 
 
 

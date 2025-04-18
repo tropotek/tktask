@@ -8,6 +8,7 @@ use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
+use Tk\Alert;
 use Tk\Collection;
 use Tk\FileUtil;
 use Tk\Form\Field\Input;
@@ -25,8 +26,25 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
-        //$this->setUserAccess(User::PERM_SYSADMIN);
+        $this->setUserAccess(User::PERM_SYSADMIN);
         $this->getPage()->setTitle('Domain Manager', 'fa fa-cogs');
+
+        $action = trim($_GET['action'] ?? $_POST['action'] ?? '');
+
+        if ($action == 'p') {
+            Domain::pingAllDomains();
+            Uri::create()->remove('action')->redirect();
+        }
+
+        // This will do for now, no need for warnings on every page
+        $pings = Domain::findFiltered(['status' => false, 'active' => true]);
+        if (count($pings)) {
+            $msg = '<strong>Sites Offline:</strong><br>';
+            foreach ($pings as $ping) {
+                $msg .= sprintf('%s - %s<br>', $ping->companyName, $ping->url);
+            }
+            Alert::addWarning($msg);
+        }
 
         // init table
         $this->table = new Table('domain');
@@ -179,7 +197,8 @@ class Manager extends ControllerAdmin
 <div>
   <div class="page-actions card mb-3">
     <div class="card-body">
-      <a href="/domainEdit" title="Create Domain" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Domain</a>
+      <a href="/domainEdit" title="Create Domain" class="btn btn-outline-secondary"><i class="fa fa-plus"></i> Create Domain</a>
+      <a href="/domainManager?action=p" title="Ping Domains" class="btn btn-outline-secondary" data-confirm="This action may take some time, continue?"><i class="fa fa-crosshairs"></i> Ping Domains</a>
     </div>
   </div>
   <div class="card mb-3">
