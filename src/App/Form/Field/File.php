@@ -21,7 +21,7 @@ class File extends \Tk\Form\Field\File
     protected bool $enableSelect = false;
 
 
-    public function __construct(string $name, Model $model = null)
+    public function __construct(string $name, ?Model $model = null)
     {
         parent::__construct($name);
         $this->model = $model;

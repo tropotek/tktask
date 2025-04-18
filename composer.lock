@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3b095b9f14056481fd469b3f4f071e5c",
+    "content-hash": "a27edf1383651347d74e264af219463d",
     "packages": [
         {
             "name": "components/font-awesome",
@@ -2458,12 +2458,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "596c52fe856ca4c230e24a499246bba709833afc"
+                "reference": "9779f52abc0bae39b00e33c7dc026a9210868a18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/596c52fe856ca4c230e24a499246bba709833afc",
-                "reference": "596c52fe856ca4c230e24a499246bba709833afc",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/9779f52abc0bae39b00e33c7dc026a9210868a18",
+                "reference": "9779f52abc0bae39b00e33c7dc026a9210868a18",
                 "shasum": ""
             },
             "require": {
@@ -3644,24 +3644,25 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.x-dev",
+            "version": "2.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "0464ac1ea933b44a645eab634e6252bee15eb5d5"
+                "reference": "488b65f61d8c9c8f055c47da62134553aaac6428"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/0464ac1ea933b44a645eab634e6252bee15eb5d5",
-                "reference": "0464ac1ea933b44a645eab634e6252bee15eb5d5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/488b65f61d8c9c8f055c47da62134553aaac6428",
+                "reference": "488b65f61d8c9c8f055c47da62134553aaac6428",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2|^8.0"
+                "php": "^7.4|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
             },
+            "default-branch": true,
             "bin": [
                 "phpstan",
                 "phpstan.phar"
@@ -3698,7 +3699,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-05T12:05:23+00:00"
+            "time": "2025-04-18T13:33:23+00:00"
         },
         {
             "name": "react/promise",

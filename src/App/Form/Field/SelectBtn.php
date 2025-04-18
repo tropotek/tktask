@@ -46,7 +46,7 @@ class SelectBtn extends Select implements DisplayInterface, RendererInterface
         return $this;
     }
 
-    public function setBtnAttr(array|string $name, string $value = null): static
+    public function setBtnAttr(array|string $name, ?string $value = null): static
     {
         $this->btnAttr->setAttr($name, $value);
         return $this;
