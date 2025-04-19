@@ -24,10 +24,10 @@ class MigrateTis extends Console
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $config = $this->getConfig();
-        if (!Config::isDev()) {
+        //if (!Config::isDev()) {
             $this->writeError('Error: cannot run this command in a production environment.');
             return self::FAILURE;
-        }
+        //}
 
         $options = $config->get('migrate.tis', []);
         $oldDsn = $options['db.mysql.src'] ?? '';
