@@ -29,7 +29,7 @@ class Sales extends ControllerAdmin
     public function doDefault(): void
     {
         Breadcrumbs::reset();
-        $this->getPage()->setTitle('Client Sales Report');
+        $this->getPage()->setTitle('Client Sales Report', 'fas fa-chart-line');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->dateSet = Date::getFinancialYear(new \DateTime($_GET['date'] ?? 'now'));
@@ -128,8 +128,8 @@ class Sales extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         $template->appendTemplate('content', $this->form->show());
         $template->appendTemplate('content', $this->table->show());
@@ -157,27 +157,14 @@ JS;
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-<!--      <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">-->
-<!--        <i class="fa fa-download"></i>-->
-<!--        <span>PDF</span>-->
-<!--      </a>-->
-    </div>
-  </div>
-
   <div class="card mb-3">
     <div class="card-header">
-        <i class="fas fa-chart-line"></i> <span var="title"></span>
+        <i var="icon"></i> <span var="title"></span>
         <div class="float-end">
             Totals Sales: <span var="total-sales"></span>
         </div>
     </div>
-    <div class="card-body" var="content">
-
-    </div>
+    <div class="card-body" var="content"></div>
   </div>
 </div>
 HTML;

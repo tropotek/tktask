@@ -105,11 +105,11 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $template = $this->getTemplate();
         $template->setAttr('dialog', 'id', $this->getDialogId());
 
-        $this->form->getField('discount')->addFieldCss('col-4');
-        $this->form->getField('tax')->addFieldCss('col-4');
-        $this->form->getField('shipping')->addFieldCss('col-4');
-        $this->form->getField('purchaseOrder')->addFieldCss('col-6');
-        $this->form->getField('status')->addFieldCss('col-6');
+        $this->form->getField('discount')->addFieldCss('col-md-4');
+        $this->form->getField('tax')->addFieldCss('col-md-4');
+        $this->form->getField('shipping')->addFieldCss('col-md-4');
+        $this->form->getField('purchaseOrder')->addFieldCss('col-md-6');
+        $this->form->getField('status')->addFieldCss('col-md-6');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
         $this->form->getRenderer()->getTemplate()->removeCss('fields', 'g-3 mt-1')->addCss('fields', 'g-2');

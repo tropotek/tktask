@@ -123,12 +123,12 @@ class Project extends Form
     public function show(): ?Template
     {
         // Setup field group widths with bootstrap classes
-        $this->getField('name')->addFieldCss('col-6');
-        $this->getField('companyId')->addFieldCss('col-6');
-        $this->getField('userId')->addFieldCss('col-6');
-        $this->getField('quote')->addFieldCss('col-6');
-        $this->getField('startOn')->addFieldCss('col-6');
-        $this->getField('endOn')->addFieldCss('col-6');
+        $this->getField('name')->addFieldCss('col-md-6');
+        $this->getField('companyId')->addFieldCss('col-md-6');
+        $this->getField('userId')->addFieldCss('col-md-6');
+        $this->getField('quote')->addFieldCss('col-md-6');
+        $this->getField('startOn')->addFieldCss('col-md-6');
+        $this->getField('endOn')->addFieldCss('col-md-6');
 
         $renderer = $this->getRenderer();
 

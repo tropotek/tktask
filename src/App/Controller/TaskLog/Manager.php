@@ -27,7 +27,7 @@ class Manager extends ControllerAdmin
         $taskId = intval($_GET['taskId'] ?? 0);
         $this->task = Task::find($taskId);
 
-        $this->getPage()->setTitle('Task Log Manager');
+        $this->getPage()->setTitle('Task Log Manager', 'fas fa-tasks');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         // init table
@@ -134,8 +134,8 @@ class Manager extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', Uri::create('/taskEdit')->set('taskId', $_GET['taskId'] ?? '0'));
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->task->isEditable()) {
             $url = Uri::create('/taskLogEdit')->set('taskId', $this->task->taskId);
@@ -157,16 +157,14 @@ class Manager extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      <a href="#" title="Create Task Log" class="btn btn-outline-secondary" choice="add-log"><i class="fa fa-plus"></i> Add Log</a>
+  <div class="page-actions card mb-3" choice="add-log">
+    <div class="card-body">
+      <a href="#" title="Create Task Log" class="btn btn-outline-secondary"><i class="fa fa-plus"></i> Add Log</a>
     </div>
   </div>
   <div class="card mb-3">
     <div class="card-header">
-        <i class="fa fa-cogs"></i> <span var="title"></span>
+        <i var="icon"></i> <span var="title"></span>
         <div class="float-end" choice="billable">Billable: $0.00</div>
     </div>
     <div class="card-body" var="content"></div>

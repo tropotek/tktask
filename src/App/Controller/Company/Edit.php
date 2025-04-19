@@ -29,7 +29,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Edit Company');
+        $this->getPage()->setTitle('Edit Company', 'fa fa-building');
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
@@ -50,29 +50,37 @@ class Edit extends ControllerAdmin
 
         $this->form->appendField(new Input('name'))
             ->setGroup($tab)
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField((new Select('type', Collection::listCombine(Company::TYPE_LIST)))
             ->prependOption('-- Select --', ''))
             ->setGroup($tab)
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Input('email'))
             ->setGroup($tab)
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
         $this->form->appendField(new Input('accountsEmail'))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Input('contact'))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->addFieldCss('col-md-6');
+        $this->form->appendField(new Input('alias'))
+            ->setGroup($tab)
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Input('phone'))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->addFieldCss('col-md-6');
         $this->form->appendField(new Input('abn'))
-            ->setGroup($tab);
+            ->setGroup($tab)
+            ->addFieldCss('col-md-6');
         $this->form->appendField(new Input('website'))
-            ->setGroup($tab);
-        $this->form->appendField(new Input('alias'))
             ->setGroup($tab);
 
         $this->form->appendField(new Input('address'))
@@ -116,20 +124,9 @@ class Edit extends ControllerAdmin
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        $this->form->getField('name')->addFieldCss('col-6');
-        $this->form->getField('type')->addFieldCss('col-6');
-        $this->form->getField('email')->addFieldCss('col-6');
-        $this->form->getField('accountsEmail')->addFieldCss('col-6');
-        $this->form->getField('contact')->addFieldCss('col-6');
-        $this->form->getField('phone')->addFieldCss('col-6');
-        $this->form->getField('abn')->addFieldCss('col-4');
-        $this->form->getField('website')->addFieldCss('col-4');
-        $this->form->getField('alias')->addFieldCss('col-4');
-
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', Factory::instance()->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->company->companyId) {
             $template->setVisible('edit');
@@ -146,12 +143,6 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-    </div>
-  </div>
   <div class="card mb-3">
     <div class="card-header">
       <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -161,7 +152,7 @@ class Edit extends ControllerAdmin
           <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
         </div>
       </div>
-      <i class="fa fa-building"></i> <span var="title"></span>
+      <i var="icon"></i> <span var="title"></span>
     </div>
     <div class="card-body" var="content"></div>
   </div>

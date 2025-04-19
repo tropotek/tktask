@@ -59,7 +59,7 @@ class Edit extends ControllerAdmin
 
         $this->form->appendField(new Checkbox('active', ['1' => 'Active']))
             ->setLabel('')
-            ->addFieldCss('col-4');
+            ->addFieldCss('col-md-4');
 
         $this->form->appendField(new Textarea('notes'));
 

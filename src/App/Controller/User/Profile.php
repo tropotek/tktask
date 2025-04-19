@@ -32,7 +32,7 @@ class Profile extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('My Profile');
+        $this->getPage()->setTitle('My Profile', 'fa fa-user');
         $this->setUserAccess();
 
         $this->templateSelectEnabled = str_contains($this->getPage()->getTemplatePath(), '/minton/');
@@ -45,26 +45,32 @@ class Profile extends ControllerAdmin
         $this->form->appendField(new Hidden('userId'))->setReadonly();
 
         $list = Collection::listCombine(User::TITLE_LIST);
-        $this->form->appendField((new Select('title', $list))->prependOption('', ''))
+        $this->form->appendField((new Select('title', $list))
+            ->prependOption('', ''))
             ->setGroup($tab)
+            ->addFieldCss('col-md-1')
             ->setLabel('Title');
 
         $this->form->appendField(new Input('givenName'))
             ->setGroup($tab)
+            ->addFieldCss('col-md-5')
             ->setRequired();
 
         $this->form->appendField(new Input('familyName'))
+            ->addFieldCss('col-md-6')
             ->setGroup($tab);
 
         $this->form->appendField(new Input('username'))->setGroup($tab)
             ->setDisabled()
             ->setReadonly()
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Input('email'))->setGroup($tab)
             ->setDisabled()
             ->setReadonly()
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         if ($this->templateSelectEnabled) {
             $list = ['sn-admin' => 'Side Menu', 'tn-admin' => 'Top Menu'];
@@ -164,14 +170,8 @@ class Profile extends ControllerAdmin
     {
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
-        $this->form->getField('title')->addFieldCss('col-1');
-        $this->form->getField('givenName')->addFieldCss('col-5');
-        $this->form->getField('familyName')->addFieldCss('col-6');
-
-        $this->form->getField('username')->addFieldCss('col-6');
-        $this->form->getField('email')->addFieldCss('col-6');
         $this->form->getRenderer()->addFieldCss('mb-3');
         $template->appendTemplate('content', $this->form->show());
 
@@ -183,13 +183,7 @@ class Profile extends ControllerAdmin
         $html = <<<HTML
 <div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-    </div>
-  </div>
-  <div class="card mb-3">
-    <div class="card-header" var="title"><i class="fa fa-user"></i> </div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

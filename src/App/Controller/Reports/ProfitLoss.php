@@ -24,7 +24,7 @@ class ProfitLoss extends ControllerAdmin
     public function doDefault(): mixed
     {
         Breadcrumbs::reset();
-        $this->getPage()->setTitle('Profit & Loss Report');
+        $this->getPage()->setTitle('Profit & Loss Report', 'fas fa-dollar-sign');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->dateSet = Date::getFinancialYear(new \DateTime($_GET['date'] ?? 'now'));
@@ -63,8 +63,8 @@ class ProfitLoss extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         $template->appendTemplate('content', $this->form->show());
         $template->appendTemplate('content', $this->report->show());
@@ -90,9 +90,7 @@ JS;
         $html = <<<HTML
 <div>
   <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">
         <i class="fa fa-download"></i>
         <span>PDF</span>
@@ -101,10 +99,8 @@ JS;
   </div>
 
   <div class="card mb-3">
-    <div class="card-header"><i class="fas fa-dollar-sign"></i> <span var="title"></span></div>
-    <div class="card-body" var="content">
-
-    </div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
+    <div class="card-body" var="content"></div>
   </div>
 </div>
 HTML;

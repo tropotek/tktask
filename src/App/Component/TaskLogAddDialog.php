@@ -133,9 +133,9 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $template = $this->getTemplate();
         $template->setAttr('dialog', 'id', $this->getDialogId());
 
-        $this->form->getField('minutes')->addFieldCss('col-4');
-        $this->form->getField('startAt')->addFieldCss('col-4');
-        $this->form->getField('billable')->addFieldCss('col-4');
+        $this->form->getField('minutes')->addFieldCss('col-md-4');
+        $this->form->getField('startAt')->addFieldCss('col-md-4');
+        $this->form->getField('billable')->addFieldCss('col-md-4');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
 

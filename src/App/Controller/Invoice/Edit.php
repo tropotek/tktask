@@ -27,7 +27,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): mixed
     {
-        $this->getPage()->setTitle('Edit Invoice');
+        $this->getPage()->setTitle('Edit Invoice', 'far fa-credit-card');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $invoiceId = intval($_GET['invoiceId'] ?? 0);
@@ -102,7 +102,7 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->invoice->invoiceId) {
             $template->setVisible('edit');
@@ -337,10 +337,7 @@ JS;
 <div class="row tk-invoice">
     <div class="col-12">
         <div class="page-actions card mb-3">
-            <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
             <div class="card-body" var="actions">
-                <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-
                 <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">
                     <i class="fa fa-download"></i>
                     <span>PDF</span>
@@ -386,7 +383,7 @@ JS;
                   <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
                 </div>
               </div>
-              <i class="far fa-credit-card"></i> Invoice #: <span var="invoiceId">00000</span>
+              <i var="icon"></i> Invoice #: <span var="invoiceId">00000</span>
             </div>
             <div class="card-body" var="content">
                 <form role="form" class="tk-form">

@@ -31,7 +31,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Edit Expense Category');
+        $this->getPage()->setTitle('Edit Expense Category', 'fa fa-folder-open');
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
@@ -48,17 +48,17 @@ class Edit extends ControllerAdmin
         // Get the form template
         $this->form = new Form();
         $this->form->appendField(new Input('name'))
-            ->addFieldCss('col-4')
+            ->addFieldCss('col-md-4')
             ->setRequired();
         $this->form->appendField(new InputGroup('claim', '%'))
             ->setLabel('Claim %')
             ->setNotes('Set the percentage of tax claimable for all items in this category')
-            ->addFieldCss('col-4')
+            ->addFieldCss('col-md-4')
             ->setRequired();
 
         $this->form->appendField(new Checkbox('active', ['1' => 'Active']))
             ->setLabel('&nbsp;')
-            ->addFieldCss('col-4');
+            ->addFieldCss('col-md-4');
         $this->form->appendField(new Textarea('description'));
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
@@ -94,8 +94,8 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', Factory::instance()->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->expenseCategory->expenseCategoryId) {
             $template->setVisible('edit');
@@ -112,12 +112,6 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-    </div>
-  </div>
   <div class="card mb-3">
     <div class="card-header">
       <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -127,7 +121,7 @@ class Edit extends ControllerAdmin
           <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
         </div>
       </div>
-      <i class="fa fa-folder-open"></i> <span var="title"></span>
+      <i var="icon"></i> <span var="title"></span>
     </div>
     <div class="card-body" var="content"></div>
   </div>

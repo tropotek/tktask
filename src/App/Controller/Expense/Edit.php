@@ -33,7 +33,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Edit Expense');
+        $this->getPage()->setTitle('Edit Expense', 'fas fa-money-check-alt');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $expenseId = intval($_GET['expenseId'] ?? 0);
@@ -61,7 +61,7 @@ class Edit extends ControllerAdmin
             ->setBtnAttr('data-bs-toggle', 'modal')
             ->setBtnAttr('data-bs-target', '#'.CompanyAddDialog::CONTAINER_ID)
             ->setBtnText('<i class="fas fa-plus"></i>')
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired()
         );
 
@@ -69,24 +69,24 @@ class Edit extends ControllerAdmin
         $list = Collection::toSelectList($categories, 'expenseCategoryId');
         $this->form->appendField((new Select('expenseCategoryId', $list))
             ->prependOption('-- Select --', '')
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired()
         );
 
         $this->form->appendField(new InputGroup('total', '$'))
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired();
 
         $this->form->appendField(new Input('purchasedOn', 'date'))
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired();
 
         $this->form->appendField(new Input('invoiceNo'))
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired();
 
         $this->form->appendField(new Input('receiptNo'))
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired();
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
@@ -122,8 +122,8 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', Factory::instance()->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->expense->expenseId) {
             $template->setVisible('edit');
@@ -170,15 +170,6 @@ JS;
     {
         $html = <<<HTML
 <div class="row">
-  <div class="col-12">
-    <div class="page-actions card mb-3">
-      <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-      <div class="card-body" var="actions">
-        <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      </div>
-    </div>
-  </div>
-
   <div class="col">
     <div class="card mb-3">
       <div class="card-header">
@@ -189,7 +180,7 @@ JS;
             <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
           </div>
         </div>
-        <i class="fas fa-money-check-alt"></i> <span var="title"></span>
+        <i var="icon"></i> <span var="title"></span>
       </div>
       <div class="card-body" var="content"></div>
     </div>

@@ -101,9 +101,9 @@ class TaskLog extends Form
     public function show(): ?Template
     {
         // Setup field group widths with bootstrap classes
-        $this->getField('minutes')->addFieldCss('col-4');
-        $this->getField('startAt')->addFieldCss('col-4');
-        $this->getField('billable')->addFieldCss('col-4');
+        $this->getField('minutes')->addFieldCss('col-md-4');
+        $this->getField('startAt')->addFieldCss('col-md-4');
+        $this->getField('billable')->addFieldCss('col-md-4');
 
         $renderer = $this->getRenderer();
 

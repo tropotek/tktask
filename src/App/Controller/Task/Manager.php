@@ -20,7 +20,7 @@ class Manager extends ControllerAdmin
     public function doDefault(): mixed
     {
         Breadcrumbs::reset();
-        $this->getPage()->setTitle('Task Manager');
+        $this->getPage()->setTitle('Task Manager', 'fas fa-tasks');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->table = new \App\Table\Task();
@@ -39,8 +39,8 @@ class Manager extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         //$url = Uri::create()->set('act', 'pdf');
         $url = Uri::create('/pdf/taskList')->set('', 'pdf');
@@ -56,15 +56,13 @@ class Manager extends ControllerAdmin
         $html = <<<HTML
 <div>
   <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       <a href="/taskEdit" title="Create Task" class="btn btn-outline-secondary"><i class="fa fa-plus"></i> Create Task</a>
           <a href="#" class="btn btn-outline-secondary" title="Task Logs PDF" target="_blank" var="btn-pdf"><i class="fa fa-download"></i> <span>Task Logs PDF</span></a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fas fa-tasks"></i> <span var="title"></span></div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

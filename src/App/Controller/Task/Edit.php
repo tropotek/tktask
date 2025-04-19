@@ -17,7 +17,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): mixed
     {
-        $this->getPage()->setTitle('Edit Task');
+        $this->getPage()->setTitle('Edit Task', 'fas fa-tasks');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $taskId = intval($_GET['taskId'] ?? 0);
@@ -57,8 +57,8 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->task->taskId) {
             $template->setVisible('edit');
@@ -99,11 +99,9 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div class="row">
-  <div class="col-12">
+  <div class="col-12" choice="edit">
       <div class="page-actions card mb-3">
-        <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-        <div class="card-body" var="actions">
-          <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+        <div class="card-body">
           <a href="/taskLogEdit" title="Add a new Task Log" class="btn btn-outline-secondary" choice="add-log" data-toggle="modal"><i class="fa fa-fw fa-plus"></i> Add Log</a>
           <a href="#" title="Re-Open this task" class="btn btn-outline-secondary warning" choice="re-open" data-confirm="Are you sure you want to re-open this task?"><i class="fa fa-fw fa-tasks"></i> Re-Open</a>
           <a href="#" title="Manage Task Logs" class="btn btn-outline-secondary" var="logs" choice="edit"><i class="fa fa-fw fa-tasks"></i> Task Logs</a>
@@ -121,8 +119,8 @@ class Edit extends ControllerAdmin
             </div>
           </div>
 
-            <i class="fas fa-tasks"></i> <span var="title"></span>
-            <div class="float-end me-2" choice="billable">Billable: $0.00</div>
+          <i var="icon"></i> <span var="title"></span>
+          <div class="float-end me-2" choice="billable">Billable: $0.00</div>
         </div>
         <div class="card-body" var="content"></div>
       </div>

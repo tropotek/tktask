@@ -34,7 +34,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(mixed $request): void
     {
-        $this->getPage()->setTitle('Edit ' . ucfirst($this->type));
+        $this->getPage()->setTitle('Edit ' . ucfirst($this->type), 'fa fa-users');
 
         $userId  = intval($_GET['userId'] ?? 0);
         $this->templateSelectEnabled = str_contains($this->getPage()->getTemplatePath(), '/minton/');
@@ -75,22 +75,27 @@ class Edit extends ControllerAdmin
         $this->form->appendField((new Select('title', $list))
             ->setGroup($group)
             ->prependOption('', '')
+            ->addFieldCss('col-md-1')
         );
 
         $this->form->appendField(new Input('givenName'))
             ->setGroup($group)
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-5');
 
         $this->form->appendField(new Input('familyName'))
-            ->setGroup($group);
+            ->setGroup($group)
+            ->addFieldCss('col-md-6');
 
         $l1 = $this->form->appendField(new Input('username'))
             ->setGroup($group)
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         $l2 = $this->form->appendField(new Input('email'))
             ->setGroup($group)
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         // Only input lock existing user
         if ($this->user->userId) {
@@ -197,7 +202,8 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->user->userId) {
             $template->setVisible('edit');
@@ -205,7 +211,6 @@ class Edit extends ControllerAdmin
             $template->setText('created', $this->user->created->format(Date::FORMAT_LONG_DATETIME));
         }
 
-        $template->appendText('title', $this->getPage()->getTitle());
         if (!$this->user->userId) {
             $template->setVisible('new-user');
         }
@@ -220,13 +225,6 @@ class Edit extends ControllerAdmin
             $template->setAttr('reset', 'href', $url);
             $template->setVisible('reset');
         }
-
-        $this->form->getField('title')->addFieldCss('col-1');
-        $this->form->getField('givenName')->addFieldCss('col-5');
-        $this->form->getField('familyName')->addFieldCss('col-6');
-
-        $this->form->getField('username')->addFieldCss('col-6');
-        $this->form->getField('email')->addFieldCss('col-6');
 
         $renderer = $this->form->getRenderer();
         $renderer->addFieldCss('mb-3');
@@ -257,16 +255,14 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
+  <div class="page-actions card mb-3" choice="edit">
+    <div class="card-body">
       <a href="/" title="Masquerade" data-confirm="Masquerade as this user" class="btn btn-outline-secondary" choice="msq"><i class="fa fa-user-secret"></i> Masquerade</a>
       <a href="/" title="Request Password Reset Email" data-confirm="Send an email to request user to reset their password?<br>Note: This will activate any inactive account." class="btn btn-outline-secondary" choice="reset"><i class="fa fa-fw fa-envelope"></i> Send Password Reset Email</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header" var="title">
+    <div class="card-header">
       <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
         <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
         <div class="dropdown-menu dropdown-menu-end">
@@ -274,7 +270,7 @@ class Edit extends ControllerAdmin
           <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
         </div>
       </div>
-      <i class="fa fa-users"></i> <span var="title"></span>
+      <i var="icon"></i> <span var="title"></span>
     </div>
     <div class="card-body" var="content">
       <p choice="new-user"><b>NOTE:</b> New users will be sent an email requesting them to activate their account and create a new password.</p>

@@ -105,16 +105,16 @@ class CompanyAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $template->setAttr('dialog', 'id', $this->getDialogId());
         $template->setText('title', 'Add ' . $this->type);
 
-        $this->form->getField('name')->addFieldCss('col-6');
-        $this->form->getField('email')->addFieldCss('col-6');
+        $this->form->getField('name')->addFieldCss('col-md-6');
+        $this->form->getField('email')->addFieldCss('col-md-6');
         if ($this->type == Company::TYPE_CLIENT) {
-            $this->form->getField('accountsEmail')->addFieldCss('col-6');
-            $this->form->getField('contact')->addFieldCss('col-6');
+            $this->form->getField('accountsEmail')->addFieldCss('col-md-6');
+            $this->form->getField('contact')->addFieldCss('col-md-6');
         }
-        $this->form->getField('phone')->addFieldCss('col-6');
-        $this->form->getField('abn')->addFieldCss('col-6');
-        $this->form->getField('website')->addFieldCss('col-6');
-        $this->form->getField('address')->addFieldCss('col-6');
+        $this->form->getField('phone')->addFieldCss('col-md-6');
+        $this->form->getField('abn')->addFieldCss('col-md-6');
+        $this->form->getField('website')->addFieldCss('col-md-6');
+        $this->form->getField('address')->addFieldCss('col-md-6');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
         $this->form->getRenderer()->getTemplate()->removeCss('fields', 'g-3 mt-1')->addCss('fields', 'g-2');

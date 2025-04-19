@@ -104,10 +104,10 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
         $template = $this->getTemplate();
         $template->setAttr('dialog', 'id', $this->getDialogId());
 
-        $this->form->getField('description')->addFieldCss('col-8');
-        $this->form->getField('productCode')->addFieldCss('col-4');
-        $this->form->getField('price')->addFieldCss('col-6');
-        $this->form->getField('qty')->addFieldCss('col-6');
+        $this->form->getField('description')->addFieldCss('col-md-8');
+        $this->form->getField('productCode')->addFieldCss('col-md-4');
+        $this->form->getField('price')->addFieldCss('col-md-6');
+        $this->form->getField('qty')->addFieldCss('col-md-6');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
         $this->form->getRenderer()->getTemplate()->removeCss('fields', 'g-3 mt-1')->addCss('fields', 'g-2');

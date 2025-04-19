@@ -21,7 +21,7 @@ class Edit extends ControllerAdmin
     {
         $projectId = intval($_GET['projectId'] ?? 0);
 
-        $this->getPage()->setTitle('Edit Project');
+        $this->getPage()->setTitle('Edit Project', 'fas fa-project-diagram');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $this->project = new Project();
@@ -41,8 +41,8 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->project->projectId) {
             $template->setVisible('edit');
@@ -63,14 +63,6 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div class="row">
-  <div class="col-12">
-    <div class="page-actions card mb-3">
-      <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-      <div class="card-body" var="actions">
-        <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-      </div>
-    </div>
-  </div>
   <div class="col">
     <div class="card mb-3">
       <div class="card-header">
@@ -81,7 +73,7 @@ class Edit extends ControllerAdmin
             <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
           </div>
         </div>
-        <i class="fas fa-project-diagram"></i> <span var="title"></span>
+        <i var="icon"></i> <span var="title"></span>
       </div>
       <div class="card-body" var="content"></div>
     </div>

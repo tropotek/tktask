@@ -22,7 +22,7 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Company Manager');
+        $this->getPage()->setTitle('Company Manager', 'fa fa-building');
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
@@ -120,8 +120,8 @@ class Manager extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         $template->appendTemplate('content', $this->table->show());
 
@@ -133,14 +133,12 @@ class Manager extends ControllerAdmin
         $html = <<<HTML
 <div>
   <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       <a href="/companyEdit" title="Create Company" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Company</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-building"></i> <span var="title"></span></div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

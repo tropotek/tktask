@@ -19,7 +19,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Add Task Log');
+        $this->getPage()->setTitle('Add Task Log', 'fas fa-tasks');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $taskId = intval($_GET['taskId'] ?? 0);
@@ -56,8 +56,8 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl()->set('taskId', $this->task->taskId));
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->taskLog->taskLogId) {
             $template->setVisible('edit');
@@ -74,12 +74,6 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-    </div>
-  </div>
   <div class="card mb-3">
     <div class="card-header">
       <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -89,7 +83,7 @@ class Edit extends ControllerAdmin
           <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
         </div>
       </div>
-      <i class="fas fa-tasks"></i> <span var="title"></span>
+      <i var="icon"></i> <span var="title"></span>
     </div>
     <div class="card-body" var="content"></div>
   </div>

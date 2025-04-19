@@ -24,7 +24,7 @@ class Manager extends ControllerAdmin
     public function doDefault(): void
     {
         Breadcrumbs::reset();
-        $this->getPage()->setTitle('Project Manager');
+        $this->getPage()->setTitle('Project Manager', 'fas fa-project-diagram');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         // init table
@@ -142,8 +142,8 @@ class Manager extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         $template->appendTemplate('content', $this->table->show());
 
@@ -155,14 +155,12 @@ class Manager extends ControllerAdmin
         $html = <<<HTML
 <div>
   <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       <a href="/projectEdit" title="Create Project" class="btn btn-outline-secondary"><i class="fa fa-plus"></i> Create Project</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fas fa-project-diagram"></i> <span var="title"></span></div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

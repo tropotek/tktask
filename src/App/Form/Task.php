@@ -65,14 +65,14 @@ class Task extends Form
         }
 
         $this->appendField(new Input('subject'))
-            ->addFieldCss('col-8')
+            ->addFieldCss('col-md-8')
             ->setRequired();
 
         $categories = TaskCategory::findFiltered(Filter::create(['active' => true], 'order_by'));
         $list = Collection::toSelectList($categories, 'taskCategoryId', 'name');
         $this->appendField((new Select('taskCategoryId', $list))
             ->prependOption('-- Select --', '')
-            ->addFieldCss('col-4')
+            ->addFieldCss('col-md-4')
             ->setRequired()
         );
 
@@ -81,7 +81,7 @@ class Task extends Form
         $fld = $this->appendField((new Select('companyId', $list))
             ->setLabel('Client')
             ->prependOption('-- Select --', '')
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired()
         );
 
@@ -93,23 +93,23 @@ class Task extends Form
         $list = Collection::toSelectList($users, 'userId', 'nameShort');
         $this->appendField((new Select('assignedUserId', $list))
             ->prependOption('-- Select --', '')
-            ->addFieldCss('col-6')
+            ->addFieldCss('col-md-6')
             ->setRequired()
         );
 
         $this->appendField(new Minutes('minutes'))
             ->setLabel('Est. Duration')
-            ->addFieldCss('col-4');
+            ->addFieldCss('col-md-4');
 
         $this->appendField((new Select('priority', \App\Db\Task::PRIORITY_LIST))
             ->prependOption('-- Select --', '')
-            ->addFieldCss('col-4')
+            ->addFieldCss('col-md-4')
         );
 
         $this->appendField(new Html('status', $this->getTask()->status))
             ->setDisabled()
             ->addCss('form-control disabled')
-            ->addFieldCss('col-4');
+            ->addFieldCss('col-md-4');
 
         $this->appendField(new Textarea('comments'))
             ->setAttr('data-elfinder-path', $this->getTask()->dataPath . '/media')

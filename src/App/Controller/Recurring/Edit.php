@@ -32,7 +32,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Edit Recurring');
+        $this->getPage()->setTitle('Edit Recurring', 'fas fa-money-bill-wave');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
         $recurringId = intval($_GET['recurringId'] ?? 0);
@@ -52,16 +52,19 @@ class Edit extends ControllerAdmin
         $list = Collection::toSelectList($cats, 'companyId');
         $this->form->appendField((new Select('companyId', $list))
             ->prependOption('-- Select --', ''))
-        ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Select('cycle', Recurring::CYCLE_LIST))
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
 
         $cats = Product::findFiltered(Filter::create([], 'name'));
         $list = Collection::toSelectList($cats, 'productId');
         $this->form->appendField((new Select('productId', $list))
             ->prependOption('-- Select --', '')
+            ->addFieldCss('col-md-6')
             ->addOnShowOption(function(\Dom\Template $template, \Tk\Form\Field\Option $option) {
                 $product = Product::find(intval($option->getValue()));
                 if ($product instanceof Product) {
@@ -78,22 +81,28 @@ class Edit extends ControllerAdmin
         );
 
         $this->form->appendField(new InputGroup('price', '$'))
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Input('description'))
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-12');
 
         $this->form->appendField(new Input('startOn', 'date'))
-            ->setRequired();
+            ->setRequired()
+            ->addFieldCss('col-md-6');
 
-        $this->form->appendField(new Input('endOn', 'date'));
+        $this->form->appendField(new Input('endOn', 'date'))
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Checkbox('issue'))
             ->setPersistent()
-            ->setNotes("Automatically issue invoice after recurring items added");
+            ->setNotes("Automatically issue invoice after recurring items added")
+            ->addFieldCss('col-md-6');
         $this->form->appendField(new Checkbox('active'))
             ->setPersistent()
-            ->setNotes("Inactive recurring items are not added to an invoice, however dates are incremented");
+            ->setNotes("Inactive recurring items are not added to an invoice, however dates are incremented")
+            ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Textarea('notes'));
 
@@ -137,20 +146,9 @@ class Edit extends ControllerAdmin
 
     public function show(): ?Template
     {
-        // Setup field group widths with bootstrap classes
-        $this->form->getField('companyId')->addFieldCss('col-6');
-        $this->form->getField('cycle')->addFieldCss('col-6');
-        $this->form->getField('productId')->addFieldCss('col-6');
-        $this->form->getField('price')->addFieldCss('col-6');
-        $this->form->getField('description')->addFieldCss('col-12');
-        $this->form->getField('startOn')->addFieldCss('col-6');
-        $this->form->getField('endOn')->addFieldCss('col-6');
-        $this->form->getField('issue')->addFieldCss('col-6');
-        $this->form->getField('active')->addFieldCss('col-6');
-
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', Factory::instance()->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->recurring->recurringId) {
             $template->setVisible('edit');
@@ -187,12 +185,6 @@ JS;
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
-    <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
-    </div>
-  </div>
   <div class="card mb-3">
     <div class="card-header">
       <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -202,7 +194,7 @@ JS;
           <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
         </div>
       </div>
-      <i class="fas fa-money-bill-wave"></i> <span var="title"></span>
+      <i var="icon"></i> <span var="title"></span>
     </div>
     <div class="card-body" var="content"></div>
   </div>

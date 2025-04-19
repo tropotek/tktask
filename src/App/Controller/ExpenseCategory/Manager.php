@@ -21,7 +21,7 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Expense Category Manager');
+        $this->getPage()->setTitle('Expense Category Manager', 'fa fa-folder-open');
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
@@ -119,14 +119,12 @@ class Manager extends ControllerAdmin
         $html = <<<HTML
 <div>
   <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       <a href="/expenseCategoryEdit" title="Create Expense Category" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Category</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-folder-open"></i> <span var="title"></span></div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

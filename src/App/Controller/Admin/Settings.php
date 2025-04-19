@@ -31,7 +31,7 @@ class Settings extends ControllerAdmin
     public function doDefault(): void
     {
         Breadcrumbs::reset();
-        $this->getPage()->setTitle('Edit Settings');
+        $this->getPage()->setTitle('Edit Settings', 'fa fa-cogs');
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
@@ -46,12 +46,14 @@ class Settings extends ControllerAdmin
             ->setLabel('Site Title')
             ->setNotes('Site Full title. Used for email subjects and content texts.')
             ->setRequired()
+            ->addFieldCss('col-md-6')
             ->setGroup($tab);
 
         $this->form->appendField(new Input('site.name.short'))
             ->setLabel('Site Short Title')
             ->setNotes('Site short title. Used for nav bars and title where space is limited.')
             ->setRequired()
+            ->addFieldCss('col-md-6')
             ->setGroup($tab);
 
         $this->form->appendField(new Input('site.email'))
@@ -216,15 +218,12 @@ class Settings extends ControllerAdmin
     {
         $template = $this->getTemplate();
         $template->appendText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         $template->setVisible('staff', Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF));
         $template->setVisible('admin', Auth::getAuthUser()->hasPermission(User::PERM_ADMIN));
 
-        $this->form->getField('site.name')->addFieldCss('col-6');
-        $this->form->getField('site.name.short')->addFieldCss('col-6');
         $this->form->getRenderer()->addFieldCss('mb-3');
-
         $template->appendTemplate('content', $this->form->show());
 
         return $template;
@@ -235,9 +234,7 @@ class Settings extends ControllerAdmin
         $html = <<<HTML
 <div>
   <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
       <a href="/sessions" title="View Active Sessions" class="btn btn-outline-secondary" choice="admin"><i class="fa fa-fw fa-server"></i> Sessions</a>
       <a href="/user/staffManager" title="Manage Staff" class="btn btn-outline-secondary" choice="staff"><i class="fa fa-fw fa-users"></i> Staff</a>
       <a href="/companyManager" title="Manage Companies" class="btn btn-outline-secondary"><i class="fa fa-fw fa-building"></i> Companies</a>
@@ -248,7 +245,7 @@ class Settings extends ControllerAdmin
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header" var="title"><i class="fa fa-cogs"></i> </div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>

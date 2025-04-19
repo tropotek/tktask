@@ -25,7 +25,7 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Product Manager');
+        $this->getPage()->setTitle('Product Manager', 'fa fa-shopping-cart');
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
@@ -130,8 +130,8 @@ class Manager extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         $template->appendTemplate('content', $this->table->show());
 
@@ -143,14 +143,12 @@ class Manager extends ControllerAdmin
         $html = <<<HTML
 <div>
   <div class="page-actions card mb-3">
-    <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
     <div class="card-body" var="actions">
-      <a href="/" title="Back" class="btn btn-outline-secondary" var="back"><i class="fa fa-arrow-left"></i> Back</a>
       <a href="/productEdit" title="Create Product" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Create Product</a>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="card-header"><i class="fa fa-shopping-cart"></i> <span var="title"></span></div>
+    <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
 </div>
