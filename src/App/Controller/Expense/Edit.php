@@ -41,7 +41,7 @@ class Edit extends ControllerAdmin
         $this->expense = new Expense();
         if ($expenseId) {
             $this->expense = Expense::find($expenseId);
-            if (!($this->expense instanceof Expense)) {
+            if (is_null($this->expense)) {
                 throw new Exception("invalid expenseId $expenseId");
             }
         }

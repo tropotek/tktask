@@ -32,7 +32,7 @@ class Edit extends ControllerAdmin
         $this->taskCategory = new TaskCategory();
         if ($taskCategoryId) {
             $this->taskCategory = TaskCategory::find($taskCategoryId);
-            if (!($this->taskCategory instanceof TaskCategory)) {
+            if (is_null($this->taskCategory)) {
                 throw new Exception("invalid taskCategoryId $taskCategoryId");
             }
         }

@@ -37,7 +37,7 @@ class Edit extends ControllerAdmin
         $this->productCategory = new ProductCategory();
         if ($productCategoryId) {
             $this->productCategory = ProductCategory::find($productCategoryId);
-            if (!($this->productCategory instanceof ProductCategory)) {
+            if (is_null($this->productCategory)) {
                 throw new Exception("invalid productCategoryId $productCategoryId");
             }
         }

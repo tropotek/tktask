@@ -38,7 +38,7 @@ class Edit extends ControllerAdmin
         $this->company = new Company();
         if ($companyId) {
             $this->company = Company::find($companyId);
-            if (!($this->company instanceof Company)) {
+            if (is_null($this->company)) {
                 throw new Exception("invalid companyId $companyId");
             }
         }

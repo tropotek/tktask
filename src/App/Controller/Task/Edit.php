@@ -25,7 +25,7 @@ class Edit extends ControllerAdmin
         $this->task = new Task();
         if ($taskId) {
             $this->task = Task::find($taskId);
-            if (!$this->task) {
+            if (is_null($this->task)) {
                 Alert::addError("Cannot find task");
                 User::getAuthUser()->getHomeUrl()->redirect();
             }

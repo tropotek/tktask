@@ -39,7 +39,7 @@ class Edit extends ControllerAdmin
         $this->product = new Product();
         if ($productId) {
             $this->product = Product::find($productId);
-            if (!($this->product instanceof Product)) {
+            if (is_null($this->product)) {
                 throw new Exception("invalid productId $productId");
             }
         }

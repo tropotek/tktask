@@ -29,7 +29,7 @@ class Edit extends ControllerAdmin
         $this->taskLog->taskId = $taskId;
         if ($taskLogId) {
             $this->taskLog = TaskLog::find($taskLogId);
-            if (!$this->taskLog) {
+            if (is_null($this->taskLog)) {
                 Alert::addError("Cannot find task log");
                 User::getAuthUser()->getHomeUrl()->redirect();
             }

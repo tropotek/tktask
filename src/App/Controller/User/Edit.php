@@ -47,7 +47,7 @@ class Edit extends ControllerAdmin
         $this->user->type = $this->type;
         if ($userId) {
             $this->user = User::find($userId);
-            if (!$this->user) {
+            if (is_null($this->user)) {
                 throw new Exception('Invalid User ID: ' . $userId);
             }
         }

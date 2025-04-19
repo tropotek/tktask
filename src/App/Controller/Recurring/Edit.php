@@ -40,7 +40,7 @@ class Edit extends ControllerAdmin
         $this->recurring = new Recurring();
         if ($recurringId) {
             $this->recurring = Recurring::find($recurringId);
-            if (!($this->recurring instanceof Recurring)) {
+            if (is_null($this->recurring)) {
                 throw new Exception("invalid recurringId $recurringId");
             }
         }

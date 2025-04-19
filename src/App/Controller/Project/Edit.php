@@ -28,7 +28,7 @@ class Edit extends ControllerAdmin
         $this->project->userId = User::getAuthUser()->userId;
         if ($projectId) {
             $this->project = Project::find($projectId);
-            if (!$this->project) {
+            if (is_null($this->project)) {
                 throw new Exception("cannot find project");
             }
         }

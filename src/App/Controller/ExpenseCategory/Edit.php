@@ -40,7 +40,7 @@ class Edit extends ControllerAdmin
         $this->expenseCategory = new ExpenseCategory();
         if ($expenseCategoryId) {
             $this->expenseCategory = ExpenseCategory::find($expenseCategoryId);
-            if (!($this->expenseCategory instanceof ExpenseCategory)) {
+            if (is_null($this->expenseCategory)) {
                 throw new Exception("invalid expenseCategoryId $expenseCategoryId");
             }
         }

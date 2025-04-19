@@ -38,7 +38,7 @@ class Edit extends ControllerAdmin
         $this->domain = new Domain();
         if ($domainId) {
             $this->domain = Domain::find($domainId);
-            if (!($this->domain instanceof Domain)) {
+            if (is_null($this->domain)) {
                 throw new Exception("invalid domainId $domainId");
             }
         }
