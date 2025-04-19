@@ -196,9 +196,13 @@ class Manager extends ControllerAdmin
             type: 'tristate',
             chartRangeMin: 0,
             colorMap: $.range_map({
-                0: 'red',
-                '1:': 'blue'
-            })
+                '-100': '#F1556C',
+                '100': '#1ABC9C'
+            }),
+            tooltipFormat: '{{value:levels}}',
+            tooltipValueLookups: {
+                levels: $.range_map({ '-100': 'Offline', '100': 'Online'})
+            }
           });
       });
   </script>
