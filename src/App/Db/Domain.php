@@ -12,18 +12,19 @@ class Domain extends Model
 {
     use CompanyTrait;
 
-    public int       $domainId    = 0;
-    public int       $companyId   = 0;
-    public string    $companyName = '';
-    public string    $url         = '';
-    public ?string   $notes       = null;
-    public bool      $active      = true;
-    public bool      $status      = true;   // current status
-    public string    $siteName    = '';
-    public int       $bytes       = 0;
-    public int       $lastPing_id = 0;
-    public \DateTime $modified;
-    public \DateTime $created;
+    public int        $domainId    = 0;
+    public int        $companyId   = 0;
+    public string     $companyName = '';
+    public string     $url         = '';
+    public ?string    $notes       = null;
+    public bool       $active      = true;
+    public bool       $status      = true;   // current status
+    public string     $siteName    = '';
+    public int        $bytes       = 0;
+    public int        $lastPing_id = 0;
+    public ?\DateTime $pingedAt    = null;
+    public \DateTime  $modified;
+    public \DateTime  $created;
 
 
     public function __construct()

@@ -143,6 +143,14 @@ WITH latest_pings AS (
     created,
 		ROW_NUMBER() OVER (PARTITION BY domain_id ORDER BY created DESC) AS latest
   FROM domain_ping
+),
+latest_online AS (
+  SELECT
+    domain_id,
+    created,
+		ROW_NUMBER() OVER (PARTITION BY domain_id ORDER BY created DESC) AS latest
+  FROM domain_ping
+  WHERE status
 )
 SELECT
   d.*,
@@ -150,8 +158,10 @@ SELECT
   IFNULL(lp.status, FALSE) AS status,
   IFNULL(lp.bytes, 0) AS bytes,
   IFNULL(lp.site_name, '') AS site_name,
+  lo.created AS pinged_at,
   lp.domain_ping_id AS last_ping_id
 FROM domain d
 JOIN company c USING (company_id)
 LEFT JOIN latest_pings lp ON (d.domain_id = lp.domain_id AND lp.latest = 1)
+LEFT JOIN latest_online lo ON (d.domain_id = lo.domain_id AND lo.latest = 1)
 ;

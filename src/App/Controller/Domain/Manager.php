@@ -107,8 +107,8 @@ class Manager extends ControllerAdmin
                 return FileUtil::bytes2String($obj->bytes);
             });
 
-        $this->table->appendCell('lastPingTime')
-            ->setHeader('Pinged')
+        $this->table->appendCell('pingedAt')
+            ->setHeader('Last Online')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
