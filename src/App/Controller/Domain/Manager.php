@@ -3,7 +3,7 @@ namespace App\Controller\Domain;
 
 use App\Db\Company;
 use App\Db\Domain;
-use App\Db\ExpenseCategory;
+use App\Db\DomainPing;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
@@ -14,7 +14,6 @@ use Tk\FileUtil;
 use Tk\Form\Field\Input;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
-use Tk\Table\Action\Csv;
 use Tk\Table\Action\Delete;
 use Tk\Table\Action\Select;
 use Tk\Uri;
@@ -54,15 +53,6 @@ class Manager extends ControllerAdmin
         $rowSelect = RowSelect::create('id', 'domainId');
         $this->table->appendCell($rowSelect);
 
-//        $this->table->appendCell('actions')
-//            ->addCss('text-nowrap text-center')
-//            ->addOnValue(function(Domain $obj, Cell $cell) {
-//                $url = Uri::create('/domainEdit')->set('domainId', $obj->domainId);
-//                return <<<HTML
-//                    <a class="btn btn-outline-success" href="$url" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
-//                HTML;
-//            });
-
         $this->table->appendCell('status')
             ->setSortable(true)
             ->addCss('text-center')
@@ -72,6 +62,17 @@ class Manager extends ControllerAdmin
                 } else {
                     return '<span class="badge bg-danger">Offline</span>';
                 }
+            });
+
+        $this->table->appendCell('uptime')
+            ->addCss('text-nowrap')
+            ->addHeaderCss('text-start')
+            ->addOnValue(function(Domain $obj, Cell $cell) {
+                $pings = DomainPing::findFiltered(Db\Filter::create(['domainId' => $obj->domainId], '-created', 25));
+                $list = array_column($pings, 'status');
+                $list = array_map(fn($v) => $v ? 100 : -100, $list);
+                $list = array_map('intval', $list);
+                return '<span class="ping-spark">'.implode(',', $list).'</span>';
             });
 
         $this->table->appendCell('url')
@@ -155,24 +156,8 @@ class Manager extends ControllerAdmin
             })
         );
 
-//        $this->table->appendAction(Csv::create()
-//            ->addOnCsv(function(Csv $action) {
-//                $action->setExcluded(['actions']);
-//                if (!$this->table->getCell(Domain::getPrimaryProperty())) {
-//                    $this->table->prependCell(Domain::getPrimaryProperty())->setHeader('id');
-//                }
-//                //$this->table->getCell('name')->getOnValue()->reset();
-//                $filter = $this->table->getDbFilter()->resetLimits();
-//                return Domain::findFiltered($filter);
-//            }));
-
         // execute table
         $this->table->execute();
-
-        // todo: remove cell orderBy validation before release
-//        if (!$this->table->validateCells(Domain::getDataMap())) {
-//            $this->table->getTableSession()->remove($this->table->makeRequestKey(Table::PARAM_ORDERBY));
-//        }
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
@@ -205,6 +190,18 @@ class Manager extends ControllerAdmin
     <div class="card-header"><i var="icon"></i> <span var="title"></span></div>
     <div class="card-body" var="content"></div>
   </div>
+  <script>
+      jQuery(document).ready(function($) {
+          $('.ping-spark').sparkline('html', {
+            type: 'tristate',
+            chartRangeMin: 0,
+            colorMap: $.range_map({
+                0: 'red',
+                '1:': 'blue'
+            })
+          });
+      });
+  </script>
 </div>
 HTML;
         return Template::load($html);
