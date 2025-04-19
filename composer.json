@@ -67,8 +67,7 @@
     "mpdf/mpdf": "^8.0"
   },
   "require-dev": {
-    "composer/composer": "^2.0",
-    "phpstan/phpstan": "2.1.x-dev"
+    "composer/composer": "^2.0"
   },
 
   "config": {
