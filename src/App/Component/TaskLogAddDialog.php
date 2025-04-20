@@ -201,7 +201,7 @@ jQuery(function($) {
     // reset form values
     $(dialog).on('show.bs.modal', function(e) {
         htmx.ajax('get', baseUrl, {
-            source:    form,
+            select:    form,
             target:    form,
             swap:      'outerHTML',
             values:    {

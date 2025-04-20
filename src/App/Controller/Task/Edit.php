@@ -99,7 +99,7 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div class="row">
-  <div class="col-12" choice="edit">
+  <div class="col-md-12" choice="edit">
       <div class="page-actions card mb-3">
         <div class="card-body">
           <a href="/taskLogEdit" title="Add a new Task Log" class="btn btn-outline-secondary" choice="add-log" data-toggle="modal"><i class="fa fa-fw fa-plus"></i> Add Log</a>
@@ -125,7 +125,7 @@ class Edit extends ControllerAdmin
         <div class="card-body" var="content"></div>
       </div>
   </div>
-  <div class="col-5" choice="components">
+  <div class="col-md-5" choice="components">
     <div hx-get="/component/taskLogTable" hx-trigger="load" hx-swap="outerHTML" var="logTable">
       <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
     </div>

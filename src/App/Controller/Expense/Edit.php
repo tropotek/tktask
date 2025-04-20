@@ -186,7 +186,7 @@ JS;
     </div>
   </div>
 
-  <div class="col-5" choice="components">
+  <div class="col-md-5" choice="components">
      <div hx-get="/component/files" hx-trigger="load" hx-swap="outerHTML" var="files">
        <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
      </div>

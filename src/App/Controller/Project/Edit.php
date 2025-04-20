@@ -78,7 +78,7 @@ class Edit extends ControllerAdmin
       <div class="card-body" var="content"></div>
     </div>
   </div>
-  <div class="col-4" choice="components">
+  <div class="col-md-4" choice="components">
     <div hx-get="/component/statusLogTable" hx-trigger="load" hx-swap="outerHTML" var="statusTable">
       <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
     </div>

@@ -125,6 +125,9 @@ class Edit extends ControllerAdmin
 
         $issue = Uri::create()->set('act', 'issue');
         $template->setAttr('btn-issue', 'href', $issue);
+        if ($this->invoice->total->getAmount() == 0) {
+            $template->addCss('btn-issue', 'disabled');
+        }
 
         $pdf = Uri::create('/pdf/invoice')->set('invoiceId', $this->invoice->invoiceId); //->set('o', 'html');
         $template->setAttr('btn-pdf', 'href', $pdf);
@@ -335,7 +338,7 @@ JS;
     {
         $html = <<<HTML
 <div class="row tk-invoice">
-    <div class="col-12">
+    <div class="col-md-12">
         <div class="page-actions card mb-3">
             <div class="card-body" var="actions">
                 <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">
@@ -373,7 +376,7 @@ JS;
     </div>
 
     <!-- Invoice Template -->
-    <div class="col-8" id="tk-invoice-container">
+    <div class="col-md-8" id="tk-invoice-container">
         <div class="card mb-3">
             <div class="card-header">
               <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -527,7 +530,7 @@ JS;
     </div>
     <!-- END: Invoice Template -->
 
-    <div class="col-4" var="components">
+    <div class="col-md-4" var="components">
         <div hx-get="/component/invoiceOutstandingTable" hx-trigger="load" hx-swap="outerHTML" choice="outstandingTable">
           <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
         </div>

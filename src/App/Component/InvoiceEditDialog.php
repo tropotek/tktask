@@ -83,6 +83,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
     public function onSubmit(Form $form, Submit $action): void
     {
+        $prevStatus = $this->invoice->status;
         $values = $form->getFieldValues();
         $this->invoice->mapForm($values);
 
@@ -94,7 +95,10 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
         $this->invoice->save();
 
-        StatusLog::create($this->invoice, trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
+        if ($this->invoice->getStatus() !== $prevStatus) {
+            StatusLog::create($this->invoice, trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
+        }
+
 
         // Trigger HX events
         $this->hxEvents['tkForm:afterSubmit'] = ['status' => 'ok'];
@@ -130,7 +134,7 @@ JS;
 
     public function __makeTemplate(): ?Template
     {
-        $baseUrl = json_encode(Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString());
+        $baseUrl = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString();
 
         $html = <<<HTML
 <div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
@@ -147,7 +151,7 @@ JS;
   jQuery(function($) {
     const dialog    = '#{$this->getDialogId()}';
     const form      = '#{$this->form->getId()}';
-    const baseUrl   = $baseUrl;
+    const baseUrl   = '$baseUrl';
 
     // reload init form on load
     $(document).on('htmx:afterSettle', function(e) {
@@ -173,7 +177,7 @@ JS;
     $(dialog).on('show.bs.modal', function(e) {
         // reload form to refresh vals
         htmx.ajax('get', baseUrl, {
-            source:    form,
+            select:    form,
             target:    form,
             swap:      'outerHTML'
         });

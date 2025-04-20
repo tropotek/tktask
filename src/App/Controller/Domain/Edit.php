@@ -135,7 +135,7 @@ class Edit extends ControllerAdmin
       <div class="card-body" var="content"></div>
     </div>
   </div>
-  <div class="col-5" choice="components">
+  <div class="col-md-5" choice="components">
      <div hx-get="/component/pingTable" hx-trigger="load" hx-swap="outerHTML" var="ping-table">
        <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
      </div>
