@@ -21,8 +21,11 @@ class Invoice
 
         $siteCompany = Factory::instance()->getOwnerCompany();
 
+        // get unpaid email template
+        $content = Registry::instance()->get('site.email.invoice.unpaid', '{content}');
+
         // Email client the new invoice
-        $message = Factory::instance()->createMailMessage();
+        $message = Factory::instance()->createMailMessage($content);
         $message->addTo($company->email);
         if ($company->accountsEmail) {
             $message->addCc($company->accountsEmail);
@@ -31,10 +34,6 @@ class Invoice
         $message->setSubject($siteCompany->name . ' - Invoice ' . $invoice->invoiceId);
         $message->set('company.name', $company->name);
         $message->set('payment.text', Registry::instance()->get('site.invoice.payment', ''));
-
-        // get unpaid email template
-        $content = Registry::instance()->get('site.email.invoice.unpaid', '');
-        $message->setContent($content);
 
         $url = Uri::create('/pdf/invoice', [
             'invoiceId' => $invoice->invoiceId,
@@ -100,7 +99,9 @@ class Invoice
         $company = $payment->getInvoice()->getCompany();
         if (!($company instanceof Company)) return false;
 
-        $message = Factory::instance()->createMailMessage();
+        $content = Registry::instance()->get('site.email.payment.cleared', '{content}');
+
+        $message = Factory::instance()->createMailMessage($content);
         $message->addTo($company->email);
         if ($company->accountsEmail) {
             $message->addCc($company->accountsEmail);
@@ -118,9 +119,6 @@ class Invoice
             'payment.method' => Payment::METHOD_LIST[$payment->method],
         );
         $message->replace($data);
-
-        $content = Registry::instance()->get('site.email.payment.cleared');
-        $message->setContent($content);
 
         $url = Uri::create('/pdf/invoice', [
             'invoiceId' => $invoice->invoiceId,

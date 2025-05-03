@@ -25,8 +25,7 @@ class User
             <p><small>Note: If you did not initiate this account creation you can safely disregard this message.</small></p>
         HTML;
 
-        $message = Factory::instance()->createMailMessage();
-        $message->set('content', $content);
+        $message = Factory::instance()->createMailMessage($content);
         $message->setSubject(Registry::instance()->getSiteName() . ' Account Registration');
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
@@ -58,8 +57,7 @@ class User
             <p><small>Note: If you did not initiate this email, you can safely disregard this message.</small></p>
         HTML;
 
-        $message = Factory::instance()->createMailMessage();
-        $message->set('content', $content);
+        $message = Factory::instance()->createMailMessage($content);
         $message->setSubject($config->get('site.title') . ' Password Recovery');
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
