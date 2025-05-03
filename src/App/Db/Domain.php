@@ -127,13 +127,10 @@ class Domain extends Model
         $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $filter['search'] . '%';
+            $filter['lSearch'] = '%' . $filter['search'] . '%';
             $w = '';
-            $w .= 'LOWER(a.url) LIKE LOWER(:search) OR ';
+            $w .= 'LOWER(a.url) LIKE LOWER(:lSearch) OR ';
             $w .= 'a.domain_id = :search OR ';
-            if (is_numeric($filter['search'])) {
-                $w .= 'a.domain_id = :search OR ';
-            }
             $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 

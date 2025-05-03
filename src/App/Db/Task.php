@@ -287,13 +287,10 @@ class Task extends Model implements StatusInterface
         $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.subject) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.comments) LIKE LOWER(:search) OR ';
+            $filter['lSearch'] = '%' . $filter['search'] . '%';
+            $w  = 'LOWER(a.subject) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.comments) LIKE LOWER(:lSearch) OR ';
             $w .= 'a.task_id = :search OR ';
-            if (is_numeric($filter['search'])) {
-                $w .= 'a.task_id = :search OR ';
-            }
             $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 

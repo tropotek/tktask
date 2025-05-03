@@ -182,10 +182,11 @@ class File extends Model
         $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.file_id) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.filename) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.mime) LIKE LOWER(:search) OR ';
+            $filter['lSearch'] = '%' . $filter['search'] . '%';
+            $w  = '';
+            $w .= 'LOWER(a.filename) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.mime) LIKE LOWER(:lSearch) OR ';
+            $w .= 'a.file_id = :search OR ';
             $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 

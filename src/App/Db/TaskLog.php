@@ -133,13 +133,10 @@ class TaskLog extends Model
         $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $filter['search'] . '%';
+            $filter['lSearch'] = '%' . $filter['search'] . '%';
             $w = '';
-            $w .= 'LOWER(a.comment) LIKE LOWER(:search) OR ';
+            $w .= 'LOWER(a.comment) LIKE LOWER(:lSearch) OR ';
             $w .= 'a.task_log_id = :search OR ';
-            if (is_numeric($filter['search'])) {
-                $w .= 'a.task_log_id = :search OR ';
-            }
             $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 

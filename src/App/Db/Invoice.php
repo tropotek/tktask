@@ -367,13 +367,10 @@ class Invoice extends Model implements StatusInterface
         $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $filter['search'] . '%';
+            $filter['lSearch'] = '%' . $filter['search'] . '%';
             $w = '';
-            //$w .= 'LOWER(a.name) LIKE LOWER(:search) OR ';
+            //$w .= 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
             $w .= 'a.invoice_id = :search OR ';
-            if (is_numeric($filter['search'])) {
-                $w .= 'a.invoice_id = :search OR ';
-            }
             $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 

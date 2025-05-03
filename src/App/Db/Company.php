@@ -92,20 +92,17 @@ class Company extends Model
         $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.name) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.alias) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.abn) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.contact) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.email) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.accounts_email) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.phone) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.website) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.account_id) LIKE LOWER(:search) OR ';
+            $filter['lSearch'] = '%' . $filter['search'] . '%';
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.alias) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.abn) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.contact) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.email) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.accounts_email) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.phone) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.website) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.account_id) LIKE LOWER(:lSearch) OR ';
             $w .= 'a.company_id = :search OR ';
-            if (is_numeric($filter['search'])) {
-                $w .= 'a.company_id = :search OR ';
-            }
             $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 

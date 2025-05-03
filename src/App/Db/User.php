@@ -255,12 +255,12 @@ class User extends Model implements UserInterface
         $filter = Filter::create($filter);
 
         if (!empty($filter['search'])) {
-            $filter['search'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.given_name) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.family_name) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.email) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.uid) LIKE LOWER(:search) OR ';
-            $w .= 'LOWER(a.user_id) LIKE LOWER(:search) OR ';
+            $filter['lSearch'] = '%' . $filter['search'] . '%';
+            $w  = 'LOWER(a.given_name) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.family_name) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.email) LIKE LOWER(:lSearch) OR ';
+            $w .= 'LOWER(a.uid) LIKE LOWER(:lSearch) OR ';
+            $w .= 'a.user_id = :search OR ';
             $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
