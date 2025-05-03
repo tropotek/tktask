@@ -201,6 +201,7 @@ class Payment extends Model implements StatusInterface
     {
         $prevStatusName = $statusLog->getPreviousName();
         if ($statusLog->name == self::STATUS_CLEARED && (!$prevStatusName || $prevStatusName == self::STATUS_PENDING)) {
+            if (!$statusLog->notify) return;
             if (!\App\Email\Invoice::sendPaymentReceipt($this)) {       // email client payment receipt
                 Log::error("failed to send payment receipt for invoice {$this->getInvoice()->fkey} ID {$this->getInvoice()->fid}");
             }

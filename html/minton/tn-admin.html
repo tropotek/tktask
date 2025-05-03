@@ -82,7 +82,7 @@
           </a>
         </li>
 
-        <li class="dropdown notification-list topbar-dropdown me-1" var="tk-notify"></li>
+        <li hx-get="/component/notify" hx-swap="outerHTML" hx-trigger="load"></li>
 
         <!--   USER Menu     -->
         <li class="dropdown notification-list topbar-dropdown">

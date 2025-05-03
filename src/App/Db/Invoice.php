@@ -474,6 +474,7 @@ class Invoice extends Model implements StatusInterface
     {
         $prevStatusName = $statusLog->getPreviousName();
         if ($statusLog->name == self::STATUS_UNPAID && (!$prevStatusName || $prevStatusName == self::STATUS_OPEN)) {
+            if (!$statusLog->notify) return;
             if (!\App\Email\Invoice::sendIssueInvoice($this)) {     // on invoice issue
                 Log::error("failed to send invoice email to {$this->fkey} ID {$this->fid}");
             }

@@ -59,9 +59,6 @@ class Page extends \Bs\Mvc\Page
         $this->showAbout();
         //$this->showMaintenanceRibbon();
 
-        $notify = new Notify();
-        $template->replaceTemplate('tk-notify', $notify->show(), false);
-
         return $template;
     }
 

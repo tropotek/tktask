@@ -94,11 +94,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         }
 
         $this->invoice->save();
-
-        if ($this->invoice->getStatus() !== $prevStatus) {
-            StatusLog::create($this->invoice, trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
-        }
-
+        StatusLog::create($this->invoice, trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
 
         // Trigger HX events
         $this->hxEvents['tkForm:afterSubmit'] = ['status' => 'ok'];
@@ -156,7 +152,7 @@ JS;
     // reload init form on load
     $(document).on('htmx:afterSettle', function(e) {
         if (!$(e.detail.elt).is(form)) return;
-        if (e.detail.requestConfig.verb === 'get') {
+        if (e.detail.requestConfig.verb.toUpperCase() === 'GET') {
             tkInit(form);
         }
     });
@@ -176,7 +172,8 @@ JS;
     // reset form fields
     $(dialog).on('show.bs.modal', function(e) {
         // reload form to refresh vals
-        htmx.ajax('get', baseUrl, {
+        htmx.ajax('GET', baseUrl, {
+            source:    form,
             select:    form,
             target:    form,
             swap:      'outerHTML'

@@ -180,7 +180,7 @@ jQuery(function($) {
     // reload page after successfull submit
     $(document).on('htmx:afterSettle', function(e) {
         if (!$(e.detail.elt).is(form)) return;
-        if (e.detail.requestConfig.verb === 'get') {
+        if (e.detail.requestConfig.verb.toUpperCase() === 'GET') {
             tkInit(form);
         }
     });
@@ -201,9 +201,10 @@ jQuery(function($) {
     // reset form values
     $(dialog).on('show.bs.modal', function(e) {
         htmx.ajax('get', baseUrl, {
-            select:    form,
-            target:    form,
-            swap:      'outerHTML',
+            source:    form,
+            // select:    form,
+            // target:    form,
+            // swap:      'outerHTML',
             values:    {
                 taskId: $(e.relatedTarget).data('taskId')
             },

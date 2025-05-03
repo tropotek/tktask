@@ -121,6 +121,9 @@ return function (CollectionConfigurator $routes) {
 
 
     // Components
+    $routes->add('com-notify-nav', '/component/notify')
+        ->controller([\App\Component\Notify::class, 'doDefault']);
+
     $routes->add('com-status-table', '/component/statusLogTable')
         ->controller([\App\Component\StatusLogTable::class, 'doDefault']);
 
