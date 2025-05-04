@@ -180,14 +180,14 @@ class File extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_file a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = '';
-            $w .= 'LOWER(a.filename) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.mime) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.file_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.filename) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.mime) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.file_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -195,33 +195,33 @@ class File extends Model
         }
         if (!empty($filter['fileId'])) {
             if (!is_array($filter['fileId'])) $filter['fileId'] = [$filter['fileId']];
-            $filter->appendWhere('a.file_id IN :fileId AND ', $filter['fileId']);
+            $filter->appendWhere('AND a.file_id IN :fileId', $filter['fileId']);
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.file_id NOT IN %s AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.file_id NOT IN %s', $filter['exclude']);
         }
 
         if (isset($filter['label'])) {
             if (!is_array($filter['label'])) $filter['label'] = [$filter['label']];
-            $filter->appendWhere('a.label IN :label AND ', $filter['label']);
+            $filter->appendWhere('AND a.label IN :label', $filter['label']);
         }
         if (isset($filter['mime'])) {
             if (!is_array($filter['mime'])) $filter['mime'] = [$filter['mime']];
-            $filter->appendWhere('a.mime IN :mime AND ', $filter['mime']);
+            $filter->appendWhere('AND a.mime IN :mime', $filter['mime']);
         }
 
         if (is_bool(truefalse($filter['selected'] ?? null))) {
             $filter['selected'] = truefalse($filter['selected']);
-            $filter->appendWhere('a.selected = :selected AND ');
+            $filter->appendWhere('AND a.selected = :selected');
         }
 
         if (!empty($filter['filename'])) {
-            $filter->appendWhere('a.filename = :filename AND ');
+            $filter->appendWhere('AND a.filename = :filename');
         }
         if (!empty($filter['hash'])) {
-            $filter->appendWhere('a.hash = :hash AND ');
+            $filter->appendWhere('AND a.hash = :hash');
         }
 
         if (!empty($filter['model']) && $filter['model'] instanceof Model) {
@@ -229,16 +229,15 @@ class File extends Model
             $filter['fkey'] = get_class($filter['model']);
         }
         if (isset($filter['fid'])) {
-            $filter->appendWhere('a.fid = :fid AND ');
+            $filter->appendWhere('AND a.fid = :fid');
         }
         if (isset($filter['fkey'])) {
-            $filter->appendWhere('a.fkey = :fkey AND ');
+            $filter->appendWhere('AND a.fkey = :fkey');
         }
 
         return Db::query("
             SELECT *
-            FROM v_file a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

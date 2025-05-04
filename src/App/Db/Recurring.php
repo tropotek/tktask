@@ -202,12 +202,13 @@ class Recurring extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('recurring a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.description) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.recurring_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.description) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.recurring_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -215,48 +216,47 @@ class Recurring extends Model
         }
         if (!empty($filter['recurringId'])) {
             if (!is_array($filter['recurringId'])) $filter['recurringId'] = [$filter['recurringId']];
-            $filter->appendWhere('a.recurring_id IN :recurringId AND ');
+            $filter->appendWhere('AND a.recurring_id IN :recurringId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.id NOT IN :exclude');
         }
 
         if (!empty($filter['companyId'])) {
             if (!is_array($filter['companyId'])) $filter['companyId'] = [$filter['companyId']];
-            $filter->appendWhere('a.company_id IN :companyId AND ');
+            $filter->appendWhere('AND a.company_id IN :companyId');
         }
 
         if (!empty($filter['productId'])) {
             if (!is_array($filter['productId'])) $filter['productId'] = [$filter['productId']];
-            $filter->appendWhere('a.product_id IN :productId AND ');
+            $filter->appendWhere('AND a.product_id IN :productId');
         }
 
         if (!empty($filter['cycle'])) {
-            $filter->appendWhere('a.cycle = :cycle AND ');
+            $filter->appendWhere('AND a.cycle = :cycle');
         }
 
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('a.active = :active AND ');
+            $filter->appendWhere('AND a.active = :active');
         }
 
         if (is_bool(truefalse($filter['issue'] ?? null))) {
             $filter['issue'] = truefalse($filter['issue']);
-            $filter->appendWhere('a.issue = :issue AND ');
+            $filter->appendWhere('AND a.issue = :issue');
         }
         if (($filter['isDue'] ?? null) instanceof \DateTime) {
             $filter['isDue'] = $filter['isDue']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND :isDue AND ');
+            $filter->appendWhere('AND a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND :isDue');
         } elseif (is_bool(truefalse($filter['isDue'] ?? null))) {
-            $filter->appendWhere('a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND CURRENT_DATE AND ');
+            $filter->appendWhere('AND a.next_on IS NOT NULL AND a.next_on BETWEEN IFNULL(a.prev_on, DATE(a.created)) AND CURRENT_DATE');
         }
 
         return Db::query("
             SELECT *
-            FROM recurring a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

@@ -285,13 +285,14 @@ class Task extends Model implements StatusInterface
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_task a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.subject) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.comments) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.task_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.subject) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.comments) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.task_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -299,56 +300,55 @@ class Task extends Model implements StatusInterface
         }
         if (!empty($filter['taskId'])) {
             if (!is_array($filter['taskId'])) $filter['taskId'] = [$filter['taskId']];
-            $filter->appendWhere('a.task_id IN :taskId AND ');
+            $filter->appendWhere('AND a.task_id IN :taskId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.task_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.task_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['companyId'])) {
-            $filter->appendWhere('a.company_id = :companyId AND ');
+            $filter->appendWhere('AND a.company_id = :companyId');
         }
 
         if (!empty($filter['projectId'])) {
-            $filter->appendWhere('a.project_id = :projectId AND ');
+            $filter->appendWhere('AND a.project_id = :projectId');
         }
 
         if (!empty($filter['taskCategoryId'])) {
             if (!is_array($filter['taskCategoryId'])) $filter['taskCategoryId'] = [$filter['taskCategoryId']];
-            $filter->appendWhere('a.task_category_id IN :taskCategoryId AND ');
+            $filter->appendWhere('AND a.task_category_id IN :taskCategoryId');
         }
 
         if (!empty($filter['creatorUserId'])) {
             if (!is_array($filter['creatorUserId'])) $filter['creatorUserId'] = [$filter['creatorUserId']];
-            $filter->appendWhere('a.creator_user_id IN :creatorUserId AND ');
+            $filter->appendWhere('AND a.creator_user_id IN :creatorUserId');
         }
 
         if (!empty($filter['assignedUserId'])) {
             if (!is_array($filter['assignedUserId'])) $filter['assignedUserId'] = [$filter['assignedUserId']];
-            $filter->appendWhere('a.assigned_user_id IN :assignedUserId AND ');
+            $filter->appendWhere('AND a.assigned_user_id IN :assignedUserId');
         }
 
         if (!empty($filter['closedUserId'])) {
             if (!is_array($filter['closedUserId'])) $filter['closedUserId'] = [$filter['closedUserId']];
-            $filter->appendWhere('a.closed_user_id IN :closedUserId AND ');
+            $filter->appendWhere('AND a.closed_user_id IN :closedUserId');
         }
 
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
-            $filter->appendWhere('a.status IN :status AND ');
+            $filter->appendWhere('AND a.status IN :status');
         }
 
         if (!empty($filter['priority'])) {
             if (!is_array($filter['priority'])) $filter['priority'] = [$filter['priority']];
-            $filter->appendWhere('a.priority IN :priority AND ');
+            $filter->appendWhere('AND a.priority IN :priority');
         }
 
         return Db::query("
             SELECT *
-            FROM v_task a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

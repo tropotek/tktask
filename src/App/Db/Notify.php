@@ -154,12 +154,13 @@ class Notify extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_notify a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.title) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.notify_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.title) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.notify_id = :search OR ';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -167,32 +168,31 @@ class Notify extends Model
         }
         if (!empty($filter['notifyId'])) {
             if (!is_array($filter['notifyId'])) $filter['notifyId'] = [$filter['notifyId']];
-            $filter->appendWhere('a.notify_id IN :notifyId AND ');
+            $filter->appendWhere('AND a.notify_id IN :notifyId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.notify_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.notify_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['userId'])) {
-            $filter->appendWhere('a.user_id = :userId AND ');
+            $filter->appendWhere('AND a.user_id = :userId');
         }
 
         if (is_bool(truefalse($filter['isRead'] ?? null))) {
             $filter['isRead'] = truefalse($filter['isRead']);
-            $filter->appendWhere('a.is_read = :isRead AND ');
+            $filter->appendWhere('AND a.is_read = :isRead');
         }
 
         if (is_bool(truefalse($filter['isNotified'] ?? null))) {
             $filter['isNotified'] = truefalse($filter['isNotified']);
-            $filter->appendWhere('a.is_notified = :isNotified AND ');
+            $filter->appendWhere('AND a.is_notified = :isNotified');
         }
 
         return Db::query("
             SELECT *
-            FROM v_notify a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

@@ -78,13 +78,14 @@ class ExpenseCategory extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('expense_category a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.description) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.expense_category_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.description) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.expense_category_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -92,29 +93,28 @@ class ExpenseCategory extends Model
         }
         if (!empty($filter['expenseCategoryId'])) {
             if (!is_array($filter['expenseCategoryId'])) $filter['expenseCategoryId'] = [$filter['expenseCategoryId']];
-            $filter->appendWhere('a.expense_category_id IN :expenseCategoryId AND ');
+            $filter->appendWhere('AND a.expense_category_id IN :expenseCategoryId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.expense_category_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.expense_category_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = :name AND ');
+            $filter->appendWhere('AND a.name = :name');
         }
         if (!empty($filter['claim'])) {
-            $filter->appendWhere('a.claim = :claim AND ');
+            $filter->appendWhere('AND a.claim = :claim');
         }
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('a.active = :active AND ');
+            $filter->appendWhere('AND a.active = :active');
         }
 
         return Db::query("
             SELECT *
-            FROM expense_category a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

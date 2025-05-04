@@ -87,18 +87,13 @@ class DomainPing extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('domain_ping a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w = '';
-            $w .= 'LOWER(a.site_name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.domain_ping_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
-        }
-
-        if (!empty($filter['always'])) {
-            if (!is_array($filter['always'])) $filter['always'] = [$filter['always']];
-            $filter->appendWhere('(a.domain_ping_id IN :always) OR ', $filter['always']);
+            $w  = 'LOWER(a.site_name) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.domain_ping_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -106,31 +101,35 @@ class DomainPing extends Model
         }
         if (!empty($filter['domainPingId'])) {
             if (!is_array($filter['domainPingId'])) $filter['domainPingId'] = [$filter['domainPingId']];
-            $filter->appendWhere('a.domain_ping_id IN :domainPingId AND ');
+            $filter->appendWhere('AND a.domain_ping_id IN :domainPingId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.domain_ping_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.domain_ping_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['domainId'])) {
-            $filter->appendWhere('a.domain_id = :domainId AND ');
+            $filter->appendWhere('AND a.domain_id = :domainId');
         }
 
         if (is_bool(truefalse($filter['status'] ?? null))) {
             $filter['status'] = truefalse($filter['status']);
-            $filter->appendWhere('a.status = :status AND ');
+            $filter->appendWhere('AND a.status = :status');
         }
 
         if (!empty($filter['timezone'])) {
-            $filter->appendWhere('a.timezone = :timezone AND ');
+            $filter->appendWhere('AND a.timezone = :timezone');
+        }
+
+        if (!empty($filter['always'])) {
+            if (!is_array($filter['always'])) $filter['always'] = [$filter['always']];
+            $filter->appendWhere('OR (a.domain_ping_id IN :always)', $filter['always']);
         }
 
         return Db::query("
             SELECT *
-            FROM domain_ping a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

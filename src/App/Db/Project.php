@@ -192,13 +192,14 @@ class Project extends Model implements StatusInterface
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('project a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.description) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.project_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) ';
+            $w .= 'OR LOWER(a.description) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.project_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -206,39 +207,38 @@ class Project extends Model implements StatusInterface
         }
         if (!empty($filter['projectId'])) {
             if (!is_array($filter['projectId'])) $filter['projectId'] = [$filter['projectId']];
-            $filter->appendWhere('a.project_id IN :projectId AND ');
+            $filter->appendWhere('AND a.project_id IN :projectId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.project_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.project_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['userId'])) {
-            $filter->appendWhere('a.user_id = :userId AND ');
+            $filter->appendWhere('AND a.user_id = :userId');
         }
 
         if (!empty($filter['companyId'])) {
-            $filter->appendWhere('a.company_id = :companyId AND ');
+            $filter->appendWhere('AND a.company_id = :companyId');
         }
 
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
-            $filter->appendWhere('a.status IN :status AND ');
+            $filter->appendWhere('AND a.status IN :status');
         }
 
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = :name AND ');
+            $filter->appendWhere('AND a.name = :name');
         }
 
         if (!empty($filter['quote'])) {
-            $filter->appendWhere('a.quote = :quote AND ');
+            $filter->appendWhere('AND a.quote = :quote');
         }
 
         return Db::query("
             SELECT *
-            FROM project a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

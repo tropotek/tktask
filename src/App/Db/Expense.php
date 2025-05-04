@@ -108,13 +108,13 @@ class Expense extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_expense a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w = '';
-            //$w .= 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.expense_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.description) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.expense_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -122,43 +122,42 @@ class Expense extends Model
         }
         if (!empty($filter['expenseId'])) {
             if (!is_array($filter['expenseId'])) $filter['expenseId'] = [$filter['expenseId']];
-            $filter->appendWhere('a.expense_id IN :expenseId AND ');
+            $filter->appendWhere('AND a.expense_id IN :expenseId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.expense_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.expense_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['expenseCategoryId'])) {
-            $filter->appendWhere('a.expense_category_id = :expenseCategoryId AND ');
+            $filter->appendWhere('AND a.expense_category_id = :expenseCategoryId');
         }
 
         if (!empty($filter['companyId'])) {
-            $filter->appendWhere('a.company_id = :companyId AND ');
+            $filter->appendWhere('AND a.company_id = :companyId');
         }
 
         if (!empty($filter['invoiceNo'])) {
-            $filter->appendWhere('a.invoice_no = :invoiceNo AND ');
+            $filter->appendWhere('AND a.invoice_no = :invoiceNo');
         }
 
         if (!empty($filter['receiptNo'])) {
-            $filter->appendWhere('a.receipt_no = :receiptNo AND ');
+            $filter->appendWhere('AND a.receipt_no = :receiptNo');
         }
 
         if (!empty($filter['dateStart'])) {
             if (($filter['dateStart'] instanceof \DateTime)) $filter['dateStart'] = $filter['dateStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.purchased_on >= :dateStart AND ');
+            $filter->appendWhere('AND a.purchased_on >= :dateStart');
         }
         if (!empty($filter['dateEnd'])) {
             if (($filter['dateEnd'] instanceof \DateTime)) $filter['dateEnd'] = $filter['dateEnd']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.purchased_on <= :dateEnd AND ');
+            $filter->appendWhere('AND a.purchased_on <= :dateEnd');
         }
 
         return Db::query("
             SELECT *
-            FROM v_expense a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

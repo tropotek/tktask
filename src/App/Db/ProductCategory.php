@@ -69,13 +69,14 @@ class ProductCategory extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('product_category a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w  = 'LOWER(a.description) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.product_category_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.description) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.product_category_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -83,22 +84,21 @@ class ProductCategory extends Model
         }
         if (!empty($filter['productCategoryId'])) {
             if (!is_array($filter['productCategoryId'])) $filter['productCategoryId'] = [$filter['productCategoryId']];
-            $filter->appendWhere('a.product_category_id IN :productCategoryId AND ');
+            $filter->appendWhere('AND a.product_category_id IN :productCategoryId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.product_category_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.product_category_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = :name AND ');
+            $filter->appendWhere('AND a.name = :name');
         }
 
         return Db::query("
             SELECT *
-            FROM product_category a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

@@ -253,15 +253,16 @@ class User extends Model implements UserInterface
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_user a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.given_name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.family_name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.email) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.uid) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.user_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.given_name) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.family_name) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.email) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.uid) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.user_id LIKE :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -269,44 +270,42 @@ class User extends Model implements UserInterface
         }
         if (!empty($filter['userId'])) {
             if (!is_array($filter['userId'])) $filter['userId'] = [$filter['userId']];
-            $filter->appendWhere('a.user_id IN :userId AND ');
+            $filter->appendWhere('AND a.user_id IN :userId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.user_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.user_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['uid'])) {
-            $filter->appendWhere('a.uid = :uid AND ');
+            $filter->appendWhere('AND a.uid = :uid');
         }
 
         if (!empty($filter['hash'])) {
-            $filter->appendWhere('a.hash = :hash AND ');
-        }
-
-        if (!empty($filter['type'])) {
-            if (!is_array($filter['type'])) $filter['type'] = [$filter['type']];
-            $filter->appendWhere('a.type IN :type AND ');
+            $filter->appendWhere('AND a.hash = :hash');
         }
 
         if (!empty($filter['username'])) {
-            $filter->appendWhere('a.username = :username AND ');
+            $filter->appendWhere('AND a.username = :username');
         }
 
         if (!empty($filter['email'])) {
-            $filter->appendWhere('a.email = :email AND ');
+            $filter->appendWhere('AND a.email = :email');
+        }
+
+        if (!empty($filter['permission'])) {
+            $filter->appendWhere('AND (a.permissions & :permission) != 0');
         }
 
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('a.active = :active AND ');
+            $filter->appendWhere('AND a.active = :active');
         }
 
         return Db::query("
             SELECT *
-            FROM v_user a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

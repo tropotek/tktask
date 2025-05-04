@@ -8,6 +8,7 @@ use App\Factory;
 use App\Pdf\PdfInterface;
 use Bs\Registry;
 use Tk\Db\Session;
+use Tk\Log;
 use Tk\Mail\Mailer;
 use Tk\Uri;
 
@@ -22,7 +23,11 @@ class Invoice
         $siteCompany = Factory::instance()->getOwnerCompany();
 
         // get unpaid email template
-        $content = Registry::instance()->get('site.email.invoice.unpaid', '{content}');
+        $content = Registry::instance()->get('site.email.invoice.unpaid');
+        if (empty($content)) {
+            Log::error("invalid email template for site.email.invoice.unpaid");
+            return false;
+        }
 
         // Email client the new invoice
         $message = Factory::instance()->createMailMessage($content);
@@ -33,7 +38,12 @@ class Invoice
         $message->setFrom($siteCompany->email);
         $message->setSubject($siteCompany->name . ' - Invoice ' . $invoice->invoiceId);
         $message->set('company.name', $company->name);
-        $message->set('payment.text', Registry::instance()->get('site.invoice.payment', ''));
+
+        $paymentText = Registry::instance()->get('site.invoice.payment');
+        if (empty($paymentText)) {
+            Log::warning("empty invoice payment text description: site.invoice.payment");
+        }
+        $message->set('payment.text', $paymentText);
 
         $url = Uri::create('/pdf/invoice', [
             'invoiceId' => $invoice->invoiceId,
@@ -64,7 +74,6 @@ class Invoice
             $tasks[] = $task;
         }
         if (count($tasks)) {
-
             // todo: not sure if the session is the best way to send tasks to the pdf, will do for now!
             Session::instance()->set('pdf.tasks', $tasks);
             $url = Uri::create('/pdf/taskList', [
@@ -99,7 +108,11 @@ class Invoice
         $company = $payment->getInvoice()->getCompany();
         if (!($company instanceof Company)) return false;
 
-        $content = Registry::instance()->get('site.email.payment.cleared', '{content}');
+        $content = Registry::instance()->get('site.email.payment.cleared', '');
+        if (empty($content)) {
+            Log::error("invalid email template for site.email.payment.cleared");
+            return false;
+        }
 
         $message = Factory::instance()->createMailMessage($content);
         $message->addTo($company->email);

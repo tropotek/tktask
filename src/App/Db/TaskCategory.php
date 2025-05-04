@@ -72,12 +72,13 @@ class TaskCategory extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('task_category a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.task_category_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.task_category_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -85,26 +86,25 @@ class TaskCategory extends Model
         }
         if (!empty($filter['taskCategoryId'])) {
             if (!is_array($filter['taskCategoryId'])) $filter['taskCategoryId'] = [$filter['taskCategoryId']];
-            $filter->appendWhere('a.task_category_id IN :taskCategoryId AND ');
+            $filter->appendWhere('AND a.task_category_id IN :taskCategoryId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.task_category_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.task_category_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = :name AND ');
+            $filter->appendWhere('AND a.name = :name');
         }
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('a.active = :active AND ');
+            $filter->appendWhere('AND a.active = :active');
         }
 
         return Db::query("
             SELECT *
-            FROM task_category a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

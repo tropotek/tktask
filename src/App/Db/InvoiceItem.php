@@ -123,13 +123,13 @@ class InvoiceItem extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_invoice_item a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w = '';
-            //$w .= 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.invoice_item_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.product_code) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.invoice_item_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -137,26 +137,25 @@ class InvoiceItem extends Model
         }
         if (!empty($filter['invoiceItemId'])) {
             if (!is_array($filter['invoiceItemId'])) $filter['invoiceItemId'] = [$filter['invoiceItemId']];
-            $filter->appendWhere('a.invoice_item_id IN :invoiceItemId AND ');
+            $filter->appendWhere('AND a.invoice_item_id IN :invoiceItemId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.invoice_item_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.invoice_item_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['invoiceId'])) {
-            $filter->appendWhere('a.invoice_id = :invoiceId AND ');
+            $filter->appendWhere('AND a.invoice_id = :invoiceId');
         }
 
         if (!empty($filter['productCode'])) {
-            $filter->appendWhere('a.product_code = :productCode AND ');
+            $filter->appendWhere('AND a.product_code = :productCode');
         }
 
         return Db::query("
             SELECT *
-            FROM v_invoice_item a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

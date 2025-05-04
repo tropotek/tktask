@@ -365,13 +365,13 @@ class Invoice extends Model implements StatusInterface
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_invoice a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w = '';
-            //$w .= 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.invoice_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.purchase_order) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.invoice_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -379,12 +379,12 @@ class Invoice extends Model implements StatusInterface
         }
         if (!empty($filter['invoiceId'])) {
             if (!is_array($filter['invoiceId'])) $filter['invoiceId'] = [$filter['invoiceId']];
-            $filter->appendWhere('a.invoice_id IN :invoiceId AND ');
+            $filter->appendWhere('AND a.invoice_id IN :invoiceId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.invoice_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.invoice_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['model']) && $filter['model'] instanceof Model) {
@@ -392,48 +392,47 @@ class Invoice extends Model implements StatusInterface
             $filter['fkey'] = get_class($filter['model']);
         }
         if (isset($filter['fid'])) {
-            $filter->appendWhere('a.fid = :fid AND ');
+            $filter->appendWhere('AND a.fid = :fid');
         }
         if (isset($filter['fkey'])) {
-            $filter->appendWhere('a.fkey = :fkey AND ');
+            $filter->appendWhere('AND a.fkey = :fkey');
         }
 
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
-            $filter->appendWhere('a.status IN :status AND ', $filter['status']);
+            $filter->appendWhere('AND  a.status IN :status', $filter['status']);
         }
 
         if (!empty($filter['dateStart'])) {
             if (($filter['dateStart'] instanceof \DateTime)) $filter['dateStart'] = $filter['dateStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.created >= :dateStart AND ');
+            $filter->appendWhere('AND a.created >= :dateStart');
         }
         if (!empty($filter['dateEnd'])) {
             if (($filter['dateEnd'] instanceof \DateTime)) $filter['dateEnd'] = $filter['dateEnd']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.created <= :dateEnd AND ');
+            $filter->appendWhere('AND a.created <= :dateEnd');
         }
 
         if (!empty($filter['dateIssuedStart'])) {
             if (($filter['dateIssuedStart'] instanceof \DateTime)) $filter['dateIssuedStart'] = $filter['dateIssuedStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.date_issued >= :dateIssuedStart AND ');
+            $filter->appendWhere('AND a.date_issued >= :dateIssuedStart');
         }
         if (!empty($filter['dateIssuedEnd'])) {
             if (($filter['dateIssuedEnd'] instanceof \DateTime)) $filter['dateIssuedEnd'] = $filter['dateIssuedEnd']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.date_issued <= :dateIssuedEnd AND ');
+            $filter->appendWhere('AND a.date_issued <= :dateIssuedEnd');
         }
 
         if (!empty($filter['datePaidStart'])) {
             if (($filter['datePaidStart'] instanceof \DateTime)) $filter['datePaidStart'] = $filter['datePaidStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.date_paid >= :datePaidStart AND ');
+            $filter->appendWhere('AND a.date_paid >= :datePaidStart');
         }
         if (!empty($filter['datePaidEnd'])) {
             if (($filter['datePaidEnd'] instanceof \DateTime)) $filter['datePaidEnd'] = $filter['datePaidEnd']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.date_paid <= :datePaidEnd AND ');
+            $filter->appendWhere('AND a.date_paid <= :datePaidEnd');
         }
 
         return Db::query("
             SELECT *
-            FROM v_invoice a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

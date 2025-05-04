@@ -131,13 +131,13 @@ class TaskLog extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_task_log a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w = '';
-            $w .= 'LOWER(a.comment) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.task_log_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.comment) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.task_log_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -145,42 +145,41 @@ class TaskLog extends Model
         }
         if (!empty($filter['taskLogId'])) {
             if (!is_array($filter['taskLogId'])) $filter['taskLogId'] = [$filter['taskLogId']];
-            $filter->appendWhere('a.task_log_id IN :taskLogId AND ');
+            $filter->appendWhere('AND a.task_log_id IN :taskLogId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.task_log_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.task_log_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['taskId'])) {
-            $filter->appendWhere('a.task_id = :taskId AND ');
+            $filter->appendWhere('AND a.task_id = :taskId');
         }
 
         if (!empty($filter['userId'])) {
             if (!is_array($filter['userId'])) $filter['userId'] = [$filter['userId']];
-            $filter->appendWhere('a.user_id IN :userId AND ');
+            $filter->appendWhere('AND a.user_id IN :userId');
         }
 
         if (!empty($filter['productId'])) {
             if (!is_array($filter['productId'])) $filter['productId'] = [$filter['productId']];
-            $filter->appendWhere('a.product_id IN :productId AND ');
+            $filter->appendWhere('AND a.product_id IN :productId');
         }
 
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
-            $filter->appendWhere('a.status IN :status AND ');
+            $filter->appendWhere('AND a.status IN :status');
         }
 
         if (is_bool(truefalse($filter['billable'] ?? null))) {
             $filter['billable'] = truefalse($filter['billable']);
-            $filter->appendWhere('a.billable = :billable AND ');
+            $filter->appendWhere('AND a.billable = :billable');
         }
 
         return Db::query("
             SELECT *
-            FROM v_task_log a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

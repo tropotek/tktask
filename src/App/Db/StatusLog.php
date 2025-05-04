@@ -138,14 +138,14 @@ class StatusLog extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('status_log a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w = '';
-            $w .= 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.message) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.status_log_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.message) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.status_log_id = :search';
+            if ($w) $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -153,16 +153,16 @@ class StatusLog extends Model
         }
         if (!empty($filter['statusLogId'])) {
             if (!is_array($filter['statusLogId'])) $filter['statusLogId'] = [$filter['statusLogId']];
-            $filter->appendWhere('a.status_log_id IN :statusLogId AND ');
+            $filter->appendWhere('AND a.status_log_id IN :statusLogId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.status_log_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.status_log_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['userId'])) {
-            $filter->appendWhere('a.user_id = :userId AND ');
+            $filter->appendWhere('AND a.user_id = :userId');
         }
 
         if (!empty($filter['model']) && $filter['model'] instanceof Model) {
@@ -170,42 +170,41 @@ class StatusLog extends Model
             $filter['fkey'] = get_class($filter['model']);
         }
         if (!empty($filter['fkey'])) {
-            $filter->appendWhere('a.fkey = :fkey AND ');
+            $filter->appendWhere('AND a.fkey = :fkey');
         }
         if (!empty($filter['fid'])) {
-            $filter->appendWhere('a.fid = :fid AND ');
+            $filter->appendWhere('AND a.fid = :fid');
         }
 
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = :name AND ');
+            $filter->appendWhere('AND a.name = :name');
         }
         if (is_bool(truefalse($filter['notify'] ?? null))) {
             $filter['notify'] = truefalse($filter['notify']);
-            $filter->appendWhere('a.notify = :notify AND ');
+            $filter->appendWhere('AND a.notify = :notify');
         }
 
         if (!empty($filter['before']) && $filter['before'] instanceof \DateTime) {
             $filter['before'] = $filter['before']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.created < :before AND ');
+            $filter->appendWhere('AND a.created < :before');
         }
         if (!empty($filter['after']) && $filter['after'] instanceof \DateTime) {
             $filter['after'] = $filter['after']->format(\Tk\Date::FORMAT_ISO_DATETIME);
-            $filter->appendWhere('a.created > :after AND ');
+            $filter->appendWhere('AND a.created > :after');
         }
 
         if (!empty($filter['monthFrom']) && $filter['monthFrom'] instanceof \DateTime) {
             $filter['monthFrom'] = $filter['monthFrom']->format('Y-m');
-            $filter->appendWhere('DATE_FORMAT(a.created, "%%Y-%%m") >= :monthFrom AND ');
+            $filter->appendWhere('AND DATE_FORMAT(a.created, "%%Y-%%m") >= :monthFrom');
         }
         if (!empty($filter['monthTo']) && $filter['monthTo'] instanceof \DateTime) {
             $filter['monthTo'] = $filter['monthTo']->format('Y-m');
-            $filter->appendWhere('DATE_FORMAT(a.created, "%%Y-%%m") <= :monthTo AND ');
+            $filter->appendWhere('AND DATE_FORMAT(a.created, "%%Y-%%m") <= :monthTo');
         }
 
         return Db::query("
             SELECT *
-            FROM status_log a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

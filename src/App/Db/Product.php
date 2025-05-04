@@ -127,13 +127,14 @@ class Product extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_product a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.code) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.product_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.code) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.product_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -141,35 +142,34 @@ class Product extends Model
         }
         if (!empty($filter['productId'])) {
             if (!is_array($filter['productId'])) $filter['productId'] = [$filter['productId']];
-            $filter->appendWhere('a.product_id IN :productId AND ');
+            $filter->appendWhere('AND a.product_id IN :productId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.product_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.product_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['productCategoryId'])) {
-            $filter->appendWhere('a.product_category_id = :productCategoryId AND ');
+            $filter->appendWhere('AND a.product_category_id = :productCategoryId');
         }
         if (!empty($filter['cycle'])) {
-            $filter->appendWhere('a.cycle = :cycle AND ');
+            $filter->appendWhere('AND a.cycle = :cycle');
         }
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = :name AND ');
+            $filter->appendWhere('AND a.name = :name');
         }
         if (!empty($filter['code'])) {
-            $filter->appendWhere('a.code = :code AND ');
+            $filter->appendWhere('AND a.code = :code');
         }
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('a.active = :active AND ');
+            $filter->appendWhere('AND a.active = :active');
         }
 
         return Db::query("
             SELECT *
-            FROM v_product a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

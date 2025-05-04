@@ -90,20 +90,21 @@ class Company extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_company a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.alias) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.abn) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.contact) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.email) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.accounts_email) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.phone) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.website) LIKE LOWER(:lSearch) OR ';
-            $w .= 'LOWER(a.account_id) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.company_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
+            $w  = 'LOWER(a.name) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.alias) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.abn) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.contact) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.email) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.accounts_email) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.phone) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.website) LIKE LOWER(:lSearch)';
+            $w .= 'OR LOWER(a.account_id) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.company_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -111,56 +112,55 @@ class Company extends Model
         }
         if (!empty($filter['companyId'])) {
             if (!is_array($filter['companyId'])) $filter['companyId'] = [$filter['companyId']];
-            $filter->appendWhere('a.company_id IN :companyId AND ');
+            $filter->appendWhere('AND a.company_id IN :companyId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.company_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.company_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (!empty($filter['accountId'])) {
-            $filter->appendWhere('a.account_id = :accountId AND ');
+            $filter->appendWhere('AND a.account_id = :accountId');
         }
         if (!empty($filter['type'])) {
-            $filter->appendWhere('a.type = :type AND ');
+            $filter->appendWhere('AND a.type = :type');
         }
         if (!empty($filter['name'])) {
-            $filter->appendWhere('a.name = :name AND ');
+            $filter->appendWhere('AND a.name = :name');
         }
         if (!empty($filter['alias'])) {
-            $filter->appendWhere('a.alias = :alias AND ');
+            $filter->appendWhere('AND a.alias = :alias');
         }
         if (!empty($filter['abn'])) {
-            $filter->appendWhere('a.abn = :abn AND ');
+            $filter->appendWhere('AND a.abn = :abn');
         }
         if (!empty($filter['website'])) {
-            $filter->appendWhere('a.website = :website AND ');
+            $filter->appendWhere('AND a.website = :website');
         }
         if (!empty($filter['contact'])) {
-            $filter->appendWhere('a.contact = :contact AND ');
+            $filter->appendWhere('AND a.contact = :contact');
         }
         if (!empty($filter['phone'])) {
-            $filter->appendWhere('a.phone = :phone AND ');
+            $filter->appendWhere('AND a.phone = :phone');
         }
         if (!empty($filter['email'])) {
-            $filter->appendWhere('a.email = :email AND ');
+            $filter->appendWhere('AND a.email = :email');
         }
         if (!empty($filter['address'])) {
-            $filter->appendWhere('a.address = :address AND ');
+            $filter->appendWhere('AND a.address = :address');
         }
         if (isset($filter['hasCredit'])) {
-            $filter->appendWhere('a.credit > 0 AND ');
+            $filter->appendWhere('AND a.credit > 0');
         }
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('a.active = :active AND ');
+            $filter->appendWhere('AND a.active = :active');
         }
 
         return Db::query("
             SELECT *
-            FROM v_company a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );

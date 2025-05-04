@@ -125,18 +125,13 @@ class Domain extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
+        $filter->appendFrom('v_domain a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w = '';
-            $w .= 'LOWER(a.url) LIKE LOWER(:lSearch) OR ';
-            $w .= 'a.domain_id = :search OR ';
-            $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
-        }
-
-        if (!empty($filter['always'])) {
-            if (!is_array($filter['always'])) $filter['always'] = [$filter['always']];
-            $filter->appendWhere('(a.domain_id IN :always) OR ', $filter['always']);
+            $w  = 'LOWER(a.url) LIKE LOWER(:lSearch)';
+            $w .= 'OR a.domain_id = :search';
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -144,32 +139,36 @@ class Domain extends Model
         }
         if (!empty($filter['domainId'])) {
             if (!is_array($filter['domainId'])) $filter['domainId'] = [$filter['domainId']];
-            $filter->appendWhere('a.domain_id IN :domainId AND ');
+            $filter->appendWhere('AND a.domain_id IN :domainId');
         }
 
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = [$filter['exclude']];
-            $filter->appendWhere('a.domain_id NOT IN :exclude AND ', $filter['exclude']);
+            $filter->appendWhere('AND a.domain_id NOT IN :exclude', $filter['exclude']);
         }
 
         if (is_bool(truefalse($filter['status'] ?? null))) {
             $filter['status'] = truefalse($filter['status']);
-            $filter->appendWhere('a.status = :status AND ');
+            $filter->appendWhere('AND a.status = :status');
         }
 
         if (is_bool(truefalse($filter['active'] ?? null))) {
             $filter['active'] = truefalse($filter['active']);
-            $filter->appendWhere('a.active = :active AND ');
+            $filter->appendWhere('AND a.active = :active');
         }
 
         if (!empty($filter['companyId'])) {
-            $filter->appendWhere('a.company_id = :companyId AND ');
+            $filter->appendWhere('AND a.company_id = :companyId');
+        }
+
+        if (!empty($filter['always'])) {
+            if (!is_array($filter['always'])) $filter['always'] = [$filter['always']];
+            $filter->appendWhere('OR (a.domain_id IN :always)', $filter['always']);
         }
 
         return Db::query("
             SELECT *
-            FROM v_domain a
-            {$filter->getSql()}",
+            FROM {$filter->getSql()}",
             $filter->all(),
             self::class
         );
