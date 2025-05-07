@@ -10,6 +10,7 @@ use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
+use Tk\Date;
 use Tk\FileUtil;
 use Tk\Form\Field\Input;
 use Tk\Table\Cell;
@@ -53,6 +54,16 @@ class Manager extends ControllerAdmin
         $rowSelect = RowSelect::create('id', 'domainId');
         $this->table->appendCell($rowSelect);
 
+        $this->table->appendCell('action')
+            ->setSortable(true)
+            ->addCss('text-center')
+            ->addOnValue(function(Domain $obj, Cell $cell) {
+                $url = Uri::create($obj->url);
+                return <<<HTML
+                    <a href="$url" class="btn btn-outline-primary" target="_blank" title="View Site"><span class="fas fa-globe"></span></a>
+                HTML;
+            });
+
         $this->table->appendCell('status')
             ->setSortable(true)
             ->addCss('text-center')
@@ -68,11 +79,16 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->addHeaderCss('text-start')
             ->addOnValue(function(Domain $obj, Cell $cell) {
-                $pings = DomainPing::findFiltered(Db\Filter::create(['domainId' => $obj->domainId], '-created', 25));
-                $list = array_column($pings, 'status');
-                $list = array_map(fn($v) => $v ? 100 : -100, $list);
-                $list = array_map('intval', $list);
-                return '<span class="ping-spark">'.implode(',', $list).'</span>';
+                $pings = DomainPing::findFiltered(Db\Filter::create(['domainId' => $obj->domainId], 'created', 25));
+                $values = [];
+                $labels = [];
+                foreach ($pings as $ping) {
+                    $values[] = $ping->status ? 100 : -100;
+                    $labels[] = $ping->created->format(Date::FORMAT_LONG_DATE);
+                }
+                $values = eattr(json_encode($values));
+                $labels = eattr(json_encode($labels));
+                return '<span class="ping-spark" data-labels="'.$labels.'" data-values="'.$values.'"></span>';
             });
 
         $this->table->appendCell('url')
@@ -192,17 +208,20 @@ class Manager extends ControllerAdmin
   </div>
   <script>
       jQuery(document).ready(function($) {
-          $('.ping-spark').sparkline('html', {
-            type: 'tristate',
-            chartRangeMin: 0,
-            colorMap: $.range_map({
-                '-100': '#F1556C',
-                '100': '#1ABC9C'
-            }),
-            tooltipFormat: '{{value:levels}}',
-            tooltipValueLookups: {
-                levels: $.range_map({ '-100': 'Offline', '100': 'Online'})
-            }
+          $('.ping-spark').each(function() {
+              let labels = $(this).data('labels');
+              $(this).sparkline($(this).data('values'), {
+                  type: 'tristate',
+                  colorMap: $.range_map({
+                      '-100': '#F1556C',
+                      '100': '#1ABC9C'
+                  }),
+                  tooltipFormat: '{{value:levels}}',
+                  tooltipFormatter: function(sparkline, options, fields) {
+                    let str = (fields.value > 0 ? 'Online' : 'Offline') + '<br>' + labels[fields.offset];
+                    return '<span style="color: #333333;">' + str + '</span>';
+                  },
+              });
           });
       });
   </script>
