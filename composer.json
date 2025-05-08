@@ -1,115 +1,110 @@
 {
-  "name": "ttek/tktask",
-  "type": "project",
-  "description": "Developer customer management app",
-  "keywords": [
-    "tropotek"
-  ],
-  "time": "2024-12-01",
-  "license": "MIT",
-  "minimum-stability": "dev",
-  "authors": [
-    {
-      "name": "Tropotek",
-      "homepage": "http://www.tropotek.com/"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "App\\": "src/App/"
-    }
-  },
-  "scripts": {
-    "post-install-cmd": [
-      "Tk\\Composer\\Installer::postInstall"
+    "name": "ttek/tktask",
+    "type": "project",
+    "description": "Developer customer management app",
+    "keywords":  [
+        "tropotek"
     ],
-    "post-update-cmd": [
-      "Tk\\Composer\\Installer::postUpdate"
-    ]
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
+    "time": "2025-05-08",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors":  [
+         {
+            "name": "Tropotek",
+            "homepage": "http://www.tropotek.com/"
+        }
+    ],
+    "autoload":  {
+        "psr-4":  {
+            "App\\": "src/App/"
+        }
+    },
+    "scripts":  {
+        "post-install-cmd":  [
+            "Tk\\Composer\\Installer::postInstall"
+        ],
+        "post-update-cmd":  [
+            "Tk\\Composer\\Installer::postUpdate"
+        ]
+    },
+    "extra":  {
+        "branch-alias":  {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "repositories":  [
+         {
+            "type": "package",
+            "package":  {
+                "name": "htmx/htmx",
+                "version": "2.0.4",
+                "dist":  {
+                    "url": "https://unpkg.com/htmx.org/dist/htmx.min.js",
+                    "type": "file"
+                }
+            }
+        },
+         {
+            "type": "package",
+            "package":  {
+                "name": "jquery/jquery",
+                "version": "3.7.1",
+                "dist":  {
+                    "url": "https://code.jquery.com/jquery-3.7.1.min.js",
+                    "type": "file"
+                }
+            }
+        },
+         {
+            "type": "package",
+            "package":  {
+                "name": "jquery/jqueryui",
+                "version": "1.14.1",
+                "dist":  {
+                    "url": "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js",
+                    "type": "file"
+                }
+            }
+        },
+         {
+            "type": "package",
+            "package":  {
+                "name": "jquery/smoothness",
+                "version": "1.14.1",
+                "dist":  {
+                    "url": "https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.min.css",
+                    "type": "file"
+                }
+            }
+        }
+    ],
+    "require":  {
+        "php": "^8.3",
+        "ext-curl": "*",
+        "ext-pdo": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*",
+        "ext-gd": "*",
+        "ttek/tk-base": "~8.0.0",
+        "htmx/htmx": "2.0.4",
+        "jquery/jquery": "3.7.1",
+        "jquery/jqueryui": "1.14.1",
+        "jquery/smoothness": "1.14.1",
+        "twbs/bootstrap": "~5.3.0",
+        "studio-42/elfinder": "~2.1.0",
+        "mpdf/mpdf": "^8.0"
+    },
+    "require-dev":  {
+        "composer/composer": "^2.0"
+    },
+    "config":  {
+        "allow-plugins":  {
+            "ttek/tk-installers": true
+        },
+        "preferred-install":  {
+            "ttek/*": "source"
+        },
+        "component-dir": "vendor/components"
     }
-  },
-
-	"repositories": [
-		{
-			"type": "package",
-			"package": {
-				"name": "htmx/htmx",
-				"version": "2.0.4",
-				"dist": {
-					"url": "https://unpkg.com/htmx.org/dist/htmx.min.js",
-					"type": "file"
-				}
-			}
-		},
-    {
-      "type": "package",
-      "package": {
-        "name": "jquery/jquery",
-        "version": "3.7.1",
-        "dist": {
-          "url": "https://code.jquery.com/jquery-3.7.1.min.js",
-          "type": "file"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "jquery/jqueryui",
-        "version": "1.14.1",
-        "dist": {
-          "url": "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js",
-          "type": "file"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "jquery/smoothness",
-        "version": "1.14.1",
-        "dist": {
-          "url": "https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.min.css",
-          "type": "file"
-        }
-      }
-    }
-	],
-
-  "require": {
-    "php": "^8.3",
-    "ext-curl": "*",
-    "ext-pdo": "*",
-    "ext-dom": "*",
-    "ext-libxml": "*",
-    "ext-mbstring": "*",
-    "ext-gd": "*",
-
-    "ttek/tk-base": "~8.0.0",
-
-		"htmx/htmx": "2.0.4",
-    "jquery/jquery": "3.7.1",
-    "jquery/jqueryui": "1.14.1",
-    "jquery/smoothness": "1.14.1",
-    "twbs/bootstrap": "~5.3.0",
-    "studio-42/elfinder": "~2.1.0",
-    "mpdf/mpdf": "^8.0"
-  },
-  "require-dev": {
-    "composer/composer": "^2.0"
-  },
-
-  "config": {
-    "allow-plugins": {
-      "ttek/tk-installers": true
-    },
-    "preferred-install": {
-      "ttek/*": "source"
-    },
-    "component-dir": "vendor/components"
-  }
 }
