@@ -44,7 +44,40 @@
 					"type": "file"
 				}
 			}
-		}
+		},
+    {
+      "type": "package",
+      "package": {
+        "name": "jquery/jquery",
+        "version": "3.7.1",
+        "dist": {
+          "url": "https://code.jquery.com/jquery-3.7.1.min.js",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "jquery/jqueryui",
+        "version": "1.14.1",
+        "dist": {
+          "url": "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js",
+          "type": "file"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "jquery/smoothness",
+        "version": "1.14.1",
+        "dist": {
+          "url": "https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.min.css",
+          "type": "file"
+        }
+      }
+    }
 	],
 
   "require": {
@@ -59,9 +92,9 @@
     "ttek/tk-base": "~8.0.0",
 
 		"htmx/htmx": "2.0.4",
-    "components/jquery": "~3.6.0",
-    "components/jqueryui": "~1.12.0",
-    "components/font-awesome": "~6.2.0",
+    "jquery/jquery": "3.7.1",
+    "jquery/jqueryui": "1.14.1",
+    "jquery/smoothness": "1.14.1",
     "twbs/bootstrap": "~5.3.0",
     "studio-42/elfinder": "~2.1.0",
     "mpdf/mpdf": "^8.0"

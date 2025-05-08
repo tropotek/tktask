@@ -1,79 +1,78 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="author" content="Tropotek" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="author" content="Tropotek"/>
 
-  <title>Bootstrap v5.2 TkLib Template</title>
+    <title>Bootstrap v5.2 TkLib Template</title>
 
-  <!-- App favicon -->
-  <link rel="shortcut icon" href="/html/assets/img/favicon.ico" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/html/assets/img/favicon.ico"/>
 
-  <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css" />
-  <link rel="stylesheet" href="/vendor/components/font-awesome/css/all.min.css" />
-  <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/jquery-ui.min.css" />
-  <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css" />
-  <link rel="stylesheet" href="/html/assets/app.css" />
+    <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/html/assets/fontawesome-free-6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="/vendor/jquery/smoothness/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css"/>
+    <link rel="stylesheet" href="/html/assets/app.css"/>
 
-  <script src="/vendor/components/jquery/jquery.min.js"></script>
-  <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
-  <script src="/vendor/htmx/htmx/htmx.min.js"></script>
-  <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkTabs.js"></script>
+    <script src="/vendor/jquery/jquery/jquery-3.7.1.min.js"></script>
+    <script src="/vendor/jquery/jqueryui/jquery-ui.min.js"></script>
+    <script src="/vendor/htmx/htmx/htmx.min.js"></script>
+    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkTabs.js"></script>
 
-  <script src="/vendor/tinymce/tinymce/tinymce.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/components/jquery.tinymce.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/elfinder/tinymceElfinder.js"></script>
-  <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
+    <script src="/vendor/tinymce/tinymce/tinymce.min.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/components/jquery.tinymce.min.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/elfinder/tinymceElfinder.js"></script>
+    <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
 
-  <script src="/vendor/ttek/tk-table/templates/tkTable.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
-  <script src="/html/assets/app.js"></script>
+    <script src="/vendor/ttek/tk-table/templates/tkTable.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
+    <script src="/html/assets/app.js"></script>
 
-  <style>
-    body {
-      padding-top: 5rem;
-      padding-bottom: 3rem;
-      color: #5a5a5a;
-      background-color: #FFF;
-    }
-  </style>
-
+    <style>
+        body {
+            padding-top: 5rem;
+            padding-bottom: 3rem;
+            color: #5a5a5a;
+            background-color: #FFF;
+        }
+    </style>
 
 </head>
 <body class="bg-white">
 
 <header>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">Tropotek</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-              aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Tropotek</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0" style="--bs-scroll-height: 100px;">
-          <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
-          <li class="nav-item" choice="auth"><a class="nav-link" href="/dashboard">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
-          <li class="nav-item" choice="auth"><a class="nav-link btn-logout" href="/logout">Logout</a></li>
-          <li class="nav-item" choice="no-auth"><a class="nav-link" href="/login">Login</a></li>
-        </ul>
-        <form id="site-search" class="d-flex" role="search" name="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-          <button class="btn btn-primary" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
-  </nav>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0" style="--bs-scroll-height: 100px;">
+                    <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                    <li class="nav-item" choice="auth"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
+                    <li class="nav-item" choice="auth"><a class="nav-link btn-logout" href="/logout">Logout</a></li>
+                    <li class="nav-item" choice="no-auth"><a class="nav-link" href="/login">Login</a></li>
+                </ul>
+                <form id="site-search" class="d-flex" role="search" name="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
 </header>
 
 <main class="container" var="container">
-  <div var="content"></div>
+    <div var="content"></div>
 </main>
 
 </body>

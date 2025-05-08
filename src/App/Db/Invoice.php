@@ -326,8 +326,8 @@ class Invoice extends Model implements StatusInterface
             'invoiceId' => $invoiceId,
             'status' => self::STATUS_UNPAID,
         ]);
-        $filter->appendWhere('i.invoice_id != ex.invoice_id AND ');
-        $filter->appendWhere('i.status = :status AND ');
+        $filter->appendWhere('AND i.invoice_id != ex.invoice_id');
+        $filter->appendWhere('AND i.status = :status');
 
         return Db::query("
             SELECT i.*

@@ -1,267 +1,244 @@
 <!DOCTYPE html>
 <html lang="en" data-layout-mode="horizontal" data-topbar-color="brand">
 <head>
-  <title></title>
+    <title></title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="Tropotek"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/html/assets/img/favicon.ico"/>
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="author" content="Tropotek" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <!-- App favicon -->
-  <link rel="shortcut icon" href="/html/assets/img/favicon.ico" />
+    <!-- Template css -->
+    <link href="/html/minton/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/html/minton/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-stylesheet"/>
+    <link href="/html/minton/assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/vendor/jquery/smoothness/jquery-ui.min.css"/>
+    <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css"/>
+    <!-- App css -->
+    <link href="/html/assets/app.css" rel="stylesheet" type="text/css"/>
 
-  <!-- Template css -->
-  <link href="/html/minton/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <link href="/html/minton/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-stylesheet" />
-  <link href="/html/minton/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="/vendor/components/jqueryui/themes/smoothness/jquery-ui.min.css" />
-  <link rel="stylesheet" href="/vendor/studio-42/elfinder/css/elfinder.full.css" />
-  <!-- App css -->
-  <link href="/html/assets/app.css" rel="stylesheet" type="text/css" />
-
-
-  <!-- Template Js -->
-  <script src="/html/minton/assets/js/config.js"></script>
-  <script src="/vendor/components/jquery/jquery.min.js"></script>
-  <script src="/vendor/components/jqueryui/jquery-ui.min.js"></script>
-  <script src="/vendor/htmx/htmx/htmx.min.js"></script>
-  <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/html/minton/assets/js/libs/simplebar/simplebar.min.js"></script>
-  <script src="/html/minton/assets/js/libs/node-waves/waves.min.js"></script>
-  <script src="/html/minton/assets/js/libs/waypoints/jquery.waypoints.min.js"></script>
-  <script src="/html/minton/assets/js/libs/jquery.counterup/jquery.counterup.min.js"></script>
-  <script src="/html/minton/assets/js/libs/jquery-sparkline/jquery.sparkline.min.js"></script>
-  <script src="/html/minton/assets/js/layout.js" defer></script>
-  <script src="/html/minton/assets/js/app.js" defer></script>
-  <!-- Lib js -->
-  <script src="/vendor/tinymce/tinymce/tinymce.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/components/jquery.tinymce.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/elfinder/tinymceElfinder.js"></script>
-  <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkTabs.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkCheckSelect.js"></script>
-  <!-- App js -->
-  <script src="/vendor/ttek/tk-table/templates/tkTable.js"></script>
-  <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
-  <script src="/html/assets/app.js"></script>
+    <!-- Template Js -->
+    <script src="/html/minton/assets/js/config.js"></script>
+    <script src="/vendor/jquery/jquery/jquery-3.7.1.min.js"></script>
+    <script src="/vendor/jquery/jqueryui/jquery-ui.min.js"></script>
+    <script src="/vendor/htmx/htmx/htmx.min.js"></script>
+    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/html/minton/assets/js/libs/simplebar/simplebar.min.js"></script>
+    <script src="/html/minton/assets/js/libs/node-waves/waves.min.js"></script>
+    <script src="/html/minton/assets/js/libs/waypoints/jquery.waypoints.min.js"></script>
+    <script src="/html/minton/assets/js/libs/jquery.counterup/jquery.counterup.min.js"></script>
+    <script src="/html/minton/assets/js/libs/jquery-sparkline/jquery.sparkline.min.js"></script>
+    <script src="/html/minton/assets/js/layout.js" defer></script>
+    <script src="/html/minton/assets/js/app.js" defer></script>
+    <!-- Lib js -->
+    <script src="/vendor/tinymce/tinymce/tinymce.min.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/components/jquery.tinymce.min.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkInputLock.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/elfinder/tinymceElfinder.js"></script>
+    <script src="/vendor/studio-42/elfinder/js/elfinder.min.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/include/jquery.bsConfirm.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkTabs.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/include/jquery.tkCheckSelect.js"></script>
+    <!-- App js -->
+    <script src="/vendor/ttek/tk-table/templates/tkTable.js"></script>
+    <script src="/vendor/ttek/tk-base/assets/js/tkbase.js"></script>
+    <script src="/html/assets/app.js"></script>
 
 </head>
 <body>
-
-<!-- Begin page -->
 <div id="wrapper">
+    <!-- Topbar Start -->
+    <div class="navbar-custom">
+        <div class="container-fluid">
 
+            <ul class="list-unstyled topnav-menu float-end mb-0">
 
-  <!-- Topbar Start -->
-  <div class="navbar-custom">
-    <div class="container-fluid">
+                <li class="dropdown d-inline-block d-lg-none">
+                    <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <i class="fe-search noti-icon"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-lg dropdown-menu-end p-0">
+                        <form class="p-3">
+                            <input type="text" class="form-control" placeholder="Search ..." aria-label="Search">
+                        </form>
+                    </div>
+                </li>
+                <li class="d-none d-md-inline-block">
+                    <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" id="light-dark-mode" href="#">
+                        <i class="fe-moon noti-icon"></i>
+                    </a>
+                </li>
+                <li class="dropdown d-none d-lg-inline-block">
+                    <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen" href="#">
+                        <i class="fe-maximize noti-icon"></i>
+                    </a>
+                </li>
 
-      <ul class="list-unstyled topnav-menu float-end mb-0">
+                <li hx-get="/component/notify" hx-swap="outerHTML" hx-trigger="load"></li>
 
-        <li class="dropdown d-inline-block d-lg-none">
-          <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-            <i class="fe-search noti-icon"></i>
-          </a>
-          <div class="dropdown-menu dropdown-lg dropdown-menu-end p-0">
-            <form class="p-3">
-              <input type="text" class="form-control" placeholder="Search ..." aria-label="Search">
-            </form>
-          </div>
-        </li>
+                <!--   USER Menu     -->
+                <li class="dropdown notification-list topbar-dropdown">
+                    <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown"
+                       href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <img src="/html/minton/assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle" var="user-image"/>
+                        <span class="pro-user-name ms-1">
+                            <span var="user-name">Nik Patel</span> <i class="mdi mdi-chevron-down"></i>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end profile-dropdown" var="profile-nav"></div>
+                </li>
+            </ul>
 
-        <li class="d-none d-md-inline-block">
-          <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" id="light-dark-mode" href="#">
-            <i class="fe-moon noti-icon"></i>
-          </a>
-        </li>
-        <li class="dropdown d-none d-lg-inline-block">
-          <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen" href="#">
-            <i class="fe-maximize noti-icon"></i>
-          </a>
-        </li>
-
-        <li hx-get="/component/notify" hx-swap="outerHTML" hx-trigger="load"></li>
-
-        <!--   USER Menu     -->
-        <li class="dropdown notification-list topbar-dropdown">
-          <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-            <img src="/html/minton/assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle" var="user-image" />
-            <span class="pro-user-name ms-1">
-              <span var="user-name">Nik Patel</span> <i class="mdi mdi-chevron-down"></i>
-            </span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-end profile-dropdown" var="profile-nav"></div>
-        </li>
-
-      </ul>
-
-      <!-- LOGO -->
-      <div class="logo-box">
-        <a href="/" class="logo logo-dark text-center" var="user-home-url">
-        <span class="logo-sm">
-          <span class="logo-lg-text-dark" var="site-name-letter">T</span>
-        </span>
-          <span class="logo-lg">
-          <span class="logo-lg-text-dark" var="site-short-name">Tropotek</span>
-        </span>
-        </a>
-
-        <a href="/" class="logo logo-light text-center" var="user-home-url">
-        <span class="logo-sm">
-           <span class="logo-lg-text-light" var="site-name-letter">T</span>
-        </span>
-          <span class="logo-lg">
-          <span class="logo-lg-text-light" var="site-short-name">Tropotek</span>
-        </span>
-        </a>
-      </div>
-
-      <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
-        <li>
-          <button class="button-menu-mobile waves-effect waves-light">
-            <i class="fe-menu"></i>
-          </button>
-        </li>
-
-        <li>
-          <!-- Mobile menu toggle (Horizontal Layout)-->
-          <a class="navbar-toggle nav-link" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
-            <div class="lines">
-              <span></span>
-              <span></span>
-              <span></span>
+            <!-- LOGO -->
+            <div class="logo-box">
+                <a href="/" class="logo logo-dark text-center" var="user-home-url">
+                    <span class="logo-sm">
+                        <span class="logo-lg-text-dark" var="site-name-letter">T</span>
+                    </span>
+                    <span class="logo-lg">
+                        <span class="logo-lg-text-dark" var="site-short-name">Tropotek</span>
+                    </span>
+                </a>
+                <a href="/" class="logo logo-light text-center" var="user-home-url">
+                    <span class="logo-sm">
+                        <span class="logo-lg-text-light" var="site-name-letter">T</span>
+                    </span>
+                    <span class="logo-lg">
+                        <span class="logo-lg-text-light" var="site-short-name">Tropotek</span>
+                    </span>
+                </a>
             </div>
-          </a>
-          <!-- End mobile menu toggle-->
-        </li>
 
-        <li class="dropdown d-none d-md-block d-xl-block">
-          <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-            Create New
-            <i class="mdi mdi-chevron-down"></i>
-          </a>
-          <div class="dropdown-menu">
-            <!-- item-->
-            <a href="/taskEdit" class="dropdown-item">
-              <i class="fas fa-tasks me-1"></i>
-              <span>New Task</span>
-            </a>
+            <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
+                <li>
+                    <button class="button-menu-mobile waves-effect waves-light">
+                        <i class="fe-menu"></i>
+                    </button>
+                </li>
 
-            <!-- item-->
-            <a href="/projectEdit" class="dropdown-item">
-              <i class="fas fa-project-diagram me-1"></i>
-              <span>New Project</span>
-            </a>
+                <li>
+                    <!-- Mobile menu toggle (Horizontal Layout)-->
+                    <a class="navbar-toggle nav-link" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                        <div class="lines">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </a>
+                    <!-- End mobile menu toggle-->
+                </li>
 
-            <!-- item-->
-            <a href="/companyEdit" class="dropdown-item">
-              <i class="far fa-building me-1"></i>
-              <span>New Company</span>
-            </a>
+                <li class="dropdown d-none d-md-block d-xl-block">
+                    <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        Create New
+                        <i class="mdi mdi-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <!-- item-->
+                        <a href="/taskEdit" class="dropdown-item">
+                            <i class="fas fa-tasks me-1"></i>
+                            <span>New Task</span>
+                        </a>
 
-            <!-- item-->
-            <a href="/productEdit" class="dropdown-item">
-              <i class="fas fa-box-open me-1"></i>
-              <span>New Product</span>
-            </a>
+                        <!-- item-->
+                        <a href="/projectEdit" class="dropdown-item">
+                            <i class="fas fa-project-diagram me-1"></i>
+                            <span>New Project</span>
+                        </a>
 
-            <!-- item-->
-            <a href="/expenseEdit" class="dropdown-item">
-              <i class="fas fa-money-check-alt me-1"></i>
-              <span>New Expense</span>
-            </a>
+                        <!-- item-->
+                        <a href="/companyEdit" class="dropdown-item">
+                            <i class="far fa-building me-1"></i>
+                            <span>New Company</span>
+                        </a>
 
-            <!-- item-->
-            <a href="/recurringEdit" class="dropdown-item">
-              <i class="fas fa-money-bill-wave me-1"></i>
-              <span>New Recurring</span>
-            </a>
-          </div>
-        </li>
+                        <!-- item-->
+                        <a href="/productEdit" class="dropdown-item">
+                            <i class="fas fa-box-open me-1"></i>
+                            <span>New Product</span>
+                        </a>
 
-      </ul>
-      <div class="clearfix"></div>
+                        <!-- item-->
+                        <a href="/expenseEdit" class="dropdown-item">
+                            <i class="fas fa-money-check-alt me-1"></i>
+                            <span>New Expense</span>
+                        </a>
+
+                        <!-- item-->
+                        <a href="/recurringEdit" class="dropdown-item">
+                            <i class="fas fa-money-bill-wave me-1"></i>
+                            <span>New Recurring</span>
+                        </a>
+                    </div>
+                </li>
+
+            </ul>
+            <div class="clearfix"></div>
+        </div>
     </div>
-  </div>
-  <!-- Topbar End -->
+    <!-- Topbar End -->
 
-
-  <div class="topnav">
-    <div class="container-fluid">
-      <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
-        <div class="collapse navbar-collapse" id="topnav-menu-content">
-          <ul class="navbar-nav" var="top-nav"></ul>
+    <div class="topnav">
+        <div class="container-fluid">
+            <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
+                <div class="collapse navbar-collapse" id="topnav-menu-content">
+                    <ul class="navbar-nav" var="top-nav"></ul>
+                </div>
+            </nav>
         </div>
-      </nav>
     </div>
-  </div>
 
-  <!-- ============================================================== -->
-  <!-- Start Page Content here -->
-  <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
 
-  <div class="content-page">
-    <div class="content">
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box page-title-box-alt">
+                            <!--              <h4 class="page-title"><i var="page-icon"></i> <span var="page-title"></span></h4>-->
+                            <div class="page-title-left" var="crumbs"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div var="content"></div>
+                    </div>
+                </div>
+            </div> <!-- container -->
+        </div> <!-- content -->
 
-      <!-- Start Content-->
-      <div class="container-fluid">
-
-        <!-- start page title -->
-        <div class="row">
-          <div class="col-12">
-            <div class="page-title-box page-title-box-alt">
-<!--              <h4 class="page-title"><i var="page-icon"></i> <span var="page-title"></span></h4>-->
-              <div class="page-title-left" var="crumbs"></div>
+        <!-- Footer Start -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="https://www.tropotek.com/" target="_blank" var="copyright">Tropotek</a>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-md-end footer-links d-none d-sm-block">
+                            <a href="/contact">About Us</a>
+                            <a href="/contact">Help</a>
+                            <a href="/contact">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <!-- end page title -->
-
-        <div class="row">
-          <div class="col-12">
-            <div var="content"></div>
-          </div>
-        </div>
-
-      </div> <!-- container -->
-
-    </div> <!-- content -->
-
-    <!-- Footer Start -->
-    <footer class="footer">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-6">
-            <a href="https://www.tropotek.com/" target="_blank" var="copyright">Tropotek</a>
-          </div>
-          <div class="col-md-6">
-            <div class="text-md-end footer-links d-none d-sm-block">
-              <a href="/contact">About Us</a>
-              <a href="/contact">Help</a>
-              <a href="/contact">Contact Us</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <!-- end Footer -->
-
-  </div>
-
-  <!-- ============================================================== -->
-  <!-- End Page content -->
-  <!-- ============================================================== -->
-
-
+        </footer>
+        <!-- end Footer -->
+    </div>
 </div>
-<!-- END wrapper -->
 
 <!-- Right Sidebar -->
 <div var="right-sidebar"></div>
 <!-- /Right-bar -->
-
 
 </body>
 </html>
