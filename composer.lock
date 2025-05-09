@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e91a6ebe913cd5bb7039d09fd2f82da5",
+    "content-hash": "c60a7ca1beb3b77189dec1198d2f9d03",
     "packages": [
         {
             "name": "htmx/htmx",
@@ -21,24 +21,6 @@
             "dist": {
                 "type": "file",
                 "url": "https://code.jquery.com/jquery-3.7.1.min.js"
-            },
-            "type": "library"
-        },
-        {
-            "name": "jquery/jqueryui",
-            "version": "1.14.1",
-            "dist": {
-                "type": "file",
-                "url": "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"
-            },
-            "type": "library"
-        },
-        {
-            "name": "jquery/smoothness",
-            "version": "1.14.1",
-            "dist": {
-                "type": "file",
-                "url": "https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.min.css"
             },
             "type": "library"
         },
@@ -2308,12 +2290,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "b0b3b928e15ec96a02e9bc4cf480340a641b1413"
+                "reference": "82844fb85b16e89bc8278b5e3358f1ad974df7a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/b0b3b928e15ec96a02e9bc4cf480340a641b1413",
-                "reference": "b0b3b928e15ec96a02e9bc4cf480340a641b1413",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/82844fb85b16e89bc8278b5e3358f1ad974df7a5",
+                "reference": "82844fb85b16e89bc8278b5e3358f1ad974df7a5",
                 "shasum": ""
             },
             "require": {
@@ -2543,12 +2525,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "abad011909e3a16ec92ff5ebd7d93f4299fd13a9"
+                "reference": "38cc55b3e316432bf8d35c69ab2348a2ba843711"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/abad011909e3a16ec92ff5ebd7d93f4299fd13a9",
-                "reference": "abad011909e3a16ec92ff5ebd7d93f4299fd13a9",
+                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/38cc55b3e316432bf8d35c69ab2348a2ba843711",
+                "reference": "38cc55b3e316432bf8d35c69ab2348a2ba843711",
                 "shasum": ""
             },
             "require": {
