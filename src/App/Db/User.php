@@ -111,7 +111,9 @@ class User extends Model implements UserInterface
     public function getImageUrl(): ?Uri
     {
         $color = Color::createRandom($this->userId);
-        $img = Image::createAvatar($this->nameShort ?: $this->username, $color);
+        $initials = strtoupper($this->givenName[0] ?? '').strtolower($this->familyName[0] ?? '');
+        $initials = $initials ?: strtoupper($this->username[0] ?? 'A');
+        $img = Image::createAvatar($initials, $color);
         $b64 = base64_encode($img->getContents());
         return Uri::create('data:image/png;base64,' . $b64);
     }

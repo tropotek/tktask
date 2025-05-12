@@ -1,19 +1,17 @@
 <?php
 /**
- * Set up the dev environment.
- *
- * It will also run after a mirror command is called
- *   and the system is in debug mode.
- *
- * It can be executed from the cli command
- *   `./bin/cmd debug`
+ * Finalise system migration.
+ * Called after the system DB has be migrated or mirrored.
  *
  */
 
-if (!\Tk\Config::isDebug() || \Tk\Config::isProd()) {
-    error_log(__FILE__ . ': Do not execute this file in a production environment!');
-    return;
-}
+// Production code
+
+
+
+
+// dev env code
+if (!\Tk\Config::isDev()) return;
 
 foreach (\Bs\Auth::findAll() as $auth) {
     if (!$auth->active) continue;
