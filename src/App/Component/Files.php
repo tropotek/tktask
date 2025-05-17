@@ -6,9 +6,7 @@ use App\Db\User;
 use Bs\Mvc\Form;
 use Bs\Mvc\Table;
 use Dom\Template;
-use Tk\Config;
 use Tk\Db;
-use Tk\Exception;
 use Tk\FileUtil;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Action\Submit;
@@ -110,7 +108,7 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\File $obj, Cell $cell) {
                 return FileUtil::bytes2String($obj->bytes);
-            });;
+            });
 
         // execute table
         $this->table->execute();

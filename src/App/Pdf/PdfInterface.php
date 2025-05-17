@@ -3,6 +3,7 @@ namespace App\Pdf;
 
 use Bs\Registry;
 use Dom\Template;
+use JetBrains\PhpStorm\NoReturn;
 use Mpdf\Mpdf;
 use Tk\Config;
 use Tk\Path;
@@ -49,7 +50,7 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
     /**
      * Output the pdf to the browser
      */
-    public function getPdf(): string
+    #[NoReturn] public function getPdf(): string
     {
         if (!$this->filename) {
             $this->filename = basename(\Tk\Uri::create()->getPath()) . '.pdf';
