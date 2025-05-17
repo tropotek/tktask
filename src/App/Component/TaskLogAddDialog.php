@@ -53,7 +53,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->form->setAttr('hx-target', "#{$this->form->getId()}");
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
 
-        if (Registry::instance()->get('site.invoice.enable', true)) {
+        if (Registry::getValue('site.invoice.enable', true)) {
             $products = Product::findFiltered(Db\Filter::create(['active' => true, 'productCategoryId' => Product::LABOR_CAT_ID]));
             $list = Collection::toSelectList($products, 'productId');
             $this->form->appendField((new Select('productId', $list))
@@ -104,7 +104,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $values = $form->getFieldValues();
         $this->log->mapForm($values);
 
-        if (!Registry::instance()->get('site.invoice.enable', true)) {
+        if (!Registry::getValue('site.invoice.enable', true)) {
             $this->log->productId = Product::getDefaultLaborProduct()->productId;
         }
 

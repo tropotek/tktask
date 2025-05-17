@@ -129,7 +129,7 @@ class Task extends Table
                 return Tools::mins2Str($obj->minutes);
             });
 
-        if (Registry::instance()->get('site.invoice.enable', false)) {
+        if (Registry::getValue('site.invoice.enable', false)) {
             $this->appendCell('cost')
                 ->setHeader('$ Cur.')
                 ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {

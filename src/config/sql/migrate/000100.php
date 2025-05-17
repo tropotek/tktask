@@ -1,21 +1,20 @@
 <?php
 
-$registry = \App\Factory::instance()->getRegistry();
-$registry->set('site.name', 'Tk Base Site - Tropotek');
-$registry->set('site.name.short', 'TkBase');
-$registry->set('site.email', 'site@email.com');
-$registry->set('site.email.sig', '');
-$registry->set('system.maintenance.enabled', '');
-$registry->set('system.maintenance.message', '');
-$registry->set('system.global.css', '');
-$registry->set('system.global.js', '');
-$registry->set('system.meta.description', 'A base development project site for the TK libs');
-$registry->set('system.meta.keywords', '');
+\Bs\Registry::setValue('site.name', 'Tk Base Site - Tropotek');
+\Bs\Registry::setValue('site.name.short', 'TkBase');
+\Bs\Registry::setValue('site.email', 'site@email.com');
+\Bs\Registry::setValue('site.email.sig', '');
+\Bs\Registry::setValue('system.maintenance.enabled', '');
+\Bs\Registry::setValue('system.maintenance.message', '');
+\Bs\Registry::setValue('system.global.css', '');
+\Bs\Registry::setValue('system.global.js', '');
+\Bs\Registry::setValue('system.meta.description', 'A base development project site for the TK libs');
+\Bs\Registry::setValue('system.meta.keywords', '');
 
 // TODO: Set your projects registry defaults here
 // ...
 
-$registry->save();
+\Bs\Registry::instance()->save();
 
 
 

@@ -13,6 +13,7 @@ use Tk\FileUtil;
 use Tk\Form\Action\ActionInterface;
 use Tk\Form\Action\Submit;
 use Tk\Log;
+use Tk\Path;
 use Tk\Table\Cell;
 use Tk\Uri;
 
@@ -149,9 +150,11 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
             return;
         }
 
-        $dataPath = Config::makePath(Config::getDataPath() . '/' . $this->model->getDataPath());
+        //$dataPath = Config::makePath(Config::getDataPath() . '/' . $this->model->getDataPath());
+        $dataPath = Path::createDataPath('/');
         if ($fileField->move($dataPath)) {
-            $path = $this->model->getDataPath() . '/' . $upload['name'];
+            //$path = $this->model->getDataPath() . '/' . $upload['name'];
+            $path = Path::createDataPath('/' . $upload['name']);
             $file = File::create($path, $this->model, User::getAuthUser()->userId);
             $file->save();
 

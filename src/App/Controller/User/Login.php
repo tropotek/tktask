@@ -10,6 +10,7 @@ use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Auth\Result;
+use Tk\Config;
 use Tk\Date;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Checkbox;
@@ -25,7 +26,7 @@ class Login extends ControllerAdmin
 
     public function __construct()
     {
-        $this->setPageTemplate($this->getConfig()->get('path.template.login'));
+        $this->setPageTemplate(Config::getValue('path.template.login'));
     }
 
     public function doLogin(): void
@@ -54,7 +55,7 @@ class Login extends ControllerAdmin
         $html = <<<HTML
             <a href="/recover">Recover</a>
         HTML;
-        if ($this->getConfig()->get('auth.registration.enable', false)) {
+        if (Config::getValue('auth.registration.enable', false)) {
             $html = <<<HTML
                 <a href="/recover">Recover</a> | <a href="/register">Register</a>
             HTML;
@@ -106,8 +107,8 @@ class Login extends ControllerAdmin
         if (isset($_SESSION['_OAUTH']) && $ssiLogout) {
             $oAuth = trim($_SESSION['_OAUTH']);
             unset($_SESSION['_OAUTH']);
-            if ($this->getConfig()->get('auth.'.$oAuth.'.endpointLogout', '')) {
-                $url = Uri::create($this->getConfig()->get('auth.'.$oAuth.'.endpointLogout'));
+            if (Config::getValue('auth.'.$oAuth.'.endpointLogout', '')) {
+                $url = Uri::create(Config::getValue('auth.'.$oAuth.'.endpointLogout'));
                 if ($oAuth == Auth::EXT_MICROSOFT) {
                     $url->set('post_logout_redirect_uri', Uri::create('/')->toString());
                 }
@@ -130,7 +131,7 @@ class Login extends ControllerAdmin
         $oauthUrl = Uri::create('/_ssi');
 
         $hasExternal = false;
-        if ($this->getConfig()->get('auth.microsoft.enabled', false)) {
+        if (Config::getValue('auth.microsoft.enabled', false)) {
             $hasExternal = true;
             $template->setVisible('microsoft');
             $url = Uri::create('https://login.microsoftonline.com/common/oauth2/v2.0/authorize')
@@ -138,12 +139,12 @@ class Login extends ControllerAdmin
                 ->set('approval_prompt', 'auto')
                 ->set('response_type', 'code')
                 ->set('redirect_uri', $oauthUrl)
-                ->set('client_id', $this->getConfig()->get('auth.microsoft.clientId', ''))
-                ->set('scope', $this->getConfig()->get('auth.microsoft.scope', ''));
+                ->set('client_id', Config::getValue('auth.microsoft.clientId', ''))
+                ->set('scope', Config::getValue('auth.microsoft.scope', ''));
             $template->setAttr('microsoft', 'href', $url);
         }
 
-        if ($this->getConfig()->get('auth.google.enabled', false)) {
+        if (Config::getValue('auth.google.enabled', false)) {
             $hasExternal = true;
             $template->setVisible('google');
             $url = Uri::create('https://accounts.google.com/o/oauth2/auth')
@@ -151,20 +152,20 @@ class Login extends ControllerAdmin
                 ->set('access_type', 'online')
                 ->set('response_type', 'code')
                 ->set('redirect_uri', $oauthUrl)
-                ->set('scope', $this->getConfig()->get('auth.google.scope', ''))
-                ->set('client_id', $this->getConfig()->get('auth.google.clientId', ''));
+                ->set('scope', Config::getValue('auth.google.scope', ''))
+                ->set('client_id', Config::getValue('auth.google.clientId', ''));
             $template->setAttr('google', 'href', $url);
         }
 
-        if ($this->getConfig()->get('auth.facebook.enabled', false)) {
+        if (Config::getValue('auth.facebook.enabled', false)) {
             $hasExternal = true;
             $template->setVisible('facebook');
             $url = Uri::create('https://www.facebook.com/dialog/oauth')
                 ->set('state', 'facebook')
                 ->set('response_type', 'code')
-                ->set('scope', $this->getConfig()->get('auth.facebook.scope', ''))
+                ->set('scope', Config::getValue('auth.facebook.scope', ''))
                 ->set('redirect_uri', $oauthUrl)
-                ->set('client_id', $this->getConfig()->get('auth.facebook.clientId', ''));
+                ->set('client_id', Config::getValue('auth.facebook.clientId', ''));
             $template->setAttr('facebook', 'href', $url);
         }
 

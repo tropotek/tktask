@@ -10,6 +10,7 @@ use Bs\Registry;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Config;
 use Tk\Date;
 use Tk\System;
 use Tk\Uri;
@@ -21,15 +22,15 @@ class Page extends \Bs\Mvc\Page
     {
         $template = parent::show();
 
-        if (Registry::instance()->get('system.meta.keywords')) {
-            $template->appendMetaTag('keywords', Registry::instance()->get('system.meta.keywords', ''));
+        if (Registry::getValue('system.meta.keywords')) {
+            $template->appendMetaTag('keywords', Registry::getValue('system.meta.keywords', ''));
         }
-        if (Registry::instance()->get('system.meta.description')) {
-            $template->appendMetaTag('description', Registry::instance()->get('system.meta.description', ''));
+        if (Registry::getValue('system.meta.description')) {
+            $template->appendMetaTag('description', Registry::getValue('system.meta.description', ''));
         }
 
-        $template->appendJs(Registry::instance()->get('system.global.js', ''));
-        $template->appendCss(Registry::instance()->get('system.global.css', ''));
+        $template->appendJs(Registry::getValue('system.global.js', ''));
+        $template->appendCss(Registry::getValue('system.global.css', ''));
 
         if (str_contains($this->getTemplatePath(), '/minton/')) {
             $this->showMintonParams($template);
@@ -103,7 +104,7 @@ class Page extends \Bs\Mvc\Page
 HTML;
         $template = $this->loadTemplate($html);
 
-        if ($oAuth && $this->getConfig()->get('auth.'.$oAuth.'.endpointLogout', '')) {
+        if ($oAuth && Config::getValue('auth.'.$oAuth.'.endpointLogout', '')) {
             $template->setText('label', 'Logout from ' . ucwords($oAuth));
             $template->setVisible('ssi');
         }
@@ -161,16 +162,16 @@ JS;
 HTML;
         $template = $this->loadTemplate($html);
 
-        $template->setText('site-name', Registry::instance()->getSiteName());
+        $template->setText('site-name', Registry::getSiteName());
         $template->setText('year', date('Y'));
         $template->setText('version', System::getVersion());
         $template->setText('released', System::getReleaseDate()->format(Date::FORMAT_LONG_DATETIME));
 
-        $template->setHtml('copyright', 'Copyright &copy; ' . \date('Y') . ' ' . $this->getConfig()->get('developer.name', 'Undefined'));
-        $template->setAttr('copyright', 'href', Uri::create($this->getConfig()->get('developer.web', 'Undefined')));
+        $template->setHtml('copyright', 'Copyright &copy; ' . \date('Y') . ' ' . Config::getValue('developer.name', 'Undefined'));
+        $template->setAttr('copyright', 'href', Uri::create(Config::getValue('developer.web', 'Undefined')));
 
-        $template->setHtml('author', $this->getConfig()->get('developer.name', 'Undefined'));
-        $template->setAttr('author', 'href', Uri::create($this->getConfig()->get('developer.web', 'Undefined')));
+        $template->setHtml('author', Config::getValue('developer.name', 'Undefined'));
+        $template->setAttr('author', 'href', Uri::create(Config::getValue('developer.web', 'Undefined')));
 
         $this->getTemplate()->appendBodyTemplate($template);
     }
@@ -274,7 +275,7 @@ HTML;
     // TODO: Show a maintenance ribbon on the site???
     protected function showMaintenanceRibbon(): void
     {
-//        if (!$this->getConfig()->get('system.maintenance.enabled')) return;
+//        if (!Config::getValue('system.maintenance.enabled')) return;
 //        $controller = \Tk\Event\Event::findControllerObject($event);
 //        if ($controller instanceof \Bs\Controller\Iface && !$controller instanceof \Bs\Controller\Maintenance) {
 //            $page = $controller->getPage();

@@ -23,7 +23,7 @@ class Invoice
         $siteCompany = Factory::instance()->getOwnerCompany();
 
         // get unpaid email template
-        $content = Registry::instance()->get('site.email.invoice.unpaid');
+        $content = Registry::getValue('site.email.invoice.unpaid');
         if (empty($content)) {
             Log::error("invalid email template for site.email.invoice.unpaid");
             return false;
@@ -39,7 +39,7 @@ class Invoice
         $message->setSubject($siteCompany->name . ' - Invoice ' . $invoice->invoiceId);
         $message->set('company.name', $company->name);
 
-        $paymentText = Registry::instance()->get('site.invoice.payment');
+        $paymentText = Registry::getValue('site.invoice.payment');
         if (empty($paymentText)) {
             Log::warning("empty invoice payment text description: site.invoice.payment");
         }
@@ -108,7 +108,7 @@ class Invoice
         $company = $payment->getInvoice()->getCompany();
         if (!($company instanceof Company)) return false;
 
-        $content = Registry::instance()->get('site.email.payment.cleared', '');
+        $content = Registry::getValue('site.email.payment.cleared', '');
         if (empty($content)) {
             Log::error("invalid email template for site.email.payment.cleared");
             return false;

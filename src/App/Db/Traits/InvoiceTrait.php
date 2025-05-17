@@ -10,7 +10,7 @@ trait InvoiceTrait
     public function getInvoice(): ?Invoice
     {
         if (!$this->_invoice) {
-            $this->_invoice = Invoice::find((int)$this->invoiceId);
+            $this->_invoice = Invoice::find($this->invoiceId);
         }
         return $this->_invoice;
     }

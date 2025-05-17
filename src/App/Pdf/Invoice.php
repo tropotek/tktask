@@ -8,6 +8,7 @@ use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Config;
 use Tk\Log;
+use Tk\Path;
 
 class Invoice extends PdfInterface
 {
@@ -62,9 +63,9 @@ class Invoice extends PdfInterface
 
         // Setup page
         $template->setTitleText('Invoice No: ' . $this->invoice->invoiceId);
-        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', \App\Db\Invoice::DEFAULT_OVERDUE_DAYS)));
+        $template->setText('due-days', strval(Registry::getValue('account.due.days', \App\Db\Invoice::DEFAULT_OVERDUE_DAYS)));
 
-        $paymentText = Registry::instance()->get('site.invoice.payment', '');
+        $paymentText = Registry::getValue('site.invoice.payment', '');
         if ($paymentText) {
             $template->setHtml('invoice-payment', $paymentText);
             $template->setVisible('invoice-payment');
@@ -164,8 +165,9 @@ class Invoice extends PdfInterface
             $row->appendRepeat();
         }
 
-        if (is_file(Config::makePath('/src/App/Pdf/pdfStyles.css'))) {
-            $pdfStyles = (string)file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
+        $cssFile = Path::create('/src/App/Pdf/pdfStyles.css');
+        if (is_file($cssFile)) {
+            $pdfStyles = (string)file_get_contents($cssFile);
             $template->appendCss($pdfStyles);
         }
 

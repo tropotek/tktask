@@ -11,6 +11,7 @@ use App\Form\Field\SelectBtn;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
@@ -115,7 +116,7 @@ class Edit extends ControllerAdmin
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('expenseId', $this->expense->expenseId));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Factory::instance()->getBackUrl());
+            $action->setRedirect(Breadcrumbs::getBackUrl());
         }
     }
 

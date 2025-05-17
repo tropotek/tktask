@@ -8,6 +8,7 @@ use Bs\Db\GuestToken;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Config;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Html;
 use Tk\Form\Field\Input;
@@ -25,14 +26,14 @@ class Register extends ControllerDomInterface
 
     public function __construct()
     {
-        $this->setPageTemplate($this->getConfig()->get('path.template.login'));
+        $this->setPageTemplate(Config::getValue('path.template.login'));
     }
 
     public function doDefault(): void
     {
         $this->getPage()->setTitle('Register');
 
-        if (!$this->getConfig()->get('auth.registration.enable', false)) {
+        if (!Config::getValue('auth.registration.enable', false)) {
             Alert::addError('User registrations are closed for this account');
             Uri::create('/')->redirect();
         }
@@ -67,7 +68,7 @@ class Register extends ControllerDomInterface
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        if (!$this->getConfig()->get('auth.registration.enable', false)) {
+        if (!Config::getValue('auth.registration.enable', false)) {
             Alert::addError('New user registrations are closed for this account');
             Uri::create('/')->redirect();
         }
@@ -133,7 +134,7 @@ class Register extends ControllerDomInterface
         $this->getPage()->setTitle('Activate Account');
         $this->isReg = false;
 
-        if (!$this->getConfig()->get('auth.registration.enable', false)) {
+        if (!Config::getValue('auth.registration.enable', false)) {
             Alert::addError('New user registrations are closed for this account');
             Uri::create('/')->redirect();
         }
@@ -181,7 +182,7 @@ class Register extends ControllerDomInterface
 
     public function onActivate(Form $form, Submit $action): void
     {
-        if (!$this->getConfig()->get('auth.registration.enable', false)) {
+        if (!Config::getValue('auth.registration.enable', false)) {
             Alert::addError('New user registrations are closed for this account');
             Uri::create('/')->redirect();
         }

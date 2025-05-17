@@ -5,6 +5,7 @@ use App\Form\Field\Minutes;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Exception;
@@ -60,7 +61,7 @@ class TaskLog extends Form
             ->addCss('mce-min');
 
         $this->appendField(new SubmitExit('save', [$this, 'onSubmit']));
-        $this->appendField(new Link('cancel', $this->getBackUrl()->set('taskId', $this->getTaskLog()->taskId)));
+        $this->appendField(new Link('cancel', Breadcrumbs::getBackUrl()->set('taskId', $this->getTaskLog()->taskId)));
 
         return $this;
     }
@@ -94,7 +95,7 @@ class TaskLog extends Form
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('taskLogId', $this->getTaskLog()->taskLogId));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Factory::instance()->getBackUrl()->set('taskId', $this->getTaskLog()->taskId));
+            $action->setRedirect(Breadcrumbs::getBackUrl()->set('taskId', $this->getTaskLog()->taskId));
         }
     }
 

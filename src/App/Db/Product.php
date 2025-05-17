@@ -80,7 +80,7 @@ class Product extends Model
 
     public static function getDefaultLaborProduct(): self
     {
-        $id = (int)Registry::instance()->get('site.product.labor.default', self::DEFAULT_LABOUR_PRODUCT);
+        $id = (int)Registry::getValue('site.product.labor.default', self::DEFAULT_LABOUR_PRODUCT);
         $obj = self::find($id);
         if (!($obj instanceof Product)) throw new Exception("Failed to find product id {$id}");
         return $obj;

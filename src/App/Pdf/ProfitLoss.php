@@ -13,6 +13,7 @@ use Tk\Config;
 use Tk\Date;
 use Tk\Db\Filter;
 use Tk\Log;
+use Tk\Path;
 use Tk\Str;
 
 class ProfitLoss extends PdfInterface
@@ -66,8 +67,9 @@ class ProfitLoss extends PdfInterface
             $template->appendTemplate('table', $this->report->show());
         }
 
-        if (is_file(Config::makePath('/src/App/Pdf/pdfStyles.css'))) {
-            $pdfStyles = (string)file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
+        $cssFile = Path::create('/src/App/Pdf/pdfStyles.css');
+        if (is_file($cssFile)) {
+            $pdfStyles = (string)file_get_contents($cssFile);
             $template->appendCss($pdfStyles);
         }
 

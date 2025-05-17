@@ -35,7 +35,7 @@ class Settings extends ControllerAdmin
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
-        Factory::instance()->getRegistry()->save();
+        Registry::instance()->save();
 
         $this->templateSelectEnabled = str_contains($this->getPage()->getTemplatePath(), '/minton/');
 
@@ -172,7 +172,7 @@ class Settings extends ControllerAdmin
 
         // Form Actions
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
-        $this->form->appendField(new Link('back', \Bs\Factory::instance()->getBackUrl()));
+        $this->form->appendField(new Link('back', Breadcrumbs::getBackUrl()));
 
         // Load form with object values
         $this->form->setFieldValues(Registry::instance()->all());
@@ -210,7 +210,7 @@ class Settings extends ControllerAdmin
         Alert::addSuccess('Site settings saved successfully.');
         $action->setRedirect(Uri::create());
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect($this->getBackUrl());
+            $action->setRedirect(Breadcrumbs::getBackUrl());
         }
     }
 

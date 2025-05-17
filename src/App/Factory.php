@@ -10,6 +10,7 @@ use Bs\Ui\Breadcrumbs;
 use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Config;
+use Tk\Path;
 use Tk\Uri;
 
 class Factory extends \Bs\Factory
@@ -27,7 +28,7 @@ class Factory extends \Bs\Factory
 //    {
 //        // So we can change the mintion template from the settings page
 //        if (str_contains($templatePath, '/minton/')) {
-//            $templatePath = Config::makePath($this->getRegistry()->get('minton.template', '/html/minton/sn-admin.html'));
+//            $templatePath = Path::create(Registry::getValue('minton.template', '/html/minton/sn-admin.html'));
 //        }
 //        return new Page($templatePath);
 //    }
@@ -36,14 +37,13 @@ class Factory extends \Bs\Factory
     {
         // So we can change the mintion template from the settings page
         if (str_contains($templatePath, '/minton/')) {
-            $selected = $this->getRegistry()->get('minton.template', 'sn-admin');
+            $selected = Registry::getValue('minton.template', 'sn-admin');
             if (User::getAuthUser()?->template) {
                 $selected = User::getAuthUser()->template;
             }
-            $templatePath = sprintf('/html/minton/%s.html', preg_replace('|[^0-9a-z_-]|i', '', $selected));
-            $templatePath = Config::makePath($templatePath);
+            $templatePath = Path::create(sprintf('/html/minton/%s.html', preg_replace('|[^0-9a-z_-]|i', '', $selected)));
             if (!is_file($templatePath)) {
-                $templatePath = Config::makePath('/html/minton/sn-admin.html');
+                $templatePath = Path::create('/html/minton/sn-admin.html');
             }
         }
         return new Page($templatePath);
@@ -58,7 +58,7 @@ class Factory extends \Bs\Factory
         if (!$this->get('site.owner.company')) {
             $cid = 1;
             if (Registry::instance()->has('site.company.id')) {
-                $cid = (int)Registry::instance()->get('site.company.id');
+                $cid = (int)Registry::getValue('site.company.id');
             }
             $company = Company::find($cid);
             if ($company instanceof Company) {
@@ -75,7 +75,7 @@ class Factory extends \Bs\Factory
     {
         if (
             Registry::instance()->has('site.company.id') &&
-            Registry::instance()->get('site.company.id') == $company->companyId
+            Registry::getValue('site.company.id') == $company->companyId
         ) {
             return true;
         }

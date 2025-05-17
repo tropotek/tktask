@@ -5,6 +5,7 @@ use Bs\Registry;
 use Dom\Template;
 use Mpdf\Mpdf;
 use Tk\Config;
+use Tk\Path;
 
 abstract class PdfInterface extends \Dom\Renderer\Renderer
 {
@@ -19,7 +20,7 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
 
     public function __construct()
     {
-        $tempDir = Config::makePath(Config::getTempPath());
+        $tempDir = Path::create(Config::getTempPath());
         $this->mpdf = new \Mpdf\Mpdf(array(
 			'format' => 'A4-P',
             'orientation' => 'P',
@@ -33,7 +34,7 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
         ));
 
         $this->mpdf->SetTitle($this->title);
-        $this->mpdf->SetAuthor(Registry::instance()->get('site.name', 'Unknown'));
+        $this->mpdf->SetAuthor(Registry::getValue('site.name', 'Unknown'));
         $this->mpdf->curlAllowUnsafeSslRequests = true;
         //$this->mpdf->showImageErrors = true;
 

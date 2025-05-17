@@ -1,18 +1,16 @@
 <?php
 namespace App\Form\Field;
 
-use Bs\Traits\SystemTrait;
 use Tk\Config;
 use Tk\Db\Model;
 use Tk\FileUtil;
+use Tk\Path;
 
 /**
  * Use this field in conjunction with the \App\Db\File object
  */
 class File extends \Tk\Form\Field\File
 {
-    use SystemTrait;
-
     /**
      * The file owner object that will be used as the fkey and fid for the file records
      */
@@ -44,9 +42,11 @@ class File extends \Tk\Form\Field\File
     {
         if ($this->hasFile()) {
             foreach ($this->getUploads() as $file) {
-                $dest = Config::makePath(Config::getDataPath() . $this->getModelDataPath() . '/' . $file['name']);
+                $dest = Path::create($this->getModelDataPath() . '/' . $file['name']);
+                //$dest = Config::makePath(Config::getDataPath() . $this->getModelDataPath() . '/' . $file['name']);
                 FileUtil::mkdir(dirname($dest));
-                move_uploaded_file($file['tmp_name'], dirname($dest)."/".basename($dest));
+                //move_uploaded_file($file['tmp_name'], dirname($dest)."/".basename($dest));
+                move_uploaded_file($file['tmp_name'], $dest);
 
                 $file = \App\Db\File::create($dest, $this->getModel());
                 // Remove any existing File if path matches

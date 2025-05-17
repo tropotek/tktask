@@ -26,7 +26,7 @@ class User
         HTML;
 
         $message = Factory::instance()->createMailMessage($content);
-        $message->setSubject(Registry::instance()->getSiteName() . ' Account Registration');
+        $message->setSubject(Registry::getSiteName() . ' Account Registration');
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
 

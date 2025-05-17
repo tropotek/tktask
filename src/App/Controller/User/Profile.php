@@ -6,6 +6,7 @@ use Bs\Auth;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
@@ -104,7 +105,7 @@ class Profile extends ControllerAdmin
         }
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
-        $this->form->appendField(new Link('cancel', Factory::instance()->getBackUrl()));
+        $this->form->appendField(new Link('cancel', Breadcrumbs::getBackUrl()));
 
         // Load form with object values
         $load = $this->user->unmapForm();
@@ -162,7 +163,7 @@ class Profile extends ControllerAdmin
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create('/profile'));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect($this->getBackUrl());
+            $action->setRedirect(Breadcrumbs::getBackUrl());
         }
     }
 

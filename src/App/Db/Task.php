@@ -418,7 +418,7 @@ class Task extends Model implements StatusInterface
                 if ($prevStatusName != self::STATUS_CANCELLED) {
                     // Add task to open invoice
                     if ($this->getTotalBillableTime() <= 0) break;
-                    if (is_null($this->getCompany()) || !Registry::instance()->get('site.invoice.enable', false)) break;
+                    if (is_null($this->getCompany()) || !Registry::getValue('site.invoice.enable', false)) break;
                     $invoice = \App\Db\Invoice::getOpenInvoice($this->getCompany());
                     if ($invoice && $invoice->getStatus() == \App\Db\Invoice::STATUS_OPEN) {
                         $item = $this->createInvoiceItem();

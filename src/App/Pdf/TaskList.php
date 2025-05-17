@@ -14,6 +14,7 @@ use Tk\Date;
 use Tk\Db\Filter;
 use Tk\Db\Session;
 use Tk\Log;
+use Tk\Path;
 use Tk\Str;
 
 class TaskList extends PdfInterface
@@ -146,7 +147,7 @@ class TaskList extends PdfInterface
             $desc->appendRepeat('hook');
         }
 
-        if (count($this->taskList) && truefalse(Registry::instance()->get('site.invoice.enable', false))) {
+        if (count($this->taskList) && truefalse(Registry::getValue('site.invoice.enable', false))) {
             $template->setVisible('is-billable');
         }
         $template->setText('task-count', count($this->taskList));
@@ -185,8 +186,9 @@ class TaskList extends PdfInterface
             $template->setVisible('not-project');
         }
 
-        if (is_file(Config::makePath('/src/App/Pdf/pdfStyles.css'))) {
-            $pdfStyles = (string)file_get_contents(Config::makePath('/src/App/Pdf/pdfStyles.css'));
+        $cssFile = Path::create('/src/App/Pdf/pdfStyles.css');
+        if (is_file($cssFile)) {
+            $pdfStyles = (string)file_get_contents($cssFile);
             $template->appendCss($pdfStyles);
         }
 
@@ -312,7 +314,7 @@ HTML;
 
     protected function secondsToDHM(int $minutes): string
     {
-        $s = (int)$minutes*60;
+        $s = $minutes*60;
         $str = '';
         if ((int)round($s/86400) > 0)
             $str .= sprintf('%d days ', round($s/86400));

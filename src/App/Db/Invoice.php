@@ -261,7 +261,7 @@ class Invoice extends Model implements StatusInterface
     {
         $due = null;
         if ($this->issuedOn) {
-            $days = (int)Registry::instance()->get('site.account.overdue.days', self::DEFAULT_OVERDUE_DAYS);
+            $days = (int)Registry::getValue('site.account.overdue.days', self::DEFAULT_OVERDUE_DAYS);
             $interval = new \DateInterval('P' . $days . 'D');
             $due = $this->issuedOn->add($interval);
         }

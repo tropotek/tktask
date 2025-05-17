@@ -21,7 +21,7 @@ class Ssi extends ControllerAdmin
 
     public function __construct()
     {
-        $this->setPageTemplate($this->getConfig()->get('path.template.login'));
+        $this->setPageTemplate(Config::getValue('path.template.login'));
     }
 
     public function doDefault(): void

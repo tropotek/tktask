@@ -23,7 +23,7 @@ class Minutes extends DataTypeInterface
         $value = parent::getColumnValue($object);
         if ($value !== null) {
             $hours = intval($value / 60);
-            $minutes = intval($value % 60);
+            $minutes = $value % 60;
             return compact('hours', 'minutes');
         }
         return ['hours' => '0', 'minutes' => '0'];

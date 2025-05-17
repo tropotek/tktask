@@ -6,6 +6,7 @@ use App\Db\Domain;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
@@ -88,7 +89,7 @@ class Edit extends ControllerAdmin
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('domainId', $this->domain->domainId));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect($this->getBackUrl());
+            $action->setRedirect(Breadcrumbs::getBackUrl());
         }
     }
 

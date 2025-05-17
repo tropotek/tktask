@@ -8,6 +8,7 @@ use App\Form\Field\StatusSelect;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
@@ -80,7 +81,7 @@ class Project extends Form
         //$this->appendField(new Textarea('notes'));
 
         $this->appendField(new SubmitExit('save', [$this, 'onSubmit']));
-        $this->appendField(new Link('cancel', Factory::instance()->getBackUrl()));
+        $this->appendField(new Link('cancel', Breadcrumbs::getBackUrl()));
 
         return $this;
     }
@@ -116,7 +117,7 @@ class Project extends Form
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('projectId', $this->getProject()->projectId));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Factory::instance()->getBackUrl());
+            $action->setRedirect(Breadcrumbs::getBackUrl());
         }
     }
 

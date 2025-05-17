@@ -7,6 +7,7 @@ use Tk\Config;
 use Tk\Exception;
 use Tk\FileUtil;
 use Tk\Log;
+use Tk\Path;
 use Tk\Uri;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -98,7 +99,7 @@ class File extends Model
 
     public function getFullPath(): string
     {
-        return Config::makePath(Config::getDataPath() . $this->filename);
+        return Path::createDataPath($this->filename)->toString();
     }
 
     public function getExtension(): string
@@ -108,7 +109,7 @@ class File extends Model
 
     public function getUrl(): Uri
     {
-        return Uri::create(Config::makeUrl(Config::getDataPath() . $this->filename));
+        return Uri::createDataUri($this->filename);
     }
 
     public function isImage(): bool
@@ -273,7 +274,7 @@ class File extends Model
         $srcBytes  = (int)filesize($path);
         $destBytes = (int)filesize($temp);
 
-        if (Config::isDebug()) {
+        if (Config::isDev()) {
             $fs = FileUtil::bytes2String($srcBytes);
             $fd = FileUtil::bytes2String($destBytes);
             Log::debug("- compressing: {$path} [$fs => $fd]");

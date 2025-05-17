@@ -8,6 +8,7 @@ use Bs\Db\GuestToken;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;
+use Tk\Config;
 use Tk\Exception;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Html;
@@ -23,7 +24,7 @@ class Recover extends ControllerDomInterface
 
     public function __construct()
     {
-        $this->setPageTemplate($this->getConfig()->get('path.template.login'));
+        $this->setPageTemplate(Config::getValue('path.template.login'));
     }
 
     public function doDefault(): void
@@ -44,7 +45,7 @@ class Recover extends ControllerDomInterface
         $html = <<<HTML
             <a href="/login">Login</a>
         HTML;
-        if ($this->getConfig()->get('auth.registration.enable', false)) {
+        if (Config::getValue('auth.registration.enable', false)) {
             $html = <<<HTML
                 <a href="/register">Register</a> | <a href="/login">Login</a>
             HTML;

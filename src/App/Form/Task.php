@@ -7,6 +7,7 @@ use App\Db\User;
 use App\Form\Field\Minutes;
 use Bs\Factory;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
@@ -116,7 +117,7 @@ class Task extends Form
             ->addCss('mce-min');
 
         $this->appendField(new SubmitExit('save', [$this, 'onSubmit']));
-        $this->appendField(new Link('cancel', Factory::instance()->getBackUrl()));
+        $this->appendField(new Link('cancel', Breadcrumbs::getBackUrl()));
 
         return $this;
     }
@@ -149,7 +150,7 @@ class Task extends Form
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('taskId', $this->getTask()->taskId));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Factory::instance()->getBackUrl());
+            $action->setRedirect(Breadcrumbs::getBackUrl());
         }
     }
 

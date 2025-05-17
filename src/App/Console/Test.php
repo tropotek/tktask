@@ -21,7 +21,7 @@ class Test extends Console
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!Config::isDebug()) {
+        if (!Config::isDev()) {
             $this->writeError('Error: Only run this command in a debug environment.');
             return self::FAILURE;
         }

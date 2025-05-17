@@ -46,7 +46,7 @@ class Edit extends ControllerAdmin
 
         if (!$this->invoice) {
             Alert::addError('No invoice found');
-            $this->getBackUrl()->redirect();
+            Breadcrumbs::getBackUrl()->redirect();
         }
 
         if ($_GET['act'] ?? false) {
@@ -113,9 +113,9 @@ class Edit extends ControllerAdmin
         //$template->setVisible('btn-edit', in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID, Invoice::STATUS_CANCELLED]));
         $template->setVisible('btn-edit', true);
         $template->setVisible('btn-cancel', in_array($this->invoice->status, [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID]));
-        $template->setVisible('btn-pay', in_array($this->invoice->status, [Invoice::STATUS_UNPAID]));
-        $template->setVisible('btn-issue', in_array($this->invoice->status, [Invoice::STATUS_OPEN]));
-        $template->setVisible('btn-add-item', in_array($this->invoice->status, [Invoice::STATUS_OPEN]));
+        $template->setVisible('btn-pay', $this->invoice->status == Invoice::STATUS_UNPAID);
+        $template->setVisible('btn-issue', $this->invoice->status == Invoice::STATUS_OPEN);
+        $template->setVisible('btn-add-item', $this->invoice->status == Invoice::STATUS_OPEN);
 
         $cancel = Uri::create()->set('act', 'cancel');
         $template->setAttr('btn-cancel', 'href', $cancel);
@@ -191,7 +191,7 @@ JS;
         $this->invoice->reload();
 
         $template->setText('invoiceId', $this->invoice->getId());
-        $template->setText('due-days', strval(Registry::instance()->get('account.due.days', Invoice::DEFAULT_OVERDUE_DAYS)));
+        $template->setText('due-days', strval(Registry::getValue('account.due.days', Invoice::DEFAULT_OVERDUE_DAYS)));
         $template->setText('clientName', $company->name);
         $template->setAttr('clientName', 'href', Uri::create('/companyEdit', ['companyId' => $company->companyId]));
 

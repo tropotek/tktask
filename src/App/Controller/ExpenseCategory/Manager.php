@@ -5,6 +5,7 @@ use App\Db\ExpenseCategory;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Form\Field\Input;
 use Tk\Table\Cell;
@@ -106,8 +107,8 @@ class Manager extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->setText('title', $this->getPage()->getTitle());
-        $template->setAttr('back', 'href', $this->getBackUrl());
+        $template->appendText('title', $this->getPage()->getTitle());
+        $template->addCss('icon', $this->getPage()->getIcon());
 
         $template->appendTemplate('content', $this->table->show());
 

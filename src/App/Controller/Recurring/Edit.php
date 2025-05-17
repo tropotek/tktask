@@ -8,6 +8,7 @@ use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
 use Bs\Mvc\Form;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
@@ -140,7 +141,7 @@ class Edit extends ControllerAdmin
         Alert::addSuccess('Form save successfully.');
         $action->setRedirect(Uri::create()->set('recurringId', $this->recurring->recurringId));
         if ($form->getTriggeredAction()->isExit()) {
-            $action->setRedirect(Factory::instance()->getBackUrl());
+            $action->setRedirect(Breadcrumbs::getBackUrl());
         }
     }
 

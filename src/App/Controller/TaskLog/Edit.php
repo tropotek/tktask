@@ -5,6 +5,7 @@ use App\Db\Task;
 use App\Db\TaskLog;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
+use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Date;
@@ -38,7 +39,7 @@ class Edit extends ControllerAdmin
         $this->task = Task::find($this->taskLog->taskId);
         if (!$this->task) {
             Alert::addError("Task not found.");
-            $this->getBackUrl()->redirect();
+            Breadcrumbs::getBackUrl()->redirect();
         }
 
         $this->form = new \App\Form\TaskLog($this->taskLog);
