@@ -3,6 +3,7 @@ namespace App\Component;
 
 use App\Db\User;
 use Dom\Template;
+use Tk\Date;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Uri;
@@ -11,8 +12,9 @@ class Notify extends \Dom\Renderer\Renderer
 {
     const string CONTAINER_ID = 'notify-nav';
 
-    protected ?User $user = null;
+    protected ?User $user      = null;
     protected array $hxHeaders = [];
+    protected array $notices   = [];
 
     public function doDefault(): ?Template
     {
@@ -22,18 +24,32 @@ class Notify extends \Dom\Renderer\Renderer
         $action = trim($_POST['action'] ?? $_GET['action'] ?? '');
         $notifyId = intval($_POST['notifyId'] ?? $_GET['notifyId'] ?? 0);
 
-        if ($action === 'clear') {
+        if ($action == 'clear') {
             \App\Db\Notify::markAllRead($this->user->userId);
         }
 
-        $notify = \App\Db\Notify::find($notifyId);
-        if ($notifyId && $notify instanceof \App\Db\Notify) {
-            $notify->readAt = new \DateTime();
-            $notify->save();
-            if ($notify->url) {
-                $this->hxHeaders['HX-Redirect'] = $notify->url;
+        if ($action == 'mark-read') {
+            $notify = \App\Db\Notify::find($notifyId);
+            if ($notify instanceof \App\Db\Notify && $notify->userId == User::getAuthUser()->userId) {
+                $notify->readAt = Date::create();
+                $notify->save();
+            }
+
+            $url = trim($_POST['url'] ?? $_GET['url'] ?? '');
+            if ($url) {
+                $this->hxHeaders['HX-Redirect'] = $url;
             }
         }
+
+        // Get a list of new browser notification notices
+        $this->notices = \App\Db\Notify::findFiltered(Filter::create([
+            'userId' => $this->user->userId,
+            'isRead' => false,
+            'isNotified' => false
+        ], '-created'));
+        \App\Db\Notify::setNotified(array_map(fn($n) => $n->notifyId, $this->notices));
+        // limit notices to a maximum
+        $this->notices = array_splice($this->notices, 0, 3);
 
         // Send HX event headers
         foreach ($this->hxHeaders as $name => $header) {
@@ -57,11 +73,6 @@ class Notify extends \Dom\Renderer\Renderer
                 'isRead' => false,
             ], '-created', 10));
             $unread = Db::getLastStatement()->getTotalRows();
-
-            if (isset($_GET['clear-all'])) {
-                \App\Db\Notify::markAllRead($this->user->userId);
-                Uri::create()->remove('clear-all')->redirect();
-            }
         }
 
         $clearUrl = Uri::create()->set('action', 'clear');
@@ -80,8 +91,8 @@ class Notify extends \Dom\Renderer\Renderer
             $item->setText('title', $note->title);
             $item->setHtml('message', $note->message);
             if ($note->url) {
-                $url = Uri::create()->set('notifyId', $note->notifyId);
-                $item->setAttr('notice', 'hx-get', $url);
+                $url = Uri::create(null, ['notifyId' => $note->notifyId, 'action' => 'mark-read']);
+                $item->setAttr('notice', 'hx-get', $url)->setAttr('notice', 'hx-target', '#'.self::CONTAINER_ID);
             }
             if ($note->icon) {
                 $item->setVisible('icon');
@@ -90,7 +101,6 @@ class Notify extends \Dom\Renderer\Renderer
             $item->appendRepeat();
         }
 
-
         return $template;
     }
 
@@ -98,6 +108,7 @@ class Notify extends \Dom\Renderer\Renderer
     {
         $baseUrl = Uri::create()->toString();
         $containerId = self::CONTAINER_ID;
+        $bNotices = json_encode($this->notices);
 
         $html = <<<HTML
 <li class="dropdown notification-list topbar-dropdown tk-notify" var="content"
@@ -142,7 +153,8 @@ class Notify extends \Dom\Renderer\Renderer
 <script>
 jQuery(function($) {
     const container = '#{$containerId}';
-    const baseUrl = '{$baseUrl}';
+    const baseUrl   = '{$baseUrl}';
+    let bNotices    = {$bNotices};
 
     // reload component
     $(document).on('notify:reload', function(e) {
@@ -173,37 +185,58 @@ jQuery(function($) {
     // show notifications in browser
     function showNotifications() {
         if (Notification.permission !== 'granted') return;
-        $.post(tkConfig.baseUrl + '/api/notify/getNotifications', {})
-            .done(function (data) {
-                let notices = data.notices;
-                if (notices === undefined || notices.length) {
-                    for (let note of notices) {
-                        let notification = new Notification(
-                            note.title,
-                            {
-                                icon: note.icon,
-                                body: note.message
-                            }
-                        );
-                        notification.notifyId = note.notifyId;
-
-                        if (note.url !== '') {
-                            notification.onclick = function () {
-                                $.post(tkConfig.baseUrl + '/api/notify/markRead', {notifyId: notification.notifyId});
-                                window.open(note.url);
-                                notification.close();
-                            };
-                        }
-                        setTimeout(function () {
-                            notification.close();
-                        }, 5000);
-                    }
+        for (let note of bNotices) {
+            let notification = new Notification(
+                note.title,
+                {
+                    icon: note.icon,
+                    body: note.message
                 }
-            })
-            .fail(function (data) {
-                console.warn(arguments);
-            });
+            );
+            notification.notifyId = note.notifyId;
+
+            if (note.url !== '') {
+                notification.onclick = function () {
+                    let url = new URL(baseUrl);
+                    url.searchParams.set('notifyId', note.notifyId);
+                    url.searchParams.set('action', 'mark-read');
+                    htmx.ajax('POST', url.toString(), {
+                        source: container,
+                        swap: 'none',
+                        values: {
+                            url: note.url
+                        },
+                    });
+                    notification.close();
+                };
+            }
+
+            setTimeout(function () {
+                notification.close();
+            }, 5000);
+        }
     }
+
+    // for notifications view page, mark clicked notifications as read
+    $('.notify-click').on('click', function(e) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        let href = $(this).attr('href') ?? '';
+        let notifyId = $(this).data('notifyId');
+        if (!href || !notifyId) return true;
+
+        let url = new URL(baseUrl);
+        url.searchParams.set('notifyId', notifyId);
+        url.searchParams.set('action', 'mark-read');
+        htmx.ajax('POST', url.toString(), {
+            source: container,
+            swap: 'none',
+            values: {
+                url: href
+            },
+        });
+        return false;
+    });
 
 });
 </script>
