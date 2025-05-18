@@ -218,9 +218,9 @@ jQuery(function($) {
     }
 
     // for notifications view page, mark clicked notifications as read
-    $('.notify-click').on('click', function(e) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
+    $('.notify-click', container).on('click', function(e) {
+        // e.stopImmediatePropagation();
+        // e.preventDefault();
         let href = $(this).attr('href') ?? '';
         let notifyId = $(this).data('notifyId');
         if (!href || !notifyId) return true;
