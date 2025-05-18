@@ -79,6 +79,7 @@ class PingTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayI
         $template = $this->getTemplate();
 
         //$this->table->getRenderer()->setFooterEnabled(false);
+        $this->table->getRenderer()->setMaxPages(5);
         $template->appendTemplate('content', $this->table->htmxShow());
 
         return $template;

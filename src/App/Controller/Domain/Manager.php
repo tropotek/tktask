@@ -79,16 +79,18 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->addHeaderCss('text-start')
             ->addOnValue(function(Domain $obj, Cell $cell) {
-                $pings = DomainPing::findFiltered(Db\Filter::create(['domainId' => $obj->domainId], 'created', 25));
+                $pings = DomainPing::findFiltered(Db\Filter::create(['domainId' => $obj->domainId], '-created', 25));
                 $values = [];
                 $labels = [];
                 foreach ($pings as $ping) {
                     $values[] = $ping->status ? 100 : -100;
                     $labels[] = $ping->created->format(Date::FORMAT_LONG_DATE);
                 }
-                $values = eattr(json_encode($values));
-                $labels = eattr(json_encode($labels));
-                return '<span class="ping-spark" data-labels="'.$labels.'" data-values="'.$values.'"></span>';
+                $values = array_reverse($values);
+                $labels = array_reverse($labels);
+                $valuesJson = eattr(json_encode($values));
+                $labelsJson = eattr(json_encode($labels));
+                return '<span class="ping-spark" data-labels="'.$labelsJson.'" data-values="'.$valuesJson.'"></span>';
             });
 
         $this->table->appendCell('url')
