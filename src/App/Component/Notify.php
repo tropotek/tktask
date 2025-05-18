@@ -170,7 +170,7 @@ jQuery(function($) {
 
     // toggle browser notifications button
     $('.notify-toggle', container).on('click', function (e) {
-        if (Notification.permission !== 'granted') {
+        if (typeof Notification !== 'undefined' && Notification.permission !== 'granted') {
             let promise = Notification.requestPermission();
             promise.then(function () {
                 if (Notification.permission === 'granted') {
@@ -184,7 +184,7 @@ jQuery(function($) {
 
     // show notifications in browser
     function showNotifications() {
-        if (Notification.permission !== 'granted') return;
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
         for (let note of bNotices) {
             let notification = new Notification(
                 note.title,
