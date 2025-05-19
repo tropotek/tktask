@@ -16,7 +16,6 @@ jQuery(function ($) {
     app.initCheckSelect();
     app.initStatusSelect();
     app.initTimeSelect();
-    app.initNotifications();
 
 });
 
@@ -102,25 +101,11 @@ let app = function () {
         });
     }; // end initTimeSelect()
 
-    let initNotifications = function () {
-        if (typeof Notification === 'undefined') return;
-
-        if (Notification.permission !== 'granted') {
-            let promise = Notification.requestPermission();
-            promise.then(function () {
-                if (Notification.permission === 'granted') {
-                    $(document).trigger('notify:reload');
-                }
-            });
-        }
-    };
-
 
     return {
         initCheckSelect: initCheckSelect,
         initStatusSelect: initStatusSelect,
         initTimeSelect: initTimeSelect,
-        initNotifications: initNotifications,
     }
 
 }();
