@@ -92,28 +92,28 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
     {
         $html = <<<HTML
 <div class="modal fade" var="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" var="title">Select Client</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" var="content"> </div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" var="title">Select Client</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" var="content"> </div>
+        </div>
     </div>
-  </div>
 
-<script>
-  jQuery(function($) {
-    const dialog = '#{$this->getDialogId()}';
+  <script>
+    jQuery(function($) {
+      const dialog = '#{$this->getDialogId()}';
 
-    $(dialog).on('click', '.company-item', function() {
-        $(dialog).trigger('companySelect', [
-            $(this).data('companyId'),
-            $(this).text()
-        ]);
+      $('.company-item', dialog).on('click', function() {
+          $(dialog).trigger('companySelect', [
+              $(this).data('companyId'),
+              $(this).text()
+          ]);
+      });
     });
-  });
-</script>
+  </script>
 </div>
 HTML;
         return Template::load($html);
