@@ -134,9 +134,7 @@ class Manager extends ControllerAdmin
 
         $js = <<<JS
 jQuery(function($) {
-    const dialog = '#{$dialogId}';
-
-    $(dialog).on('companySelect', function(e, companyId, name) {
+    $(document).on('companySelect', function(e, companyId, name) {
         location = tkConfig.baseUrl + '/invoiceEdit?companyId=' + companyId;
     });
 });

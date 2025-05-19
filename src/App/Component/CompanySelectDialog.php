@@ -107,7 +107,7 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
       const dialog = '#{$this->getDialogId()}';
 
       $('.company-item', dialog).on('click', function() {
-          $(dialog).trigger('companySelect', [
+          $(document).trigger('companySelect', [
               $(this).data('companyId'),
               $(this).text()
           ]);
