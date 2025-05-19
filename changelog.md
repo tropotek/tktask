@@ -2,6 +2,11 @@
 
 #CHANGELOG#
 
+Ver 1.0.24 [2025-05-19]:
+-------------------------------
+  - Added BCC to config to receive copy of system emails
+
+
 Ver 1.0.22 [2025-05-19]:
 -------------------------------
   - trying to fix production company select
