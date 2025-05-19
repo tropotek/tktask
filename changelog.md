@@ -2,6 +2,10 @@
 
 #CHANGELOG#
 
+Ver 1.0.26 [2025-05-19]:
+-------------------------------
+
+
 Ver 1.0.24 [2025-05-19]:
 -------------------------------
   - Added BCC to config to receive copy of system emails
