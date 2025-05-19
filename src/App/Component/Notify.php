@@ -164,7 +164,7 @@ jQuery(function($) {
     });
 
     // hide browser notification enable button if set
-    if (typeof Notification !== 'undefined' && (Notification.permission === 'denied' || Notification.permission === 'granted')) {
+    if (typeof Notification === 'undefined' || Notification.permission === 'denied' || Notification.permission === 'granted') {
         $('.notify-toggle', container).closest('.noti-title').hide();
     }
 

@@ -26,9 +26,9 @@ class Test extends Console
             return self::FAILURE;
         }
 
-        $this->write("Pining All Domains");
-        Domain::pingAllDomains();
-        $this->write("Finished");
+//        $this->write("Pining All Domains");
+//        Domain::pingAllDomains();
+//        $this->write("Finished");
 
 
 //        $url = Uri::create('https://godar.ttek.org/Projects/tktask/tkping');
