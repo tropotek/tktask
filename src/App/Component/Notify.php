@@ -163,26 +163,8 @@ jQuery(function($) {
         });
     });
 
-    // hide browser notification enable button if set
-    if (typeof Notification === 'undefined' || Notification.permission === 'denied' || Notification.permission === 'granted') {
-        $('.notify-toggle', container).closest('.noti-title').hide();
-    }
-
-    // toggle browser notifications button
-    $('.notify-toggle', container).on('click', function (e) {
-        if (typeof Notification !== 'undefined' && Notification.permission !== 'granted') {
-            let promise = Notification.requestPermission();
-            promise.then(function () {
-                if (Notification.permission === 'granted') {
-                    $(document).trigger('notify:reload');
-                }
-            });
-        }
-    });
-
-    showNotifications();
-
     // show notifications in browser
+    showNotifications();
     function showNotifications() {
         if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
         for (let note of bNotices) {
@@ -219,8 +201,6 @@ jQuery(function($) {
 
     // for notifications view page, mark clicked notifications as read
     $('.notify-click', container).on('click', function(e) {
-        // e.stopImmediatePropagation();
-        // e.preventDefault();
         let href = $(this).attr('href') ?? '';
         let notifyId = $(this).data('notifyId');
         if (!href || !notifyId) return true;
@@ -237,6 +217,23 @@ jQuery(function($) {
         });
         return false;
     });
+
+    // toggle browser notifications button (see app.js for gaining notification permission)
+    $('.notify-toggle', container).on('click', function (e) {
+        if (typeof Notification !== 'undefined' && Notification.permission !== 'granted') {
+            let promise = Notification.requestPermission();
+            promise.then(function () {
+                if (Notification.permission === 'granted') {
+                    $(document).trigger('notify:reload');
+                }
+            });
+        }
+    });
+
+    // hide browser notification enable button if set
+    if (typeof Notification === 'undefined' || Notification.permission === 'denied' || Notification.permission === 'granted') {
+        $('.notify-toggle', container).closest('.noti-title').hide();
+    }
 
 });
 </script>
