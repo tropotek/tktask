@@ -37,7 +37,7 @@ class Notify extends \Dom\Renderer\Renderer
 
             $url = trim($_POST['url'] ?? $_GET['url'] ?? '');
             if ($url) {
-                $this->hxHeaders['HX-Redirect'] = $url;
+                $this->hxHeaders['HX-Redirect'] = Uri::create($url)->toString();
             }
         }
 

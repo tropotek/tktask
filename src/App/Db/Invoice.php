@@ -241,7 +241,7 @@ class Invoice extends Model implements StatusInterface
                 $user->userId,
                 'Invoice issued',
                 sprintf('Invoice #%s issued to %s', $this->invoiceId, $this->getCompany()->name),
-                Uri::create('/invoiceEdit')->set('invoiceId', $this->invoiceId)->toString(),
+                Uri::create('/invoiceEdit')->set('invoiceId', $this->invoiceId)->toRelativeString(),
                 $user->getImageUrl()
             );
         }

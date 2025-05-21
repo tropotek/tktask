@@ -116,7 +116,7 @@ class Recurring extends Model
                     $user->userId,
                     'Recurring product invoiced',
                     $description,
-                    Uri::create('/invoiceEdit')->set('invoiceId', $invoice->invoiceId)->toString(),
+                    Uri::create('/invoiceEdit')->set('invoiceId', $invoice->invoiceId)->toRelativeString(),
                     $user->getImageUrl()
                 );
             }
