@@ -15,7 +15,7 @@ return function (Config $config) {
     /**
      * Enable error email notifications
      */
-    $config['system.email.exception'] = ['user@example.net'];
+    //$config['system.email.exception'] = ['user@example.net'];
 
     /*
      * Send copies of all system emails to these recipients (not error emails)
