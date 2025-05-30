@@ -34,7 +34,7 @@ class Edit extends ControllerAdmin
         $this->setUserAccess(User::PERM_SYSADMIN);
         $this->getPage()->setTitle('Edit Domain', 'fa fa-edit');
 
-        $domainId = intval($_GET['domainId'] ?? 0);
+        $domainId = intval($_REQUEST['domainId'] ?? 0);
 
         $this->domain = new Domain();
         if ($domainId) {

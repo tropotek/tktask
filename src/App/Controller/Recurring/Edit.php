@@ -36,7 +36,7 @@ class Edit extends ControllerAdmin
         $this->getPage()->setTitle('Edit Recurring', 'fas fa-money-bill-wave');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
-        $recurringId = intval($_GET['recurringId'] ?? 0);
+        $recurringId = intval($_REQUEST['recurringId'] ?? 0);
 
         $this->recurring = new Recurring();
         if ($recurringId) {

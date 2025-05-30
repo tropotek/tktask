@@ -23,8 +23,8 @@ class Edit extends ControllerAdmin
         $this->getPage()->setTitle('Add Task Log', 'fas fa-tasks');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
-        $taskId = intval($_GET['taskId'] ?? 0);
-        $taskLogId = intval($_GET['taskLogId'] ?? 0);
+        $taskId = intval($_REQUEST['taskId'] ?? 0);
+        $taskLogId = intval($_REQUEST['taskLogId'] ?? 0);
 
         $this->taskLog = new TaskLog();
         $this->taskLog->taskId = $taskId;

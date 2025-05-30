@@ -34,7 +34,7 @@ class Edit extends ControllerAdmin
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
-        $companyId = intval($_GET['companyId'] ?? 0);
+        $companyId = intval($_REQUEST['companyId'] ?? 0);
 
         $this->company = new Company();
         if ($companyId) {

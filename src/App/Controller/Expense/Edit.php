@@ -37,7 +37,7 @@ class Edit extends ControllerAdmin
         $this->getPage()->setTitle('Edit Expense', 'fas fa-money-check-alt');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
-        $expenseId = intval($_GET['expenseId'] ?? 0);
+        $expenseId = intval($_REQUEST['expenseId'] ?? 0);
 
         $this->expense = new Expense();
         if ($expenseId) {

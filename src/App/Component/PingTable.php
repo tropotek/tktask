@@ -22,7 +22,7 @@ class PingTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayI
     {
         if (!User::getAuthUser()->isStaff()) return null;
 
-        $domainId = (int)($_POST['domainId'] ?? $_GET['domainId'] ?? 0);
+        $domainId = (int)($_REQUEST['domainId'] ?? 0);
         $this->domain = Domain::find($domainId);
 
         if (!($this->domain instanceof Domain)) {

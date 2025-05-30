@@ -37,7 +37,7 @@ class Edit extends ControllerAdmin
     {
         $this->getPage()->setTitle('Edit ' . ucfirst($this->type), 'fa fa-users');
 
-        $userId  = intval($_GET['userId'] ?? 0);
+        $userId  = intval($_REQUEST['userId'] ?? 0);
         $this->templateSelectEnabled = str_contains($this->getPage()->getTemplatePath(), '/minton/');
 
         if (isset($_GET[Masquerade::QUERY_MSQ])) {

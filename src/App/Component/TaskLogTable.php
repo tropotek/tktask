@@ -22,7 +22,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
     {
         if (!User::getAuthUser()->isStaff()) return null;
 
-        $taskId = (int)($_POST['taskId'] ?? $_GET['taskId'] ?? 0);
+        $taskId = (int)($_REQUEST['taskId'] ?? 0);
 
         $this->task = Task::find($taskId);
         if (!$this->task) return null;
@@ -63,7 +63,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $this->table->appendCell('created')
             ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
-        
+
         // execute table
         $this->table->execute();
 

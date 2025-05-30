@@ -20,7 +20,7 @@ class Edit extends ControllerAdmin
         $this->getPage()->setTitle('Edit Task', 'fas fa-tasks');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
-        $taskId = intval($_GET['taskId'] ?? 0);
+        $taskId = intval($_REQUEST['taskId'] ?? 0);
 
         $this->task = new Task();
         if ($taskId) {

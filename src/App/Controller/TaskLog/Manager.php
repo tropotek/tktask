@@ -24,7 +24,7 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $taskId = intval($_GET['taskId'] ?? 0);
+        $taskId = intval($_REQUEST['taskId'] ?? 0);
         $this->task = Task::find($taskId);
 
         $this->getPage()->setTitle('Task Log Manager', 'fas fa-tasks');

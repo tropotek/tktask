@@ -38,7 +38,7 @@ class TaskLogAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
     {
         if (!User::getAuthUser()->isStaff()) return null;
 
-        $taskId = (int)($_POST['taskId'] ?? $_GET['taskId'] ?? 0);
+        $taskId = (int)($_REQUEST['taskId'] ?? 0);
         $this->task = Task::find($taskId);
 
         // use blank task if we do not get supplied a taskId

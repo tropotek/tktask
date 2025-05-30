@@ -18,8 +18,8 @@ class StatusLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     {
         if (!User::getAuthUser()->isStaff()) return null;
 
-        $fid = (int)($_POST['fid'] ?? $_GET['fid'] ?? 0);
-        $fkey = trim($_POST['fkey'] ?? $_GET['fkey'] ?? '');
+        $fid = (int)($_REQUEST['fid'] ?? 0);
+        $fkey = trim($_REQUEST['fkey'] ?? '');
 
         if (!class_exists($fkey)) {
             Log::error("failed to find model {$fkey}");

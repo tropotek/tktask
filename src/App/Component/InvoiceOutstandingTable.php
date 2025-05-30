@@ -22,7 +22,7 @@ class InvoiceOutstandingTable extends \Dom\Renderer\Renderer implements \Dom\Ren
     {
         if (!User::getAuthUser()->isStaff()) return null;
 
-        $invoiceId = (int)($_POST['invoiceId'] ?? $_GET['invoiceId'] ?? 0);
+        $invoiceId = (int)($_REQUEST['invoiceId'] ?? 0);
         $this->invoice = Invoice::find($invoiceId);
 
         if (!($this->invoice instanceof Invoice)) {

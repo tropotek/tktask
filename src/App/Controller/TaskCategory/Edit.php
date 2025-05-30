@@ -28,7 +28,7 @@ class Edit extends ControllerAdmin
     {
         $this->getPage()->setTitle('Edit Task Category', 'fa fa-folder-open');
 
-        $taskCategoryId = intval($_GET['taskCategoryId'] ?? 0);
+        $taskCategoryId = intval($_REQUEST['taskCategoryId'] ?? 0);
 
         $this->taskCategory = new TaskCategory();
         if ($taskCategoryId) {

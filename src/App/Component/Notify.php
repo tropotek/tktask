@@ -21,8 +21,8 @@ class Notify extends \Dom\Renderer\Renderer
         $this->user = User::getAuthUser();
         if (!$this->user) return null;
 
-        $action = trim($_POST['action'] ?? $_GET['action'] ?? '');
-        $notifyId = intval($_POST['notifyId'] ?? $_GET['notifyId'] ?? 0);
+        $action = trim($_REQUEST['action'] ?? '');
+        $notifyId = intval($_REQUEST['notifyId'] ?? 0);
 
         if ($action == 'clear') {
             \App\Db\Notify::markAllRead($this->user->userId);

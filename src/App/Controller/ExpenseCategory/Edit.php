@@ -36,7 +36,7 @@ class Edit extends ControllerAdmin
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
-        $expenseCategoryId = intval($_GET['expenseCategoryId'] ?? 0);
+        $expenseCategoryId = intval($_REQUEST['expenseCategoryId'] ?? 0);
 
         $this->expenseCategory = new ExpenseCategory();
         if ($expenseCategoryId) {

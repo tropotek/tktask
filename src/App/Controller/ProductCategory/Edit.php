@@ -33,7 +33,7 @@ class Edit extends ControllerAdmin
 
         $this->setUserAccess(User::PERM_SYSADMIN);
 
-        $productCategoryId = intval($_GET['productCategoryId'] ?? 0);
+        $productCategoryId = intval($_REQUEST['productCategoryId'] ?? 0);
 
         $this->productCategory = new ProductCategory();
         if ($productCategoryId) {

@@ -30,8 +30,8 @@ class Edit extends ControllerAdmin
         $this->getPage()->setTitle('Edit Invoice', 'far fa-credit-card');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);
 
-        $invoiceId = intval($_GET['invoiceId'] ?? 0);
-        $companyId = intval($_GET['companyId'] ?? 0);
+        $invoiceId = intval($_REQUEST['invoiceId'] ?? 0);
+        $companyId = intval($_REQUEST['companyId'] ?? 0);
 
         if ($invoiceId) {
             $this->invoice = Invoice::find($invoiceId);
@@ -58,7 +58,7 @@ class Edit extends ControllerAdmin
 
     public function doAction(): mixed
     {
-        $action = trim($_GET['post'] ?? $_GET['act'] ?? '');
+        $action = trim($_REQUEST['act'] ?? '');
         switch ($action) {
             case 'issue':
                 $this->invoice->doIssue();

@@ -29,7 +29,7 @@ class Manager extends ControllerAdmin
         $this->setUserAccess(User::PERM_SYSADMIN);
         $this->getPage()->setTitle('Domain Manager', 'fa fa-cogs');
 
-        $action = trim($_GET['action'] ?? $_POST['action'] ?? '');
+        $action = trim($_REQUEST['action'] ?? '');
 
         if ($action == 'p') {
             Domain::pingAllDomains();

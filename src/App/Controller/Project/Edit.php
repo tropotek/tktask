@@ -19,7 +19,7 @@ class Edit extends ControllerAdmin
 
     public function doDefault(): void
     {
-        $projectId = intval($_GET['projectId'] ?? 0);
+        $projectId = intval($_REQUEST['projectId'] ?? 0);
 
         $this->getPage()->setTitle('Edit Project', 'fas fa-project-diagram');
         $this->validateAccess(User::getAuthUser()?->isStaff() ?? false);

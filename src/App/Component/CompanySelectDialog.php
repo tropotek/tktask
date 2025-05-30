@@ -30,7 +30,7 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
     {
         if (!User::getAuthUser()->isStaff()) return null;
 
-        $this->type = trim($_GET['type'] ?? $_POST['type'] ?? Company::TYPE_CLIENT);
+        $this->type = trim($_REQUEST['type'] ?? Company::TYPE_CLIENT);
         if (!in_array($this->type, Company::TYPE_LIST)) {
             throw new Exception("Invalid company type");
         }
