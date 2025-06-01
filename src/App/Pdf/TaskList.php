@@ -52,8 +52,6 @@ class TaskList extends PdfInterface
         } else {
             $filter = [
                 'status' => [
-                    Task::STATUS_PENDING,
-                    Task::STATUS_HOLD,
                     Task::STATUS_OPEN,
                 ]
             ];
@@ -164,9 +162,7 @@ class TaskList extends PdfInterface
             $list = Task::findFiltered([
                 'projectId' => $this->project->getId(),
                 'status' => [
-                    Task::STATUS_PENDING,
                     Task::STATUS_OPEN,
-                    Task::STATUS_HOLD,
                 ]
             ]);
 

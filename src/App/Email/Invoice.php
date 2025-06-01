@@ -19,6 +19,7 @@ class Invoice
     {
         $company = $invoice->getCompany();
         if (!($company instanceof Company)) return false;
+        if ($invoice->unpaidTotal->getAmount() <= 0) return false;
 
         $siteCompany = Factory::instance()->getOwnerCompany();
 

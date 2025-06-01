@@ -1,15 +1,9 @@
 <?php
 namespace App\Controller\Invoice;
 
-use App\Component\InvoiceEditDialog;
-use App\Component\ItemAddDialog;
-use App\Component\PaymentAddDialog;
-use App\Component\PaymentTable;
-use App\Component\StatusLogTable;
 use App\Db\Company;
 use App\Db\Invoice;
 use App\Db\InvoiceItem;
-use App\Db\StatusLog;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Registry;
@@ -83,7 +77,6 @@ class Edit extends ControllerAdmin
             case 'cancel':
                 if ($this->invoice instanceof Invoice) {
                     $this->invoice->doCancel();
-                    StatusLog::create($this->invoice, "Invoice cancelled");
                     Alert::addSuccess("Invoice #{$this->invoice->invoiceId} cancelled");
                     Uri::create()->remove('act')->redirect();
                 }
@@ -92,6 +85,10 @@ class Edit extends ControllerAdmin
                 if (!\App\Email\Invoice::sendIssueInvoice($this->invoice)) {
                     Alert::addError("Failed to send invoice id {$this->invoice->invoiceId}");
                 }
+                Uri::create()->remove('act')->redirect();
+                break;
+            case 'open':
+                $this->invoice->reopen();
                 Uri::create()->remove('act')->redirect();
                 break;
         }
@@ -132,10 +129,11 @@ class Edit extends ControllerAdmin
         $pdf = Uri::create('/pdf/invoice')->set('invoiceId', $this->invoice->invoiceId); //->set('o', 'html');
         $template->setAttr('btn-pdf', 'href', $pdf);
 
-        if ($this->invoice->paidTotal->getAmount() > 0) {
+        if (in_array($this->invoice->status, [Invoice::STATUS_UNPAID, Invoice::STATUS_PAID])) {
             $url = Uri::create('/component/paymentTable', ['invoiceId' => $this->invoice->invoiceId]);
             $template->setAttr('paymentsTable', 'hx-get', $url);
             $template->setVisible('paymentsTable');
+            $template->setVisible('components');
         }
 
         if (count($this->invoice->getOutstanding())) {
@@ -144,38 +142,28 @@ class Edit extends ControllerAdmin
             $template->setVisible('outstandingTable');
         }
 
-
-
-        $url = Uri::create('/component/statusLogTable', ['fid' => $this->invoice->invoiceId, 'fkey' => $this->invoice::class]);
-        $template->setAttr('statusTable', 'hx-get', $url);
-
         $url = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId]);
-        $template->setAttr('invoiceEditDialog', 'hx-get', $url);
-        $template->setAttr('btn-edit', 'data-bs-target', '#'.InvoiceEditDialog::CONTAINER_ID);
+        $template->setAttr('btn-edit', 'hx-get', $url);
 
         if ($this->invoice->status == Invoice::STATUS_OPEN) {
-            $url = Uri::create('/component/itemAddDialog', ['invoiceId' => $this->invoice->invoiceId]);
-            $template->setAttr('itemAddDialog', 'hx-get', $url);
-            $template->setAttr('btn-add-item', 'data-bs-target', '#'.ItemAddDialog::CONTAINER_ID);
+            $url = Uri::create('/component/itemEditDialog', ['invoiceId' => $this->invoice->invoiceId]);
+            $template->setAttr('btn-add-item', 'hx-get', $url);
             $template->setVisible('itemAddDialog');
         }
+
         if ($this->invoice->status == Invoice::STATUS_UNPAID) {
             $url = Uri::create('/component/paymentAddDialog', ['invoiceId' => $this->invoice->invoiceId]);
-            $template->setAttr('paymentAddDialog', 'hx-get', $url);
-            $template->setAttr('btn-pay', 'data-bs-target', '#'.PaymentAddDialog::CONTAINER_ID);
+            $template->setAttr('btn-pay', 'hx-get', $url);
             $template->setVisible('paymentAddDialog');
         }
 
-        $this->showInvoice($template);
+        if (in_array($this->invoice->status, [Invoice::STATUS_UNPAID, Invoice::STATUS_CANCELLED])) {
+            $url = Uri::create()->set('act', 'open');
+            $template->setAttr('btn-open', 'href', $url);
+            $template->setVisible('btn-open');
+        }
 
-        $js = <<<JS
-jQuery(function ($) {
-    $(document).on('tkForm:afterSubmit', function(e) {
-        location = location.href;
-    });
-});
-JS;
-        $template->appendJs($js);
+        $this->showInvoice($template);
 
         return $template;
     }
@@ -350,23 +338,44 @@ JS;
                     <span>Email</span>
                 </a>
 
+                <a href="#" class="btn btn-warning float-end" title="Re-Open" data-confirm="Are you sure you want to re-open this invoice?" choice="btn-open">
+                    <i class="far fa-credit-card me-1"></i>
+                    <span>Re-Open</span>
+                </a>
+
                 <a href="#" class="btn btn-danger float-end" title="Cancel" data-confirm="Are you sure you want to cancel this invoice?" choice="btn-cancel">
                     <i class="fas fa-bell-slash"></i>
                     <span>Cancel</span>
                 </a>
-                <a href="#" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="" title="Add a new invoice item" choice="btn-edit">
+
+                <a href="#" class="btn btn-primary float-end" title="Add a new invoice item" choice="btn-edit"
+                    hx-get="/component/invoiceEditDialog"
+                    hx-trigger="click queue:none"
+                    hx-target="body"
+                    hx-swap="beforeend">
                     <i class="fa fa-edit"></i>
                     <span>Edit</span>
                 </a>
-                <a href="#" class="btn btn-success float-end" data-bs-toggle="modal" title="Add a new payment" choice="btn-pay">
+
+                <a href="#" class="btn btn-success float-end" title="Add a new payment" choice="btn-pay"
+                    hx-get="/component/paymentAddDialog"
+                    hx-trigger="click queue:none"
+                    hx-target="body"
+                    hx-swap="beforeend">
                     <i class="fas fa-dollar-sign"></i>
                     <span>Add Payment</span>
                 </a>
+
                 <a href="#" class="btn btn-success float-end" title="Issue Invoice" data-confirm="Are you sure you want to issue this invoice?" choice="btn-issue">
                     <i class="fas fa-bell"></i>
                     <span>Issue</span>
                 </a>
-                <a href="#" class="btn btn-warning float-end" data-bs-toggle="modal" data-bs-target="" title="Add a new invoice item" choice="btn-add-item">
+
+                <a href="#" class="btn btn-warning float-end" title="Add a new invoice item" choice="btn-add-item"
+                    hx-get=""
+                    hx-trigger="click queue:none"
+                    hx-target="body"
+                    hx-swap="beforeend">
                     <i class="fa fa-plus-circle"></i>
                     <span>Add Item</span>
                 </a>
@@ -376,7 +385,7 @@ JS;
     </div>
 
     <!-- Invoice Template -->
-    <div class="col-md-8" id="tk-invoice-container">
+    <div class="col" id="tk-invoice-container">
         <div class="card mb-3">
             <div class="card-header">
               <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
@@ -530,24 +539,23 @@ JS;
     </div>
     <!-- END: Invoice Template -->
 
-    <div class="col-md-4" var="components">
+    <div class="col-md-4" choice="components">
         <div hx-get="/component/invoiceOutstandingTable" hx-trigger="load" hx-swap="outerHTML" choice="outstandingTable">
           <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
         </div>
         <div hx-get="/component/paymentTable" hx-trigger="load" hx-swap="outerHTML" choice="paymentsTable">
           <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
         </div>
-        <div hx-get="/component/statusLogTable" hx-trigger="load" hx-swap="outerHTML" var="statusTable">
-          <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
-        </div>
 
     </div>
 
-    <div class="dialog-container" var="dialogs">
-        <div hx-get="/component/invoiceEditDialog" hx-trigger="load" hx-swap="outerHTML" var="invoiceEditDialog"></div>
-        <div hx-get="/component/itemAddDialog" hx-trigger="load" hx-swap="outerHTML" choice="itemAddDialog"></div>
-        <div hx-get="/component/paymentAddDialog" hx-trigger="load" hx-swap="outerHTML" choice="paymentAddDialog"></div>
-    </div>
+<script>
+    jQuery(function ($) {
+        $(document).on('tkForm:afterSubmit', function(e) {
+            location = location.href;
+        });
+    });
+</script>
 
 <style>
 table.totals td:first-child {

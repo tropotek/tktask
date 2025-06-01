@@ -11,27 +11,19 @@ use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Money;
 
-class Project extends Model implements StatusInterface
+class Project extends Model
 {
     use UserTrait;
     use CompanyTrait;
 
     const string STATUS_PENDING    = 'pending';     // Project waiting for start date ?
     const string STATUS_ACTIVE     = 'active';      // currently in progress
-    const string STATUS_HOLD       = 'hold';
     const string STATUS_COMPLETED  = 'completed';
     const string STATUS_CANCELLED  = 'cancelled';
-
-    const array STATUS_OPEN = [
-        self::STATUS_PENDING,
-        self::STATUS_ACTIVE,
-        self::STATUS_HOLD,
-    ];
 
     const array STATUS_LIST = [
         self::STATUS_PENDING   => 'Pending',
         self::STATUS_ACTIVE    => 'Active',
-        self::STATUS_HOLD      => 'Hold',
         self::STATUS_COMPLETED => 'Completed',
         self::STATUS_CANCELLED => 'Cancelled',
     ];
@@ -39,7 +31,6 @@ class Project extends Model implements StatusInterface
     const array STATUS_CSS = [
         self::STATUS_PENDING   => 'primary',
         self::STATUS_ACTIVE    => 'success',
-        self::STATUS_HOLD      => 'secondary',
         self::STATUS_COMPLETED => 'info',
         self::STATUS_CANCELLED => 'danger',
     ];
@@ -47,11 +38,12 @@ class Project extends Model implements StatusInterface
     public int       $projectId   = 0;
     public int       $userId      = 0;
     public int       $companyId   = 0;
-    public string    $status      = self::STATUS_PENDING;
+    public string    $status      = '';
     public string    $name        = '';
     public Money     $quote;
     public ?DateTime $startOn     = null;
     public ?DateTime $endOn       = null;
+    public ?DateTime $cancelledOn = null;
     public string    $description = '';
     public string    $notes       = '';
     public DateTime  $modified;
@@ -60,11 +52,12 @@ class Project extends Model implements StatusInterface
 
     public function __construct()
     {
-        $this->modified  = new DateTime();
-        $this->created   = new DateTime();
-        $this->quote     = new Money();
-        $this->startOn   = Date::floor(new DateTime());
-        $this->endOn     = Date::floor(Date::create()->add(new \DateInterval('P3M')));
+        $this->modified = new DateTime();
+        $this->created  = new DateTime();
+        $this->quote    = new Money();
+        $this->startOn  = new DateTime('next monday');
+        $this->endOn    = (new DateTime('next monday'))->add(new \DateInterval('P3M'));
+        $this->userId = User::getAuthUser()->getId();
     }
 
     public static function getDataMap(): DataMap
@@ -90,6 +83,13 @@ class Project extends Model implements StatusInterface
         }
 
         $this->reload();
+    }
+
+    public function doCancel(): self
+    {
+        $this->cancelledOn = \Tk\Date::create();
+        $this->save();
+        return $this;
     }
 
     public function isEditable(): bool
@@ -126,7 +126,7 @@ class Project extends Model implements StatusInterface
     {
         $cost = \Tk\Money::create();
         $list = $this->getTaskList([
-            'status' => array(Task::STATUS_PENDING, Task::STATUS_HOLD, Task::STATUS_OPEN, Task::STATUS_CLOSED)
+            'status' => array(Task::STATUS_OPEN, Task::STATUS_CLOSED)
         ]);
 
         foreach ($list as $task) {
@@ -166,7 +166,7 @@ class Project extends Model implements StatusInterface
     {
         return Db::queryOne("
             SELECT *
-            FROM project
+            FROM v_project
             WHERE project_id = :projectId",
             compact('projectId'),
             self::class
@@ -180,7 +180,7 @@ class Project extends Model implements StatusInterface
     {
         return Db::query("
             SELECT *
-            FROM project",
+            FROM v_project",
             [],
             self::class
         );
@@ -192,7 +192,7 @@ class Project extends Model implements StatusInterface
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
-        $filter->appendFrom('project a');
+        $filter->appendFrom('v_project a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
@@ -248,10 +248,6 @@ class Project extends Model implements StatusInterface
     {
         $errors = [];
 
-        if (!$this->projectId) {
-            $errors['projectId'] = 'Invalid value: projectId';
-        }
-
         if (!$this->userId) {
             $errors['userId'] = 'Invalid value: userId';
         }
@@ -275,10 +271,4 @@ class Project extends Model implements StatusInterface
         return $errors;
     }
 
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function onStatusChanged(StatusLog $statusLog): void { }
 }

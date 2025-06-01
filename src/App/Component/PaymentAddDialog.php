@@ -2,18 +2,12 @@
 namespace App\Component;
 
 use App\Db\Invoice;
-use App\Db\InvoiceItem;
 use App\Db\Payment;
-use App\Db\Product;
 use App\Db\User;
-use App\Form\Field\Datalist;
 use Bs\Mvc\Form;
 use Dom\Template;
-use Tk\Collection;
-use Tk\Db;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
-use Tk\Form\Field\Input;
 use Tk\Form\Field\InputGroup;
 use Tk\Form\Field\Select;
 use Tk\Form\Field\Textarea;
@@ -24,10 +18,10 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 {
     const string CONTAINER_ID = 'invoice-add-payment-dialog';
 
-    protected ?Form        $form     = null;
-    protected array        $hxEvents = [];
-    protected ?Invoice     $invoice  = null;
-    protected ?Payment     $payment  = null;
+    protected ?Form        $form       = null;
+    protected ?Invoice     $invoice    = null;
+    protected ?Payment     $payment    = null;
+    protected array        $hxTriggers = [];
 
 
     public function doDefault(): ?Template
@@ -43,7 +37,7 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
         $this->payment = new Payment();
 
-        $this->form = new Form($this->payment);
+        $this->form = new Form($this->payment, 'form-payment-add');
         $this->form->setAction('');
         $this->form->setAttr('hx-post', Uri::create('/component/paymentAddDialog', ['invoiceId' => $this->invoice->invoiceId]));
         $this->form->setAttr('hx-swap', 'outerHTML');
@@ -71,9 +65,16 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
         $this->form->execute($_POST);
 
+        if (!$this->form->isSubmitted()) {
+            // IMPORTANT: This component always sets the htmx target and swap to end of the surrounding page <body>.
+            // That ignores hx-target and hx-swap in the triggering element, which you can omit.
+            header('HX-Retarget: body');
+            header('HX-Reswap: beforeend');
+        }
+
         // Send HX event headers
-        if (count($this->hxEvents)) {
-            header(sprintf('HX-Trigger: %s', json_encode($this->hxEvents)));
+        if (count($this->hxTriggers)) {
+            header(sprintf('HX-Trigger: %s', json_encode($this->hxTriggers)));
         }
 
         return $this->show();
@@ -85,7 +86,7 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $this->payment->mapForm($values);
 
         // Check that the invoice is in the unpaid status.
-        if ($this->invoice->getStatus() != \App\Db\Invoice::STATUS_UNPAID) {
+        if ($this->invoice->status != \App\Db\Invoice::STATUS_UNPAID) {
             $form->addFieldError('method', 'You can only add payments to invoices with a status of `Unpaid`.');
         }
 
@@ -96,14 +97,15 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 
         $form->addFieldErrors($this->payment->validate());
         if ($form->hasErrors()) {
-            $this->hxEvents['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
+            $this->hxTriggers['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
             return;
         }
 
         $this->invoice->addPayment($this->payment);
 
         // Trigger HX events
-        $this->hxEvents['tkForm:afterSubmit'] = ['status' => 'ok'];
+        $this->hxTriggers['tkForm:afterSubmit'] = ['status' => 'ok'];
+        $this->hxTriggers['tkForm:dialogclose'] = '#'.self::CONTAINER_ID;
     }
 
     public function show(): ?Template
@@ -129,7 +131,7 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
         $unpaidTotal = $this->invoice->unpaidTotal->toFloatString();
 
         $html = <<<HTML
-<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
+<div class="modal fade" data-bs-backdrop="static" tabindex="-1" var="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -142,21 +144,33 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
 <script>
   jQuery(function($) {
     const dialog = '#{$this->getDialogId()}';
-    const form   = '#{$this->form->getId()}';
     const unpaid = '{$unpaidTotal}';
+    const form   = '#{$this->form->getId()}';
 
-    // reload page after successfull submit
-    $(document).on('tkForm:afterSubmit', function(e) {
-        if (!$(e.detail.elt).is(form)) return;
+    $(document).on('htmx:afterSettle', function(e) {
+        if ($(e.detail.elt).is(form)) tkInit(form);
+    });
+
+    // open the dialog as soon as HTMX settles
+    tkInit(form);
+    $(dialog).modal('show');
+
+    // put focus field when dialog shows
+    $(dialog).on('shown.bs.modal', function() {
+        setTimeout(function() {
+            $('[name=description]', dialog).focus();
+            $('[name=amount]', dialog).val(unpaid);
+        }, 0);
+    });
+
+    // catch dialog finished handling post request
+    $('body').on('tkForm:dialogclose', function(e) {
         $(dialog).modal('hide');
     });
 
-    // reset form fields
-    $(dialog).on('show.bs.modal', function(e) {
-        $('[name=method]', this).val('eft');
-        $('[name=amount]', this).val(unpaid);
-        $('[name=notes]', this).val('');
-        $('.is-invalid', this).removeClass('is-invalid');
+    // remove the dialog element from the dom when it closes
+    $(dialog).on('hidden.bs.modal', function() {
+        $(dialog).remove();
     });
 
 });

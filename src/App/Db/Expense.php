@@ -17,7 +17,7 @@ class Expense extends Model
     public int        $expenseCategoryId  = 0;
     public int        $companyId   = 0;
     public string     $invoiceNo   = '';
-    public string     $receiptNo   = '';
+    // public string     $receiptNo   = '';
     public string     $description = '';
     public \DateTime  $purchasedOn;
     public Money      $total;
@@ -51,7 +51,7 @@ class Expense extends Model
 
     public function getDataPath(): string
     {
-        return sprintf('/expense/%s', $this->expenseId);
+        return $this->dataPath;
     }
 
     /**
@@ -111,10 +111,10 @@ class Expense extends Model
         $filter->appendFrom('v_expense a');
 
         if (!empty($filter['search'])) {
-            $filter['lSearch'] = '%' . $filter['search'] . '%';
-            $w  = 'LOWER(a.description) LIKE LOWER(:lSearch)';
-            $w .= 'OR a.expense_id = :search';
-            $filter->appendWhere('AND (%s)', $w);
+            $filter['lSearch'] = '%' . strtolower($filter['search']) . '%';
+            $w  = "a.expense_id = :search ";
+            $w .= "OR LOWER(CONCAT_WS(' ', a.description, a.invoice_no)) LIKE :lSearch ";
+            if ($w) $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {
@@ -142,9 +142,9 @@ class Expense extends Model
             $filter->appendWhere('AND a.invoice_no = :invoiceNo');
         }
 
-        if (!empty($filter['receiptNo'])) {
-            $filter->appendWhere('AND a.receipt_no = :receiptNo');
-        }
+//        if (!empty($filter['receiptNo'])) {
+//            $filter->appendWhere('AND a.receipt_no = :receiptNo');
+//        }
 
         if (!empty($filter['dateStart'])) {
             if (($filter['dateStart'] instanceof \DateTime)) $filter['dateStart'] = $filter['dateStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
@@ -167,10 +167,6 @@ class Expense extends Model
     {
         $errors = [];
 
-        if (!$this->expenseId) {
-            $errors['expenseId'] = 'Invalid value: expenseId';
-        }
-
         if (!$this->expenseCategoryId) {
             $errors['expenseCategoryId'] = 'Invalid value: expenseCategoryId';
         }
@@ -183,10 +179,14 @@ class Expense extends Model
             $errors['description'] = 'Invalid value: description';
         }
 
-        if (!$this->invoiceNo && !$this->receiptNo) {
+        if (!$this->invoiceNo) {
             $errors['invoiceNo'] = 'Invalid value: invoiceNo';
-            $errors['receiptNo'] = 'Invalid value: receiptNo';
         }
+
+//        if (!$this->invoiceNo && !$this->receiptNo) {
+//            $errors['invoiceNo'] = 'Invalid value: invoiceNo';
+//            $errors['receiptNo'] = 'Invalid value: receiptNo';
+//        }
 
         if (!$this->total->getAmount()) {
             $errors['total'] = 'Invalid value: total';

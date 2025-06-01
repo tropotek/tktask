@@ -91,7 +91,7 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
     public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
-<div class="modal fade" var="dialog" aria-hidden="true">
+<div class="modal fade" tabindex="-1" var="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">

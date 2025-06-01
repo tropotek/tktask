@@ -37,7 +37,6 @@ class ProfitLoss extends \Dom\Renderer\Renderer implements \Dom\Renderer\Display
         $paymentList = Payment::findFiltered([
             'dateStart' => $this->dateSet[0],
             'dateEnd' => $this->dateSet[1],
-            'status' => Payment::STATUS_CLEARED,
         ]);
         $grossProfit = Money::create();
         foreach ($paymentList as $payment) {

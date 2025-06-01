@@ -139,7 +139,7 @@ class Manager extends ControllerAdmin
 
         if ($this->task->isEditable()) {
             $url = Uri::create('/taskLogEdit')->set('taskId', $this->task->taskId);
-            $template->setAttr('add-log', 'href', $url);
+            $template->setAttr('create', 'href', $url);
             $template->setVisible('add-log');
         }
 
@@ -159,7 +159,7 @@ class Manager extends ControllerAdmin
 <div>
   <div class="page-actions card mb-3" choice="add-log">
     <div class="card-body">
-      <a href="#" title="Create Task Log" class="btn btn-outline-secondary"><i class="fa fa-plus"></i> Add Log</a>
+      <a href="#" title="Create Task Log" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Add Log</a>
     </div>
   </div>
   <div class="card mb-3">

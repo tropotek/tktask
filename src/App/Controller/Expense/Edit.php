@@ -1,15 +1,12 @@
 <?php
 namespace App\Controller\Expense;
 
-use App\Component\Files;
-use App\Component\CompanyAddDialog;
 use App\Db\Company;
 use App\Db\Expense;
 use App\Db\ExpenseCategory;
 use App\Db\User;
 use App\Form\Field\SelectBtn;
 use Bs\Mvc\ControllerAdmin;
-use Bs\Factory;
 use Bs\Mvc\Form;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
@@ -55,12 +52,15 @@ class Edit extends ControllerAdmin
 
         $companies = Company::findFiltered(Filter::create(['type' => Company::TYPE_SUPPLIER], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
+
         $this->form->appendField((new SelectBtn('companyId', $list))
             ->setLabel('Supplier')
             ->prependOption('-- Select --', '')
             ->setBtnAttr('title', 'Add Supplier')
-            ->setBtnAttr('data-bs-toggle', 'modal')
-            ->setBtnAttr('data-bs-target', '#'.CompanyAddDialog::CONTAINER_ID)
+            ->setBtnAttr('hx-get', Uri::create('/component/companyEditDialog'))
+            ->setBtnAttr('hx-trigger', 'click queue:none')
+            ->setBtnAttr('hx-target', 'body')
+            ->setBtnAttr('hx-swap', 'beforeend')
             ->setBtnText('<i class="fas fa-plus"></i>')
             ->addFieldCss('col-md-6')
             ->setRequired()
@@ -74,6 +74,9 @@ class Edit extends ControllerAdmin
             ->setRequired()
         );
 
+        $this->form->appendField(new Input('invoiceNo'))
+            ->setRequired();
+
         $this->form->appendField(new InputGroup('total', '$'))
             ->addFieldCss('col-md-6')
             ->setRequired();
@@ -82,13 +85,9 @@ class Edit extends ControllerAdmin
             ->addFieldCss('col-md-6')
             ->setRequired();
 
-        $this->form->appendField(new Input('invoiceNo'))
-            ->addFieldCss('col-md-6')
-            ->setRequired();
-
-        $this->form->appendField(new Input('receiptNo'))
-            ->addFieldCss('col-md-6')
-            ->setRequired();
+//        $this->form->appendField(new Input('receiptNo'))
+//            ->addFieldCss('col-md-6')
+//            ->setRequired();
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Uri::create('/expenseManager')));
@@ -140,30 +139,6 @@ class Edit extends ControllerAdmin
             $template->setVisible('components');
         }
 
-        $companyDialogId = CompanyAddDialog::CONTAINER_ID;
-
-        $js = <<<JS
-jQuery(function($) {
-    const dialog        = '#{$companyDialogId}';
-    const dialogForm    = '#' + $('form', dialog).attr('id');
-    const companySelect = $('#form_companyId');
-
-    // reload select options after company creation
-    $(document).on('tkForm:afterSubmit', function(e) {
-        if (!$(e.detail.elt).is(dialogForm)) return;
-        companySelect.empty();
-        companySelect.append('<option value="">-- Select --</option>');
-        for(var key in e.detail.companies) {
-            companySelect.append(`<option value="\${key}">\${e.detail.companies[key]}</option>`);
-        }
-        // select created company
-        companySelect.val(e.detail.companyId);
-
-    });
-});
-JS;
-        $template->appendJs($js);
-
         return $template;
     }
 
@@ -171,29 +146,45 @@ JS;
     {
         $html = <<<HTML
 <div class="row">
-  <div class="col">
-    <div class="card mb-3">
-      <div class="card-header">
-        <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
-          <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
-          <div class="dropdown-menu dropdown-menu-end">
-            <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
-            <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
-          </div>
+    <div class="col">
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+                        <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+                    </div>
+                </div>
+                <i var="icon"></i> <span var="title"></span>
+            </div>
+            <div class="card-body" var="content"></div>
         </div>
-        <i var="icon"></i> <span var="title"></span>
-      </div>
-      <div class="card-body" var="content"></div>
     </div>
-  </div>
 
-  <div class="col-md-5" choice="components">
-     <div hx-get="/component/files" hx-trigger="load" hx-swap="outerHTML" var="files">
-       <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
-     </div>
-  </div>
+    <div class="col-md-5" choice="components">
+       <div hx-get="/component/files" hx-trigger="load" hx-swap="outerHTML" var="files">
+           <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+       </div>
+    </div>
 
-  <div hx-get="/component/companyAddDialog" hx-trigger="load" hx-swap="outerHTML" var="companyAdd"></div>
+    <script>
+        jQuery(function($) {
+            const companySelect = $('#form_companyId');
+
+            // reload select options after company creation
+            $('body').on('tkForm:afterSubmit', function(e) {
+                if (!$(e.detail.elt).is('#company-edit-form')) return;
+                companySelect.empty();
+                companySelect.append('<option value="">-- Select --</option>');
+                for(var key in e.detail.companies) {
+                    companySelect.append(`<option value="\${key}">\${e.detail.companies[key]}</option>`);
+                }
+                // select created company
+                companySelect.val(e.detail.companyId);
+            });
+        });
+    </script>
 </div>
 HTML;
         return Template::load($html);

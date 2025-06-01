@@ -13,7 +13,7 @@ use Tk\Db\Filter;
 use Tk\Exception;
 use Tk\Money;
 
-class Task extends Model implements StatusInterface
+class Task extends Model
 {
     use CompanyTrait;
     use ProjectTrait;
@@ -21,24 +21,24 @@ class Task extends Model implements StatusInterface
 
     const int CATEGORY_DEFAULT = 1;
 
-    const string STATUS_PENDING    = 'pending';   // Project waiting for start date ?
-    const string STATUS_HOLD       = 'hold';      // Task on hold awaiting info from client to proceed
+//    const string STATUS_PENDING    = 'pending';   //
+//    const string STATUS_HOLD       = 'hold';      // Task on hold awaiting info from client to proceed
     const string STATUS_OPEN       = 'open';      // Task is open/active and a work in progress
     const string STATUS_CLOSED     = 'closed';    // All worked checked and the system can now invoice for time worked
     const string STATUS_CANCELLED  = 'cancelled'; // Task cancelled and nothing billed.
 
     const array STATUS_LIST = [
-        self::STATUS_PENDING   => 'Pending',
-        self::STATUS_HOLD      => 'Hold',
+//        self::STATUS_PENDING   => 'Pending',
+//        self::STATUS_HOLD      => 'Hold',
         self::STATUS_OPEN      => 'Open',
         self::STATUS_CLOSED    => 'Closed',
         self::STATUS_CANCELLED => 'Cancelled',
     ];
 
     const array STATUS_CSS = [
-        self::STATUS_PENDING   => 'primary',
+        //self::STATUS_PENDING   => 'primary',
         self::STATUS_OPEN      => 'success',
-        self::STATUS_HOLD      => 'secondary',
+        //self::STATUS_HOLD      => 'secondary',
         self::STATUS_CLOSED    => 'warning',
         self::STATUS_CANCELLED => 'danger',
     ];
@@ -66,22 +66,21 @@ class Task extends Model implements StatusInterface
     public int        $companyId      = 0;
     public ?int       $projectId      = null;
     public int        $taskCategoryId = self::CATEGORY_DEFAULT;
-    public int        $creatorUserId  = 0;
     public int        $assignedUserId = 0;
-    public ?int       $closedUserId   = null;
-    public string     $status         = self::STATUS_PENDING;
     public string     $subject        = '';
     public string     $comments       = '';
     public int        $priority       = self::PRIORITY_MED;
     public int        $minutes        = 0;
-    public ?\DateTime $invoiced       = null;       // TODO if not used anywhere, Remove ???
+    public ?\DateTime $closedAt       = null;
+    public ?\DateTime $cancelledAt    = null;
+    public ?\DateTime $invoicedAt     = null;
+    public ?int       $invoiceItemId  = null;
+    public string     $status         = '';      // todo mm: use view to get the status
     public string     $dataPath       = '';
     public \DateTime  $modified;
     public \DateTime  $created;
 
-    private ?User $_creator      = null;
     private ?User $_assignedUser = null;
-    private ?User $_closedUser   = null;
 
     public function __construct()
     {
@@ -89,7 +88,6 @@ class Task extends Model implements StatusInterface
         $this->created = new \DateTime();
         $user = User::getAuthUser();
         if ($user instanceof User) {
-            $this->creatorUserId = $user->userId;
             $this->assignedUserId = $user->userId;
         }
     }
@@ -120,7 +118,7 @@ class Task extends Model implements StatusInterface
 
     public function isOpen(): bool
     {
-        return !in_array($this->getStatus(), [self::STATUS_CLOSED, self::STATUS_CANCELLED]);
+        return !in_array($this->status, [self::STATUS_CLOSED, self::STATUS_CANCELLED]);
     }
 
     public function isEditable(): bool
@@ -129,41 +127,37 @@ class Task extends Model implements StatusInterface
         return $this->isOpen();
     }
 
-    // todo use $this->dataPath
-//    public function getDataPath(): string
-//    {
-//        if (!$this->taskId) throw new Exception("object without task_id");
-//        return sprintf('/task/%s/%s', $this->created->format('Y'), $this->taskId);
-//    }
-
-    public function getCreator(): ?User
-    {
-        if (is_null($this->_creator)) $this->_creator = User::find($this->creatorUserId);
-        return $this->_creator;
-    }
-
     public function getAssignedUser(): ?User
     {
         if (is_null($this->_assignedUser)) $this->_assignedUser = User::find($this->assignedUserId);
         return $this->_assignedUser;
     }
 
-    public function getClosedUser(): ?User
+    public function close(bool $invoice = false): static
     {
-        if (is_null($this->_closedUser)) $this->_closedUser = User::find($this->closedUserId);
-        return $this->_closedUser;
+        $this->closedAt = new \DateTime();
+        $this->cancelledAt = null;
+        $this->save();
+
+        if ($invoice && Registry::getValue('site.invoice.enable', false)) {
+            if ($this->getTotalBillableTime() <= 0) return $this;
+            $company = $this->getCompany();
+            if (is_null($company)) return $this;
+            $invoice = \App\Db\Invoice::getOpenInvoice($this->getCompany());
+            $item = $this->createInvoiceItem();
+            $invoice->addItem($item);
+            $this->invoicedAt = new \DateTime();
+            $this->invoiceItemId = $item->invoiceItemId;
+            $this->save();
+        }
+
+        return $this;
     }
 
-    /**
-     * Called after deleting a task log to reset the last most recent task status
-     */
-    public function resetStatus(): static
+    public function cancel(): static
     {
-        $log = TaskLog::findFiltered(Filter::create(['taskId' => $this->getId()], '-created'))[0] ?? null;
-        $this->status = self::STATUS_PENDING;
-        if ($log instanceof TaskLog) {
-            $this->status = $log->status;
-        }
+        $this->closedAt = null;
+        $this->cancelledAt = new \DateTime();
         $this->save();
         return $this;
     }
@@ -174,29 +168,27 @@ class Task extends Model implements StatusInterface
             return $this;
         }
 
-        $log = TaskLog::create($this);
+        $this->cancelledAt = null;
+        $this->closedAt = null;
+        $this->save();
+
+        $log = new TaskLog();
+        $log->taskId = $this->taskId;
         $log->billable = false;
-        $log->status = self::STATUS_OPEN;
         $log->comment = '-- Task Re-Opened. --';
-        $this->status = self::STATUS_OPEN;
-        $this->addTaskLog($log, $log->comment);
+        $log->save();
 
         return $this;
     }
 
-    public function addTaskLog(TaskLog $log, string $statusMsg = '', bool $statusNotify = true): static
+    public function addTaskLog(TaskLog $log): static
     {
         if (!$this->isEditable()) {
-            throw new \Tk\Exception('Cannot add a TaskLog with Task status of: ' . $this->getStatus());
+            throw new \Tk\Exception('Cannot add a TaskLog with Task status of: ' . $this->status);
         }
-
         $log->taskId = $this->taskId;
-        $this->status = $log->status;
         $log->save();
         $this->save();
-
-        \App\Db\StatusLog::create($this, $statusMsg, $statusNotify);
-
         return $this;
     }
 
@@ -321,20 +313,20 @@ class Task extends Model implements StatusInterface
             $filter->appendWhere('AND a.task_category_id IN :taskCategoryId');
         }
 
-        if (!empty($filter['creatorUserId'])) {
-            if (!is_array($filter['creatorUserId'])) $filter['creatorUserId'] = [$filter['creatorUserId']];
-            $filter->appendWhere('AND a.creator_user_id IN :creatorUserId');
-        }
+//        if (!empty($filter['creatorUserId'])) {
+//            if (!is_array($filter['creatorUserId'])) $filter['creatorUserId'] = [$filter['creatorUserId']];
+//            $filter->appendWhere('AND a.creator_user_id IN :creatorUserId');
+//        }
 
         if (!empty($filter['assignedUserId'])) {
             if (!is_array($filter['assignedUserId'])) $filter['assignedUserId'] = [$filter['assignedUserId']];
             $filter->appendWhere('AND a.assigned_user_id IN :assignedUserId');
         }
 
-        if (!empty($filter['closedUserId'])) {
-            if (!is_array($filter['closedUserId'])) $filter['closedUserId'] = [$filter['closedUserId']];
-            $filter->appendWhere('AND a.closed_user_id IN :closedUserId');
-        }
+//        if (!empty($filter['closedUserId'])) {
+//            if (!is_array($filter['closedUserId'])) $filter['closedUserId'] = [$filter['closedUserId']];
+//            $filter->appendWhere('AND a.closed_user_id IN :closedUserId');
+//        }
 
         if (!empty($filter['status'])) {
             if (!is_array($filter['status'])) $filter['status'] = [$filter['status']];
@@ -358,20 +350,12 @@ class Task extends Model implements StatusInterface
     {
         $errors = [];
 
-        if (!$this->taskId) {
-            $errors['taskId'] = 'Invalid value: taskId';
-        }
-
         if (!$this->companyId) {
             $errors['companyId'] = 'Invalid value: companyId';
         }
 
         if (!$this->taskCategoryId) {
             $errors['taskCategoryId'] = 'Invalid value: taskCategoryId';
-        }
-
-        if (!$this->creatorUserId) {
-            $errors['creatorUserId'] = 'Invalid value: creatorUserId';
         }
 
         if (!$this->assignedUserId) {
@@ -394,10 +378,6 @@ class Task extends Model implements StatusInterface
             $errors['subject'] = 'Invalid value: subject';
         }
 
-        if (!$this->status) {
-            $errors['status'] = 'Invalid value: status';
-        }
-
         if (!$this->priority) {
             $errors['priority'] = 'Invalid value: priority';
         }
@@ -405,27 +385,4 @@ class Task extends Model implements StatusInterface
         return $errors;
     }
 
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function onStatusChanged(StatusLog $statusLog): void
-    {
-        $prevStatusName = $statusLog->getPreviousName();
-        switch($statusLog->name) {
-            case self::STATUS_CLOSED:
-                if ($prevStatusName != self::STATUS_CANCELLED) {
-                    // Add task to open invoice
-                    if ($this->getTotalBillableTime() <= 0) break;
-                    if (is_null($this->getCompany()) || !Registry::getValue('site.invoice.enable', false)) break;
-                    $invoice = \App\Db\Invoice::getOpenInvoice($this->getCompany());
-                    if ($invoice && $invoice->getStatus() == \App\Db\Invoice::STATUS_OPEN) {
-                        $item = $this->createInvoiceItem();
-                        $invoice->addItem($item);
-                    }
-                }
-                break;
-        }
-    }
 }

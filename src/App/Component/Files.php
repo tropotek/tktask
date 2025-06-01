@@ -148,12 +148,9 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
             return;
         }
 
-        //$dataPath = Config::makePath(Config::getDataPath() . '/' . $this->model->getDataPath());
-        $dataPath = Path::createDataPath('/');
-        if ($fileField->move($dataPath)) {
-            //$path = $this->model->getDataPath() . '/' . $upload['name'];
-            $path = Path::createDataPath('/' . $upload['name']);
-            $file = File::create($path, $this->model, User::getAuthUser()->userId);
+        if ($fileField->move(Path::createDataPath($this->model->getDataPath()))) {
+            $path = Path::createDataPath($this->model->getDataPath() . '/' . $upload['name']);
+            $file = File::create($path->toRelativeString(), $this->model, User::getAuthUser()->userId);
             $file->save();
 
             // optimize any uploaded PDF > 2mb in size

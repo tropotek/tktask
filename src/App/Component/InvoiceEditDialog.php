@@ -2,21 +2,12 @@
 namespace App\Component;
 
 use App\Db\Invoice;
-use App\Db\InvoiceItem;
-use App\Db\Product;
-use App\Db\StatusLog;
 use App\Db\User;
-use App\Form\Field\Datalist;
-use App\Form\Field\StatusSelect;
 use Bs\Mvc\Form;
 use Dom\Template;
-use Tk\Collection;
-use Tk\Db;
 use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
-use Tk\Form\Field\Input;
 use Tk\Form\Field\InputGroup;
-use Tk\Form\Field\Select;
 use Tk\Form\Field\Textarea;
 use Tk\Log;
 use Tk\Uri;
@@ -25,9 +16,9 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 {
     const string CONTAINER_ID = 'invoice-edit-dialog';
 
-    protected ?Form    $form     = null;
-    protected array    $hxEvents = [];
-    protected ?Invoice $invoice  = null;
+    protected ?Form    $form       = null;
+    protected ?Invoice $invoice    = null;
+    protected array    $hxTriggers = [];
 
 
     public function doDefault(): ?Template
@@ -41,7 +32,7 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
             return null;
         }
 
-        $this->form = new Form($this->invoice, 'frm-invoice');
+        $this->form = new Form($this->invoice, 'form-invoice-edit');
         $this->form->removeAttr('action');
         $this->form->setAttr('hx-post', Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId]));
         $this->form->setAttr('hx-swap', 'outerHTML');
@@ -49,15 +40,11 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
 
 
-        $this->form->appendField(new InputGroup('discount', '%'));
-        $this->form->appendField(new InputGroup('tax', '%'));
-        $this->form->appendField(new InputGroup('shipping', '$'));
+        $this->form->appendField(new InputGroup('discount', '%'))->addFieldCss('col-md-4');
+        $this->form->appendField(new InputGroup('tax', '%'))->addFieldCss('col-md-4');
+        $this->form->appendField(new InputGroup('shipping', '$'))->addFieldCss('col-md-4');
 
         $this->form->appendField(new InputGroup('purchaseOrder', '#'));
-
-        $list = \App\Db\Invoice::STATUS_LIST;
-        //$this->form->appendField(new StatusSelect('status', $list))->setAttr('data-message-text', 'off');
-        $this->form->appendField(new Select('status', $list));
 
         $this->form->appendField(new Textarea('notes'))->addCss('mce-min');
 
@@ -73,9 +60,16 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
         $this->form->execute($_POST);
 
+        if (!$this->form->isSubmitted()) {
+            // IMPORTANT: This component always sets the htmx target and swap to end of the surrounding page <body>.
+            // That ignores hx-target and hx-swap in the triggering element, which you can omit.
+            header('HX-Retarget: body');
+            header('HX-Reswap: beforeend');
+        }
+
         // Send HX event headers
-        if (count($this->hxEvents)) {
-            header(sprintf('HX-Trigger: %s', json_encode($this->hxEvents)));
+        if (count($this->hxTriggers)) {
+            header(sprintf('HX-Trigger: %s', json_encode($this->hxTriggers)));
         }
 
         return $this->show();
@@ -89,27 +83,21 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
         $form->addFieldErrors($this->invoice->validate());
         if ($form->hasErrors()) {
-            $this->hxEvents['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
+            $this->hxTriggers['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
             return;
         }
 
         $this->invoice->save();
-        StatusLog::create($this->invoice, trim($_POST['status_msg'] ?? ''), truefalse($_POST['status_notify'] ?? false));
 
         // Trigger HX events
-        $this->hxEvents['tkForm:afterSubmit'] = ['status' => 'ok'];
+        $this->hxTriggers['tkForm:afterSubmit'] = ['status' => 'ok'];
+        $this->hxTriggers['tkForm:dialogclose'] = '#'.self::CONTAINER_ID;
     }
 
     public function show(): ?Template
     {
         $template = $this->getTemplate();
         $template->setAttr('dialog', 'id', $this->getDialogId());
-
-        $this->form->getField('discount')->addFieldCss('col-md-4');
-        $this->form->getField('tax')->addFieldCss('col-md-4');
-        $this->form->getField('shipping')->addFieldCss('col-md-4');
-        $this->form->getField('purchaseOrder')->addFieldCss('col-md-6');
-        $this->form->getField('status')->addFieldCss('col-md-6');
 
         $this->form->getRenderer()->getTemplate()->addCss('actions', 'mt-4 float-end');
         $this->form->getRenderer()->getTemplate()->removeCss('fields', 'g-3 mt-1')->addCss('fields', 'g-2');
@@ -130,10 +118,8 @@ JS;
 
     public function __makeTemplate(): ?Template
     {
-        $baseUrl = Uri::create('/component/invoiceEditDialog', ['invoiceId' => $this->invoice->invoiceId])->toString();
-
         $html = <<<HTML
-<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
+<div class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" var="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -147,15 +133,11 @@ JS;
   jQuery(function($) {
     const dialog    = '#{$this->getDialogId()}';
     const form      = '#{$this->form->getId()}';
-    const baseUrl   = '$baseUrl';
 
-    // reload init form on load
     $(document).on('htmx:afterSettle', function(e) {
-        if (!$(e.detail.elt).is(form)) return;
-        if (e.detail.requestConfig.verb.toUpperCase() === 'GET') {
-            tkInit(form);
-        }
+        if ($(e.detail.elt).is(form)) tkInit(form);
     });
+
     $(document).on('htmx:beforeRequest', function(e) {
         if ($(e.detail.elt).is(form) && e.detail.requestConfig.verb === 'post') {
             // set the description value as tinymce is not in the HTMX dom tree
@@ -163,21 +145,23 @@ JS;
         }
     });
 
-    // reload page after successfull submit
-    $(document).on('tkForm:afterSubmit', function(e) {
-        if (!$(e.detail.elt).is(form)) return;
+    // open the dialog as soon as HTMX settles
+    tkInit(form);
+    $(dialog).modal('show');
+
+    // put focus field when dialog shows
+    $(dialog).on('shown.bs.modal', function() {
+        setTimeout(function() { $('[name=discount]', dialog).focus(); }, 0);
+    });
+
+    // catch dialog finished handling post request
+    $('body').on('tkForm:dialogclose', function(e) {
         $(dialog).modal('hide');
     });
 
-    // reset form fields
-    $(dialog).on('show.bs.modal', function(e) {
-        // reload form to refresh vals
-        htmx.ajax('GET', baseUrl, {
-            source:    form,
-            select:    form,
-            target:    form,
-            swap:      'outerHTML'
-        });
+    // remove the dialog element from the dom when it closes
+    $(dialog).on('hidden.bs.modal', function() {
+        $(dialog).remove();
     });
 
 });

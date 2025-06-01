@@ -137,8 +137,8 @@ class Invoice extends PdfInterface
 
         $template->setText('total-amount', $this->invoice->unpaidTotal);
 
-        $template->setText('status', $this->invoice->getStatus());
-        $template->addCss('status', 'badge-' . \App\Db\Invoice::STATUS_CSS[$this->invoice->getStatus()]);
+        $template->setText('status', $this->invoice->status);
+        $template->addCss('status', 'badge-' . \App\Db\Invoice::STATUS_CSS[$this->invoice->status]);
 
         if ($this->invoice->status == \App\Db\Invoice::STATUS_UNPAID) {
             $outstanding = $this->invoice->getOutstandingAmount();

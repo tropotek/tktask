@@ -124,31 +124,28 @@ return function (CollectionConfigurator $routes) {
     $routes->add('com-notify-nav', '/component/notify')
         ->controller([\App\Component\Notify::class, 'doDefault']);
 
-    $routes->add('com-status-table', '/component/statusLogTable')
-        ->controller([\App\Component\StatusLogTable::class, 'doDefault']);
-
     $routes->add('com-payment-table', '/component/paymentTable')
         ->controller([\App\Component\PaymentTable::class, 'doDefault']);
 
     $routes->add('com-task-log-table', '/component/taskLogTable')
         ->controller([\App\Component\TaskLogTable::class, 'doDefault']);
 
-    $routes->add('com-item-add-dialog', '/component/itemAddDialog')
-        ->controller([\App\Component\ItemAddDialog::class, 'doDefault']);
+    $routes->add('com-item-edit-dialog', '/component/itemEditDialog')
+        ->controller([\App\Component\ItemEditDialog::class, 'doDefault']);
 
     $routes->add('com-invoice-edit-dialog', '/component/invoiceEditDialog')
         ->controller([\App\Component\InvoiceEditDialog::class, 'doDefault']);
     $routes->add('com-invoice-outstanding-table', '/component/invoiceOutstandingTable')
         ->controller([\App\Component\InvoiceOutstandingTable::class, 'doDefault']);
 
-    $routes->add('com-payment-add-dialog', '/component/paymentAddDialog')
+    $routes->add('com-payment-edit-dialog', '/component/paymentAddDialog')
         ->controller([\App\Component\PaymentAddDialog::class, 'doDefault']);
 
-    $routes->add('com-task-log-add-dialog', '/component/taskLogAddDialog')
-        ->controller([\App\Component\TaskLogAddDialog::class, 'doDefault']);
+    $routes->add('com-task-log-edit-dialog', '/component/taskLogEditDialog')
+        ->controller([\App\Component\TaskLogEditDialog::class, 'doDefault']);
 
-    $routes->add('com-company-add-dialog', '/component/companyAddDialog')
-        ->controller([\App\Component\CompanyAddDialog::class, 'doDefault']);
+    $routes->add('com-company-edit-dialog', '/component/companyEditDialog')
+        ->controller([\App\Component\CompanyEditDialog::class, 'doDefault']);
 
     $routes->add('com-company-select-dialog', '/component/companySelectDialog')
         ->controller([\App\Component\CompanySelectDialog::class, 'doDefault']);

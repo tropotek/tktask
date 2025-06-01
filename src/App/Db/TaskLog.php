@@ -25,12 +25,11 @@ class TaskLog extends Model
     public int       $taskId        = 0;
     public int       $userId        = 0;
     public int       $productId     = self::DEFAULT_PRODUCT_ID;
-    public string    $status        = Task::STATUS_PENDING;
     public bool      $billable      = true;
     public \DateTime $startAt;
     public int       $minutes       = 0;
+    public string    $status        = '';   // task status
     public string    $comment       = '';
-    public string    $notes         = '';
     public string    $dataPath      = '';
     public \DateTime $modified;
     public \DateTime $created;
@@ -50,7 +49,6 @@ class TaskLog extends Model
         if (is_bool(truefalse($config->get('site.taskLog.billable.default', true)))) {
             $this->billable = truefalse($config->get('site.taskLog.billable.default', true));
         }
-
     }
 
     public static function getFormMap(): DataMap
@@ -80,25 +78,11 @@ class TaskLog extends Model
 
     public function delete(): bool
     {
-        if ($this->getTask()->isOpen()) {
+        if (!$this->getTask()->isOpen()) {
             throw new Exception("failed to delete log id {$this->taskLogId} from closed task id {$this->taskId}");
         }
         $ok = Db::delete('task_log', ['task_id' => $this->taskId]);
-        $this->getTask()->resetStatus();
         return ($ok !== false);
-    }
-
-    public static function create(?Task $task = null, ?Product $product = null): self
-    {
-        $obj = new self();
-        if ($task) {
-            $obj->taskId = $task->taskId;
-            $obj->status = $task->status;
-        }
-        if ($product) {
-            $obj->productId = $product->productId;
-        }
-        return $obj;
     }
 
     public static function find(int $taskLogId): ?self
@@ -189,24 +173,12 @@ class TaskLog extends Model
     {
         $errors = [];
 
-        if (!$this->taskLogId) {
-            $errors['taskLogId'] = 'Invalid value: taskLogId';
-        }
-
         if (!$this->taskId) {
             $errors['taskId'] = 'Invalid value: taskId';
         }
 
         if (!$this->userId) {
             $errors['userId'] = 'Invalid value: userId';
-        }
-
-        if (!$this->productId) {
-            $errors['productId'] = 'Invalid value: productId';
-        }
-
-        if (!$this->status) {
-            $errors['status'] = 'Invalid value: status';
         }
 
         if ($this->billable && !$this->minutes) {

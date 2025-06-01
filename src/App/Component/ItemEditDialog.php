@@ -17,14 +17,14 @@ use Tk\Form\Field\InputGroup;
 use Tk\Log;
 use Tk\Uri;
 
-class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class ItemEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
-    const string CONTAINER_ID = 'invoice-add-item-dialog';
+    const string CONTAINER_ID = 'invoice-edit-item-dialog';
 
-    protected ?Form        $form     = null;
-    protected array        $hxEvents = [];
-    protected ?Invoice     $invoice  = null;
-    protected ?InvoiceItem $item     = null;
+    protected ?Form        $form       = null;
+    protected ?Invoice     $invoice    = null;
+    protected ?InvoiceItem $item       = null;
+    protected array        $hxTriggers = [];
 
 
     public function doDefault(): ?Template
@@ -41,9 +41,9 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
 
         $this->item = new InvoiceItem();
 
-        $this->form = new Form($this->item);
+        $this->form = new Form($this->item, 'form-item-edit');
         $this->form->setAction('');
-        $this->form->setAttr('hx-post', Uri::create('/component/itemAddDialog', ['invoiceId' => $this->invoice->invoiceId]));
+        $this->form->setAttr('hx-post', Uri::create('/component/itemEditDialog', ['invoiceId' => $this->invoice->invoiceId]));
         $this->form->setAttr('hx-swap', 'outerHTML');
         $this->form->setAttr('hx-target', "#{$this->form->getId()}");
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
@@ -68,9 +68,16 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
 
         $this->form->execute($_POST);
 
+        if (!$this->form->isSubmitted()) {
+            // IMPORTANT: This component always sets the htmx target and swap to end of the surrounding page <body>.
+            // That ignores hx-target and hx-swap in the triggering element, which you can omit.
+            header('HX-Retarget: body');
+            header('HX-Reswap: beforeend');
+        }
+
         // Send HX event headers
-        if (count($this->hxEvents)) {
-            header(sprintf('HX-Trigger: %s', json_encode($this->hxEvents)));
+        if (count($this->hxTriggers)) {
+            header(sprintf('HX-Trigger: %s', json_encode($this->hxTriggers)));
         }
 
         return $this->show();
@@ -89,14 +96,15 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
 
         $form->addFieldErrors($this->item->validate());
         if ($form->hasErrors()) {
-            $this->hxEvents['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
+            $this->hxTriggers['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
             return;
         }
 
         $this->invoice->addItem($this->item);
 
         // Trigger HX events
-        $this->hxEvents['tkForm:afterSubmit'] = ['status' => 'ok'];
+        $this->hxTriggers['tkForm:afterSubmit'] = ['status' => 'ok'];
+        $this->hxTriggers['tkForm:dialogclose'] = '#'.self::CONTAINER_ID;
     }
 
     public function show(): ?Template
@@ -125,7 +133,7 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
     public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
-<div class="modal fade" data-bs-backdrop="static" var="dialog" aria-hidden="true">
+<div class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" var="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -141,20 +149,27 @@ class ItemAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Disp
     const dialog = '#{$this->getDialogId()}';
     const form   = '#{$this->form->getId()}';
 
-    // reload page after successfull submit
-    $(document).on('tkForm:afterSubmit', function(e) {
-        if (!$(e.detail.elt).is(form)) return;
-        $(dialog).modal('hide');
-        location = location.href;
+    $(document).on('htmx:afterSettle', function(e) {
+        if ($(e.detail.elt).is(form)) tkInit(form);
     });
 
-    // reset form fields
-    $(dialog).on('show.bs.modal', function() {
-        $('[name=description]', this).val('');
-        $('[name=productCode]', this).val('');
-        $('[name=price]', this).val('0.00');
-        $('[name=qty]', this).val('1');
-        $('.is-invalid', this).removeClass('is-invalid');
+    // open the dialog as soon as HTMX settles
+    tkInit(form);
+    $(dialog).modal('show');
+
+    // put focus field when dialog shows
+    $(dialog).on('shown.bs.modal', function() {
+        setTimeout(function() { $('[name=description]', dialog).focus(); }, 0);
+    });
+
+    // catch dialog finished handling post request
+    $('body').on('tkForm:dialogclose', function(e) {
+        $(dialog).modal('hide');
+    });
+
+    // remove the dialog element from the dom when it closes
+    $(dialog).on('hidden.bs.modal', function() {
+        $(dialog).remove();
     });
 
     // auto-complete select for invoicable products

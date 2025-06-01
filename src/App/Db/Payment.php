@@ -5,22 +5,11 @@ use App\Db\Traits\InvoiceTrait;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
-use Tk\Log;
 use Tk\Money;
 
-class Payment extends Model implements StatusInterface
+class Payment extends Model
 {
     use InvoiceTrait;
-
-    const string STATUS_CLEARED    = 'cleared';
-    const string STATUS_PENDING    = 'pending';
-    const string STATUS_CANCELLED  = 'cancelled';
-
-    const array STATUS_LIST = [
-        self::STATUS_CLEARED    => 'Cleared',
-        self::STATUS_PENDING    => 'Pending',
-        self::STATUS_CANCELLED  => 'Cancelled',
-    ];
 
     const string METHOD_CASH    = 'cash';
     const string METHOD_DEPOSIT = 'eft';
@@ -41,7 +30,6 @@ class Payment extends Model implements StatusInterface
     public int        $invoiceId  = 0;
     public Money      $amount;
     public string     $method     = self::METHOD_DEPOSIT;
-    public string     $status     = self::STATUS_CLEARED;
     public \DateTime  $receivedAt;
     public ?string    $notes      = null;
     public \DateTime  $modified;
@@ -56,12 +44,11 @@ class Payment extends Model implements StatusInterface
         $this->created = new \DateTime();
     }
 
-    public static function create(Money $amount, string $method = self::METHOD_CASH, string $status = self::STATUS_CLEARED): self
+    public static function create(Money $amount, string $method = self::METHOD_CASH): self
     {
         $obj = new self();
         $obj->amount = $amount;
         $obj->method = $method;
-        $obj->status = $status;
         $obj->receivedAt = \Tk\Date::create();
         return $obj;
     }
@@ -148,10 +135,6 @@ class Payment extends Model implements StatusInterface
             $filter->appendWhere('AND a.method = :method');
         }
 
-        if (!empty($filter['status'])) {
-            $filter->appendWhere('AND a.status = :status');
-        }
-
         if (!empty($filter['dateStart'])) {
             if (($filter['dateStart'] instanceof \DateTime)) $filter['dateStart'] = $filter['dateStart']->format(\Tk\Date::FORMAT_ISO_DATETIME);
             $filter->appendWhere('AND a.received_at >= :dateStart');
@@ -173,10 +156,6 @@ class Payment extends Model implements StatusInterface
     {
         $errors = [];
 
-        if (!$this->paymentId) {
-            $errors['paymentId'] = 'Invalid value: paymentId';
-        }
-
         if (!$this->invoiceId) {
             $errors['invoiceId'] = 'Invalid value: invoiceId';
         }
@@ -186,22 +165,6 @@ class Payment extends Model implements StatusInterface
         }
 
         return $errors;
-    }
-
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function onStatusChanged(StatusLog $statusLog): void
-    {
-        $prevStatusName = $statusLog->getPreviousName();
-        if ($statusLog->name == self::STATUS_CLEARED && (!$prevStatusName || $prevStatusName == self::STATUS_PENDING)) {
-            if (!$statusLog->notify) return;
-            if (!\App\Email\Invoice::sendPaymentReceipt($this)) {       // email client payment receipt
-                Log::error("failed to send payment receipt for invoice {$this->getInvoice()->fkey} ID {$this->getInvoice()->fid}");
-            }
-        }
     }
 
 }

@@ -13,7 +13,7 @@ use Tk\Log;
 use Tk\Money;
 use Tk\Uri;
 
-class Invoice extends Model implements StatusInterface
+class Invoice extends Model
 {
     use ForeignModelTrait;
 
@@ -51,10 +51,11 @@ class Invoice extends Model implements StatusInterface
     public Money      $total;
     public Money      $paidTotal;
     public Money      $unpaidTotal;
-    public string     $status          = self::STATUS_OPEN;
+    public string     $status          = '';
     public string     $billingAddress  = '';
     public ?\DateTime $issuedOn        = null;
     public ?\DateTime $paidOn          = null;
+    public ?\DateTime $cancelledOn     = null;
     public string     $notes           = '';
     public \DateTime  $modified;
     public \DateTime  $created;
@@ -152,7 +153,7 @@ class Invoice extends Model implements StatusInterface
 
     public function addItem(InvoiceItem $item): static
     {
-        if ($this->getStatus() != self::STATUS_OPEN) {
+        if ($this->status != self::STATUS_OPEN) {
             throw new \Tk\Exception('Invoice is not open and cannot be modified');
         }
 
@@ -165,7 +166,7 @@ class Invoice extends Model implements StatusInterface
 
     public function deleteItem(InvoiceItem $item): static
     {
-        if (!$this->getStatus() == self::STATUS_OPEN) {
+        if (!$this->status == self::STATUS_OPEN) {
             throw new \Tk\Exception('Invoice is not open and cannot be modified');
         }
 
@@ -185,7 +186,7 @@ class Invoice extends Model implements StatusInterface
 
     public function addPayment(Payment $payment): static
     {
-        if ($this->getStatus() != self::STATUS_UNPAID) {
+        if ($this->status != self::STATUS_UNPAID) {
             throw new \Tk\Exception('Invoice is not unpaid and payments cannot be modified');
         }
 
@@ -195,18 +196,17 @@ class Invoice extends Model implements StatusInterface
 
         $payment->invoiceId = $this->invoiceId;
         $payment->save();
-        StatusLog::create($payment, 'payment made');
         $this->reload();      // Recalculate totals.
 
         // Check if invoice is paid then change the invoice status to paid
         if ($this->unpaidTotal->getAmount() == 0) {
-            $this->status = self::STATUS_PAID;
             $this->paidOn = $payment->receivedAt;
             $this->save();
-            StatusLog::create($this, 'final payment made');
-        }
 
-        $this->reload();      // Recalculate totals.
+            if (!\App\Email\Invoice::sendPaymentReceipt($payment)) {    // email client payment receipt
+                Log::error("failed to send payment receipt for invoice {$this->fkey} ID {$this->fid}");
+            }
+        }
 
         return $this;
     }
@@ -225,14 +225,18 @@ class Invoice extends Model implements StatusInterface
 
     public function doIssue(): static
     {
+
+        $this->issuedOn = \Tk\Date::create();
+        $this->save();
+
         if ($this->unpaidTotal->getAmount() <= 0) {
             \Tk\Log::warning('Invoice not issued as there is no outstanding amount: ID: ' . $this->invoiceId);
             return $this;
         }
-        $this->status = self::STATUS_UNPAID;
-        $this->issuedOn = \Tk\Date::create();
-        $this->save();
-        StatusLog::create($this, 'Invoice Issued');
+
+        if (!\App\Email\Invoice::sendIssueInvoice($this)) {     // on invoice issue
+            Log::error("failed to send invoice email to {$this->fkey} ID {$this->fid}");
+        }
 
         // Notify users
         $users = User::findFiltered(['active' => true, 'type' => User::TYPE_STAFF]);
@@ -249,11 +253,20 @@ class Invoice extends Model implements StatusInterface
         return $this;
     }
 
+    public function reopen(): static
+    {
+        $this->issuedOn = null;
+        $this->paidOn = null;
+        $this->cancelledOn = null;
+        $this->save();
+
+        return $this;
+    }
+
     public function doCancel(): static
     {
-        $this->status = self::STATUS_CANCELLED;
+        $this->cancelledOn = \Tk\Date::create();
         $this->save();
-        StatusLog::create($this, 'Invoice Cancelled');
         return $this;
     }
 
@@ -442,10 +455,6 @@ class Invoice extends Model implements StatusInterface
     {
         $errors = [];
 
-        if (!$this->invoiceId) {
-            $errors['invoiceId'] = 'Invalid value: invoiceId';
-        }
-
         if (!$this->fkey) {
             $errors['client'] = 'Invalid client type selected';
         }
@@ -461,19 +470,4 @@ class Invoice extends Model implements StatusInterface
         return $errors;
     }
 
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function onStatusChanged(StatusLog $statusLog): void
-    {
-        $prevStatusName = $statusLog->getPreviousName();
-        if ($statusLog->name == self::STATUS_UNPAID && (!$prevStatusName || $prevStatusName == self::STATUS_OPEN)) {
-            if (!$statusLog->notify) return;
-            if (!\App\Email\Invoice::sendIssueInvoice($this)) {     // on invoice issue
-                Log::error("failed to send invoice email to {$this->fkey} ID {$this->fid}");
-            }
-        }
-    }
 }

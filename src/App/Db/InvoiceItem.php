@@ -88,11 +88,6 @@ class InvoiceItem extends Model
         return $this->_model;
     }
 
-//    public function getTotal(): Money
-//    {
-//        return $this->price->multiply($this->qty);
-//    }
-
     public static function find(int $invoiceItemId): ?self
     {
         return Db::queryOne("
@@ -165,16 +160,8 @@ class InvoiceItem extends Model
     {
         $errors = [];
 
-        if (!$this->invoiceItemId) {
-            $errors['invoiceItemId'] = 'Invalid value: invoiceItemId';
-        }
-
         if (!$this->invoiceId) {
             $errors['invoiceId'] = 'Invalid value: invoiceId';
-        }
-
-        if (!$this->productCode) {
-            $errors['productCode'] = 'Invalid value: productCode';
         }
 
         if (!$this->description) {
@@ -184,10 +171,6 @@ class InvoiceItem extends Model
         if ($this->qty == 0) {
             $errors['qty'] = 'Invalid value: qty';
         }
-
-//        if ($this->price->getAmount() == 0) {
-//            $errors['price'] = 'Invalid value unit price';
-//        }
 
         return $errors;
     }

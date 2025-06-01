@@ -16,7 +16,7 @@ jQuery(function ($) {
     app.initCheckSelect();
     app.initStatusSelect();
     app.initTimeSelect();
-
+    //htmx.logAll();
 });
 
 let app = function () {

@@ -1,7 +1,7 @@
 <?php
 namespace App\Table;
 
-use App\Component\TaskLogAddDialog;
+use App\Component\TaskLogEditDialog;
 use App\Db\Company;
 use App\Db\TaskCategory;
 use App\Util\Tools;
@@ -55,13 +55,13 @@ class Task extends Table
                     $cell->getTable()->getRowAttrs()->addCss('task-closed');
                 }
                 $disabled = $obj->isOpen() ? '' : 'disabled';
-                $url = Uri::create('/taskEdit')->set('taskId', $obj->taskId);
-                $dialogId = TaskLogAddDialog::CONTAINER_ID;
+                $url = Uri::create('/component/taskLogEditDialog')->set('taskId', $obj->taskId);
                 return <<<HTML
                     <button class="btn btn-primary $disabled" type="button" title="Add Log" $disabled
-                        data-bs-target="#{$dialogId}"
-                        data-bs-toggle="modal"
-                        data-task-id="{$obj->taskId}">
+                        hx-get="{$url}"
+                        hx-trigger="click queue:none"
+                        hx-target="body"
+                        hx-swap="beforeend">
                         <i class="far fa-fw fa-clock"></i>
                     </button>
                 HTML;
@@ -169,7 +169,7 @@ class Task extends Table
             ->setAttr('placeholder', '-- Status --')
             ->addCss('tk-checkselect'))
             ->setPersistent(true)
-            ->setValue([\App\Db\Task::STATUS_PENDING, \App\Db\Task::STATUS_HOLD, \App\Db\Task::STATUS_OPEN]);
+            ->setValue([\App\Db\Task::STATUS_OPEN]);
 
         $this->getForm()->appendField((new \Tk\Form\Field\Select('priority', \App\Db\Task::PRIORITY_LIST))
             ->setMultiple(true)
@@ -209,11 +209,6 @@ class Task extends Table
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-
-        $htmx = <<<HTML
-<div hx-get="/component/taskLogAddDialog" hx-trigger="load" hx-swap="outerHTML"></div>
-HTML;
-        $template->appendHtml('table', $htmx);
 
         $js = <<<JS
 jQuery(function ($) {

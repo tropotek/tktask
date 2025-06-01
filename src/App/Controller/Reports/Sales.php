@@ -97,13 +97,11 @@ class Sales extends ControllerAdmin
             LEFT JOIN invoice i ON (i.fkey = 'App\\\\Db\\\\Company' AND i.fid = c.company_id)
             LEFT JOIN payment p USING (invoice_id)
             WHERE c.type = :type
-            AND p.status = :status
             AND p.created BETWEEN :dateFrom AND :dateTo
             GROUP BY c.company_id, c.name
             ORDER BY c.name",
             [
                 'type'     => Company::TYPE_CLIENT,
-                'status'   => Payment::STATUS_CLEARED,
                 'dateFrom' => $dateset[0]->format(Date::FORMAT_ISO_DATETIME),
                 'dateTo'   => $dateset[1]->format(Date::FORMAT_ISO_DATETIME),
             ]
@@ -115,10 +113,8 @@ class Sales extends ControllerAdmin
         return Db::queryInt("
             SELECT SUM(p.amount) AS total
             FROM payment p
-            WHERE p.created BETWEEN :dateFrom AND :dateTo
-            AND p.status = :status",
+            WHERE p.created BETWEEN :dateFrom AND :dateTo",
             [
-                'status'   => Payment::STATUS_CLEARED,
                 'dateFrom' => $dateset[0]->format(Date::FORMAT_ISO_DATETIME),
                 'dateTo'   => $dateset[1]->format(Date::FORMAT_ISO_DATETIME),
             ]

@@ -1,15 +1,12 @@
 <?php
 namespace App\Controller\Project;
 
-use App\Component\StatusLogTable;
 use App\Db\Project;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Dom\Template;
-use Tk\Alert;
 use Tk\Date;
 use Tk\Exception;
-use Tk\Uri;
 
 class Edit extends ControllerAdmin
 {
@@ -53,9 +50,6 @@ class Edit extends ControllerAdmin
 
         $template->appendTemplate('content', $this->form->show());
 
-        $url = Uri::create('/component/statusLogTable', ['fid' => $this->project->getId(), 'fkey' => $this->project::class]);
-        $template->setAttr('statusTable', 'hx-get', $url);
-
         return $template;
     }
 
@@ -76,11 +70,6 @@ class Edit extends ControllerAdmin
         <i var="icon"></i> <span var="title"></span>
       </div>
       <div class="card-body" var="content"></div>
-    </div>
-  </div>
-  <div class="col-md-4" choice="components">
-    <div hx-get="/component/statusLogTable" hx-trigger="load" hx-swap="outerHTML" var="statusTable">
-      <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
     </div>
   </div>
 </div>

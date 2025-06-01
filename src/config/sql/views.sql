@@ -67,6 +67,11 @@ FROM expense e;
 CREATE OR REPLACE VIEW v_task AS
 SELECT
   t.*,
+  CASE
+      WHEN closed_at IS NOT NULL THEN 'closed'
+      WHEN cancelled_at IS NOT NULL THEN 'cancelled'
+      ELSE 'open'
+  END AS status,
   CONCAT('/task/', YEAR(t.created), '/' , t.task_id) AS data_path
 FROM task t;
 
@@ -74,9 +79,22 @@ FROM task t;
 CREATE OR REPLACE VIEW v_task_log AS
 SELECT
   tl.*,
-  t.data_path
+  t.data_path,
+  t.status
 FROM task_log tl
 JOIN v_task t USING (task_id);
+
+-- \App\Db\Project
+CREATE OR REPLACE VIEW v_project AS
+SELECT
+  p.*,
+  CASE
+    WHEN p.cancelled_on IS NOT NULL THEN 'cancelled'
+    WHEN CURRENT_DATE BETWEEN p.start_on AND p.end_on THEN 'active'
+    WHEN CURRENT_DATE > p.end_on THEN 'completed'
+    ELSE 'pending'
+  END AS status
+FROM project p;
 
 -- \App\Db\InvoiceItem
 CREATE OR REPLACE VIEW v_invoice_item AS
@@ -99,7 +117,6 @@ payments AS (
     invoice_id,
     SUM(amount) AS paid_total
   FROM payment
-  WHERE status = 'cleared'
   GROUP BY invoice_id
 ),
 totals AS (
@@ -121,6 +138,12 @@ totals AS (
 )
 SELECT
   i.*,
+  CASE
+      WHEN i.cancelled_on IS NOT NULL THEN 'cancelled'
+      WHEN i.paid_on IS NOT NULL THEN 'paid'
+      WHEN i.issued_on IS NOT NULL THEN 'unpaid'
+      ELSE 'open'
+  END AS status,
   t.sub_total,
   t.discount_total,
   t.tax_total,

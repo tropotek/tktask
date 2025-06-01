@@ -50,7 +50,7 @@ class Task extends Form
 
         // show project select for new task only if open tasks exists
         if ($this->getTask()->taskId == 0) {
-            $projects = \App\Db\Project::findFiltered(Filter::create(['status' => \App\Db\Project::STATUS_OPEN], '-created'));
+            $projects = \App\Db\Project::findFiltered(Filter::create(['status' => \App\Db\Project::STATUS_ACTIVE], '-created'));
             if (count($projects)) {
                 $list = Collection::toSelectList($projects, 'projectId');
                 $this->form->appendField((new Select('projectId', $list))
@@ -100,17 +100,19 @@ class Task extends Form
 
         $this->appendField(new Minutes('minutes'))
             ->setLabel('Est. Duration')
-            ->addFieldCss('col-md-4');
+            ->addFieldCss('col');
 
         $this->appendField((new Select('priority', \App\Db\Task::PRIORITY_LIST))
             ->prependOption('-- Select --', '')
-            ->addFieldCss('col-md-4')
+            ->addFieldCss('col')
         );
 
-        $this->appendField(new Html('status', $this->getTask()->status))
-            ->setDisabled()
-            ->addCss('form-control disabled')
-            ->addFieldCss('col-md-4');
+        if ($this->getTask()->taskId) {
+            $this->appendField(new Html('status', $this->getTask()->status))
+                ->setDisabled()
+                ->addCss('form-control disabled')
+                ->addFieldCss('col');
+        }
 
         $this->appendField(new Textarea('comments'))
             ->setAttr('data-elfinder-path', $this->getTask()->dataPath . '/media')

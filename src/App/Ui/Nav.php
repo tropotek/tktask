@@ -22,7 +22,7 @@ class Nav
                 'url' => '/dashboard',
                 'badge' => function() {
                     $open = Task::findFiltered([
-                        'status' => [Task::STATUS_PENDING, Task::STATUS_OPEN, Task::STATUS_HOLD],
+                        'status' => [Task::STATUS_OPEN],
                         'assignedUserId' => User::getAuthUser()->userId,
                     ]);
                     if (count($open) == 0) return '';
@@ -38,7 +38,7 @@ class Nav
                 'visible' => fn($i) => $this->getUser()?->isStaff(),
                 'url' => '/taskManager',
                 'badge' => function() {
-                    $open = Task::findFiltered(['status' => [Task::STATUS_PENDING, Task::STATUS_OPEN, Task::STATUS_HOLD]]);
+                    $open = Task::findFiltered(['status' => [Task::STATUS_OPEN]]);
                     if (count($open) == 0) return '';
                     return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },

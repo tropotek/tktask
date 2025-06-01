@@ -28,7 +28,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         if (!$this->task) return null;
 
         // init table
-        $this->table = new Table('task-log-tbl');
+        $this->table = new Table('table-task-log');
         $this->table->setOrderBy('-created');
         $this->table->setLimit(10);
         $this->table->addCss('tk-table-sm');
@@ -36,9 +36,19 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\TaskLog $obj, Cell $cell) {
-                $url = Uri::create('/taskLogEdit')->set('taskLogId', $obj->taskLogId);
+
+                $disabled = $obj->status != Task::STATUS_OPEN ? 'disabled' : '';
+                $url = Uri::create('/component/taskLogEditDialog')->set('taskLogId', $obj->taskLogId);
+                $id = '#'.TaskLogEditDialog::CONTAINER_ID;
                 return <<<HTML
-                    <a class="btn btn-primary" href="$url" title="Edit Task Log"><i class="fas fa-fw fa-pencil-alt"></i></a>
+                    <button class="btn btn-primary $disabled" title="Edit Task Log" $disabled
+                        hx-get="{$url}"
+                        hx-select="{$id}"
+                        hx-trigger="click queue:none"
+                        hx-target="body"
+                        hx-swap="beforeend">
+                        <i class="fas fa-fw fa-pencil-alt"></i>
+                    </button>
                 HTML;
             });
 
@@ -49,9 +59,6 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
                 return $obj->comment;
             });
 
-        $this->table->appendCell('status')
-            ->addCss('text-nowrap text-center');
-
         $this->table->appendCell('minutes')
             ->setHeader('Duration')
             ->addCss('text-nowrap')
@@ -60,7 +67,8 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
                 return Tools::mins2Str($obj->minutes);
             });
 
-        $this->table->appendCell('created')
+        $this->table->appendCell('startAt')
+            ->setHeader('Started')
             ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
 
@@ -89,7 +97,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
     public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
-<div>
+<div id="task-log-table">
   <div class="card mb-3">
     <div class="card-header"><i class="fas fa-cogs"></i> <span var="title">Task Logs</span></div>
     <div class="card-body" var="content"></div>

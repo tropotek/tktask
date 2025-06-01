@@ -66,7 +66,7 @@ class Dashboard extends ControllerAdmin
         // Open Tasks
         $tasks = Task::findFiltered([
             'assignedUserId' => User::getAuthUser()->userId,
-            'status' => [Task::STATUS_OPEN, Task::STATUS_PENDING, Task::STATUS_HOLD],
+            'status' => Task::STATUS_OPEN,
         ]);
         $template->setText('openTasks', (string)count($tasks));
 
@@ -95,7 +95,6 @@ class Dashboard extends ControllerAdmin
         $payments = Payment::findFiltered([
             'dateStart' => $dateSet[0],
             'dateEnd' => $dateSet[1],
-            'status' => Payment::STATUS_CLEARED,
         ]);
         $total = Money::create();
         foreach ($payments as $payment) {
