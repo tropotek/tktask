@@ -5,6 +5,12 @@ use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
 
+/**
+ * Stored the information from a domain ping.
+ *
+ * NOTE: Domain pings are stored for a year then cleared.
+ *       See DB events.sql `evt_delete_domain_ping`
+ */
 class DomainPing extends Model
 {
     const bool STATUS_UP = true;
@@ -55,30 +61,6 @@ class DomainPing extends Model
         }
 
         $this->reload();
-    }
-
-    public static function find(int $domainPingId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM domain_ping
-            WHERE domain_ping_id = :domainPingId",
-            compact('domainPingId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,DomainPing>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM domain_ping",
-            [],
-            self::class
-        );
     }
 
     /**
@@ -138,10 +120,6 @@ class DomainPing extends Model
     public function validate(): array
     {
         $errors = [];
-
-        if (!$this->domainPingId) {
-            $errors['domainPingId'] = 'Invalid value: domainPingId';
-        }
 
         if (!$this->domainId) {
             $errors['domainId'] = 'Invalid value: domainId';

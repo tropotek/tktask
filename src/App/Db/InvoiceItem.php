@@ -88,30 +88,6 @@ class InvoiceItem extends Model
         return $this->_model;
     }
 
-    public static function find(int $invoiceItemId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_invoice_item
-            WHERE invoice_item_id = :invoiceItemId",
-            compact('invoiceItemId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,InvoiceItem>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_invoice_item",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,InvoiceItem>
      */

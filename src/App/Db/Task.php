@@ -247,30 +247,6 @@ class Task extends Model
         return \App\Db\InvoiceItem::create('TSK-'.$this->getId(), $subject, $total);
     }
 
-    public static function find(int $taskId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_task
-            WHERE task_id = :taskId",
-            compact('taskId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Task>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_task",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,Task>
      */

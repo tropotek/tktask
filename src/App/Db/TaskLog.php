@@ -79,34 +79,10 @@ class TaskLog extends Model
     public function delete(): bool
     {
         if (!$this->getTask()->isOpen()) {
-            throw new Exception("failed to delete log id {$this->taskLogId} from closed task id {$this->taskId}");
+            throw new Exception("cannot delete log id {$this->taskLogId} from closed task id {$this->taskId}");
         }
         $ok = Db::delete('task_log', ['task_id' => $this->taskId]);
         return ($ok !== false);
-    }
-
-    public static function find(int $taskLogId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_task_log
-            WHERE task_log_id = :taskLogId",
-            compact('taskLogId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,TaskLog>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_task_log",
-            [],
-            self::class
-        );
     }
 
     /**

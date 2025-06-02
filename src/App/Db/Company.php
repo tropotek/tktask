@@ -60,30 +60,6 @@ class Company extends Model
         $this->reload();
     }
 
-    public static function find(int $companyId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_company
-            WHERE company_id = :companyId",
-            compact('companyId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Company>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_company",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,Company>
      */

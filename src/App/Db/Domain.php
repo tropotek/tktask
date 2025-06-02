@@ -95,30 +95,6 @@ class Domain extends Model
         return DomainPing::find($this->lastPing_id);
     }
 
-    public static function find(int $domainId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_domain
-            WHERE domain_id = :domainId",
-            compact('domainId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Domain>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_domain",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,Domain>
      */

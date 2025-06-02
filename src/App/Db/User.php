@@ -183,30 +183,6 @@ class User extends Model implements UserInterface
         return null;
     }
 
-    public static function find(int $userId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_user
-            WHERE user_id = :userId",
-            compact('userId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,User>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_user",
-            [],
-            self::class
-        );
-    }
-
     public static function findByUsername(string $username): ?self
     {
         $username = trim($username);

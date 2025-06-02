@@ -75,30 +75,6 @@ class Payment extends Model
         return (false !== Db::delete('payment', ['payment_id' => $this->paymentId]));
     }
 
-    public static function find(int $paymentId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM payment
-            WHERE payment_id = :paymentId",
-            compact('paymentId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Payment>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM payment",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,Payment>
      */

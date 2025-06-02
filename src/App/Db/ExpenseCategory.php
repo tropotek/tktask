@@ -11,7 +11,7 @@ class ExpenseCategory extends Model
     public int       $expenseCategoryId = 0;
     public string    $name              = '';
     public string    $description       = '';
-    /** amount claimable for tax */
+    /** percentage claimable for tax */
     public float     $claim             = 1;
     public bool      $active            = true;
     public \DateTime $modified;
@@ -46,30 +46,6 @@ class ExpenseCategory extends Model
         }
 
         $this->reload();
-    }
-
-    public static function find(int $expenseCategoryId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM expense_category
-            WHERE expense_category_id = :expenseCategoryId",
-            compact('expenseCategoryId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,ExpenseCategory>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM expense_category",
-            [],
-            self::class
-        );
     }
 
     /**

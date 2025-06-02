@@ -77,11 +77,11 @@ class Notify extends Model
         }
 
         $obj = new self();
-        $obj->userId = $userId;
-        $obj->title = $title;
+        $obj->userId  = $userId;
+        $obj->title   = $title;
         $obj->message = $message;
-        $obj->url = $url;
-        $obj->icon = $icon;
+        $obj->url     = $url;
+        $obj->icon    = $icon;
         $obj->ttlMins = $ttlMins;
         $obj->save();
 
@@ -112,30 +112,6 @@ class Notify extends Model
             UPDATE notify SET notified_at = NOW()
             WHERE notify_id IN :notifyIds",
             compact('notifyIds')
-        );
-    }
-
-    public static function find(int $notifyId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_notify
-            WHERE notify_id = :notifyId",
-            compact('notifyId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Notify>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_notify",
-            [],
-            self::class
         );
     }
 

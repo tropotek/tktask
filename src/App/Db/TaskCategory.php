@@ -42,30 +42,6 @@ class TaskCategory extends Model
         $this->reload();
     }
 
-    public static function find(int $taskCategoryId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM task_category
-            WHERE task_category_id = :taskCategoryId",
-            compact('taskCategoryId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,TaskCategory>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM task_category",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,TaskCategory>
      */
@@ -113,10 +89,6 @@ class TaskCategory extends Model
     public function validate(): array
     {
         $errors = [];
-
-        if (!$this->taskCategoryId) {
-            $errors['taskCategoryId'] = 'Invalid value: taskCategoryId';
-        }
 
         if (!$this->name) {
             $errors['name'] = 'Invalid value: name';

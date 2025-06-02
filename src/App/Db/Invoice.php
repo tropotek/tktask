@@ -303,30 +303,6 @@ class Invoice extends Model
         return $total;
     }
 
-    public static function find(int $invoiceId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_invoice
-            WHERE invoice_id = :invoiceId",
-            compact('invoiceId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Invoice>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_invoice",
-            [],
-            self::class
-        );
-    }
-
     /**
      * Return any outstanding invoice from the same company as the supplied invoiceId
      * Does not include the supplied invoiceId

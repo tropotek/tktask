@@ -10,10 +10,8 @@ class ProductCategory extends Model
     public int     $productCategoryId = 0;
     public string  $name              = '';
     public string  $description       = '';
-
     public \DateTime $modified;
     public \DateTime $created;
-
 
 
     public function __construct()
@@ -37,30 +35,6 @@ class ProductCategory extends Model
         }
 
         $this->reload();
-    }
-
-    public static function find(int $productCategoryId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM product_category
-            WHERE product_category_id = :productCategoryId",
-            compact('productCategoryId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,ProductCategory>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM product_category",
-            [],
-            self::class
-        );
     }
 
     /**
@@ -107,10 +81,6 @@ class ProductCategory extends Model
     public function validate(): array
     {
         $errors = [];
-
-        if (!$this->productCategoryId) {
-            $errors['productCategoryId'] = 'Invalid value: productCategoryId';
-        }
 
         if (!$this->name) {
             $errors['name'] = 'Invalid value: name';

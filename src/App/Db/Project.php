@@ -162,30 +162,6 @@ class Project extends Model
         return $time;
     }
 
-    public static function find(int $projectId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_project
-            WHERE project_id = :projectId",
-            compact('projectId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Project>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_project",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,Project>
      */

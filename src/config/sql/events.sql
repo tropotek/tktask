@@ -18,3 +18,17 @@ CREATE EVENT evt_delete_expired_notify
   END
 //
 DELIMITER ;
+
+-- Delete domain pings after a year (\App\Db\DomainPing)
+DROP EVENT IF EXISTS evt_delete_domain_ping;
+DELIMITER //
+CREATE EVENT evt_delete_domain_ping
+  ON SCHEDULE EVERY 1 DAY
+  COMMENT 'Delete domain pings'
+  DO
+  BEGIN
+    DELETE FROM domain_ping
+    WHERE created < NOW() - INTERVAL 1 YEAR;
+  END
+//
+DELIMITER ;

@@ -15,8 +15,8 @@ class Product extends Model
 {
     use ProductCategoryTrait;
 
-    const int    LABOR_CAT_ID    = 1;
-    const int    DEFAULT_LABOUR_PRODUCT = 1;
+    const int LABOR_CAT_ID           = 1;
+    const int DEFAULT_LABOUR_PRODUCT = 1;
 
     const string CYCLE_EACH      = 'each';
     const string CYCLE_WEEK      = 'week';
@@ -86,17 +86,6 @@ class Product extends Model
         return $obj;
     }
 
-    public static function find(int $productId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_product
-            WHERE product_id = :productId",
-            compact('productId'),
-            self::class
-        );
-    }
-
     public static function findByCode(string $productCode): ?self
     {
         return Db::queryOne("
@@ -104,19 +93,6 @@ class Product extends Model
             FROM v_product
             WHERE code = :productCode",
             compact('productCode'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Product>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_product",
-            [],
             self::class
         );
     }
@@ -178,10 +154,6 @@ class Product extends Model
     public function validate(): array
     {
         $errors = [];
-
-        if (!$this->productId) {
-            $errors['productId'] = 'Invalid value: productId';
-        }
 
         if (!$this->productCategoryId) {
             $errors['productCategoryId'] = 'Invalid value: productCategoryId';

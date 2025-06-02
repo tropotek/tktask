@@ -77,31 +77,6 @@ class Expense extends Model
         return $this->total->multiply($this->getClaimRatio());
     }
 
-
-    public static function find(int $expenseId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM v_expense
-            WHERE expense_id = :expenseId",
-            compact('expenseId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Expense>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM v_expense",
-            [],
-            self::class
-        );
-    }
-
     /**
      * @return array<int,Expense>
      */

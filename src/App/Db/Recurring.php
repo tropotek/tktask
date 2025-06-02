@@ -96,7 +96,6 @@ class Recurring extends Model
         $this->nextOn = self::createNextDate($this->prevOn, $this->cycle);
         $description  = $this->description . ' [' . $lastInvoice->format(\Tk\Date::FORMAT_AU_DATE) . ' - ' . $this->prevOn->format(\Tk\Date::FORMAT_AU_DATE) . ']';
 
-
         if ($this->active) {
             $invoice = Invoice::getOpenInvoice($this->getCompany());
 
@@ -154,30 +153,6 @@ class Recurring extends Model
                 break;
         }
         return \Tk\Date::floor($date);
-    }
-
-    public static function find(int $recurringId): ?self
-    {
-        return Db::queryOne("
-            SELECT *
-            FROM recurring
-            WHERE recurring_id = :recurringId",
-            compact('recurringId'),
-            self::class
-        );
-    }
-
-    /**
-     * @return array<int,Recurring>
-     */
-    public static function findAll(): array
-    {
-        return Db::query("
-            SELECT *
-            FROM recurring",
-            [],
-            self::class
-        );
     }
 
     /**
