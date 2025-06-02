@@ -49,11 +49,6 @@ class Expense extends Model
         $this->reload();
     }
 
-    public function getDataPath(): string
-    {
-        return $this->dataPath;
-    }
-
     /**
      * @return array<int,File>
      */

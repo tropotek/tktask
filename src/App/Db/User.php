@@ -103,11 +103,6 @@ class User extends Model implements UserInterface
         return File::findFiltered($filter);
     }
 
-    public function getDataPath(): string
-    {
-        return $this->dataPath;
-    }
-
     public function getImageUrl(): ?Uri
     {
         $color = Color::createRandom($this->userId);

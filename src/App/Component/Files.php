@@ -34,7 +34,7 @@ class Files extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInter
             return null;
         }
 
-        $this->model = $fkey::findDbModel($fid);
+        $this->model = File::findDbModel($fkey, $fid);
         if (!$this->model) {
             Log::error("failed to find model {$fkey} with id {$fid}");
             return null;
