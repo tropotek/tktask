@@ -38,17 +38,16 @@ class ProfitLoss extends ControllerAdmin
             Uri::create('/')->redirect();
         }
 
-        $start = Date::getFinancialYear($firstInvoice->created)[0];
-        $end   = \Tk\Date::create();
+        $start = Date::getFinancialYear()[0];
+        $end = Date::getFinancialYear($firstInvoice->created)[0];
         $val   = $this->dateSet[0]->format('Y-m-d');
         $list  = [];
 
-        while ($start->format('Y') <= $end->format('Y')) {
+        while ($start >= $end) {
             $years = sprintf('%s-%s', (int)$start->format('Y'), (int)$start->format('Y')+1);
             $list[$start->format('Y-m-d')] = $years;
-            $start = $start->add(new \DateInterval('P1Y'));
+            $start = $start->sub(new \DateInterval('P1Y'));
         }
-        $list = array_reverse($list);
         $this->form->appendField(new Select('date', $list))
             ->setLabel('Financial Year:')
             ->setValue($val);
