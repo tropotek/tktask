@@ -103,8 +103,10 @@ class ItemEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         $this->invoice->addItem($this->item);
 
         // Trigger HX events
-        $this->hxTriggers['tkForm:afterSubmit'] = ['status' => 'ok'];
-        $this->hxTriggers['tkForm:dialogclose'] = '#'.self::CONTAINER_ID;
+        $this->hxTriggers['tkForm:afterSubmit'] = [
+            'status' => 'ok',
+            'target' => '#'.self::CONTAINER_ID,
+        ];
     }
 
     public function show(): ?Template
@@ -134,23 +136,24 @@ class ItemEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     {
         $html = <<<HTML
 <div class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" var="dialog">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Add Item</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" var="content"></div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Item</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" var="content"></div>
+        </div>
     </div>
-  </div>
 
 <script>
   jQuery(function($) {
     const dialog = '#{$this->getDialogId()}';
     const form   = '#{$this->form->getId()}';
 
-    $(document).on('htmx:afterSettle', function(e) {
-        if ($(e.detail.elt).is(form)) tkInit(form);
+
+    $(document).on('htmx:afterSettle', dialog, function(e) {
+        tkInit(form);
     });
 
     // open the dialog as soon as HTMX settles
@@ -159,11 +162,11 @@ class ItemEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
     // put focus field when dialog shows
     $(dialog).on('shown.bs.modal', function() {
-        setTimeout(function() { $('[name=description]', dialog).focus(); }, 0);
+        setTimeout(function() { $('input:not(:hidden), textarea, select', dialog).first().focus(); }, 0);
     });
 
     // catch dialog finished handling post request
-    $('body').on('tkForm:dialogclose', function(e) {
+    $(document).on('tkForm:afterSubmit', function(e) {
         $(dialog).modal('hide');
     });
 

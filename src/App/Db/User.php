@@ -113,7 +113,7 @@ class User extends Model implements UserInterface
         return Uri::create('data:image/png;base64,' . $b64);
     }
 
-    public function getHomeUrl(): Uri
+    public static function getHomeUrl(string $type = ''): Uri
     {
         return Uri::create('/dashboard');
     }

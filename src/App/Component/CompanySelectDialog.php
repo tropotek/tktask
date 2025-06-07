@@ -102,18 +102,18 @@ class CompanySelectDialog extends \Dom\Renderer\Renderer implements \Dom\Rendere
         </div>
     </div>
 
-  <script>
-    jQuery(function($) {
-      const dialog = '#{$this->getDialogId()}';
+<script>
+jQuery(function($) {
+    const dialog = '#{$this->getDialogId()}';
 
-      $('.company-item', dialog).on('click', function() {
-          $(document).trigger('companySelect', [
-              $(this).data('companyId'),
-              $(this).text()
-          ]);
-      });
+    $('.company-item', dialog).on('click', function() {
+        $(document).trigger('companySelect', [
+            $(this).data('companyId'),
+            $(this).text()
+        ]);
     });
-  </script>
+});
+</script>
 </div>
 HTML;
         return Template::load($html);

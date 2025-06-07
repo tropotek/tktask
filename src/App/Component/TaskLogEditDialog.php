@@ -198,42 +198,44 @@ class TaskLogEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
             <div class="modal-body" var="content"></div>
         </div>
     </div>
-    <script>
-        jQuery(function($) {
-            const dialog    = '#{$this->getDialogId()}';
-            const form      = '#{$this->form->getId()}';
 
-            $(document).on('htmx:afterSettle', function(e) {
-                if ($(e.detail.elt).is(form)) tkInit(form);
-            });
+<script>
+jQuery(function($) {
+    const dialog    = '#{$this->getDialogId()}';
+    const form      = '#{$this->form->getId()}';
 
-            $(document).on('htmx:beforeRequest', function(e) {
-                if ($(e.detail.elt).is(form) && e.detail.requestConfig.verb === 'post') {
-                    // set the description value as tinymce is not in the HTMX dom tree
-                    e.detail.requestConfig.parameters['comment'] = tinymce.activeEditor.getContent();
-                }
-            });
 
-            // open the dialog as soon as HTMX settles
-            tkInit(form);
-            $(dialog).modal('show');
+    $(document).on('htmx:afterSettle', dialog, function(e) {
+        tkInit(form);
+    });
 
-            // put focus field when dialog shows
-            $(dialog).on('shown.bs.modal', function() {
-                setTimeout(function() { $('[name=comment]', dialog).focus(); }, 0);
-            });
+    $(document).on('htmx:beforeRequest', function(e) {
+        if ($(e.detail.elt).is(form) && e.detail.requestConfig.verb === 'post') {
+            // set the description value as tinymce is not in the HTMX dom tree
+            e.detail.requestConfig.parameters['comment'] = tinymce.activeEditor.getContent();
+        }
+    });
 
-            // catch dialog finished handling post request
-            $('body').on('tkForm:dialogclose', function(e) {
-                $(dialog).modal('hide');
-            });
+    // open the dialog as soon as HTMX settles
+    tkInit(form);
+    $(dialog).modal('show');
 
-            // remove the dialog element from the dom when it closes
-            $(dialog).on('hidden.bs.modal', function() {
-                $(dialog).remove();
-            });
-        });
-    </script>
+    // put focus field when dialog shows
+    $(dialog).on('shown.bs.modal', function() {
+        setTimeout(function() { $('input:not(:hidden), textarea, select', dialog).first().focus(); }, 0);
+    });
+
+    // catch dialog finished handling post request
+    $(document).on('tkForm:dialogclose', function(e) {
+        $(dialog).modal('hide');
+    });
+
+    // remove the dialog element from the dom when it closes
+    $(dialog).on('hidden.bs.modal', function() {
+        $(dialog).remove();
+    });
+});
+</script>
 </div>
 HTML;
 

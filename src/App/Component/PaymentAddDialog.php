@@ -147,8 +147,8 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
     const unpaid = '{$unpaidTotal}';
     const form   = '#{$this->form->getId()}';
 
-    $(document).on('htmx:afterSettle', function(e) {
-        if ($(e.detail.elt).is(form)) tkInit(form);
+    $(document).on('htmx:afterSettle', dialog, function(e) {
+        tkInit(form);
     });
 
     // open the dialog as soon as HTMX settles
@@ -158,13 +158,13 @@ class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\D
     // put focus field when dialog shows
     $(dialog).on('shown.bs.modal', function() {
         setTimeout(function() {
-            $('[name=description]', dialog).focus();
+            $('input:not(:hidden), textarea, select', dialog).first().focus();
             $('[name=amount]', dialog).val(unpaid);
         }, 0);
     });
 
     // catch dialog finished handling post request
-    $('body').on('tkForm:dialogclose', function(e) {
+    $(document).on('tkForm:dialogclose', function(e) {
         $(dialog).modal('hide');
     });
 

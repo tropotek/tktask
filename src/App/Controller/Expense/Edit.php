@@ -173,8 +173,8 @@ class Edit extends ControllerAdmin
             const companySelect = $('#form_companyId');
 
             // reload select options after company creation
-            $('body').on('tkForm:afterSubmit', function(e) {
-                if (!$(e.detail.elt).is('#company-edit-form')) return;
+            $(document).on('tkForm:afterSubmit', function(e) {
+                if (!$(e.detail.elt).is('#form-company-edit')) return;
                 companySelect.empty();
                 companySelect.append('<option value="">-- Select --</option>');
                 for(var key in e.detail.companies) {

@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Db\User;
 use Bs\Listener\RememberHandler;
 use Bs\Listener\MaintenanceHandler;
 
@@ -23,7 +24,7 @@ class Dispatch extends \Bs\Dispatch
         parent::httpInit();
 
         $this->getDispatcher()->addSubscriber(new MaintenanceHandler());
-        $this->getDispatcher()->addSubscriber(new RememberHandler());
+        $this->getDispatcher()->addSubscriber(new RememberHandler(User::getHomeUrl()));
     }
 
     /**

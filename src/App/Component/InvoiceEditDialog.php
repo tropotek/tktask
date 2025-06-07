@@ -77,7 +77,6 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $prevStatus = $this->invoice->status;
         $values = $form->getFieldValues();
         $this->invoice->mapForm($values);
 
@@ -90,8 +89,10 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->invoice->save();
 
         // Trigger HX events
-        $this->hxTriggers['tkForm:afterSubmit'] = ['status' => 'ok'];
-        $this->hxTriggers['tkForm:dialogclose'] = '#'.self::CONTAINER_ID;
+        $this->hxTriggers['tkForm:afterSubmit'] = [
+            'status' => 'ok',
+            'target' => '#'.self::CONTAINER_ID,
+        ];
     }
 
     public function show(): ?Template
@@ -104,10 +105,6 @@ class InvoiceEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
         $template->appendTemplate('content', $this->form->show());
 
-        $js = <<<JS
-
-JS;
-        $template->appendJs($js);
         return $template;
     }
 
@@ -120,22 +117,24 @@ JS;
     {
         $html = <<<HTML
 <div class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" var="dialog">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Invoice Edit</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" var="content"></div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Invoice Edit</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" var="content"></div>
+        </div>
     </div>
-  </div>
+
 <script>
   jQuery(function($) {
-    const dialog    = '#{$this->getDialogId()}';
-    const form      = '#{$this->form->getId()}';
+    const dialog = '#{$this->getDialogId()}';
+    const form   = '#{$this->form->getId()}';
 
-    $(document).on('htmx:afterSettle', function(e) {
-        if ($(e.detail.elt).is(form)) tkInit(form);
+
+    $(document).on('htmx:afterSettle', dialog, function(e) {
+        tkInit(form);
     });
 
     $(document).on('htmx:beforeRequest', function(e) {
@@ -151,11 +150,11 @@ JS;
 
     // put focus field when dialog shows
     $(dialog).on('shown.bs.modal', function() {
-        setTimeout(function() { $('[name=discount]', dialog).focus(); }, 0);
+        setTimeout(function() { $('input:not(:hidden), textarea, select', dialog).first().focus(); }, 0);
     });
 
     // catch dialog finished handling post request
-    $('body').on('tkForm:dialogclose', function(e) {
+    $(document).on('tkForm:afterSubmit', function(e) {
         $(dialog).modal('hide');
     });
 

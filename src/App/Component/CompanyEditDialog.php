@@ -74,8 +74,7 @@ class CompanyEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
         $this->form->execute($_POST);
 
         if (!$this->form->isSubmitted()) {
-            // IMPORTANT: This component always sets the htmx target and swap to end of the surrounding page <body>.
-            // That ignores hx-target and hx-swap in the triggering element, which you can omit.
+            // Always set the htmx target and swap to end of the surrounding page <body>.
             header('HX-Retarget: body');
             header('HX-Reswap: beforeend');
         }
@@ -101,12 +100,16 @@ class CompanyEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
 
         $this->company->save();
 
-        // Trigger HX events
         $companies = Company::findFiltered(Filter::create(['type' => $this->company->type], 'name'));
         $list = Collection::toSelectList($companies, 'companyId');
 
-        $this->hxTriggers['tkForm:afterSubmit'] = ['status' => 'ok', 'companyId' => $this->company->companyId, 'companies' => $list];
-        $this->hxTriggers['tkForm:dialogclose'] = '#'.self::CONTAINER_ID;
+        // Trigger HX events
+        $this->hxTriggers['tkForm:afterSubmit'] = [
+            'target' => '#' . self::CONTAINER_ID,
+            'status' => 'ok',
+            'companyId' => $this->company->companyId,
+            'companies' => $list
+        ];
     }
 
     public function show(): ?Template
@@ -152,34 +155,31 @@ class CompanyEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\
             <div class="modal-body" var="content"></div>
         </div>
     </div>
-    <script>
-        jQuery(function($) {
-            const dialog = '#{$this->getDialogId()}';
-            const form   = '#{$this->form->getId()}';
+<script>
+jQuery(function($) {
+    const dialog = '#{$this->getDialogId()}';
+    const form   = '#{$this->form->getId()}';
 
-            $(document).on('htmx:afterSettle', function(e) {
-                if ($(e.detail.elt).is(form)) tkInit(form);
-            });
+    $(document).on('htmx:afterSettle', dialog, function(e) {
+        tkInit(form);
+    });
 
-			// open the dialog as soon as HTMX settles
-			$(dialog).modal('show');
+    tkInit(form);
+    $(dialog).modal('show');
 
-			// put focus field when dialog shows
-			$(dialog).on('shown.bs.modal', function() {
-				setTimeout(function() { $('[name=name]', dialog).focus(); }, 0);
-			});
+    $(dialog).on('shown.bs.modal', function() {
+        setTimeout(function() { $('input:not(:hidden), textarea, select', dialog).first().focus(); }, 0);
+    });
 
-			// catch dialog finished handling post request
-			$('body').on('tkForm:dialogclose', function(e) {
-				$(dialog).modal('hide');
-			});
+    $(document).on('tkForm:afterSubmit', form, function(e) {
+        $(dialog).modal('hide');
+    });
 
-			// remove the dialog element from the dom when it closes
-			$(dialog).on('hidden.bs.modal', function() {
-				$(dialog).remove();
-			});
-        });
-    </script>
+    $(dialog).on('hidden.bs.modal', function() {
+        $(dialog).remove();
+    });
+});
+</script>
 </div>
 HTML;
         return Template::load($html);

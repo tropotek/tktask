@@ -439,9 +439,21 @@ class Invoice extends Model
             $errors['client'] = 'Invalid client selected';
         }
 
-        if ($this->total->getAmount() == 0) {
-            $errors['total'] = 'Invalid value: total';
+        if ($this->discount < 0 || $this->discount > 1) {
+            $errors['discount'] = 'Invalid discount percentage (0-100)';
         }
+
+        if ($this->tax < 0 || $this->tax > 1) {
+            $errors['tax'] = 'Invalid discount percentage (0-100)';
+        }
+
+        if ($this->shipping->getAmount() <= 0) {
+            $errors['shipping'] = 'Invalid value: total';
+        }
+
+//        if ($this->total->getAmount() <= 0) {
+//            $errors['total'] = 'Invalid value: total';
+//        }
 
         return $errors;
     }
