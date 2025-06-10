@@ -147,26 +147,28 @@ class Edit extends ControllerAdmin
     {
         $html = <<<HTML
 <div class="row">
-  <div class="col-md-12" choice="edit">
-      <div class="page-actions card mb-3">
-        <div class="card-body">
-          <a title="Add a new Task Log" class="btn btn-outline-secondary" choice="add-log" data-toggle="modal"
-            hx-get="#"
-            hx-trigger="click queue:none"
-            hx-target="body"
-            hx-swap="beforeend">
-            <i class="fa fa-fw fa-plus"></i>
-            Add Log
-          </a>
-          <a href="#" title="Manage Task Logs" class="btn btn-outline-secondary" var="logs" choice="edit"><i class="fa fa-fw fa-tasks"></i> Task Logs</a>
+    <div class="col-md-12" choice="edit">
+        <div class="page-actions card mb-3">
+            <div class="card-body">
+                <a title="Add a new Task Log" class="btn btn-outline-secondary" choice="add-log" data-toggle="modal"
+                    hx-get="#"
+                    hx-trigger="click queue:none"
+                    hx-target="body"
+                    hx-swap="beforeend">
+                    <i class="fa fa-fw fa-plus"></i>
+                    Add Log
+                </a>
+                <a href="#" title="Manage Task Logs" class="btn btn-outline-secondary" var="logs" choice="edit"><i class="fa fa-fw fa-tasks"></i> Task Logs</a>
 
-          <a href="#" title="Re-Open this task" class="btn btn-primary" choice="re-open" data-confirm="Are you sure you want to re-open this task?">Re-Open</a>
-          <a href="#" title="Close Task" class="btn btn-primary" choice="close" data-confirm="Are you sure you want to close this task">Close</a>
-          <a href="#" title="Invoice And Close Task" class="btn btn-success" choice="close-invoice" data-confirm="Are you sure you want to invoice then close this task"> Invoice</a>
-          <a href="#" title="Cancel Task" class="btn btn-warning" choice="cancel" data-confirm="Are you sure you want to cancel this task">Cancel</a>
+                <div class="float-end">
+                    <a href="#" title="Re-Open this task" class="btn btn-primary" choice="re-open" data-confirm="Are you sure you want to re-open this task?">Re-Open</a>
+                    <a href="#" title="Close Task" class="btn btn-primary" choice="close" data-confirm="Are you sure you want to close this task">Close</a>
+                    <a href="#" title="Invoice And Close Task" class="btn btn-success" choice="close-invoice" data-confirm="Are you sure you want to invoice then close this task"> Invoice</a>
+                    <a href="#" title="Cancel Task" class="btn btn-warning" choice="cancel" data-confirm="Are you sure you want to cancel this task">Cancel</a>
+                </div>
+            </div>
         </div>
-      </div>
-  </div>
+    </div>
   <div class="col">
       <div class="card mb-3">
         <div class="card-header">

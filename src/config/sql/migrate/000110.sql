@@ -10,9 +10,9 @@ SET SQL_SAFE_UPDATES = 0;
 ALTER TABLE task
     ADD closed_at TIMESTAMP DEFAULT NULL AFTER minutes;
 ALTER TABLE task
-    ADD cancelled_at TIMESTAMP DEFAULT NULL AFTER closed_at;
+    ADD cancelled_at TIMESTAMP NULL DEFAULT NULL AFTER closed_at;
 ALTER TABLE task
-    ADD invoiced_at TIMESTAMP DEFAULT NULL AFTER cancelled_at;
+    ADD invoiced_at TIMESTAMP NULL DEFAULT NULL AFTER cancelled_at;
 ALTER TABLE task
     ADD invoice_item_id INT UNSIGNED NULL DEFAULT NULL AFTER invoiced_at;
 
