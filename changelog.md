@@ -2,6 +2,11 @@
 
 #CHANGELOG#
 
+Ver 1.0.30 [2025-06-10]:
+-------------------------------
+  - fix log status dates
+
+
 Ver 1.0.28 [2025-06-10]:
 -------------------------------
   - Recurring price now follows product price if attached
