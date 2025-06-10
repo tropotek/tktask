@@ -134,7 +134,7 @@ class Edit extends ControllerAdmin
         $template->appendTemplate('content', $this->form->show());
 
         if ($this->expense->expenseId) {
-            $url = Uri::create('/component/files', ['fkey' => $this->expense::class, 'fid' => $this->expense->expenseId]);
+            $url = Uri::create('/component/files', ['fkey' => Expense::class, 'fid' => $this->expense->expenseId]);
             $template->setAttr('files', 'hx-get', $url);
             $template->setVisible('components');
         }

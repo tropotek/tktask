@@ -56,6 +56,29 @@ SELECT
 FROM company c
 ;
 
+-- \App\Db\Recurring
+CREATE OR REPLACE VIEW v_recurring AS
+SELECT
+  r.recurring_id,
+  r.company_id,
+  r.product_id,
+  IFNULL(p.price, r.price) AS price,
+  r.count,
+  r.cycle,
+  r.start_on,
+  r.end_on,
+  r.prev_on,
+  r.next_on,
+  r.active,
+  r.issue,
+  r.description,
+  r.notes,
+  r.modified,
+  r.created
+FROM recurring r
+LEFT JOIN product p USING (product_id)
+;
+
 -- \App\Db\Expense
 CREATE OR REPLACE VIEW v_expense AS
 SELECT

@@ -200,7 +200,7 @@ jQuery(function($) {
     }
 
     // for notifications view page, mark clicked notifications as read
-    $('.notify-click', container).on('click', function(e) {
+    $('.notify-click').on('click', function(e) {
         let href = $(this).attr('href') ?? '';
         let notifyId = $(this).data('notifyId');
         if (!href || !notifyId) return true;

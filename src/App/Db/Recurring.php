@@ -161,7 +161,7 @@ class Recurring extends Model
     public static function closeExpired(): bool
     {
         $ok = Db::execute("
-            UPDATE recurring SET
+            UPDATE v_recurring SET
               active = 0,
               notes = CONCAT(notes, '\\nAuto Expired')
             WHERE active
@@ -177,7 +177,7 @@ class Recurring extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
-        $filter->appendFrom('recurring a');
+        $filter->appendFrom('v_recurring a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
@@ -249,8 +249,7 @@ class Recurring extends Model
             $errors['productId'] = 'Invalid value: productId';
         }
 
-        // todo: change this validation: when price == 0 then use product price
-        if ($this->price->getAmount() == 0) {
+        if (empty($this->productId) && $this->price->getAmount() == 0) {
             $errors['price'] = 'Invalid value: price';
         }
 
