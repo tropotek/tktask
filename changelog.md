@@ -2,6 +2,16 @@
 
 #CHANGELOG#
 
+Ver 1.0.28 [2025-06-10]:
+-------------------------------
+  - Recurring price now follows product price if attached
+  - convert all dialog components
+  - Fix fin year report date select
+  - update models to new interface
+  - Removed status log system
+  - update configs
+
+
 Ver 1.0.26 [2025-05-19]:
 -------------------------------
 
