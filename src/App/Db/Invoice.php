@@ -447,7 +447,7 @@ class Invoice extends Model
             $errors['tax'] = 'Invalid discount percentage (0-100)';
         }
 
-        if ($this->shipping->getAmount() <= 0) {
+        if ($this->shipping->getAmount() < 0) {
             $errors['shipping'] = 'Invalid value: total';
         }
 
