@@ -17,14 +17,14 @@ class Nav
 
         $menu->addLink('Dashboard', Uri::create('/dashboard'), 'ri-dashboard-line', ($user instanceof User),
             [
-                'badge' => function() {
-                    $open = Task::findFiltered([
-                        'status' => [Task::STATUS_OPEN],
-                        'assignedUserId' => User::getAuthUser()->userId,
-                    ]);
-                    if (count($open) == 0) return '';
-                    return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
-                },
+//                'badge' => function() {
+//                    $open = Task::findFiltered([
+//                        'status' => [Task::STATUS_OPEN],
+//                        'assignedUserId' => User::getAuthUser()->userId,
+//                    ]);
+//                    if (count($open) == 0) return '';
+//                    return sprintf('<span class="ms-1 badge bg-info rounded-pill float-end">%d</span>', count($open));
+//                },
             ]
         );
 
@@ -32,14 +32,16 @@ class Nav
         $menu->addLink('Tasks', Uri::create('/taskManager'), 'fas fa-tasks', fn($i) => (bool)$user?->isStaff(),
             [
                 'badge' => function() {
-                    $open = Task::findFiltered(['status' => [Task::STATUS_OPEN]]);
+                    $open = Task::findFiltered([
+                        'status' => [Task::STATUS_OPEN],
+                        //'assignedUserId' => User::getAuthUser()->userId,
+                    ]);
                     if (count($open) == 0) return '';
-                    return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
+                    return sprintf('<span class="ms-1 badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },
             ]
         );
 
-        $menu->addSeparator();
         $menu->addLink('Projects', Uri::create('/projectManager'), 'fas fa-project-diagram', (bool)$user?->isStaff());
         $menu->addLink('Clients', Uri::create('/companyManager'), 'fa fa-fw fa-building', (bool)$user?->isStaff());
         $menu->addLink('Products', Uri::create('/productManager'), 'fa fa-fw fa-shopping-cart', (bool)$user?->isStaff());
@@ -51,7 +53,7 @@ class Nav
                 'badge' => function() {
                     $open = Invoice::findFiltered(['status' => [Invoice::STATUS_OPEN, Invoice::STATUS_UNPAID]]);
                     if (count($open) == 0) return '';
-                    return sprintf('<span class="badge bg-info rounded-pill float-end">%d</span>', count($open));
+                    return sprintf('<span class="ms-1 badge bg-info rounded-pill float-end">%d</span>', count($open));
                 },
             ]
         );
@@ -60,7 +62,6 @@ class Nav
 
         $menu->addHeader('Reports', 'fas fa-certificate', (bool)$user?->isStaff());
         $menu->addLink('Profit & Loss', Uri::create('/profitReport'), 'fas fa-dollar-sign', (bool)$user?->isStaff());
-        $menu->addSeparator();
         $menu->addLink('Client Sales', Uri::create('/salesReport'), 'fas fa-chart-line', (bool)$user?->isStaff());
 
         $menu->addHeader('Admin', 'fas fa-database', (bool)$user?->hasPermission(User::PERM_SYSADMIN));
@@ -70,7 +71,6 @@ class Nav
         $tools = $menu->addSubmenu('Tools', 'ri-bug-line', (bool)$user?->hasPermission(User::PERM_ADMIN));
         $tools->addLink('PHP Info', Uri::create('/info'), 'ri-information-line');
         $tools->addLink('Tail Log', Uri::create('/tailLog'), 'ri-terminal-box-fill');
-        $tools->addSeparator();
         $tools->addLink('Inline Image', Uri::create('/util/inlineImage'), 'fas fa-image');
         $tools->addLink('DB Search', Uri::create('/util/dbSearch'), 'fas fa-database');
 

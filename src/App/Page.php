@@ -33,7 +33,7 @@ class Page extends \Bs\Mvc\Page
         $template->appendCss(Registry::getValue('system.global.css', ''));
 
         if (str_contains($this->getTemplatePath(), '/minton/')) {
-            $this->showNavigation($template);
+            $this->showMintonMarkup($template);
         }
 
         $template->setText('year', date('Y'));
@@ -176,7 +176,7 @@ HTML;
         $this->getTemplate()->appendBodyTemplate($template);
     }
 
-    protected function showNavigation(Template $template): void
+    protected function showMintonMarkup(Template $template): void
     {
         $renderer = new MintonRenderer(Nav::getNavMenu());
         if (basename($this->getTemplatePath()) == 'sn-admin.html') {
