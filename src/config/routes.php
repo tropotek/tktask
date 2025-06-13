@@ -37,7 +37,7 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\User\Register::class, 'doDefault']);
 
 
-    // User Member
+    // Site Admin Pages
     $routes->add('user-dashboard', '/dashboard')
         ->controller([\App\Controller\Dashboard::class, 'doDefault']);
     $routes->add('user-profile', '/profile')
@@ -45,8 +45,6 @@ return function (CollectionConfigurator $routes) {
     $routes->add('notify-list', '/notifications')
         ->controller([\App\Controller\Notify\View::class, 'doDefault']);
 
-
-    // User Staff
     $routes->add('settings-edit', '/settings')
         ->controller([\App\Controller\Admin\Settings::class, 'doDefault']);
     $routes->add('user-type-manager', '/user/staffManager')
@@ -120,6 +118,15 @@ return function (CollectionConfigurator $routes) {
         ->controller([\App\Controller\Domain\Edit::class, 'doDefault']);
 
 
+    // PDF
+    $routes->add('pdf-invoice', '/pdf/invoice')
+        ->controller([\App\Pdf\Invoice::class, 'doDefault']);
+    $routes->add('pdf-task-list', '/pdf/taskList')
+        ->controller([\App\Pdf\TaskList::class, 'doDefault']);
+    $routes->add('pdf-profit-loss', '/pdf/profitLoss')
+        ->controller([\App\Pdf\ProfitLoss::class, 'doDefault']);
+
+
     // Components
     $routes->add('com-notify-nav', '/component/notify')
         ->controller([\App\Component\Notify::class, 'doDefault']);
@@ -155,15 +162,6 @@ return function (CollectionConfigurator $routes) {
 
     $routes->add('com-files', '/component/files')
         ->controller([\App\Component\Files::class, 'doDefault']);
-
-
-    // PDF
-    $routes->add('pdf-invoice', '/pdf/invoice')
-        ->controller([\App\Pdf\Invoice::class, 'doDefault']);
-    $routes->add('pdf-task-list', '/pdf/taskList')
-        ->controller([\App\Pdf\TaskList::class, 'doDefault']);
-    $routes->add('pdf-profit-loss', '/pdf/profitLoss')
-        ->controller([\App\Pdf\ProfitLoss::class, 'doDefault']);
 
 
     // API
