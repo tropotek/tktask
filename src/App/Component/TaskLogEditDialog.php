@@ -6,6 +6,7 @@ use App\Db\Task;
 use App\Db\TaskLog;
 use App\Db\User;
 use App\Form\Field\Minutes;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Form;
 use Bs\Registry;
 use Dom\Template;
@@ -20,7 +21,7 @@ use Tk\Form\Field\Textarea;
 use Tk\Log;
 use Tk\Uri;
 
-class TaskLogEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class TaskLogEditDialog extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     const string CONTAINER_ID = 'task-edit-log-dialog';
 

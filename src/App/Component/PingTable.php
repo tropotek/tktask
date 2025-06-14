@@ -5,6 +5,7 @@ use App\Db\Domain;
 use App\Db\DomainPing;
 use App\Db\File;
 use App\Db\User;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Db;
@@ -12,7 +13,7 @@ use Tk\FileUtil;
 use Tk\Log;
 use Tk\Table\Cell;
 
-class PingTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class PingTable extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     protected Table    $table;
     protected ?Domain  $domain = null;

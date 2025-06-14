@@ -5,6 +5,7 @@ use App\Db\Task;
 use App\Db\TaskLog;
 use App\Db\User;
 use App\Util\Tools;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Db;
@@ -12,7 +13,7 @@ use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Uri;
 
-class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class TaskLogTable extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     protected Table $table;
     protected ?Task $task = null;
@@ -71,6 +72,11 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\Displ
             ->setHeader('Started')
             ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+
+        $this->table->appendCell('billable')
+            ->addCss('text-nowrap text-center')
+            ->setSortable(true)
+            ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         // execute table
         $this->table->execute();

@@ -4,12 +4,13 @@ namespace App\Component;
 use App\Db\Invoice;
 use App\Db\Payment;
 use App\Db\User;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Db;
 use Tk\Log;
 
-class PaymentTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class PaymentTable extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     protected Table    $table;
     protected ?Invoice $invoice  = null;

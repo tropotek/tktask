@@ -3,6 +3,7 @@ namespace App\Component;
 
 use App\Db\Company;
 use App\Db\User;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Collection;
@@ -13,7 +14,7 @@ use Tk\Form\Action\Submit;
 use Tk\Form\Field\Input;
 use Tk\Uri;
 
-class CompanyEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class CompanyEditDialog extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     const string CONTAINER_ID = 'company-edit-dialog';
 

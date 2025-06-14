@@ -6,6 +6,7 @@ use App\Db\InvoiceItem;
 use App\Db\Product;
 use App\Db\User;
 use App\Form\Field\Datalist;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Collection;
@@ -17,7 +18,7 @@ use Tk\Form\Field\InputGroup;
 use Tk\Log;
 use Tk\Uri;
 
-class ItemEditDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class ItemEditDialog extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     const string CONTAINER_ID = 'invoice-edit-item-dialog';
 

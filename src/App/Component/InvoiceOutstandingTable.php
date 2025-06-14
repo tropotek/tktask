@@ -4,6 +4,7 @@ namespace App\Component;
 use App\Db\Invoice;
 use App\Db\Payment;
 use App\Db\User;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Date;
@@ -12,7 +13,7 @@ use Tk\Log;
 use Tk\Table\Cell;
 use Tk\Uri;
 
-class InvoiceOutstandingTable extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class InvoiceOutstandingTable extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     protected Table    $table;
     protected ?Invoice $invoice  = null;

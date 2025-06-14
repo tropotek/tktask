@@ -2,13 +2,14 @@
 namespace App\Component;
 
 use App\Db\User;
+use Bs\Mvc\ComponentInterface;
 use Dom\Template;
 use Tk\Date;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Uri;
 
-class Notify extends \Dom\Renderer\Renderer
+class Notify extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     const string CONTAINER_ID = 'notify-nav';
 

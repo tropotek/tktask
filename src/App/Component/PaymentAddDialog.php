@@ -4,6 +4,7 @@ namespace App\Component;
 use App\Db\Invoice;
 use App\Db\Payment;
 use App\Db\User;
+use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Form\Action\Link;
@@ -14,7 +15,7 @@ use Tk\Form\Field\Textarea;
 use Tk\Log;
 use Tk\Uri;
 
-class PaymentAddDialog extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
+class PaymentAddDialog extends \Dom\Renderer\Renderer implements ComponentInterface
 {
     const string CONTAINER_ID = 'invoice-add-payment-dialog';
 
