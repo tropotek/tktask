@@ -126,7 +126,6 @@ CREATE TABLE IF NOT EXISTS project (
   project_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   user_id INT UNSIGNED NOT NULL DEFAULT 0,              -- project lead user/contact
   company_id INT UNSIGNED NOT NULL DEFAULT 0,
-  -- status ENUM('pending','active','hold','completed','cancelled') DEFAULT 'pending',
   name VARCHAR(128) NOT NULL,
   quote INT NOT NULL DEFAULT 0,
   start_on DATE NULL DEFAULT NULL,
@@ -136,7 +135,6 @@ CREATE TABLE IF NOT EXISTS project (
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  KEY status (status),
   CONSTRAINT fk_project__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_project__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -173,87 +171,6 @@ CREATE TABLE IF NOT EXISTS product (
   CONSTRAINT fk_product__product_category_id FOREIGN KEY (product_category_id) REFERENCES product_category (product_category_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS task_category
-(
-  task_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(128) NOT NULL DEFAULT '',
-  description VARCHAR(512) NOT NULL DEFAULT '',
-  order_by INT UNSIGNED NOT NULL DEFAULT 0,
-  active BOOL NOT NULL DEFAULT TRUE,
-  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS task (
-  task_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  company_id INT UNSIGNED NOT NULL DEFAULT 0,
-  project_id INT UNSIGNED NULL DEFAULT NULL,
-  task_category_id INT UNSIGNED NOT NULL DEFAULT 1,
-  creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
-  assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
-  closed_user_id INT UNSIGNED NULL DEFAULT NULL,
-  -- status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',
-  subject TEXT,
-  comments TEXT,
-  priority TINYINT NOT NULL DEFAULT 0,        -- 0 None, 1 Low, 5 Med, 10 High
-  minutes INT UNSIGNED NOT NULL DEFAULT 0,    -- Est time in mins for task,
-  closed_at TIMESTAMP NULL DEFAULT NULL,
-  cancelled_at TIMESTAMP NULL DEFAULT NULL,
-  invoiced_at TIMESTAMP NULL DEFAULT NULL,
-  invoice_item_id INT UNSIGNED NULL DEFAULT NULL,
-  -- invoiced DATETIME DEFAULT NULL,             -- The date the billable tasked was invoice, after task CLOSED, not to be invoiced twice
-  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  KEY priority (priority),
---  KEY status (status),
-  CONSTRAINT fk_task__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT fk_task__task_category_id FOREIGN KEY (task_category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT fk_task__invoice_item_id FOREIGN KEY (invoice_item_id) REFERENCES invoice_item (invoice_item_id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS task_log (
-  task_log_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  task_id INT UNSIGNED NOT NULL DEFAULT 0,
-  user_id INT UNSIGNED NOT NULL DEFAULT 0,
-  product_id INT UNSIGNED NOT NULL DEFAULT 1,       -- Usually labor products go here
-  -- status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',  -- Same options as a task
-  billable BOOL NOT NULL DEFAULT 0,                 -- Is this task billable
-  start_at DATETIME NOT NULL,                       -- DateTime worked started
-  minutes INT NOT NULL DEFAULT 0,                   -- Time worked
-  comment TEXT,
-  -- notes TEXT,
-  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_task_log__task_id FOREIGN KEY (task_id) REFERENCES task (task_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task_log__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task_log__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS recurring (
-  recurring_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  company_id INT UNSIGNED NOT NULL DEFAULT 0,
-  product_id INT UNSIGNED NULL DEFAULT NULL,
-  price INT NOT NULL DEFAULT 0,              -- The chargeable amount in cents (what is charged to the invoice if > 0)
-  count INT UNSIGNED NOT NULL DEFAULT 0,     -- The number of issued invoices
-  cycle ENUM('week','fortnight','month','year','biannual') DEFAULT 'year',
-  start_on DATE NOT NULL,                    -- date started recurring invoicing
-  end_on DATE NULL DEFAULT NULL,             -- (optional) date to end the recurring invoicing
-  prev_on DATE NULL DEFAULT NULL,            -- date the line item was last invoiced
-  next_on DATE NOT NULL,                     -- date the line item will be invoiced next
-  active BOOL NOT NULL DEFAULT TRUE,         -- if inactive this record should still be updated (next_on) just not invoiced
-  issue BOOL NOT NULL DEFAULT FALSE,         -- if set, the current invoice is issued after the recurring items are added for that company
-  description TEXT,
-  notes TEXT,
-  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_recurring__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_recurring__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE SET NULL ON UPDATE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS invoice (
   invoice_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   fkey VARCHAR(64) NOT NULL DEFAULT '',
@@ -262,7 +179,6 @@ CREATE TABLE IF NOT EXISTS invoice (
   discount FLOAT UNSIGNED NOT NULL DEFAULT 0.0,             -- '0.0-1.0' as a ratio percentage
   tax FLOAT UNSIGNED NOT NULL DEFAULT 0.0,                  -- '0.0-1.0' as a ratio percentage
   shipping INT NOT NULL DEFAULT 0,                          -- cost in cents
-  -- status ENUM('open','unpaid','paid','cancelled','write_off') DEFAULT 'open',
   billing_address TEXT,
   issued_on DATE DEFAULT NULL,
   paid_on DATE DEFAULT NULL,
@@ -288,12 +204,87 @@ CREATE TABLE IF NOT EXISTS invoice_item (
   CONSTRAINT fk_invoice_item__invoice_id FOREIGN KEY (invoice_id) REFERENCES invoice (invoice_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS task_category
+(
+  task_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL DEFAULT '',
+  description VARCHAR(512) NOT NULL DEFAULT '',
+  order_by INT UNSIGNED NOT NULL DEFAULT 0,
+  active BOOL NOT NULL DEFAULT TRUE,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS task (
+  task_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  company_id INT UNSIGNED NOT NULL DEFAULT 0,
+  project_id INT UNSIGNED NULL DEFAULT NULL,
+  task_category_id INT UNSIGNED NOT NULL DEFAULT 1,
+  creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  closed_user_id INT UNSIGNED NULL DEFAULT NULL,
+  subject TEXT,
+  comments TEXT,
+  priority TINYINT NOT NULL DEFAULT 0,        -- 0 None, 1 Low, 5 Med, 10 High
+  minutes INT UNSIGNED NOT NULL DEFAULT 0,    -- Est time in mins for task,
+  closed_at TIMESTAMP NULL DEFAULT NULL,
+  cancelled_at TIMESTAMP NULL DEFAULT NULL,
+  invoiced_at TIMESTAMP NULL DEFAULT NULL,
+  invoice_item_id INT UNSIGNED NULL DEFAULT NULL,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY priority (priority),
+  CONSTRAINT fk_task__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_task__task_category_id FOREIGN KEY (task_category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_task__invoice_item_id FOREIGN KEY (invoice_item_id) REFERENCES invoice_item (invoice_item_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS task_log (
+  task_log_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  task_id INT UNSIGNED NOT NULL DEFAULT 0,
+  user_id INT UNSIGNED NOT NULL DEFAULT 0,
+  product_id INT UNSIGNED NOT NULL DEFAULT 1,       -- Usually labor products go here
+  billable BOOL NOT NULL DEFAULT 0,                 -- Is this task billable?
+  start_at DATETIME NOT NULL,                       -- DateTime worked started
+  minutes INT NOT NULL DEFAULT 0,                   -- Time worked
+  comment TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_task_log__task_id FOREIGN KEY (task_id) REFERENCES task (task_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task_log__user_id FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_task_log__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS recurring (
+  recurring_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  company_id INT UNSIGNED NOT NULL DEFAULT 0,
+  product_id INT UNSIGNED NULL DEFAULT NULL,
+  price INT NOT NULL DEFAULT 0,              -- The chargeable amount in cents (what is charged to the invoice if > 0)
+  count INT UNSIGNED NOT NULL DEFAULT 0,     -- The number of issued invoices
+  cycle ENUM('week','fortnight','month','year','biannual') DEFAULT 'year',
+  start_on DATE NOT NULL,                    -- date started recurring invoicing
+  end_on DATE NULL DEFAULT NULL,             -- (optional) date to end the recurring invoicing
+  prev_on DATE NULL DEFAULT NULL,            -- date the line item was last invoiced
+  next_on DATE NOT NULL,                     -- date the line item will be invoiced next
+  active BOOL NOT NULL DEFAULT TRUE,         -- if inactive, this record should still be updated (next_on) just not invoiced
+  issue BOOL NOT NULL DEFAULT FALSE,         -- if set, the current invoice is issued after the recurring items are added for that company
+  description TEXT,
+  notes TEXT,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_recurring__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_recurring__product_id FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS payment (
   payment_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   invoice_id INT UNSIGNED NOT NULL DEFAULT 0,
   amount INT UNSIGNED NOT NULL DEFAULT 0,
   method ENUM('cash','eft','card','crypto','other') DEFAULT 'eft',
---  status ENUM('pending','cleared','cancelled') DEFAULT 'pending',
   received_at DATETIME NOT NULL,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -336,7 +327,7 @@ SET SQL_SAFE_UPDATES = 0;
 -- Add default disabled admin user (remember to set password `./bin/cmd pwd admin`)
 INSERT INTO user (type, given_name) VALUES ('staff', 'admin');
 INSERT INTO auth (fkey, fid, permissions, username, email, timezone, active) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne', false);
+  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne', true);
 
 INSERT INTO task_category (name) VALUES
   ('Task'),
