@@ -126,11 +126,12 @@ CREATE TABLE IF NOT EXISTS project (
   project_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   user_id INT UNSIGNED NOT NULL DEFAULT 0,              -- project lead user/contact
   company_id INT UNSIGNED NOT NULL DEFAULT 0,
-  status ENUM('pending','active','hold','completed','cancelled') DEFAULT 'pending',
+  -- status ENUM('pending','active','hold','completed','cancelled') DEFAULT 'pending',
   name VARCHAR(128) NOT NULL,
   quote INT NOT NULL DEFAULT 0,
-  start_on DATE NULL,
-  end_on DATE NULL,
+  start_on DATE NULL DEFAULT NULL,
+  end_on DATE NULL DEFAULT NULL,
+  cancelled_on DATE NULL DEFAULT NULL,
   description TEXT,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -191,22 +192,27 @@ CREATE TABLE IF NOT EXISTS task (
   creator_user_id INT UNSIGNED NOT NULL DEFAULT 0,
   assigned_user_id INT UNSIGNED NOT NULL DEFAULT 0,
   closed_user_id INT UNSIGNED NULL DEFAULT NULL,
-  status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',
+  -- status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',
   subject TEXT,
   comments TEXT,
   priority TINYINT NOT NULL DEFAULT 0,        -- 0 None, 1 Low, 5 Med, 10 High
   minutes INT UNSIGNED NOT NULL DEFAULT 0,    -- Est time in mins for task,
-  invoiced DATETIME DEFAULT NULL,             -- The date the billable tasked was invoice, after task CLOSED, not to be invoiced twice
+  closed_at TIMESTAMP NULL DEFAULT NULL,
+  cancelled_at TIMESTAMP NULL DEFAULT NULL,
+  invoiced_at TIMESTAMP NULL DEFAULT NULL,
+  invoice_item_id INT UNSIGNED NULL DEFAULT NULL,
+  -- invoiced DATETIME DEFAULT NULL,             -- The date the billable tasked was invoice, after task CLOSED, not to be invoiced twice
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   KEY priority (priority),
-  KEY status (status),
+--  KEY status (status),
   CONSTRAINT fk_task__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__project_id FOREIGN KEY (project_id) REFERENCES project (project_id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT fk_task__task_category_id FOREIGN KEY (task_category_id) REFERENCES task_category (task_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__creator_user_id FOREIGN KEY (creator_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_task__assigned_user_id FOREIGN KEY (assigned_user_id) REFERENCES user (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT fk_task__closed_user_id FOREIGN KEY (closed_user_id) REFERENCES user (user_id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_task__invoice_item_id FOREIGN KEY (invoice_item_id) REFERENCES invoice_item (invoice_item_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS task_log (
@@ -214,12 +220,12 @@ CREATE TABLE IF NOT EXISTS task_log (
   task_id INT UNSIGNED NOT NULL DEFAULT 0,
   user_id INT UNSIGNED NOT NULL DEFAULT 0,
   product_id INT UNSIGNED NOT NULL DEFAULT 1,       -- Usually labor products go here
-  status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',  -- Same options as a task
+  -- status ENUM('pending','hold','open','closed','cancelled') DEFAULT 'pending',  -- Same options as a task
   billable BOOL NOT NULL DEFAULT 0,                 -- Is this task billable
   start_at DATETIME NOT NULL,                       -- DateTime worked started
   minutes INT NOT NULL DEFAULT 0,                   -- Time worked
   comment TEXT,
-  notes TEXT,
+  -- notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_task_log__task_id FOREIGN KEY (task_id) REFERENCES task (task_id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -256,10 +262,11 @@ CREATE TABLE IF NOT EXISTS invoice (
   discount FLOAT UNSIGNED NOT NULL DEFAULT 0.0,             -- '0.0-1.0' as a ratio percentage
   tax FLOAT UNSIGNED NOT NULL DEFAULT 0.0,                  -- '0.0-1.0' as a ratio percentage
   shipping INT NOT NULL DEFAULT 0,                          -- cost in cents
-  status ENUM('open','unpaid','paid','cancelled','write_off') DEFAULT 'open',
+  -- status ENUM('open','unpaid','paid','cancelled','write_off') DEFAULT 'open',
   billing_address TEXT,
   issued_on DATE DEFAULT NULL,
   paid_on DATE DEFAULT NULL,
+  cancelled_on DATE DEFAULT NULL,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -286,7 +293,7 @@ CREATE TABLE IF NOT EXISTS payment (
   invoice_id INT UNSIGNED NOT NULL DEFAULT 0,
   amount INT UNSIGNED NOT NULL DEFAULT 0,
   method ENUM('cash','eft','card','crypto','other') DEFAULT 'eft',
-  status ENUM('pending','cleared','cancelled') DEFAULT 'pending',
+--  status ENUM('pending','cleared','cancelled') DEFAULT 'pending',
   received_at DATETIME NOT NULL,
   notes TEXT,
   modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -313,8 +320,8 @@ CREATE TABLE expense (
   description TEXT,
   purchased_on DATE NOT NULL,
   total INT NOT NULL DEFAULT 0,
-  modified DATETIME ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  modified TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_expense__expense_category_id FOREIGN KEY (expense_category_id) REFERENCES expense_category (expense_category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT fk_expense__company_id FOREIGN KEY (company_id) REFERENCES company (company_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
