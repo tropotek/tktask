@@ -66,9 +66,8 @@ class Cron extends Console
         ]);
 
         $invoiceList = [];
-        // list of invoices to not issue
-        // only takes 1 recurring item to be set to `not issue` to stop invoice from being issued
-        $noIssue = [];
+        // only takes 1 recurring item to be set to `issue`, to enable automatic invoice issue
+        $doIssue = [];
 
         foreach ($items as $recurring) {
             $invoice = $recurring->invoice();
@@ -76,16 +75,15 @@ class Cron extends Console
             if ($invoice instanceof Invoice) {
                 $this->writeComment('   - [' .$recurring->getId(). '] Added Invoice Item: ' . $recurring->description . ' - ' . $recurring->getCompany()->name);
                 $invoiceList[$invoice->invoiceId] = $invoice;
-                if (!$recurring->issue) {
-                    $noIssue[] = $invoice->invoiceId;
+                if ($recurring->issue) {
+                    $doIssue[$invoice->invoiceId] = $invoice;
                 }
             }
         }
 
         // Issue invoices - done here to ensure only
         // one invoice is issued for multiple items.
-        foreach ($invoiceList as $invoice) {
-            if (in_array($invoice->invoiceId, $noIssue)) continue;
+        foreach ($doIssue as $invoice) {
             $invoice->doIssue();
         }
 

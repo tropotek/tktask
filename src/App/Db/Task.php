@@ -361,4 +361,13 @@ class Task extends Model
         return $errors;
     }
 
+    public static function secondsToDHM(int $minutes): string
+    {
+        $secs = $minutes*60;
+        $str = '';
+        if ((int)round($secs/86400) > 0)
+            $str .= sprintf('%d days ', round($secs/86400));
+
+        return sprintf('%s%02d:%02d', $str, intval($secs/3600)%24, intval($secs/60%60));
+    }
 }

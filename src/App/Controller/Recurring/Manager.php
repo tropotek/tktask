@@ -29,7 +29,7 @@ class Manager extends ControllerAdmin
 
         // init table
         $this->table = new Table();
-        $this->table->setOrderBy('next_on');
+        $this->table->setOrderBy('company_id,next_on');
         $this->table->setLimit(25);
 
         $rowSelect = RowSelect::create('id', 'recurringId');

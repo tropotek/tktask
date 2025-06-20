@@ -126,8 +126,11 @@ class Edit extends ControllerAdmin
             $template->addCss('btn-issue', 'disabled');
         }
 
-        $pdf = Uri::create('/pdf/invoice')->set('invoiceId', $this->invoice->invoiceId); //->set('o', 'html');
+        $pdf = Uri::create('/pdf/invoice')->set('invoiceId', $this->invoice->invoiceId);
         $template->setAttr('btn-pdf', 'href', $pdf);
+
+        $pdf = Uri::create('/pdf/taskList')->set('invoiceId', $this->invoice->invoiceId);
+        $template->setAttr('btn-pdf-task', 'href', $pdf);
 
         if (in_array($this->invoice->status, [Invoice::STATUS_UNPAID, Invoice::STATUS_PAID])) {
             $url = Uri::create('/component/paymentTable', ['invoiceId' => $this->invoice->invoiceId]);
@@ -332,6 +335,10 @@ class Edit extends ControllerAdmin
                 <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf">
                     <i class="fa fa-download"></i>
                     <span>PDF</span>
+                </a>
+                <a href="#" class="btn btn-outline-secondary" title="PDF" target="_blank" var="btn-pdf-task">
+                    <i class="fa fa-download"></i>
+                    <span>Task List</span>
                 </a>
                 <a href="#" class="btn btn-outline-secondary" title="Email" data-confirm="Are you sure you want to email this invoice to the client?" var="btn-email">
                     <i class="fas fa-envelope"></i>

@@ -28,28 +28,35 @@ class TaskList extends PdfInterface
 
     public function doDefault(): string
     {
-        //@ini_set("memory_limit", "128M");
+        $invoiceId = intval($_REQUEST['invoiceId'] ?? 0);
+        $projectId = intval($_REQUEST['projectId'] ?? 0);
+        $userId    = intval($_REQUEST['userId'] ?? 0);
+        $output    = trim($_REQUEST['o'] ?? PdfInterface::OUTPUT_PDF);
 
-        $projectId = intval($_GET['projectId'] ?? $_POST['projectId'] ?? 0);
-        $userId    = intval($_GET['userId'] ?? $_POST['userId'] ?? 0);
-        $sesTasks  = boolval($_GET['ses'] ?? $_POST['ses'] ?? false);   // get task list from session
-        $output    = trim($_GET['o'] ?? $_POST['o'] ?? PdfInterface::OUTPUT_PDF);
 
-        $this->project = Project::find($projectId);
-        if ($projectId && !($this->project instanceof Project)) {
-            Log::error("invalid project id {$projectId}");
-            Breadcrumbs::getBackUrl()->redirect();
+        $invoice = \App\Db\Invoice::find($invoiceId);
+        if ($invoice instanceof \App\Db\Invoice) {
+            $items = $invoice->getItemList();
+            $this->taskList = [];
+            foreach ($items as $item) {
+                $task = $item->getModel();
+                if (!$task instanceof \App\Db\Task) continue;
+                $this->taskList[] = $task;
+            }
         }
 
-        $this->user = User::find($userId);
-        if ($userId && !($this->user instanceof User)) {
-            Log::error("invalid user id {$userId}");
-            Breadcrumbs::getBackUrl()->redirect();
-        }
+        else {
+            $this->project = Project::find($projectId);
+            if ($projectId && !($this->project instanceof Project)) {
+                Log::error("invalid project id {$projectId}");
+                return 'Failed retrieving project';
+            }
 
-        if ($sesTasks) {
-            $this->taskList = Session::instance()->get('pdf.tasks', []);
-        } else {
+            $this->user = User::find($userId);
+            if ($userId && !($this->user instanceof User)) {
+                Log::error("invalid user id {$userId}");
+                return 'Failed retrieving user';
+            }
             $filter = [
                 'status' => [
                     Task::STATUS_OPEN,
@@ -99,17 +106,13 @@ class TaskList extends PdfInterface
             }
             $row->setVisible('project');
 
-//            $cat = $task->getTaskCategory();
-//            if ($cat instanceof TaskCategory) {
-//                $row->setText('category', e($cat->name));
-//            }
             $row->setText('status', Task::STATUS_LIST[$task->status]);
             $row->addCss('status', Task::STATUS_CSS[$task->status]);
             $row->setText('priority', Task::PRIORITY_LIST[$task->priority]);
             $row->addCss('priority', Task::PRIORITY_CSS[$task->priority]);
 
-            $row->setText('minutes', $this->secondsToDHM($task->minutes));
-            $row->setText('minutesTotal', $this->secondsToDHM($task->getCompletedTime()));
+            $row->setText('minutes', Task::secondsToDHM($task->minutes));
+            $row->setText('minutesTotal', Task::secondsToDHM($task->getCompletedTime()));
             $row->setText('cost', $task->getEstimatedCost());
             $row->setText('costTotal', $task->getCost());
 
@@ -136,7 +139,7 @@ class TaskList extends PdfInterface
                     $title = 'Billable Time Worked';
                 }
                 $str .= sprintf('<div class="log" style="font-style: italic;font-size: 0.8em;"><span class="time %s" title="%s">[%s%s]</span> %s <br/><br/></div>',
-                    $billedCss, $title, $billed, $this->secondsToDHM($log->minutes), Str::wordcat(trim(strip_tags($log->comment, '<strong><em><b><i><a>')), 300, ' ...'));
+                    $billedCss, $title, $billed, Task::secondsToDHM($log->minutes), Str::wordcat(trim(strip_tags($log->comment, '<strong><em><b><i><a>')), 300, ' ...'));
             }
             if ($str) $str = sprintf('<div class="logs">%s</div>', $str);
             $html .=  sprintf('<div class="task-logs">%s</div>', $str);
@@ -167,7 +170,7 @@ class TaskList extends PdfInterface
             ]);
 
             $template->setText('tasks-open', count($list));
-            $template->setText('task-time', $this->secondsToDHM($this->project->getTotalEstTime()));
+            $template->setText('task-time', Task::secondsToDHM($this->project->getTotalEstTime()));
             $template->setText('est-cost', $this->project->getEstimatedCost());
 
             $list = Task::findFiltered([
@@ -306,16 +309,6 @@ class TaskList extends PdfInterface
 HTML;
 
         return Template::load($xhtml);
-    }
-
-    protected function secondsToDHM(int $minutes): string
-    {
-        $s = $minutes*60;
-        $str = '';
-        if ((int)round($s/86400) > 0)
-            $str .= sprintf('%d days ', round($s/86400));
-
-        return sprintf('%s%02d:%02d', $str, round($s/3600)%24, round($s/60%60));
     }
 
 }

@@ -57,7 +57,9 @@ class Project extends Model
         $this->quote    = new Money();
         $this->startOn  = new DateTime('next monday');
         $this->endOn    = (new DateTime('next monday'))->add(new \DateInterval('P3M'));
-        $this->userId = User::getAuthUser()->getId();
+        if (User::getAuthUser()) {
+            $this->userId = User::getAuthUser()->getId();
+        }
     }
 
     public static function getDataMap(): DataMap

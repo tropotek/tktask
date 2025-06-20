@@ -19,7 +19,10 @@ class Invoice
     {
         $company = $invoice->getCompany();
         if (!($company instanceof Company)) return false;
-        if ($invoice->unpaidTotal->getAmount() <= 0) return false;
+//        if ($invoice->unpaidTotal->getAmount() <= 0) {
+//            Log::warning("invoice {$invoice->invoiceId} is already paid");
+//            return false;
+//        }
 
         $siteCompany = Factory::instance()->getOwnerCompany();
 
@@ -75,24 +78,11 @@ class Invoice
             $tasks[] = $task;
         }
         if (count($tasks)) {
-            // todo: not sure if the session is the best way to send tasks to the pdf, will do for now!
-            Session::instance()->set('pdf.tasks', $tasks);
             $url = Uri::create('/pdf/taskList', [
                 'o' => PdfInterface::OUTPUT_ATTACH,
-                'ses' => 1,
+                'invoiceId' => $invoice->invoiceId,
             ]);
-            // Allow session in request
-            $opts = null;
-            if ($_SERVER['HTTP_COOKIE'] ?? '') {
-                $opts = [
-                    'http' => array('header'=> 'Cookie: '.$_SERVER['HTTP_COOKIE']."\r\n"),
-                    'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-                ];
-            }
-            $context = stream_context_create($opts);
-            session_write_close(); // unlock the file
-            $attach = (string)file_get_contents($url, false, $context);
-            session_start(); // Lock the file
+            $attach = (string)file_get_contents($url);
 
             $filename = str_replace([' ', '/', '\\'], '', $invoice->invoiceId . '-TaskList.pdf');
             $message->addStringAttachment($attach, $filename);
