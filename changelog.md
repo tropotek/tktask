@@ -2,6 +2,13 @@
 
 #CHANGELOG#
 
+Ver 1.0.34 [2025-06-21]:
+-------------------------------
+  - fixed recurring issues
+  - Add context callbacks to nav renderer
+  - Added new menu renderer for minton
+
+
 Ver 1.0.32 [2025-06-10]:
 -------------------------------
 
