@@ -324,11 +324,6 @@ CREATE TABLE expense (
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_SAFE_UPDATES = 0;
 
--- Add default disabled admin user (remember to set password `./bin/cmd pwd admin`)
-INSERT INTO user (type, given_name) VALUES ('staff', 'admin');
-INSERT INTO auth (fkey, fid, permissions, username, email, timezone, active) VALUES
-  ('App\\Db\\User', LAST_INSERT_ID(), 1, 'admin', 'admin@email.com', 'Australia/Melbourne', true);
-
 INSERT INTO task_category (name) VALUES
   ('Task'),
   ('Feature'),

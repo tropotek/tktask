@@ -21,49 +21,61 @@ Features:
 
 ## Installation
 
-1. First set up a database for the site and keep the login details handy.
-2. Make sure you have the latest version of composer [https://getcomposer.org/download/] installed.
-3. Use the following commands:
-    ```
+- Create a database for the site and keep the login details handy.
+- Make sure you have the latest version of composer [https://getcomposer.org/download/] installed.
+- Use the following commands:
+    ```bash
     $ git clone https://github.com/tropotek/tktask.git
     $ cd tktask
     $ composer install
     ````
-4. You will be asked a number of questions to set up the environment settings and DB.
-5. View/Edit the `/config.php` file after the command has finished and change to your required settings if needed.
-6. To enable debug mode and logging edit the `/config.php` file:
+- You will be asked a number of questions to set up the environment settings and DB.
+- Create a new admin user to log into the site:
+```bash
+$ ./bin/cmd adm {username}
 ```
-    //  ...
+- View/Edit the `/config.php` file after the command has finished and change to your required settings if needed.
+- To enable debug mode and logging edit the `/config.php` file:
+```php
     // Enable Debug in a dev environment
     $config['env.type'] = 'dev';
-    $config['debug'] = true;
-
     // Setup dev environment
     if ($config->isDev()) {
         // Send all emails to the debug address
-        $config['system.debug.email'] = 'dev@email.com';
+        $config['system.debug.email'] = 'dev@example.com';
         // allow any password without strict validation
         $config['auth.password.strict'] = false;
     }
 ```
-7. Browse to the location you installed the site.
-8. Set a password for the `admin` user with `./bin/cmd pwd admin`
-9. Install the cron script to ensure all features of the site work:
-```
+- Browse to the site URL and login with the admin user credentials.
+
+### Cron Script
+
+- Install the cron script to ensure all features of the site work using `crontab -e`:
+```cron
 # Run the cron script every 2 hours
-0 */2 * * *  /{pathToSire}/bin/cmd cron
+0 */2 * * *  /{pathToSite}/bin/cmd cron
 ```
-10. Now you should be able to use your new site.
+
 
 
 ## Upgrading
 
-Upgrade the site to the latest release version using the CLI command;
+Upgrade the site by the CLI command;
 ```bash
 $ cd {siteroot}
 $ ./bin/cmd ug
 ```
 
+Manual upgrade process if the above fails:
+```bash
+$ git reset --hard
+$ git checkout 8.0.0    // Use the latest tag version here
+$ composer update
+```
+
+__Warning:__ Upgrading could potentially break the site. Be sure to back up all DB's and
+site `/data` files before running these commands.
 
 
 
