@@ -4,6 +4,8 @@ namespace App;
 use App\Db\Company;
 use App\Db\Product;
 use App\Db\User;
+use Bs\Auth;
+use Bs\Db\UserInterface;
 use Bs\Mvc\PageDomInterface;
 use Bs\Registry;
 use Bs\Ui\Breadcrumbs;
@@ -88,13 +90,33 @@ class Factory extends \Bs\Factory
             $app = parent::getConsole();
 
             $app->add(new \App\Console\Cron());
-            $app->add(new \App\Console\CreateAdmin());
             if (Config::isDev()) {
                 //$app->add(new \App\Console\MigrateTis());
                 $app->add(new \App\Console\Test());
             }
         }
         return $this->get('console');
+    }
+
+    /**
+     *
+     */
+    public function createNewUser(string $username, string $email, string $password, int $perms = 0, string $type = ''): ?UserInterface
+    {
+        $user = new User();
+        $user->givenName = ucfirst($username);
+        $user->type = $type ?: User::TYPE_STAFF;
+        $user->country = 'AU';
+        $user->save();
+
+        $auth = Auth::create($user);
+        $auth->username = $username;
+        $auth->email = $email;
+        $auth->permissions = $perms;
+        $auth->password = Auth::hashPassword($password);
+        $auth->save();
+
+        return $user;
     }
 
 }
