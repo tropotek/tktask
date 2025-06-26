@@ -189,7 +189,7 @@ class Register extends ControllerDomInterface
 
         if (!$form->getFieldValue('password')  || $form->getFieldValue('password') != $form->getFieldValue('confPassword')) {
             $form->addFieldError('password', 'Invalid password');
-            $form->addFieldError('confPassword', 'Check passwords match');
+            $form->addFieldError('confPassword', 'Passwords do not match');
         } else {
             $errors = Auth::validatePassword($form->getFieldValue('password'));
             if (count($errors)) {
@@ -208,7 +208,11 @@ class Register extends ControllerDomInterface
 
         $this->token->delete();
 
-        // TODO: send welcome email to new user
+        /** @var User $user */
+        $user = $this->auth->getDbModel();
+        if ($user) {
+            \App\Email\User::sendWelcome($user);
+        }
 
         Alert::addSuccess('You account has been successfully activated, please login.');
         Uri::create('/login')->redirect();

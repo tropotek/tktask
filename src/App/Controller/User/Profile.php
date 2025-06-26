@@ -22,7 +22,6 @@ use Tk\Uri;
 
 /**
  *
- * @todo Implement the user phone and address fields. Look at using google api to get timestamp etc.
  */
 class Profile extends ControllerAdmin
 {

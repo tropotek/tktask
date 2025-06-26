@@ -11,6 +11,30 @@ use Tk\Uri;
 class User
 {
 
+    public static function sendWelcome(\App\Db\User $user, bool $isSsi = false): bool
+    {
+        $config = Config::instance();
+
+        $content = <<<HTML
+            <h2>Account Created And Activated.</h2>
+            <p>
+              Welcome {name}
+            </p>
+            <p>
+              Your account has been successfully created and activated.<br/>
+              To log in to your new account, visit: <a href="{home-url}" target="_blank">{home-url}</a>
+            </p>
+        HTML;
+
+        $message = Factory::instance()->createMailMessage($content);
+        $message->setSubject($config->get('site.title') . ' New Account Created');;
+        $message->addTo($user->email);
+        $message->set('name', $user->nameShort);
+        $message->set('home-url', $user->getHomeUrl()->toString());
+
+        return Mailer::instance()->send($message);
+    }
+
     public static function sendRegister(\App\Db\User $user): bool
     {
         $content = <<<HTML

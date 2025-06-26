@@ -40,7 +40,7 @@ class Recover extends ControllerDomInterface
             ->setAttr('autocomplete', 'off')
             ->setAttr('placeholder', 'Username')
             ->setRequired()
-            ->setNotes('Enter your username to recover access your account.');
+            ->setNotes('Enter your username to recover your account.');
 
         $html = <<<HTML
             <a href="/login">Login</a>
@@ -111,7 +111,7 @@ class Recover extends ControllerDomInterface
             ->setAttr('placeholder', 'Password Confirm')
             ->setAttr('autocomplete', 'off')->setRequired();
 
-        $this->form->appendField(new Submit('recover', [$this, 'onRecover']));
+        $this->form->appendField(new Submit('save', [$this, 'onRecover']));
 
         $load = [];
         $this->form->setFieldValues($load);
@@ -142,7 +142,7 @@ class Recover extends ControllerDomInterface
 
         $this->token->delete();
 
-        Alert::addSuccess('Successfully account recovery. Please login.');
+        Alert::addSuccess('Account password updated. Please login.');
         Uri::create('/login')->redirect();
     }
 
@@ -161,7 +161,7 @@ class Recover extends ControllerDomInterface
     {
         $html = <<<HTML
 <div>
-    <h1 class="h3 mb-3 fw-normal text-center">Recover Account Password</h1>
+    <h1 class="h3 mb-3 fw-normal text-center">Setup Account Password</h1>
     <div class="" var="content"></div>
 </div>
 HTML;
