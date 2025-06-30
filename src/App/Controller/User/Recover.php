@@ -29,7 +29,7 @@ class Recover extends ControllerDomInterface
 
     public function doDefault(): void
     {
-        $this->getPage()->setTitle('Recover');
+        $this->getPage()->setTitle('Recover Account');
 
         // logout any existing user
         Auth::logout();
@@ -38,9 +38,9 @@ class Recover extends ControllerDomInterface
 
         $this->form->appendField(new Input('username'))
             ->setAttr('autocomplete', 'off')
-            ->setAttr('placeholder', 'Username')
+            ->setAttr('placeholder', 'Username/Email')
             ->setRequired()
-            ->setNotes('Enter your username to recover your account.');
+            ->setNotes('Enter your username or email to recover your account.');
 
         $html = <<<HTML
             <a href="/login">Login</a>
@@ -63,11 +63,19 @@ class Recover extends ControllerDomInterface
     {
         if (!$form->getFieldValue('username')) {
             $form->setFieldValue('username', '');
-            $form->addError('Please enter a valid username.');
+            $form->addError('Please enter a valid username/email.');
             return;
         }
 
         $auth = Auth::findByUsername(strtolower($form->getFieldValue('username')));
+        if (!$auth) {
+            $auth = Auth::findByEmail(strtolower($form->getFieldValue('username')));
+        }
+        if (!($auth && $auth->active)) {
+            Alert::addError("Invalid user account");
+            Uri::create('/')->redirect();
+        }
+
         /** @var User $user */
         $user = $auth->getDbModel();
         if (!$user) {
@@ -87,7 +95,7 @@ class Recover extends ControllerDomInterface
 
     public function doRecover(): void
     {
-        $this->getPage()->setTitle('Recover');
+        $this->getPage()->setTitle('Setup Account Password');
 
         // logout any existing user
         Auth::logout();
@@ -149,6 +157,7 @@ class Recover extends ControllerDomInterface
     public function show(): ?Template
     {
         $template = $this->getTemplate();
+        $template->setText('title', $this->getPage()->getTitle());
 
         if ($this->form) {
             $template->appendTemplate('content', $this->form->show());
@@ -161,7 +170,7 @@ class Recover extends ControllerDomInterface
     {
         $html = <<<HTML
 <div>
-    <h1 class="h3 mb-3 fw-normal text-center">Setup Account Password</h1>
+    <h1 class="h3 mb-3 fw-normal text-center" var="title">Setup Account Password</h1>
     <div class="" var="content"></div>
 </div>
 HTML;

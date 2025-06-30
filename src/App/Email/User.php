@@ -21,7 +21,7 @@ class User
               Welcome {name}
             </p>
             <p>
-              Your account has been successfully created and activated.<br/>
+              Your account with the username "{username}" has been successfully created and activated.<br/>
               To log in to your new account, visit: <a href="{home-url}" target="_blank">{home-url}</a>
             </p>
         HTML;
@@ -31,6 +31,7 @@ class User
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
         $message->set('home-url', $user->getHomeUrl()->toString());
+        $message->set('username', $user->username);
 
         return Mailer::instance()->send($message);
     }
@@ -38,21 +39,22 @@ class User
     public static function sendRegister(\App\Db\User $user): bool
     {
         $content = <<<HTML
-            <h2>Account Activation.</h2>
+            <h2>Account Registration.</h2>
             <p>
               Welcome {name}
             </p>
             <p>
-              Please follow the link to create a new password and activate your account.<br/>
+              Please follow the link to create a new password and activate your account with the username "{username}".<br/>
               <a href="{activate-url}" target="_blank">{activate-url}</a>
             </p>
-            <p><small>Note: If you did not initiate this account creation you can safely disregard this message.</small></p>
+            <p><small>Note: If you did not initiate this account creation, you can safely disregard this message.</small></p>
         HTML;
 
         $message = Factory::instance()->createMailMessage($content);
         $message->setSubject(Registry::getSiteName() . ' Account Registration');
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
+        $message->set('username', $user->username);
 
         $gt = GuestToken::create([
             Uri::create('/registerActivate')->getPath(),
@@ -75,16 +77,18 @@ class User
               Welcome {name}
             </p>
             <p>
-              Please follow the link to create a new password and activate your account.<br/>
+              Please follow the link to create a new password and activate your account with the username "{username}".<br/>
               <a href="{activate-url}" target="_blank">{activate-url}</a>
             </p>
             <p><small>Note: If you did not initiate this email, you can safely disregard this message.</small></p>
         HTML;
 
         $message = Factory::instance()->createMailMessage($content);
-        $message->setSubject($config->get('site.title') . ' Password Recovery');
+        $message->setSubject($config->get('site.title') . ' Account Recovery');
         $message->addTo($user->email);
         $message->set('name', $user->nameShort);
+        $message->set('username', $user->username);
+        vd($user);
 
         $gt = GuestToken::create([
             Uri::create('/recoverUpdate')->getPath(),
