@@ -169,6 +169,9 @@ class Profile extends ControllerAdmin
                 $template->setAttr('comp-perms', 'hx-get', $url);
                 $template->setVisible('comp-perms');
             }
+
+            $url = Uri::create('/component/userPhoto', ['userId' => $this->user->userId]);
+            $template->setAttr('comp-photo', 'hx-get', $url);
         }
 
         $this->form->getRenderer()->addFieldCss('mb-3');
@@ -197,9 +200,12 @@ class Profile extends ControllerAdmin
         </div>
     </div>
 
-    <div class="col-4">
+    <div class="col-3">
         <div hx-get="/component/userPermissions" hx-trigger="load" hx-swap="outerHTML" choice="comp-perms">
             <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+        </div>
+        <div hx-get="/component/userPhoto" hx-trigger="load" hx-swap="outerHTML" var="comp-photo">
+          <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
         </div>
     </div>
 </div>

@@ -163,6 +163,8 @@ return function (CollectionConfigurator $routes) {
     $routes->add('com-files', '/component/files')
         ->controller([\App\Component\Files::class, 'doDefault']);
 
+    $routes->add('com-user-photo', '/component/userPhoto')
+        ->controller([\App\Component\UserPhoto::class, 'doDefault']);
     $routes->add('com-user-permissions', '/component/userPermissions')
         ->controller([\App\Component\UserPermissions::class, 'doDefault']);
 
