@@ -2,6 +2,12 @@
 
 #CHANGELOG#
 
+Ver 1.0.36 [2025-07-02]:
+-------------------------------
+  - Use component for all edit task logs
+  - update user login pages
+
+
 Ver 1.0.34 [2025-06-21]:
 -------------------------------
   - fixed recurring issues
