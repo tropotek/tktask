@@ -94,7 +94,8 @@ class TaskLogEditDialog extends \Dom\Renderer\Renderer implements ComponentInter
             ->setRequired();
 
         // todo This should be a date-time field
-        $this->form->appendField(new Input('startAt', 'date'))
+        $this->form->appendField(new Input('startAt', 'datetime-local'))
+            ->setLabel('Start Date')
             ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Textarea('comment'))
