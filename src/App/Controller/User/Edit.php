@@ -54,7 +54,7 @@ class Edit extends ControllerAdmin
         }
         $this->auth = $this->user->getAuth();
 
-        $this->setUserAccess(User::PERM_MANAGE_STAFF);
+        $this->setUserAccess(User::PERM_SYSADMIN);
 
         // Request user to reset their password
         if ($this->user->userId && isset($_GET['r'])) {
@@ -121,50 +121,22 @@ class Edit extends ControllerAdmin
             );
         }
 
-        $list = User::PERMISSION_LIST;
-        $field = $this->form->appendField(new Checkbox('perm', $list))
-            ->setLabel('Permissions')
-            ->setGroup('Permissions');
-
-        if (!Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF)) {
-            $field->setNotes('You require "Manage Staff" to modify permissions');
-            $field->setDisabled();
-        }
-
         // Form Actions
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Breadcrumbs::getBackUrl()));
 
         $load = $this->user->unmapForm();
-        $load['perm'] = array_keys(
-            array_filter(
-                User::PERMISSION_LIST,
-                fn($k) => ($k & $this->auth->permissions) != 0,
-                ARRAY_FILTER_USE_KEY
-            )
-        );
-
         $this->form->setFieldValues($load);
-
         $this->form->execute($_POST);
 
     }
 
     public function onSubmit(Form $form, SubmitExit $action): void
     {
-        // non admin cannot change permissions
-        if (!Auth::getAuthUser()->hasPermission(User::PERM_SYSADMIN)) {
-            $form->removeField('perm');
-        }
-
         // set object values from fields
         $values = $form->getFieldValues();
         $this->user->mapForm($values);
         $this->auth->mapForm($values);
-
-        if ($form->getField('perm')) {
-            $this->auth->permissions = array_sum($form->getFieldValue('perm') ?? []);
-        }
 
         $form->addFieldErrors($this->user->validate());
         $form->addFieldErrors($this->auth->validate());
@@ -203,13 +175,20 @@ class Edit extends ControllerAdmin
     public function show(): ?Template
     {
         $template = $this->getTemplate();
-        $template->appendText('title', $this->getPage()->getTitle());
+        $template->setText('title', $this->getPage()->getTitle());
         $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->user->userId) {
-            $template->setVisible('edit');
             $template->setText('modified', $this->user->modified->format(Date::FORMAT_LONG_DATETIME));
             $template->setText('created', $this->user->created->format(Date::FORMAT_LONG_DATETIME));
+            if ($this->type == User::TYPE_STAFF) {
+                $template->setVisible('edit');
+                $url = Uri::create('/component/userPermissions', [
+                    'userId' => $this->user->userId,
+                    'canEdit' => User::getAuthUser()->hasPermission(User::PERM_SYSADMIN),
+                ]);
+                $template->setAttr('comp-perms', 'hx-get', $url);
+            }
         }
 
         if (!$this->user->userId) {
@@ -247,36 +226,43 @@ class Edit extends ControllerAdmin
         Uri::create()->remove(Masquerade::QUERY_MSQ)->redirect();
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
     public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3" choice="edit">
-    <div class="card-body">
-      <a href="/" title="Masquerade" data-confirm="Masquerade as this user" class="btn btn-outline-secondary" choice="msq"><i class="fa fa-user-secret"></i> Masquerade</a>
-      <a href="/" title="Request Password Reset Email" data-confirm="Send an email to request user to reset their password?<br>Note: This will activate any inactive account." class="btn btn-outline-secondary" choice="reset"><i class="fa fa-fw fa-envelope"></i> Send Password Reset Email</a>
-    </div>
-  </div>
-  <div class="card mb-3">
-    <div class="card-header">
-      <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
-        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
-        <div class="dropdown-menu dropdown-menu-end">
-          <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
-          <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+    <div class="page-actions card mb-3" choice="edit">
+        <div class="card-body" var="actions">
+            <a href="/" title="Masquerade" data-confirm="Masquerade as this user" class="btn btn-outline-secondary" choice="msq"><i class="fa fa-user-secret"></i> Masquerade</a>
+            <a href="/" title="Request Password Reset Email" data-confirm="Send an email to request user to reset their password?<br>Note: This will activate any inactive account." class="btn btn-outline-secondary" choice="reset"><i class="fa fa-fw fa-envelope"></i> Send Password Reset Email</a>
         </div>
-      </div>
-      <i var="icon"></i> <span var="title"></span>
     </div>
-    <div class="card-body" var="content">
-      <p choice="new-user"><b>NOTE:</b> New users will be sent an email requesting them to activate their account and create a new password.</p>
+    <div class="row">
+        <div class="col">
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+                            <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+                        </div>
+                    </div>
+                    <i var="icon"></i> <span var="title"></span>
+                </div>
+                <div class="card-body" var="content">
+                    <p choice="new-user"><b>NOTE:</b> New users will be sent an email requesting them to activate their account and create a new password.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4" choice="edit">
+            <div hx-get="/component/userPermissions" hx-trigger="load" hx-swap="outerHTML" var="comp-perms">
+              <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+            </div>
+        </div>
+
     </div>
-  </div>
 </div>
 HTML;
         return $this->loadTemplate($html);

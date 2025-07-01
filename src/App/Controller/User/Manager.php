@@ -24,11 +24,8 @@ class Manager extends ControllerAdmin
 
     public function doDefault(): void
     {
+        $this->setUserAccess(User::PERM_SYSADMIN);
         $this->getPage()->setTitle(ucwords($this->type) . ' Manager', 'fa fa-users');
-
-        if ($this->type == User::TYPE_STAFF) {
-            $this->setUserAccess(User::PERM_MANAGE_STAFF);
-        }
 
         if (isset($_GET[Masquerade::QUERY_MSQ])) {
             $this->doMsq(intval($_GET[Masquerade::QUERY_MSQ] ?? 0));
@@ -133,7 +130,7 @@ class Manager extends ControllerAdmin
             })
         );
 
-        // execute table to init filter object
+        // execute table, init filter object
         $this->table->execute();
 
         // Set the table rows

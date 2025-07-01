@@ -184,7 +184,6 @@ class Settings extends ControllerAdmin
         ) + $_POST; // keep the original post values for the events
 
         $this->form->execute($values);
-
     }
 
     public function onSubmit(Form $form, SubmitExit $action): void
@@ -220,7 +219,7 @@ class Settings extends ControllerAdmin
         $template->appendText('title', $this->getPage()->getTitle());
         $template->addCss('icon', $this->getPage()->getIcon());
 
-        $template->setVisible('staff', Auth::getAuthUser()->hasPermission(User::PERM_MANAGE_STAFF));
+        $template->setVisible('staff', Auth::getAuthUser()->hasPermission(User::PERM_SYSADMIN));
         $template->setVisible('admin', Auth::getAuthUser()->hasPermission(User::PERM_ADMIN));
 
         $this->form->getRenderer()->addFieldCss('mb-3');

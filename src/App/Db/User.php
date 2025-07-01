@@ -24,13 +24,16 @@ class User extends Model implements UserInterface
      */
     const int PERM_ADMIN            = 0x1;      // Admin
     const int PERM_SYSADMIN         = 0x2;      // Change system settings
-    const int PERM_MANAGE_STAFF     = 0x4;      // Manage staff
-    //const int PERM_   = 0x8;    // available
+    //const int PERM_   = 0x4;    // available
 
     const array PERMISSION_LIST = [
         self::PERM_ADMIN            => "Admin",
         self::PERM_SYSADMIN         => "Manage Settings",
-        self::PERM_MANAGE_STAFF     => "Manage Staff",
+    ];
+
+    const array PERMISSION_DESCRIPTION_LIST = [
+        self::PERM_ADMIN          => "Access to all features and settings.",
+        self::PERM_SYSADMIN       => "Change system settings, manage staff users.",
     ];
 
     const string TYPE_STAFF = 'staff';
