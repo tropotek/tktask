@@ -37,7 +37,6 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements ComponentInterface
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\TaskLog $obj, Cell $cell) {
-
                 $disabled = $obj->status != Task::STATUS_OPEN ? 'disabled' : '';
                 $url = Uri::create('/component/taskLogEditDialog')->set('taskLogId', $obj->taskLogId);
                 $id = '#'.TaskLogEditDialog::CONTAINER_ID;

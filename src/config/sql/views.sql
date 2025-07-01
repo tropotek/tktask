@@ -90,22 +90,28 @@ FROM expense e;
 CREATE OR REPLACE VIEW v_task AS
 SELECT
   t.*,
+  IFNULL(c.name, '') AS company_name,
+  IFNULL(ass.name_short, '') AS assigned_name,
   CASE
       WHEN closed_at IS NOT NULL THEN 'closed'
       WHEN cancelled_at IS NOT NULL THEN 'cancelled'
       ELSE 'open'
   END AS status,
   CONCAT('/task/', YEAR(t.created), '/' , t.task_id) AS data_path
-FROM task t;
+FROM task t
+LEFT JOIN company c USING (company_id)
+LEFT JOIN v_user ass ON (ass.user_id = t.assigned_user_id);
 
 -- \App\Db\TaskLog
 CREATE OR REPLACE VIEW v_task_log AS
 SELECT
   tl.*,
   t.data_path,
-  t.status
+  t.status,
+  IFNULL(p.name, '') AS product_name
 FROM task_log tl
-JOIN v_task t USING (task_id);
+JOIN v_task t USING (task_id)
+LEFT JOIN product p USING (product_id);
 
 -- \App\Db\Project
 CREATE OR REPLACE VIEW v_project AS

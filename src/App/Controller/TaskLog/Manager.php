@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\TaskLog;
 
+use App\Component\TaskLogEditDialog;
 use App\Db\Task;
 use App\Db\TaskLog;
 use App\Db\User;
@@ -41,9 +42,18 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(TaskLog $obj, Cell $cell) {
-                $url = Uri::create('/taskLogEdit')->set('taskLogId', $obj->taskLogId);
+                $disabled = $obj->status != Task::STATUS_OPEN ? 'disabled' : '';
+                $url = Uri::create('/component/taskLogEditDialog')->set('taskLogId', $obj->taskLogId);
+                $id = '#'.TaskLogEditDialog::CONTAINER_ID;
                 return <<<HTML
-                    <a class="btn btn-outline-success" href="$url" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
+                    <button class="btn btn-primary $disabled" title="Edit Task Log" $disabled
+                        hx-get="{$url}"
+                        hx-select="{$id}"
+                        hx-trigger="click queue:none"
+                        hx-target="body"
+                        hx-swap="beforeend">
+                        <i class="fas fa-fw fa-pencil-alt"></i>
+                    </button>
                 HTML;
             });
 
@@ -138,8 +148,8 @@ class Manager extends ControllerAdmin
         $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->task->isEditable()) {
-            $url = Uri::create('/taskLogEdit')->set('taskId', $this->task->taskId);
-            $template->setAttr('create', 'href', $url);
+            $url = Uri::create('/component/taskLogEditDialog')->set('taskId', $this->task->taskId);
+            $template->setAttr('add-log', 'hx-get', $url);
             $template->setVisible('add-log');
         }
 
@@ -157,18 +167,33 @@ class Manager extends ControllerAdmin
     {
         $html = <<<HTML
 <div>
-  <div class="page-actions card mb-3" choice="add-log">
-    <div class="card-body">
-      <a href="#" title="Create Task Log" class="btn btn-outline-secondary" var="create"><i class="fa fa-plus"></i> Add Log</a>
+    <div class="page-actions card mb-3" choice="add-log">
+        <div class="card-body">
+            <a title="Add a new Task Log" class="btn btn-outline-secondary" choice="add-log" data-toggle="modal"
+                hx-get="#"
+                hx-trigger="click queue:none"
+                hx-target="body"
+                hx-swap="beforeend">
+                <i class="fa fa-fw fa-plus"></i>
+                Add Log
+            </a>
+        </div>
     </div>
-  </div>
-  <div class="card mb-3">
-    <div class="card-header">
-        <i var="icon"></i> <span var="title"></span>
-        <div class="float-end" choice="billable">Billable: $0.00</div>
+    <div class="card mb-3">
+        <div class="card-header">
+            <i var="icon"></i> <span var="title"></span>
+            <div class="float-end" choice="billable">Billable: $0.00</div>
+        </div>
+        <div class="card-body" var="content"></div>
     </div>
-    <div class="card-body" var="content"></div>
-  </div>
+
+<script>
+jQuery(function ($) {
+    $(document).on('tkForm:afterSubmit', function() {
+        location = location.href;
+    });
+});
+</script>
 </div>
 HTML;
         return Template::load($html);

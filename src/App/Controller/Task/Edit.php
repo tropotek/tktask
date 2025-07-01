@@ -118,7 +118,6 @@ class Edit extends ControllerAdmin
                 $template->setVisible('cancel');
             }
 
-
             if ($this->task->isEditable()) {
                 $url = Uri::create('/component/taskLogEditDialog')->set('taskId', $this->task->taskId);
                 $template->setAttr('add-log', 'hx-get', $url);

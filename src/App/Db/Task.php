@@ -75,17 +75,18 @@ class Task extends Model
     public ?\DateTime $cancelledAt    = null;
     public ?\DateTime $invoicedAt     = null;
     public ?int       $invoiceItemId  = null;
-    public string     $status         = '';      // todo mm: use view to get the status
+    public ?\DateTime $modified       = null;
+    public ?\DateTime $created        = null;
+
     public string     $dataPath       = '';
-    public \DateTime  $modified;
-    public \DateTime  $created;
+    public string     $status         = '';
+    public string     $companyName    = '';
+    public string     $assignedName   = '';
 
     private ?User $_assignedUser = null;
 
     public function __construct()
     {
-        $this->modified = new \DateTime();
-        $this->created = new \DateTime();
         $user = User::getAuthUser();
         if ($user instanceof User) {
             $this->assignedUserId = $user->userId;

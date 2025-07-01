@@ -11,6 +11,10 @@ use Tk\Alert;
 use Tk\Date;
 use Tk\Uri;
 
+
+/**
+ * @deprecated No longer used anywhere, using component instead
+ */
 class Edit extends ControllerAdmin
 {
     protected ?Task              $task    = null;

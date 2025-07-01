@@ -21,25 +21,25 @@ class TaskLog extends Model
 
     const int DEFAULT_PRODUCT_ID = 1;
 
-    public int       $taskLogId     = 0;
-    public int       $taskId        = 0;
-    public int       $userId        = 0;
-    public int       $productId     = self::DEFAULT_PRODUCT_ID;
-    public bool      $billable      = true;
-    public \DateTime $startAt;
-    public int       $minutes       = 0;
-    public string    $status        = '';   // task status
-    public string    $comment       = '';
-    public string    $dataPath      = '';
-    public \DateTime $modified;
-    public \DateTime $created;
+    public int        $taskLogId  = 0;
+    public int        $taskId     = 0;
+    public int        $userId     = 0;
+    public int        $productId  = self::DEFAULT_PRODUCT_ID;
+    public bool       $billable   = true;
+    public \DateTime  $startAt;
+    public int        $minutes    = 0;
+    public string     $status     = '';   // task status
+    public string     $comment    = '';
+    public ?\DateTime $modified   = null;
+    public ?\DateTime $created    = null;
+
+    public string    $productName = '';
+    public string    $dataPath    = '';
 
 
     public function __construct()
     {
         $this->startAt  = new \DateTime();
-        $this->modified = new \DateTime();
-        $this->created  = new \DateTime();
 
         $config = Config::instance();
         if (User::getAuthUser() instanceof User) {
