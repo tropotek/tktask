@@ -49,7 +49,7 @@ class Profile extends ControllerAdmin
         $this->form->appendField((new Select('title', $list))
             ->prependOption('', ''))
             ->setGroup($tab)
-            ->addFieldCss('col-md-1')
+            ->addFieldCss('col-md-2')
             ->setLabel('Title');
 
         $this->form->appendField(new Input('givenName'))
@@ -58,7 +58,7 @@ class Profile extends ControllerAdmin
             ->setRequired();
 
         $this->form->appendField(new Input('familyName'))
-            ->addFieldCss('col-md-6')
+            ->addFieldCss('col-md-5')
             ->setGroup($tab);
 
         $this->form->appendField(new Input('username'))->setGroup($tab)
@@ -159,16 +159,15 @@ class Profile extends ControllerAdmin
         $template->addCss('icon', $this->getPage()->getIcon());
 
         if ($this->user->userId) {
-            $template->setVisible('edit');
             $template->setText('modified', $this->user->modified->format(Date::FORMAT_LONG_DATETIME));
             $template->setText('created', $this->user->created->format(Date::FORMAT_LONG_DATETIME));
             if ($this->user->type == User::TYPE_STAFF) {
-                $template->setVisible('edit');
                 $url = Uri::create('/component/userPermissions', [
                     'userId' => $this->user->userId,
                     'canEdit' => false,
                 ]);
                 $template->setAttr('comp-perms', 'hx-get', $url);
+                $template->setVisible('comp-perms');
             }
         }
 
@@ -185,7 +184,7 @@ class Profile extends ControllerAdmin
     <div class="col">
         <div class="card mb-3">
             <div class="card-header">
-                <div class="info-dropdown dropdown float-end" title="Details" choice="edit">
+                <div class="info-dropdown dropdown float-end" title="Details">
                     <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
@@ -199,8 +198,8 @@ class Profile extends ControllerAdmin
     </div>
 
     <div class="col-4">
-        <div hx-get="/component/userPermissions" hx-trigger="load" hx-swap="outerHTML" var="comp-perms">
-          <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+        <div hx-get="/component/userPermissions" hx-trigger="load" hx-swap="outerHTML" choice="comp-perms">
+            <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
         </div>
     </div>
 </div>
