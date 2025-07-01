@@ -23,9 +23,9 @@ class User extends Model implements UserInterface
      * requests for permission are ANDed with the user's permissions
      * if the result is non-zero the user has permission.
      */
-    const int PERM_ADMIN            = 0x1;      // Admin
-    const int PERM_SYSADMIN         = 0x2;      // Change system settings
-    //const int PERM_   = 0x4;    // available
+    const int PERM_ADMIN            = 0x1;    // Admin
+    const int PERM_SYSADMIN         = 0x2;    // Change system settings
+    // const int PERM_              = 0x4;    // available
 
     const array PERMISSION_LIST = [
         self::PERM_ADMIN            => "Admin",
