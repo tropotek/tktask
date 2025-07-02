@@ -34,13 +34,11 @@ class Notify extends Model
     public bool       $isNotified = false;
     public int        $ttlMins    = 0;
     public ?\DateTime $expiry     = null;
-
-    public \DateTimeImmutable $created;
+    public ?\DateTime $created    = null;
 
 
     public function __construct()
     {
-        $this->created = new \DateTimeImmutable();
     }
 
     public function save(): void

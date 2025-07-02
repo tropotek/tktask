@@ -8,21 +8,17 @@ use Tk\Db\Filter;
 class TaskCategory extends Model
 {
 
-    public int    $taskCategoryId = 0;
-    public string $name           = '';
-    public string $description    = '';
-    public int    $orderBy        = 0;
-    public bool   $active         = true;
-
-    public \DateTimeImmutable $modified;
-    public \DateTimeImmutable $created;
+    public int        $taskCategoryId = 0;
+    public string     $name           = '';
+    public string     $description    = '';
+    public int        $orderBy        = 0;
+    public bool       $active         = true;
+    public ?\DateTime $modified   = null;
+    public ?\DateTime $created    = null;
 
 
     public function __construct()
     {
-        $this->modified = new \DateTimeImmutable();
-        $this->created  = new \DateTimeImmutable();
-
     }
 
     public function save(): void

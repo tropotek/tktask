@@ -23,12 +23,12 @@ class DomainPing extends Model
     public ?\DateTime $siteTime     = null;
     public ?string    $timezone     = null;
     public ?int       $bytes        = null;
-    public \DateTime  $created;
+    public ?\DateTime $created      = null;
 
 
     public function __construct()
     {
-        $this->created = new \DateTime();
+
     }
 
     public static function create(int $domainId, bool $status, array $data = []): self

@@ -35,25 +35,23 @@ class Project extends Model
         self::STATUS_CANCELLED => 'danger',
     ];
 
-    public int       $projectId   = 0;
-    public int       $userId      = 0;
-    public int       $companyId   = 0;
-    public string    $status      = '';
-    public string    $name        = '';
-    public Money     $quote;
-    public ?DateTime $startOn     = null;
-    public ?DateTime $endOn       = null;
-    public ?DateTime $cancelledOn = null;
-    public string    $description = '';
-    public string    $notes       = '';
-    public DateTime  $modified;
-    public DateTime  $created;
+    public int        $projectId   = 0;
+    public int        $userId      = 0;
+    public int        $companyId   = 0;
+    public string     $status      = '';
+    public string     $name        = '';
+    public Money      $quote;
+    public ?DateTime  $startOn     = null;
+    public ?DateTime  $endOn       = null;
+    public ?DateTime  $cancelledOn = null;
+    public string     $description = '';
+    public string     $notes       = '';
+    public ?\DateTime $modified    = null;
+    public ?\DateTime $created     = null;
 
 
     public function __construct()
     {
-        $this->modified = new DateTime();
-        $this->created  = new DateTime();
         $this->quote    = new Money();
         $this->startOn  = new DateTime('next monday');
         $this->endOn    = (new DateTime('next monday'))->add(new \DateInterval('P3M'));

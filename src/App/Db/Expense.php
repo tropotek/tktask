@@ -17,7 +17,7 @@ class Expense extends Model
     public int        $expenseCategoryId  = 0;
     public int        $companyId   = 0;
     public string     $invoiceNo   = '';
-    // public string     $receiptNo   = '';
+    public string     $receiptNo   = '';
     public string     $description = '';
     public \DateTime  $purchasedOn;
     public Money      $total;

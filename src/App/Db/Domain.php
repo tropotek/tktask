@@ -23,14 +23,12 @@ class Domain extends Model
     public int        $bytes       = 0;
     public int        $lastPing_id = 0;
     public ?\DateTime $pingedAt    = null;
-    public \DateTime  $modified;
-    public \DateTime  $created;
+    public ?\DateTime $modified    = null;
+    public ?\DateTime $created     = null;
 
 
     public function __construct()
     {
-        $this->modified = new \DateTime();
-        $this->created  = new \DateTime();
     }
 
     public static function pingAllDomains(): bool

@@ -39,17 +39,15 @@ class Recurring extends Model
     public bool       $issue       = true;
     public string     $description = '';
     public string     $notes       = '';
-    public \DateTime  $modified;
-    public \DateTime  $created;
+    public ?\DateTime  $modified   = null;
+    public ?\DateTime  $created    = null;
 
 
     public function __construct()
     {
-        $this->startOn  = new \DateTime('tomorrow');
-        $this->nextOn   = new \DateTime('tomorrow');
-        $this->modified = new \DateTime();
-        $this->created  = new \DateTime();
-        $this->price    = new Money();
+        $this->startOn = new \DateTime('tomorrow');
+        $this->nextOn  = new \DateTime('tomorrow');
+        $this->price   = new Money();
     }
 
     public static function getDataMap(): DataMap

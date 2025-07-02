@@ -16,31 +16,28 @@ class Company extends Model
         self::TYPE_SUPPLIER,
     ];
 
-    public int     $companyId     = 0;
-    public string  $accountId     = '';
-    public ?string $type          = self::TYPE_CLIENT;
-    public string  $name          = '';
-    public string  $alias         = '';
-    public string  $abn           = '';
-    public string  $website       = '';
-    public string  $contact       = '';
-    public string  $phone         = '';
-    public string  $email         = '';
-    public string  $accountsEmail = '';
-    public string  $address       = '';
-    public string  $notes         = '';
-    public bool    $active        = true;
-
-    public Money              $credit;
-    public \DateTimeImmutable $modified;
-    public \DateTimeImmutable $created;
+    public int        $companyId     = 0;
+    public string     $accountId     = '';
+    public ?string    $type          = self::TYPE_CLIENT;
+    public string     $name          = '';
+    public string     $alias         = '';
+    public string     $abn           = '';
+    public string     $website       = '';
+    public string     $contact       = '';
+    public string     $phone         = '';
+    public string     $email         = '';
+    public string     $accountsEmail = '';
+    public string     $address       = '';
+    public string     $notes         = '';
+    public bool       $active        = true;
+    public Money      $credit;
+    public ?\DateTime $modified      = null;
+    public ?\DateTime $created       = null;
 
 
     public function __construct()
     {
-        $this->credit   = Money::create();
-        $this->modified = new \DateTimeImmutable();
-        $this->created  = new \DateTimeImmutable();
+        $this->credit = Money::create();
     }
 
     public function save(): void

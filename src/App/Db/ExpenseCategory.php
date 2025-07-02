@@ -8,20 +8,18 @@ use Tk\Db\Filter;
 
 class ExpenseCategory extends Model
 {
-    public int       $expenseCategoryId = 0;
-    public string    $name              = '';
-    public string    $description       = '';
+    public int        $expenseCategoryId = 0;
+    public string     $name              = '';
+    public string     $description       = '';
     /** percentage claimable for tax */
-    public float     $claim             = 1;
-    public bool      $active            = true;
-    public \DateTime $modified;
-    public \DateTime $created;
+    public float      $claim             = 1;
+    public bool       $active            = true;
+    public ?\DateTime $modified          = null;
+    public ?\DateTime $created           = null;
 
 
     public function __construct()
     {
-        $this->modified = new \DateTime();
-        $this->created = new \DateTime();
     }
 
     public static function getFormMap(): DataMap

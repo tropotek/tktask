@@ -26,22 +26,20 @@ class Payment extends Model
     ];
 
 
-    public int        $paymentId  = 0;
-    public int        $invoiceId  = 0;
-    public Money      $amount;
-    public string     $method     = self::METHOD_DEPOSIT;
-    public \DateTime  $receivedAt;
-    public ?string    $notes      = null;
-    public \DateTime  $modified;
-    public \DateTime  $created;
+    public int         $paymentId  = 0;
+    public int         $invoiceId  = 0;
+    public Money       $amount;
+    public string      $method     = self::METHOD_DEPOSIT;
+    public \DateTime   $receivedAt;
+    public ?string     $notes      = null;
+    public ?\DateTime  $modified   = null;
+    public ?\DateTime  $created    = null;
 
 
     public function __construct()
     {
         $this->amount = Money::create();
         $this->receivedAt = new \DateTime();
-        $this->modified = new \DateTime();
-        $this->created = new \DateTime();
     }
 
     public static function create(Money $amount, string $method = self::METHOD_CASH): self

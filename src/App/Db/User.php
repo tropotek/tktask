@@ -74,15 +74,13 @@ class User extends Model implements UserInterface
     public ?string    $hash          = null;
     public ?\DateTime $lastLogin     = null;
 
-    public \DateTimeImmutable $modified;
-    public \DateTimeImmutable $created;
+    public ?\DateTime $modified      = null;
+    public ?\DateTime $created       = null;
 
 
     public function __construct()
     {
         $this->timezone = Config::instance()->get('php.date.timezone');
-        $this->modified = new \DateTimeImmutable();
-        $this->created  = new \DateTimeImmutable();
     }
 
     public function save(): void

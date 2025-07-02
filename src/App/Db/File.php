@@ -29,12 +29,11 @@ class File extends Model
     public bool       $selected = false;
     public string     $hash     = '';
 
-    public \DateTimeImmutable $created;
+    public ?\DateTime $created = null;
 
 
     public function __construct()
     {
-        $this->created = new \DateTimeImmutable();
     }
 
     /**

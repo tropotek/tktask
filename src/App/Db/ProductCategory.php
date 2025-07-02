@@ -7,17 +7,15 @@ use Tk\Db\Filter;
 
 class ProductCategory extends Model
 {
-    public int     $productCategoryId = 0;
-    public string  $name              = '';
-    public string  $description       = '';
-    public \DateTime $modified;
-    public \DateTime $created;
+    public int        $productCategoryId = 0;
+    public string     $name              = '';
+    public string     $description       = '';
+    public ?\DateTime $modified          = null;
+    public ?\DateTime $created           = null;
 
 
     public function __construct()
     {
-        $this->modified = new \DateTime();
-        $this->created = new \DateTime();
     }
 
     public function save(): void

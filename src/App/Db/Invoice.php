@@ -38,27 +38,27 @@ class Invoice extends Model
         self::STATUS_CANCELLED  => 'danger',
     ];
 
-    public int        $invoiceId       = 0;
-    public string     $fkey            = '';
-    public int        $fid             = 0;
-    public string     $purchaseOrder   = '';
-    public float      $discount        = 0.0;
-    public float      $tax             = 0.0;
-    public Money      $shipping;
-    public Money      $subTotal;
-    public Money      $discountTotal;
-    public Money      $taxTotal;
-    public Money      $total;
-    public Money      $paidTotal;
-    public Money      $unpaidTotal;
-    public string     $status          = '';
-    public string     $billingAddress  = '';
-    public ?\DateTime $issuedOn        = null;
-    public ?\DateTime $paidOn          = null;
-    public ?\DateTime $cancelledOn     = null;
-    public string     $notes           = '';
-    public \DateTime  $modified;
-    public \DateTime  $created;
+    public int         $invoiceId       = 0;
+    public string      $fkey            = '';
+    public int         $fid             = 0;
+    public string      $purchaseOrder   = '';
+    public float       $discount        = 0.0;
+    public float       $tax             = 0.0;
+    public Money       $shipping;
+    public Money       $subTotal;
+    public Money       $discountTotal;
+    public Money       $taxTotal;
+    public Money       $total;
+    public Money       $paidTotal;
+    public Money       $unpaidTotal;
+    public string      $status          = '';
+    public string      $billingAddress  = '';
+    public ?\DateTime  $issuedOn        = null;
+    public ?\DateTime  $paidOn          = null;
+    public ?\DateTime  $cancelledOn     = null;
+    public string      $notes           = '';
+    public ?\DateTime  $modified       = null;
+    public ?\DateTime  $created        = null;
 
 
     public function __construct()
@@ -70,9 +70,6 @@ class Invoice extends Model
         $this->total         = Money::create();
         $this->paidTotal     = Money::create();
         $this->unpaidTotal   = Money::create();
-
-        $this->modified = new \DateTime();
-        $this->created  = new \DateTime();
     }
 
     public static function getDataMap(): DataMap

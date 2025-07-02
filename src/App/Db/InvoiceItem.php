@@ -11,27 +11,25 @@ class InvoiceItem extends Model
 {
     use InvoiceTrait;
 
-    public int       $invoiceItemId = 0;
-    public int       $invoiceId     = 0;
-    public string    $productCode   = '';
-    public string    $description   = '';
-    public float     $qty           = 1;
-    public Money     $price;
-    public Money     $total;
-    public string    $notes         = '';
-    public \DateTime $modified;
-    public \DateTime $created;
+    public int        $invoiceItemId = 0;
+    public int        $invoiceId     = 0;
+    public string     $productCode   = '';
+    public string     $description   = '';
+    public float      $qty           = 1;
+    public Money      $price;
+    public Money      $total;
+    public string     $notes         = '';
+    public ?\DateTime $modified      = null;
+    public ?\DateTime $created       = null;
 
-    protected ?Product $_product = null;
-    protected ?Model   $_model   = null;
+    protected ?Product $_product     = null;
+    protected ?Model   $_model       = null;
 
 
     public function __construct()
     {
         $this->price    = Money::create();
         $this->total    = Money::create();
-        $this->modified = new \DateTime();
-        $this->created  = new \DateTime();
     }
 
     public static function create(string $productCode, string $description, Money $price, float $qty = 1.0): self

@@ -36,29 +36,27 @@ class Product extends Model
         self::CYCLE_BIANNUAL  => 'Biannually',
     ];
 
-    public int     $productId         = 0;
-    public int     $productCategoryId = 0;
-    public string  $cycle             = self::CYCLE_EACH;
-    public string  $name              = '';
-    public string  $code              = '';
-    public string  $description       = '';
-    public string  $notes             = '';
-    public bool    $active            = true;
-    public string  $categoryName      = '';
+    public int        $productId         = 0;
+    public int        $productCategoryId = 0;
+    public string     $cycle             = self::CYCLE_EACH;
+    public string     $name              = '';
+    public string     $code              = '';
+    public string     $description       = '';
+    public string     $notes             = '';
+    public bool       $active            = true;
+    public Money      $price;
+    public ?\DateTime $modified          = null;
+    public ?\DateTime $created           = null;
 
-    public Money    $price;
-    public DateTime $modified;
-    public DateTime $created;
+    public string     $categoryName      = '';
 
     private ?ProductCategory $_productCategory = null;
 
 
     public function __construct()
     {
-        $this->modified = new DateTime();
-        $this->created  = new DateTime();
         $this->price    = Money::create();
-        $this->code     = 'TK-'.$this->created->format('Y').'-0000-00';
+        $this->code     = 'TK-'.(new \DateTime())->format('Y').'-0000-00';
     }
 
     public function save(): void
