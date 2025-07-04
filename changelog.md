@@ -2,6 +2,11 @@
 
 #CHANGELOG#
 
+Ver 1.0.38 [2025-07-04]:
+-------------------------------
+  - fix created/modified fields
+
+
 Ver 1.0.36 [2025-07-02]:
 -------------------------------
   - Use component for all edit task logs
