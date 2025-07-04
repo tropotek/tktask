@@ -6,6 +6,8 @@
  * set up and bootstrap the system environment
  */
 
+defined('TKAPP') || die();
+
 $composer = include __DIR__ . '/vendor/autoload.php';
 
 // Init Tk System Objects
