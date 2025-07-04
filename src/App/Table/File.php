@@ -90,7 +90,7 @@ class File extends Table
         return $this;
     }
 
-    public function execute(): static
+    public function execute(?callable $onInit = null): static
     {
         if (isset($_GET['del'])) {
             $this->doDelete(intval($_GET['del']));
