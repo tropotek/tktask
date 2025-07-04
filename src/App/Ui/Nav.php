@@ -2,6 +2,8 @@
 
 namespace App\Ui;
 
+use App\Db\Domain;
+use App\Db\DomainPing;
 use App\Db\Invoice;
 use App\Db\Task;
 use App\Db\User;
@@ -28,7 +30,6 @@ class Nav
             ]
         );
 
-        $menu->addHeader('System', 'fas fa-cogs', (bool)$user?->isStaff());
         $menu->addLink('Tasks', Uri::create('/taskManager'), 'fas fa-tasks', fn($i) => (bool)$user?->isStaff(),
             [
                 'badge' => function() {
@@ -41,13 +42,6 @@ class Nav
                 },
             ]
         );
-
-        $menu->addLink('Projects', Uri::create('/projectManager'), 'fas fa-project-diagram', (bool)$user?->isStaff());
-        $menu->addLink('Clients', Uri::create('/companyManager'), 'fa fa-fw fa-building', (bool)$user?->isStaff());
-        $menu->addLink('Products', Uri::create('/productManager'), 'fa fa-fw fa-shopping-cart', (bool)$user?->isStaff());
-
-
-        $menu->addHeader('Accounts', 'fas fa-money-bill-wave', (bool)$user?->isStaff());
         $menu->addLink('Invoices', Uri::create('/invoiceManager'), 'far fa-credit-card', (bool)$user?->isStaff(),
             [
                 'badge' => function() {
@@ -57,6 +51,23 @@ class Nav
                 },
             ]
         );
+        $menu->addLink('Monitor', Uri::create('/domainManager'), 'fas fa-network-wired', (bool)$user?->hasPermission(User::PERM_SYSADMIN),
+            [
+                'badge' => function() {
+                    $open = Domain::findFiltered(['status' => DomainPing::STATUS_DOWN]);
+                    if (count($open) == 0) return '';
+                    return sprintf('<span class="ms-1 badge bg-danger rounded-pill float-end">%d</span>', count($open));
+                },
+            ]);
+
+        $menu->addHeader('System', 'fas fa-cogs', (bool)$user?->isStaff());
+
+        $menu->addLink('Projects', Uri::create('/projectManager'), 'fas fa-project-diagram', (bool)$user?->isStaff());
+        $menu->addLink('Clients', Uri::create('/companyManager'), 'fa fa-fw fa-building', (bool)$user?->isStaff());
+        $menu->addLink('Products', Uri::create('/productManager'), 'fa fa-fw fa-shopping-cart', (bool)$user?->isStaff());
+
+
+        $menu->addHeader('Accounts', 'fas fa-money-bill-wave', (bool)$user?->isStaff());
         $menu->addLink('Recurring Billing', Uri::create('/recurringManager'), 'fas fa-money-bill-wave', (bool)$user?->isStaff() );
         $menu->addLink('Expenses', Uri::create('/expenseManager'), 'fas fa-money-check-alt', (bool)$user?->isStaff());
 
@@ -66,7 +77,6 @@ class Nav
 
         $menu->addHeader('Admin', 'fas fa-database', (bool)$user?->hasPermission(User::PERM_SYSADMIN));
         $menu->addLink('Settings', Uri::create('/settings'), 'ri-settings-2-line', (bool)$user?->hasPermission(User::PERM_SYSADMIN));
-        $menu->addLink('Monitor', Uri::create('/domainManager'), 'fas fa-network-wired', (bool)$user?->hasPermission(User::PERM_SYSADMIN));
 
         $tools = $menu->addSubmenu('Tools', 'ri-bug-line', (bool)$user?->hasPermission(User::PERM_ADMIN));
         $tools->addLink('PHP Info', Uri::create('/info'), 'ri-information-line');

@@ -112,7 +112,7 @@ class Dashboard extends ControllerAdmin
   <div class="row">
 
     <!-- Open Tasks -->
-    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+    <div class="col-3 d-none d-sm-none d-md-block">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
@@ -131,7 +131,7 @@ class Dashboard extends ControllerAdmin
     </div>
 
     <!-- Unpaid Invoices -->
-    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+    <div class="col-3 d-none d-sm-none d-md-block">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
@@ -150,7 +150,7 @@ class Dashboard extends ControllerAdmin
     </div>
 
     <!-- Open Invoices -->
-    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+    <div class="col-3 d-none d-sm-none d-md-block">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
@@ -169,7 +169,7 @@ class Dashboard extends ControllerAdmin
     </div>
 
     <!-- Revenue -->
-    <div class="col-xl-3 col-md-6 d-none d-sm-none d-md-block">
+    <div class="col-3 d-none d-sm-none d-md-block">
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between">
