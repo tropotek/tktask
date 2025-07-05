@@ -2,12 +2,12 @@
 /*
  * @author Tropotek <http://www.tropotek.com/>
  */
-define('TKAPP', true);
 
 try {
     require_once __DIR__ . '/_prepend.php';
+    defined('TKAPP') || die();
 
-    $factory  = \Bs\Factory::instance();
+    $factory  = \App\Factory::instance();
     $response = $factory->getFrontController()->handle($factory->getRequest());
     $response->send();
     $factory->getFrontController()->terminate($factory->getRequest(), $response);

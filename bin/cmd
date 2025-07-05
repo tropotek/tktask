@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
-define('TKAPP', true);
 include(dirname(__DIR__) . '/_prepend.php');
+defined('TKAPP') || die();
 
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -13,7 +13,7 @@ try {
     $output = new ConsoleOutput();
 
     $app = \App\Factory::instance()->getConsole();
-    $env = $input->getParameterOption(array('--env', '-e'), \Tk\Config::instance()->get('env.type', 'prod'));
+    $env = $input->getParameterOption(array('--env', '-e'), \Tk\Config::getValue('env.type', 'prod'));
 
     $app->run($input, $output);
 } catch (Exception $e) {
