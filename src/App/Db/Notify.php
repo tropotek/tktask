@@ -169,10 +169,6 @@ class Notify extends Model
             $filter->appendWhere('AND a.url = :url');
         }
 
-        if (!empty($filter['reference'])) {
-            $filter->appendWhere('AND a.reference = :reference');
-        }
-
         if (is_bool(truefalse($filter['isRead'] ?? null))) {
             $filter['isRead'] = truefalse($filter['isRead']);
             $filter->appendWhere('AND a.is_read = :isRead');
