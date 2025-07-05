@@ -48,6 +48,7 @@ class Notify extends \Dom\Renderer\Renderer implements ComponentInterface
             'isRead' => false,
             'isNotified' => false
         ], '-created'));
+        // mark notified
         \App\Db\Notify::setNotified(array_map(fn($n) => $n->notifyId, $this->notices));
         // limit notices to a maximum
         $this->notices = array_splice($this->notices, 0, 3);
@@ -182,7 +183,7 @@ jQuery(function($) {
                 notification.onclick = function () {
                     let url = new URL(baseUrl);
                     url.searchParams.set('notifyId', note.notifyId);
-                    url.searchParams.set('action', 'mark-read');
+                    url.searchParams.set('action', 'mark-notified');
                     htmx.ajax('POST', url.toString(), {
                         source: container,
                         swap: 'none',

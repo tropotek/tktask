@@ -57,8 +57,8 @@ class Invoice extends Model
     public ?\DateTime  $paidOn          = null;
     public ?\DateTime  $cancelledOn     = null;
     public string      $notes           = '';
-    public ?\DateTime  $modified       = null;
-    public ?\DateTime  $created        = null;
+    public ?\DateTime  $modified        = null;
+    public ?\DateTime  $created         = null;
 
 
     public function __construct()
@@ -75,8 +75,13 @@ class Invoice extends Model
     public static function getDataMap(): DataMap
     {
         $map = parent::getDataMap();
-        $map->addType(new Date('issuedOn', 'issued_on'));
-        $map->addType(new Date('paidOn', 'paid_on'));
+
+        $map->addType(new Date('issuedOn', 'issued_on'))
+            ->setNullable(true);
+
+        $map->addType(new Date('paidOn', 'paid_on'))
+            ->setNullable(true);
+
         return $map;
     }
 
@@ -196,9 +201,13 @@ class Invoice extends Model
         $this->reload();      // Recalculate totals.
 
         // Check if invoice is paid then change the invoice status to paid
-        if ($this->unpaidTotal->getAmount() == 0) {
+        if ($this->unpaidTotal->getAmount() == 0 && $this->paidOn === null) {
             $this->paidOn = $payment->receivedAt;
             $this->save();
+
+            $url = Uri::create('/invoiceEdit')->set('invoiceId', $this->invoiceId)->toRelativeString();
+            $notices = Notify::findFiltered(['url' => $url]);
+            Notify::markRead(array_column($notices, 'notifyId'));
 
             if (!\App\Email\Invoice::sendPaymentReceipt($payment)) {    // email client payment receipt
                 Log::error("failed to send payment receipt for invoice {$this->fkey} ID {$this->fid}");

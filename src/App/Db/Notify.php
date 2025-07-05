@@ -106,11 +106,22 @@ class Notify extends Model
     {
         if (!$notifyIds) return true;
 
-        return false !== Db::execute("
+        return (false !== Db::execute("
             UPDATE notify SET notified_at = NOW()
             WHERE notify_id IN :notifyIds",
             compact('notifyIds')
-        );
+        ));
+    }
+
+    public static function markRead(array $notifyIds): bool
+    {
+        if (!$notifyIds) return true;
+
+        return (false !== Db::execute("
+            UPDATE notify SET read_at = NOW()
+            WHERE notify_id IN :notifyIds",
+            compact('notifyIds')
+        ));
     }
 
     public static function markAllRead(int $userId): bool
@@ -128,7 +139,7 @@ class Notify extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
-        $filter->appendFrom('v_notify a');
+        $filter->appendFrom(static::getPrimaryTable() . ' a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
@@ -152,6 +163,14 @@ class Notify extends Model
 
         if (!empty($filter['userId'])) {
             $filter->appendWhere('AND a.user_id = :userId');
+        }
+
+        if (!empty($filter['url'])) {
+            $filter->appendWhere('AND a.url = :url');
+        }
+
+        if (!empty($filter['reference'])) {
+            $filter->appendWhere('AND a.reference = :reference');
         }
 
         if (is_bool(truefalse($filter['isRead'] ?? null))) {

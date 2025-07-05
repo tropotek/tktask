@@ -79,7 +79,7 @@ class Payment extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
-        $filter->appendFrom('payment a');
+        $filter->appendFrom(static::getPrimaryTable() . ' a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';

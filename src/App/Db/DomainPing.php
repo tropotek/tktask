@@ -69,7 +69,7 @@ class DomainPing extends Model
     public static function findFiltered(array|Filter $filter): array
     {
         $filter = Filter::create($filter);
-        $filter->appendFrom('domain_ping a');
+        $filter->appendFrom(static::getPrimaryTable() . ' a');
 
         if (!empty($filter['search'])) {
             $filter['lSearch'] = '%' . $filter['search'] . '%';
