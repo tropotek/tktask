@@ -5,6 +5,8 @@
  */
 use Tk\Config;
 
+defined('TKAPP') || die();
+
 return function (Config $config) {
 
     /**
