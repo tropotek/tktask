@@ -39,9 +39,8 @@ class InvoiceOutstandingTable extends \Dom\Renderer\Renderer implements Componen
         $this->table->addCss('tk-table-sm');
 
         $this->table->appendCell('issuedOn')
-            ->addHeaderCss('text-start')
             ->addCss('max-width text-nowrap')
-            ->addOnValue(function(Invoice $obj, Cell $cell) {
+            ->addOnHtml(function(Invoice $obj, Cell $cell) {
                 $url = Uri::create('/invoiceEdit')->set('invoiceId', $obj->invoiceId);
                 return <<<HTML
                     <a href="$url">{$obj->issuedOn->format(Date::FORMAT_LONG_DATE)}</a>
@@ -49,14 +48,17 @@ class InvoiceOutstandingTable extends \Dom\Renderer\Renderer implements Componen
             });
 
         $this->table->appendCell('total')
+            ->addHeaderCss('text-end')
             ->addCss('text-end');
 
         $this->table->appendCell('unpaidTotal')
+            ->addHeaderCss('text-end')
             ->addCss('text-end');
 
         $this->table->appendCell('created')
-            ->addCss('text-nowrap text-center')
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
         // execute table
         $this->table->execute();

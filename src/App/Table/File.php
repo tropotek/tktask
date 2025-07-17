@@ -23,6 +23,7 @@ class File extends Table
         $this->appendCell($rowSelect);
 
         $this->appendCell('actions')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\File $file, Cell $cell) {
                 $view = $file->getUrl();
@@ -50,12 +51,16 @@ class File extends Table
             ->setSortable(true);
 
         $this->appendCell('selected')
+            ->addHeaderCss('text-center')
+            ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->appendCell('created')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Table actions

@@ -36,7 +36,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements ComponentInterface
 
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
-            ->addOnValue(function(\App\Db\TaskLog $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\TaskLog $obj, Cell $cell) {
                 $disabled = $obj->status != Task::STATUS_OPEN ? 'disabled' : '';
                 $url = Uri::create('/component/taskLogEditDialog')->set('taskLogId', $obj->taskLogId);
                 $id = '#'.TaskLogEditDialog::CONTAINER_ID;
@@ -107,6 +107,15 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements ComponentInterface
     <div class="card-header"><i class="fas fa-cogs"></i> <span var="title">Task Logs</span></div>
     <div class="card-body" var="content"></div>
   </div>
+<script>
+  jQuery(function($) {
+    const container = '#task-log-table';
+
+    $(document).on('htmx:afterSettle', container, function(e) {
+        tkInit(container);
+    });
+});
+</script>
 </div>
 HTML;
         return Template::load($html);

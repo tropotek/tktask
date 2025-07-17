@@ -78,7 +78,7 @@ class Files extends \Dom\Renderer\Renderer implements ComponentInterface
 
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
-            ->addOnValue(function(\App\Db\File $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\File $obj, Cell $cell) {
                 $url = Uri::create('/component/files', [
                     'fkey' => $this->model::class,
                     'fid' => $this->model->getId(),
@@ -97,7 +97,7 @@ class Files extends \Dom\Renderer\Renderer implements ComponentInterface
 
         $this->table->appendCell('filename')
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\File $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\File $obj, Cell $cell) {
                 $filename = basename($obj->filename);
                 $url = $obj->getUrl();
                 return <<<HTML
@@ -106,6 +106,7 @@ class Files extends \Dom\Renderer\Renderer implements ComponentInterface
             });
 
         $this->table->appendCell('bytes')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(\App\Db\File $obj, Cell $cell) {
                 return FileUtil::bytes2String($obj->bytes);
@@ -116,7 +117,7 @@ class Files extends \Dom\Renderer\Renderer implements ComponentInterface
 
         // Set the table rows
         $filter = $this->table->getDbFilter();
-        $filter['model'] = $this->model;
+        $filter->set('model', $this->model);
         $rows = File::findFiltered($filter);
         $this->table->setRows($rows, Db::getLastStatement()->getTotalRows());
 
