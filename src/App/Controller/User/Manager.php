@@ -41,7 +41,7 @@ class Manager extends ControllerAdmin
 
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
-            ->addOnValue(function(User $user, Cell $cell) {
+            ->addOnHtml(function(User $user, Cell $cell) {
                 $msq = Uri::create()->set(Masquerade::QUERY_MSQ, strval($user->userId));
                 $disabled = !Masquerade::canMasqueradeAs(Auth::getAuthUser(), $user->getAuth()) ? 'disabled' : '';
                 return <<<HTML
@@ -53,7 +53,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
             ->setSortable(true)
-            ->addOnValue(function(User $user, Cell $cell) {
+            ->addOnHtml(function(User $user, Cell $cell) {
                 $url = Uri::create('/user/'.$user->type.'Edit', ['userId' => $user->userId]);
                 return sprintf('<a href="%s">%s</a>', $url, $user->nameShort);
             });
@@ -64,14 +64,14 @@ class Manager extends ControllerAdmin
 
         $this->table->appendCell('email')
             ->setSortable(true)
-            ->addOnValue(function(User $user, Cell $cell) {
+            ->addOnHtml(function(User $user, Cell $cell) {
                 return sprintf('<a href="mailto:%s">%s</a>', $user->email, $user->email);
             });
 
         if (Auth::getAuthUser()->hasPermission(User::PERM_ADMIN) && $this->type == User::TYPE_STAFF) {
             $this->table->appendCell('permissions')
                 ->addCss('text-nowrap')
-                ->addOnValue(function (User $user, Cell $cell) {
+                ->addOnhtml(function (User $user, Cell $cell) {
                     if ($user->hasPermission(User::PERM_ADMIN)) {
                         $list = User::PERMISSION_LIST;
                         return $list[User::PERM_ADMIN];
@@ -90,7 +90,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('lastLogin')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
@@ -104,31 +104,34 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
+            ->addOnExecute(function(\Tk\Table\Action\Select $action) use ($rowSelect) {
+                if (!isset($_POST[$action->getRequestKey()])) return;
+                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $id) {
                     $u = User::find($id);
                     $a = $u->getAuth();
-                    $a->active = (strtolower($value) == 'active');
+                    $a->active = $active;
                     $a->save();
                 }
-            })
-        );
+            }));
 
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions', 'permissions']);
+            ->addOnExecute(function(Csv $action) use ($rowSelect) {
+                $action->setExcluded(['permissions']);
                 if (!$this->table->getCell(User::getPrimaryProperty())) {
                     $this->table->prependCell(User::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('username')->getOnValue()->reset();
-                $this->table->getCell('email')->getOnValue()->reset();    // remove html from cell
-
-                $filter = $this->table->getDbFilter()->resetLimits();
-                $filter['type'] = $this->type;
-                return User::findFiltered($filter);
-            })
-        );
+                $selected = $rowSelect->getSelected();
+                $filter = $this->table->getDbFilter();
+                if (count($selected)) {
+                    $filter->set(User::getPrimaryProperty(), $selected);
+                    $rows = User::findFiltered($filter);
+                } else {
+                    $rows = User::findFiltered($filter->resetLimits());
+                }
+                return $rows;
+            }));
 
         // execute table, init filter object
         $this->table->execute();

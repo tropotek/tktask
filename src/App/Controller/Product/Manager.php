@@ -41,7 +41,7 @@ class Manager extends ControllerAdmin
             ->setSortable(true)
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
-            ->addOnValue(function(Product $obj, Cell $cell) {
+            ->addOnHtml(function(Product $obj, Cell $cell) {
                 $url = Uri::create('/productEdit', ['productId' => $obj->productId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
@@ -74,7 +74,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('modified')
             ->setSortable(true)
             ->addCss('text-nowrap text-center')
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
@@ -97,25 +97,24 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnSelect(function(Select $action, array $selected, string $value) {
+            ->addOnExecute(function(Select $action) use ($rowSelect) {
+                if (!isset($_POST[$action->getRequestKey()])) return;
+                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $id) {
-                    $obj = Product::find($id);
-                    $obj->active = (strtolower($value) == 'active');
+                    $obj = Product::find((int)$id);
+                    $obj->active = $active;
                     $obj->save();
                 }
-            })
-        );
+            }));
 
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(Product::getPrimaryProperty())) {
                     $this->table->prependCell(Product::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('name')->getOnValue()->reset();
-                $filter = $this->table->getDbFilter();
-                return Product::findFiltered($filter->resetLimits());
+                $filter = $this->table->getDbFilter()->resetLimits();
+                return Product::findFiltered($filter);
             }));
 
         // execute table to init filter object

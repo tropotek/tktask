@@ -13,6 +13,7 @@ use Tk\Collection;
 use Tk\Date;
 use Tk\FileUtil;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Delete;
@@ -57,7 +58,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('action')
             ->setSortable(true)
             ->addCss('text-center')
-            ->addOnValue(function(Domain $obj, Cell $cell) {
+            ->addOnHtml(function(Domain $obj, Cell $cell) {
                 $url = Uri::create($obj->url);
                 return <<<HTML
                     <a href="$url" class="btn btn-outline-primary" target="_blank" title="View Site"><span class="fas fa-globe"></span></a>
@@ -67,7 +68,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('status')
             ->setSortable(true)
             ->addCss('text-center')
-            ->addOnValue(function(Domain $obj, Cell $cell) {
+            ->addOnHtml(function(Domain $obj, Cell $cell) {
                 if ($obj->status) {
                     return '<span class="badge bg-success">Online</span>';
                 } else {
@@ -78,7 +79,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('uptime')
             ->addCss('text-nowrap')
             ->addHeaderCss('text-start')
-            ->addOnValue(function(Domain $obj, Cell $cell) {
+            ->addOnHtml(function(Domain $obj, Cell $cell) {
                 $pings = DomainPing::findFiltered(Db\Filter::create(['domainId' => $obj->domainId], '-created', 25));
                 $values = [];
                 $labels = [];
@@ -97,7 +98,7 @@ class Manager extends ControllerAdmin
             ->addCss('full-width')
             ->addHeaderCss('text-start')
             ->setSortable(true)
-            ->addOnValue(function(Domain $obj, Cell $cell) {
+            ->addOnHtml(function(Domain $obj, Cell $cell) {
                 $url = Uri::create('/domainEdit')->set('domainId', $obj->domainId);
                 return <<<HTML
                     <a href="$url" title="Edit">{$obj->url}</a>
@@ -130,7 +131,7 @@ class Manager extends ControllerAdmin
             ->setHeader('Last Online')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
         $this->table->appendCell('active')
             ->addCss('text-nowrap text-center')
@@ -154,8 +155,8 @@ class Manager extends ControllerAdmin
 
         // Add Table actions
         $this->table->appendAction(Delete::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnDelete(function(Delete $action, array $selected) {
+            ->addOnExecute(function(Delete $action) use ($rowSelect) {
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $domain_id) {
                     Db::delete('domain', compact('domain_id'));
                 }
@@ -164,15 +165,25 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnSelect(function(Select $action, array $selected, string $value) {
+            ->addOnExecute(function(Select $action) use ($rowSelect) {
+                if (!isset($_POST[$action->getRequestKey()])) return;
+                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $id) {
-                    $obj = Domain::find($id);
-                    $obj->active = (strtolower($value) == 'active');
+                    $obj = Domain::find((int)$id);
+                    $obj->active = $active;
                     $obj->save();
                 }
-            })
-        );
+            }));
+
+        $this->table->appendAction(Csv::create()
+            ->addOnExecute(function(Csv $action) {
+                if (!$this->table->getCell(Domain::getPrimaryProperty())) {
+                    $this->table->prependCell(Domain::getPrimaryProperty())->setHeader('id');
+                }
+                $filter = $this->table->getDbFilter()->resetLimits();
+                return Domain::findFiltered($filter);
+            }));
 
         // execute table
         $this->table->execute();

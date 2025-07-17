@@ -61,7 +61,7 @@ class PingTable extends \Dom\Renderer\Renderer implements ComponentInterface
         $this->table->appendCell('created')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
         // execute table
         $this->table->execute();

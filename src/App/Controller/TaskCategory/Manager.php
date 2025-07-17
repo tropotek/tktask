@@ -38,7 +38,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('name')
             ->addHeaderCss('text-start')
             ->addCss('text-nowrap')
-            ->addOnValue(function(TaskCategory $obj, Cell $cell) {
+            ->addOnHtml(function(TaskCategory $obj, Cell $cell) {
                 $url = Uri::create('/taskCategoryEdit', ['taskCategoryId' => $obj->taskCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
@@ -62,24 +62,22 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnSelect(function(\Tk\Table\Action\Select $action, array $selected, string $value) {
+            ->addOnExecute(function(\Tk\Table\Action\Select $action) use ($rowSelect) {
+                if (!isset($_POST[$action->getRequestKey()])) return;
+                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $id) {
                     $obj = TaskCategory::find($id);
-                    $obj->active = (strtolower($value) == 'active');
+                    $obj->active = $active;
                     $obj->save();
                 }
-            })
-        );
+            }));
 
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(TaskCategory::getPrimaryProperty())) {
                     $this->table->prependCell(TaskCategory::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('name')->getOnValue()->reset();
-
                 $filter = $this->table->getDbFilter()->resetLimits();
                 return TaskCategory::findFiltered($filter);
             }));

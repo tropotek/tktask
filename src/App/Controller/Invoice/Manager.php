@@ -43,7 +43,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('Client')
             ->addHeaderCss('max-width')
             ->addCss('text-nowrap')
-            ->addOnValue(function(Invoice $obj, Cell $cell) {
+            ->addOnHtml(function(Invoice $obj, Cell $cell) {
                 $model = $obj->getDbModel();
                 $name = '';
                 if ($model instanceof Company) {
@@ -59,9 +59,12 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue(function(Invoice $obj, Cell $cell) {
+                return Invoice::STATUS_LIST[$obj->status];
+            })
+            ->addOnHtml(function(Invoice $obj, Cell $cell) {
                 return sprintf('<span class="badge text-bg-%s">%s</span>',
                     Invoice::STATUS_CSS[$obj->status],
-                    Invoice::STATUS_LIST[$obj->status]
+                    $cell->getValue($obj)
                 );
             });
 
@@ -78,12 +81,12 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('issuedOn')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('created')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
@@ -100,12 +103,10 @@ class Manager extends ControllerAdmin
 
         // Add Table actions
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(Invoice::getPrimaryProperty())) {
                     $this->table->prependCell(Invoice::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('client')->getOnValue()->reset();
                 $filter = $this->table->getDbFilter()->resetLimits();
                 return Invoice::findFiltered($filter);
             }));

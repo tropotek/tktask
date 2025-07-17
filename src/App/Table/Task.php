@@ -50,7 +50,7 @@ class Task extends Table
     {
         $this->appendCell('actions')
             ->addCss('text-nowrap text-center')
-            ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\Task $obj, Cell $cell) {
                 if (!$obj->isOpen()) {
                     $cell->getTable()->getRowAttrs()->addCss('task-closed');
                 }
@@ -71,7 +71,7 @@ class Task extends Table
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\Task $obj, Cell $cell) {
                 $url = Uri::create('/taskEdit', ['taskId' => $obj->taskId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->subject);
             });
@@ -87,6 +87,9 @@ class Task extends Table
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                return \App\Db\Task::STATUS_LIST[$obj->status];
+            })
+            ->addOnHtml(function(\App\Db\Task $obj, Cell $cell) {
                 return sprintf('<span class="badge text-bg-%s">%s</span>',
                     \App\Db\Task::STATUS_CSS[$obj->status],
                     \App\Db\Task::STATUS_LIST[$obj->status]
@@ -97,6 +100,9 @@ class Task extends Table
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
+                return \App\Db\Task::PRIORITY_LIST[$obj->priority];
+            })
+            ->addOnHtml(function(\App\Db\Task $obj, Cell $cell) {
                 return sprintf('<span class="badge text-bg-%s">%s</span>',
                     \App\Db\Task::PRIORITY_CSS[$obj->priority],
                     \App\Db\Task::PRIORITY_LIST[$obj->priority]
@@ -108,12 +114,16 @@ class Task extends Table
         $this->appendCell('progress')
             ->addCss('text-nowrap')
             ->addOnValue(function(\App\Db\Task $obj, Cell $cell) {
-                $cell->getTable()->getRowAttrs()->setAttr('style', 'vertical-align: middle');
                 $pcnt = 0;
                 if ($obj->minutes) {
                     $completed = $obj->getCompletedTime();
                     $pcnt = (round(($completed/$obj->minutes), 2) * 100);
                 }
+                return $pcnt;
+            })
+            ->addOnHtml(function(\App\Db\Task $obj, Cell $cell) {
+                $cell->getTable()->getRowAttrs()->setAttr('style', 'vertical-align: middle');
+                $pcnt = $cell->getValue($obj);
                 return sprintf('
                     <div class="progress" role="progressbar" aria-label="Task Progress" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">
                       <div class="progress-bar" style="width: %s%%">%s%%</div>
@@ -152,7 +162,7 @@ class Task extends Table
         $this->appendCell('created')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
@@ -185,23 +195,13 @@ class Task extends Table
 
         // Add Table actions
         $this->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action, array $selected) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->getCell(\App\Db\Task::getPrimaryProperty())) {
                     $this->prependCell(\App\Db\Task::getPrimaryProperty())->setHeader('id');
                 }
-                $this->getCell('subject')->getOnValue()->reset();
-                $this->getCell('status')->getOnValue()->reset();
-                $this->getCell('priority')->getOnValue()->reset();
-                $filter = $this->getDbFilter();
-                if ($selected) {
-                    $rows = \App\Db\Task::findFiltered($filter);
-                } else {
-                    $rows = \App\Db\Task::findFiltered($filter->resetLimits());
-                }
-                return $rows;
-            })
-        );
+                $filter = $this->getDbFilter()->resetLimits();
+                return \App\Db\Task::findFiltered($filter);
+            }));
 
         return $this;
     }

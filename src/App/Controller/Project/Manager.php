@@ -39,7 +39,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\Project $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\Project $obj, Cell $cell) {
                 $url = Uri::create('/projectEdit', ['projectId' => $obj->projectId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
@@ -55,9 +55,12 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue(function(\App\Db\Project $obj, Cell $cell) {
+                return Project::STATUS_LIST[$obj->status];
+            })
+            ->addOnValue(function(\App\Db\Project $obj, Cell $cell) {
                 return sprintf('<span class="badge text-bg-%s">%s</span>',
                     Project::STATUS_CSS[$obj->status],
-                    Project::STATUS_LIST[$obj->status]
+                    $cell->getValue($obj)
                 );
             });
 
@@ -93,12 +96,12 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('startOn')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('endOn')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
 
         // Add Filter Fields
@@ -120,12 +123,10 @@ class Manager extends ControllerAdmin
 
         // Add Table actions
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(Project::getPrimaryProperty())) {
                     $this->table->prependCell(Project::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('name')->getOnValue()->reset();
                 $filter = $this->table->getDbFilter()->resetLimits();
                 return Project::findFiltered($filter);
             }));

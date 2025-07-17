@@ -38,7 +38,7 @@ class Manager extends ControllerAdmin
             ->setSortable(true)
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
-            ->addOnValue(function(ExpenseCategory $obj, Cell $cell) {
+            ->addOnHtml(function(ExpenseCategory $obj, Cell $cell) {
                 $url = Uri::create('/expenseCategoryEdit', ['expenseCategoryId' => $obj->expenseCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
@@ -59,7 +59,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('modified')
             ->setSortable(true)
             ->addCss('text-nowrap')
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
@@ -74,25 +74,24 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnSelect(function(Select $action, array $selected, string $value) {
+            ->addOnExecute(function(Select $action) use ($rowSelect) {
+                if (!isset($_POST[$action->getRequestKey()])) return;
+                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $id) {
-                    $obj = ExpenseCategory::find($id);
-                    $obj->active = (strtolower($value) == 'active');
+                    $obj = ExpenseCategory::find((int)$id);
+                    $obj->active = $active;
                     $obj->save();
                 }
-            })
-        );
+            }));
 
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(ExpenseCategory::getPrimaryProperty())) {
                     $this->table->prependCell(ExpenseCategory::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('name')->getOnValue()->reset();
-                $filter = $this->table->getDbFilter();
-                return ExpenseCategory::findFiltered($filter->resetLimits());
+                $filter = $this->table->getDbFilter()->resetLimits();
+                return ExpenseCategory::findFiltered($filter);
             }));
 
         // execute table

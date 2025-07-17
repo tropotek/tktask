@@ -25,20 +25,20 @@ class Recurring extends Model
         Product::CYCLE_BIANNUAL  => 'Biannually',
     ];
 
-    public int        $recurringId = 0;
-    public int        $companyId   = 0;
-    public ?int       $productId   = null;
-    public Money      $price;
-    public int        $count       = 0;
-    public string     $cycle        = Product::CYCLE_YEAR;
-    public \DateTime  $startOn;
-    public ?\DateTime $endOn       = null;
-    public ?\DateTime $prevOn      = null;
-    public \DateTime  $nextOn;
-    public bool       $active      = true;
-    public bool       $issue       = true;
-    public string     $description = '';
-    public string     $notes       = '';
+    public int         $recurringId = 0;
+    public int         $companyId   = 0;
+    public ?int        $productId   = null;
+    public Money       $price;
+    public int         $count       = 0;
+    public string      $cycle        = Product::CYCLE_YEAR;
+    public \DateTime   $startOn;
+    public ?\DateTime  $endOn       = null;
+    public ?\DateTime  $prevOn      = null;
+    public \DateTime   $nextOn;
+    public bool        $active      = true;
+    public bool        $issue       = true;
+    public string      $description = '';
+    public string      $notes       = '';
     public ?\DateTime  $modified   = null;
     public ?\DateTime  $created    = null;
 
@@ -48,16 +48,6 @@ class Recurring extends Model
         $this->startOn = new \DateTime('tomorrow');
         $this->nextOn  = new \DateTime('tomorrow');
         $this->price   = new Money();
-    }
-
-    public static function getDataMap(): DataMap
-    {
-        $map = parent::getDataMap();
-        $map->addType(new Date('startOn', 'start_on'));
-        $map->addType(new Date('endOn',   'end_on'));
-        $map->addType(new Date('prevOn',  'prev_on'));
-        $map->addType(new Date('nextOn',  'next_on'));
-        return $map;
     }
 
     public function save(): void

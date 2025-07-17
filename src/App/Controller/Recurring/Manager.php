@@ -38,7 +38,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('description')
             ->setSortable(true)
             ->addHeaderCss('max-width')
-            ->addOnValue(function(Recurring $obj, Cell $cell) {
+            ->addOnHtml(function(Recurring $obj, Cell $cell) {
                 $url = Uri::create('/recurringEdit', ['recurringId' => $obj->recurringId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->description);
             });
@@ -49,13 +49,6 @@ class Manager extends ControllerAdmin
             ->addOnValue(function(Recurring $obj, Cell $cell) {
                 return $obj->getCompany()->name;
             });
-
-//        $this->table->appendCell('productId')
-//            ->addCss('text-nowrap')
-//            ->setSortable(true)
-//            ->addOnValue(function(Recurring $obj, Cell $cell) {
-//                return $obj->getProduct()->name;
-//            });
 
         $this->table->appendCell('price')
             ->addCss('text-nowrap text-end')
@@ -69,7 +62,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap text-center')
             ->setHeader('Next Invoice')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('active')
             ->addCss('text-nowrap text-center')
@@ -84,7 +77,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('startOn')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
 
         // Add Filter Fields
@@ -94,8 +87,8 @@ class Manager extends ControllerAdmin
 
         // Add Table actions
         $this->table->appendAction(Delete::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnDelete(function(Delete $action, array $selected) {
+            ->addOnExecute(function(Delete $action) use ($rowSelect) {
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $recurring_id) {
                     Db::delete('recurring', compact('recurring_id'));
                 }
@@ -104,24 +97,22 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
             ->setActions(['Active' => 'active', 'Disable' => 'disable'])
             ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnSelect(function(Select $action, array $selected, string $value) {
+            ->addOnExecute(function(Select $action) use ($rowSelect) {
+                if (!isset($_POST[$action->getRequestKey()])) return;
+                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $id) {
-                    $obj = Recurring::find($id);
-                    $obj->active = (strtolower($value) == 'active');
+                    $obj = Recurring::find((int)$id);
+                    $obj->active = $active;
                     $obj->save();
                 }
-            })
-        );
+            }));
 
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(Recurring::getPrimaryProperty())) {
                     $this->table->prependCell(Recurring::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('description')->getOnValue()->reset();
-
                 $filter = $this->table->getDbFilter()->resetLimits();
                 return Recurring::findFiltered($filter);
             }));

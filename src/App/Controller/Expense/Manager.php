@@ -50,7 +50,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('description')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue(function(Expense $obj, Cell $cell) {
+            ->addOnHtml(function(Expense $obj, Cell $cell) {
                 $url = Uri::create('/expenseEdit')->set('expenseId', $obj->expenseId);
                 $description = e($obj->description);
                 return <<<HTML
@@ -62,6 +62,9 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addOnValue(function(Expense $obj, Cell $cell) {
+                return $obj->getCompany()->name;
+            })
+            ->addOnHtml(function(Expense $obj, Cell $cell) {
                 $url = Uri::create('/companyEdit')->set('companyId', $obj->companyId);
                 $str = e($obj->getCompany()->name);
                 return <<<HTML
@@ -87,7 +90,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('purchasedOn')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('total')
             ->addCss('text-nowrap text-end')
@@ -111,27 +114,20 @@ class Manager extends ControllerAdmin
 
         // Add Table actions
         $this->table->appendAction(Delete::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnDelete(function(Delete $action, array $selected) {
+            ->addOnExecute(function(Delete $action) use ($rowSelect) {
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $expense_id) {
                     Db::delete('expense', compact('expense_id'));
                 }
             }));
 
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(Expense::getPrimaryProperty())) {
                     $this->table->prependCell(Expense::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('description')->getOnValue()->reset();
-                $this->table->getCell('companyId')->getOnValue()->reset();
-                $this->table->getCell('companyId')->addOnValue(function(Expense $obj, Cell $cell) {
-                    return $obj->getCompany()->name;
-                });
-
-                $filter = $this->table->getDbFilter();
-                return Expense::findFiltered($filter->resetLimits());
+                $filter = $this->table->getDbFilter()->resetLimits();
+                return Expense::findFiltered($filter);
             }));
 
         // execute table

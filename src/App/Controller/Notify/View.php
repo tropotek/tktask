@@ -54,7 +54,7 @@ class View extends ControllerAdmin
 
         $this->table->appendCell('created')
             ->addCss('text-nowrap')
-            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
         /// ...
 

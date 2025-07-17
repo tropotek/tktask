@@ -60,32 +60,28 @@ class File extends Table
 
         // Add Table actions
         $this->appendAction(Delete::create()
-            ->addOnGetSelected([$rowSelect, 'getSelected'])
-            ->addOnDelete(function(Delete $action, array $selected) {
+            ->addOnExecute(function(Delete $action) use ($rowSelect) {
+                $selected = $rowSelect->getSelected();
                 foreach ($selected as $file_id) {
                     Db::delete('file', compact('file_id'));
                 }
-            })
-        );
+            }));
 
         $this->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action, array $selected) {
-                $action->setExcluded(['actions', 'permissions']);
+            ->addOnExecute(function(Csv $action) use ($rowSelect) {
                 if (!$this->getCell(\App\Db\File::getPrimaryProperty())) {
                     $this->prependCell(\App\Db\File::getPrimaryProperty())->setHeader('id');
                 }
-                $this->getCell('username')->getOnValue()->reset();
-                $filter = $this->getDbFilter();
+                $selected = $rowSelect->getSelected();
+                $filter = $this->getDbFilter()->resetLimits();
                 if (count($selected)) {
-                    $filter['fileId'] = $selected;
+                    $filter->set(\App\Db\File::getPrimaryProperty(), $selected);
                     $rows = \App\Db\File::findFiltered($filter);
                 } else {
-                    $rows = \App\Db\File::findFiltered($filter->resetLimits());
+                    $rows = \App\Db\File::findFiltered($filter);
                 }
                 return $rows;
-            })
-        );
-
+            }));
 
         return $this;
     }

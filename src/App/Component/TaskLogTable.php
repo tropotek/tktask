@@ -70,7 +70,7 @@ class TaskLogTable extends \Dom\Renderer\Renderer implements ComponentInterface
         $this->table->appendCell('startAt')
             ->setHeader('Started')
             ->addCss('text-nowrap text-center')
-            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
         $this->table->appendCell('billable')
             ->addCss('text-nowrap text-center')

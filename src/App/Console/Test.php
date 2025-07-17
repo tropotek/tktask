@@ -24,7 +24,6 @@ class Test extends Console
             return self::FAILURE;
         }
 
-
         return self::SUCCESS;
     }
 

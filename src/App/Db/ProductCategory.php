@@ -10,6 +10,7 @@ class ProductCategory extends Model
     public int        $productCategoryId = 0;
     public string     $name              = '';
     public string     $description       = '';
+    public bool       $active            = true;
     public ?\DateTime $modified          = null;
     public ?\DateTime $created           = null;
 
@@ -66,6 +67,11 @@ class ProductCategory extends Model
 
         if (!empty($filter['name'])) {
             $filter->appendWhere('AND a.name = :name');
+        }
+
+        if (is_bool(truefalse($filter['active'] ?? null))) {
+            $filter['active'] = truefalse($filter['active']);
+            $filter->appendWhere('AND a.active = :active');
         }
 
         return Db::query("

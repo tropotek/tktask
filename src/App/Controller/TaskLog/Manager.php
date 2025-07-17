@@ -9,7 +9,6 @@ use App\Util\Tools;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
-use Tk\Alert;
 use Tk\Form\Field\Input;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
@@ -41,7 +40,7 @@ class Manager extends ControllerAdmin
 
         $this->table->appendCell('actions')
             ->addCss('text-nowrap text-center')
-            ->addOnValue(function(TaskLog $obj, Cell $cell) {
+            ->addOnHtml(function(TaskLog $obj, Cell $cell) {
                 $disabled = $obj->status != Task::STATUS_OPEN ? 'disabled' : '';
                 $url = Uri::create('/component/taskLogEditDialog')->set('taskLogId', $obj->taskLogId);
                 $id = '#'.TaskLogEditDialog::CONTAINER_ID;
@@ -60,17 +59,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('comment')
             ->addCss('text-nowrap')
             ->addHeaderCss('max-width')
-            ->setSortable(true)
-            ->addOnValue(function(TaskLog $obj, Cell $cell) {
-                return $obj->comment;
-            });
-
-//        $this->table->appendCell('userId')
-//            ->addCss('text-nowrap')
-//            ->setSortable(true)
-//            ->addOnValue(function(TaskLog $obj, Cell $cell) {
-//                return $obj->getUser()?->nameShort ?? 'N/A';
-//            });
+            ->setSortable(true);
 
         $this->table->appendCell('status')
             ->addCss('text-nowrap')
@@ -100,7 +89,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell('created')
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateTime::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
@@ -111,8 +100,8 @@ class Manager extends ControllerAdmin
         // Add Table actions
         if($this->task->isEditable()) {
             $this->table->appendAction(Delete::create()
-                ->addOnGetSelected([$rowSelect, 'getSelected'])
-                ->addOnDelete(function (Delete $action, array $selected) {
+                ->addOnExecute(function(Delete $action) use ($rowSelect) {
+                    $selected = $rowSelect->getSelected();
                     foreach ($selected as $task_log_id) {
                         Db::delete('task_log', compact('task_log_id'));
                     }
@@ -120,13 +109,12 @@ class Manager extends ControllerAdmin
         }
 
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(TaskLog::getPrimaryProperty())) {
                     $this->table->prependCell(TaskLog::getPrimaryProperty())->setHeader('id');
                 }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return TaskLog::findFiltered($filter);
+                $filter = $this->table->getDbFilter();
+                return TaskLog::findFiltered($filter->resetLimits());
             }));
 
         // execute table

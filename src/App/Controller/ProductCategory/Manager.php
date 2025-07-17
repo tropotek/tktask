@@ -7,6 +7,7 @@ use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\Select;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
@@ -32,7 +33,7 @@ class Manager extends ControllerAdmin
         $this->table->setOrderBy('name');
         $this->table->setLimit(25);
 
-        $rowSelect = RowSelect::create('id', 'productId');
+        $rowSelect = RowSelect::create('id', 'productCategoryId');
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('name')
@@ -40,7 +41,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-nowrap')
             ->setSortable(true)
             ->addHeaderCss('max-width')
-            ->addOnValue(function(\App\Db\ProductCategory $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\ProductCategory $obj, Cell $cell) {
                 $url = Uri::create('/productCategoryEdit', ['productCategoryId' => $obj->productCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
@@ -49,28 +50,48 @@ class Manager extends ControllerAdmin
             ->setSortable(true)
             ->addCss('text-nowrap');
 
+        $this->table->appendCell('active')
+            ->setSortable(true)
+            ->addCss('text-nowrap text-center')
+            ->addOnValue('\Tk\Table\Type\Boolean::onValue');
+
         $this->table->appendCell('modified')
             ->setSortable(true)
             ->addCss('text-nowrap')
             ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\DateFmt::onValue');
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
         $this->table->getForm()->appendField(new Input('search'))
             ->setAttr('placeholder', 'Search');
 
+        $this->table->getForm()->appendField((new \Tk\Form\Field\Select('active', ['' => '-- All --', 'y' => 'Active', 'n' => 'Inactive'])))
+            ->setValue('y');
+
 
         // Add Table actions
+        $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
+            ->setActions(['Active' => 'active', 'Disable' => 'disable'])
+            ->setConfirmStr('Toggle active/disable on the selected rows?')
+            ->addOnExecute(function(Select $action) use ($rowSelect) {
+                if (!isset($_POST[$action->getRequestKey()])) return;
+                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+                $selected = $rowSelect->getSelected();
+                foreach ($selected as $id) {
+                    $obj = ProductCategory::find((int)$id);
+                    $obj->active = $active;
+                    $obj->save();
+                }
+            }));
+
         $this->table->appendAction(Csv::create()
-            ->addOnCsv(function(Csv $action) {
-                $action->setExcluded(['actions']);
+            ->addOnExecute(function(Csv $action) {
                 if (!$this->table->getCell(ProductCategory::getPrimaryProperty())) {
                     $this->table->prependCell(ProductCategory::getPrimaryProperty())->setHeader('id');
                 }
-                $this->table->getCell('name')?->getOnValue()->reset();
-                $filter = $this->table->getDbFilter();
-                return ProductCategory::findFiltered($filter->resetLimits());
+                $filter = $this->table->getDbFilter()->resetLimits();
+                return ProductCategory::findFiltered($filter);
             }));
 
         // execute table to init filter object
