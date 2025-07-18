@@ -4,6 +4,7 @@ namespace App\Controller\Expense;
 use App\Db\Company;
 use App\Db\Expense;
 use App\Db\ExpenseCategory;
+use App\Db\Team;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
@@ -12,6 +13,7 @@ use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
@@ -88,11 +90,13 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('purchasedOn')
-            ->addCss('text-nowrap text-center')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('total')
+            ->addHeaderCss('text-end')
             ->addCss('text-nowrap text-end')
             ->setSortable(true);
 
@@ -113,22 +117,10 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(Delete::create()
-            ->addOnExecute(function(Delete $action) use ($rowSelect) {
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $expense_id) {
-                    Db::delete('expense', compact('expense_id'));
-                }
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(Delete::createDefault(Expense::class, $rowSelect));
+        $this->table->appendAction(Csv::createDefault(Expense::class, $rowSelect));
 
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(Expense::getPrimaryProperty())) {
-                    $this->table->prependCell(Expense::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return Expense::findFiltered($filter);
-            }));
 
         // execute table
         $this->table->execute();

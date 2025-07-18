@@ -11,6 +11,9 @@ use Tk\Table\Action\Delete;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 
+/**
+ * @deprecated Remove when confident not used
+ */
 class File extends Table
 {
 

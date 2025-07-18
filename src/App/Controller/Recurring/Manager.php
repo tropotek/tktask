@@ -2,6 +2,7 @@
 namespace App\Controller\Recurring;
 
 use App\Db\Recurring;
+use App\Db\Team;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
@@ -9,6 +10,7 @@ use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
@@ -51,31 +53,37 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('price')
+            ->addHeaderCss('text-end')
             ->addCss('text-nowrap text-end')
             ->setSortable(true);
 
         $this->table->appendCell('cycle')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->setSortable(true);
 
         $this->table->appendCell('nextOn')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->setHeader('Next Invoice')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('active')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->table->appendCell('issue')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->table->appendCell('startOn')
-            ->addCss('text-nowrap text-center')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
@@ -86,36 +94,10 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(Delete::create()
-            ->addOnExecute(function(Delete $action) use ($rowSelect) {
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $recurring_id) {
-                    Db::delete('recurring', compact('recurring_id'));
-                }
-            }));
-
-        $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
-            ->setActions(['Active' => 'active', 'Disable' => 'disable'])
-            ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnExecute(function(Select $action) use ($rowSelect) {
-                if (!isset($_POST[$action->getRequestKey()])) return;
-                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $id) {
-                    $obj = Recurring::find((int)$id);
-                    $obj->active = $active;
-                    $obj->save();
-                }
-            }));
-
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(Recurring::getPrimaryProperty())) {
-                    $this->table->prependCell(Recurring::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return Recurring::findFiltered($filter);
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(Delete::createDefault(Recurring::class, $rowSelect));
+        $this->table->appendAction(\Tk\Table\Action\Select::createActiveSelect(Recurring::class, $rowSelect));
+        $this->table->appendAction(Csv::createDefault(Recurring::class, $rowSelect));
 
         // execute table
         $this->table->execute();

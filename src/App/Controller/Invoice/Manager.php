@@ -11,6 +11,7 @@ use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
@@ -56,6 +57,7 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('status')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue(function(Invoice $obj, Cell $cell) {
@@ -69,22 +71,26 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('total')
+            ->addHeaderCss('text-end')
             ->addCss('text-nowrap text-end')
             ->setSortable(true);
 
         $this->table->appendCell('items')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->addOnValue(function(Invoice $obj, Cell $cell) {
                 return count($obj->getItemList());
             });
 
         $this->table->appendCell('issuedOn')
-            ->addCss('text-nowrap text-center')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('created')
-            ->addCss('text-nowrap text-center')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
@@ -102,14 +108,9 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(Invoice::getPrimaryProperty())) {
-                    $this->table->prependCell(Invoice::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return Invoice::findFiltered($filter);
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(Csv::createDefault(Invoice::class, $rowSelect));
+
 
         // execute table
         $this->table->execute();

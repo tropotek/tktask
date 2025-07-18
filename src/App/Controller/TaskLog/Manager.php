@@ -10,6 +10,7 @@ use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
@@ -87,7 +88,8 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('created')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
@@ -98,24 +100,9 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        if($this->task->isEditable()) {
-            $this->table->appendAction(Delete::create()
-                ->addOnExecute(function(Delete $action) use ($rowSelect) {
-                    $selected = $rowSelect->getSelected();
-                    foreach ($selected as $task_log_id) {
-                        Db::delete('task_log', compact('task_log_id'));
-                    }
-                }));
-        }
-
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(TaskLog::getPrimaryProperty())) {
-                    $this->table->prependCell(TaskLog::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter();
-                return TaskLog::findFiltered($filter->resetLimits());
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(Delete::createDefault(TaskLog::class, $rowSelect));
+        $this->table->appendAction(Csv::createDefault(TaskLog::class, $rowSelect));
 
         // execute table
         $this->table->execute();

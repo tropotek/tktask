@@ -2,6 +2,7 @@
 namespace App\Controller\Company;
 
 use App\Db\Company;
+use App\Db\Team;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
@@ -9,6 +10,7 @@ use Dom\Template;
 use Tk\Collection;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
@@ -56,16 +58,19 @@ class Manager extends ControllerAdmin
             ->setSortable(true);
 
         $this->table->appendCell('type')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-center')
+            ->addCss('text-nowrap text-center')
             ->setSortable(true);
 
         $this->table->appendCell('active')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-center')
+            ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->table->appendCell('modified')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
@@ -83,28 +88,10 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
-            ->setActions(['Active' => 'active', 'Disable' => 'disable'])
-            ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnExecute(function(\Tk\Table\Action\Select $action) use ($rowSelect) {
-                if (!isset($_POST[$action->getRequestKey()])) return;
-                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $id) {
-                    $obj = Company::find((int)$id);
-                    $obj->active = $active;
-                    $obj->save();
-                }
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(\Tk\Table\Action\Select::createActiveSelect(Company::class, $rowSelect));
+        $this->table->appendAction(Csv::createDefault(Company::class, $rowSelect));
 
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(Company::getPrimaryProperty())) {
-                    $this->table->prependCell(Company::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return Company::findFiltered($filter);
-            }));
 
         // execute table to init filter object
         $this->table->execute();

@@ -37,10 +37,10 @@ class PingTable extends \Dom\Renderer\Renderer implements ComponentInterface
         $this->table->setOrderBy('-created');
         $this->table->setLimit(10);
         $this->table->addCss('tk-table-sm');
-        //$this->table->resetTableSession();
 
         $this->table->appendCell('status')
             ->setSortable(true)
+            ->addHeaderCss('text-center')
             ->addCss('text-center')
             ->addOnValue(function(DomainPing $obj, Cell $cell) {
                 if ($obj->status) {
@@ -59,7 +59,8 @@ class PingTable extends \Dom\Renderer\Renderer implements ComponentInterface
             });
 
         $this->table->appendCell('created')
-            ->addCss('text-nowrap text-center')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 

@@ -8,6 +8,7 @@ use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
@@ -36,18 +37,17 @@ class Manager extends ControllerAdmin
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('name')
-            ->addHeaderCss('text-start')
-            ->addCss('text-nowrap')
+            ->addCss('max-width text-nowrap')
             ->addOnHtml(function(TaskCategory $obj, Cell $cell) {
                 $url = Uri::create('/taskCategoryEdit', ['taskCategoryId' => $obj->taskCategoryId]);
                 return sprintf('<a href="%s">%s</a>', $url, $obj->name);
             });
 
-        $this->table->appendCell('description')
-            ->addHeaderCss('max-width text-start');
+        $this->table->appendCell('description');
 
         $this->table->appendCell('active')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-center')
+            ->addCss('text-nowrap text-center')
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
 
@@ -59,28 +59,9 @@ class Manager extends ControllerAdmin
             ->setValue('y');
 
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
-            ->setActions(['Active' => 'active', 'Disable' => 'disable'])
-            ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnExecute(function(\Tk\Table\Action\Select $action) use ($rowSelect) {
-                if (!isset($_POST[$action->getRequestKey()])) return;
-                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $id) {
-                    $obj = TaskCategory::find($id);
-                    $obj->active = $active;
-                    $obj->save();
-                }
-            }));
-
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(TaskCategory::getPrimaryProperty())) {
-                    $this->table->prependCell(TaskCategory::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return TaskCategory::findFiltered($filter);
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(\Tk\Table\Action\Select::createActiveSelect(TaskCategory::class, $rowSelect));
+        $this->table->appendAction(Csv::createDefault(TaskCategory::class, $rowSelect));
 
         // execute table to init filter object
         $this->table->execute();

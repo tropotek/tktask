@@ -11,6 +11,7 @@ use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
 use Tk\Table\Action\Csv;
@@ -57,7 +58,7 @@ class Manager extends ControllerAdmin
             ->addOnValue(function(\App\Db\Project $obj, Cell $cell) {
                 return Project::STATUS_LIST[$obj->status];
             })
-            ->addOnValue(function(\App\Db\Project $obj, Cell $cell) {
+            ->addOnHtml(function(\App\Db\Project $obj, Cell $cell) {
                 return sprintf('<span class="badge text-bg-%s">%s</span>',
                     Project::STATUS_CSS[$obj->status],
                     $cell->getValue($obj)
@@ -94,12 +95,14 @@ class Manager extends ControllerAdmin
             });
 
         $this->table->appendCell('startOn')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
         $this->table->appendCell('endOn')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDate');
 
@@ -122,14 +125,8 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(Project::getPrimaryProperty())) {
-                    $this->table->prependCell(Project::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return Project::findFiltered($filter);
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(Csv::createDefault(Project::class, $rowSelect));
 
         // execute table
         $this->table->execute();

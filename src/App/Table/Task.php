@@ -9,6 +9,7 @@ use Bs\Mvc\Table;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Collection;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Uri;
 use Tk\Db;
 use Tk\Table\Action\Csv;
@@ -192,16 +193,9 @@ class Task extends Table
         $this->getForm()->appendField((new \Tk\Form\Field\Select('companyId', $list))
             ->prependOption('-- Company --', ''));
 
-
         // Add Table actions
-        $this->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->getCell(\App\Db\Task::getPrimaryProperty())) {
-                    $this->prependCell(\App\Db\Task::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->getDbFilter()->resetLimits();
-                return \App\Db\Task::findFiltered($filter);
-            }));
+        $this->appendAction(ColumnSelect::create());
+        $this->appendAction(Csv::createDefault(\App\Db\Task::class));
 
         return $this;
     }

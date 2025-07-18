@@ -44,8 +44,8 @@ class PaymentTable extends \Dom\Renderer\Renderer implements ComponentInterface
             ->addCss('text-end');
 
         $this->table->appendCell('created')
-            ->addHeaderCss('text-center')
-            ->addCss('text-nowrap text-center')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 

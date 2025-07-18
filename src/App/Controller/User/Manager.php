@@ -10,6 +10,7 @@ use Dom\Template;
 use Tk\Alert;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
@@ -40,6 +41,7 @@ class Manager extends ControllerAdmin
         $this->table->appendCell($rowSelect);
 
         $this->table->appendCell('actions')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->addOnHtml(function(User $user, Cell $cell) {
                 $msq = Uri::create()->set(Masquerade::QUERY_MSQ, strval($user->userId));
@@ -84,11 +86,14 @@ class Manager extends ControllerAdmin
         }
 
         $this->table->appendCell('active')
+            ->addHeaderCss('text-center')
+            ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
 
         $this->table->appendCell('lastLogin')
-            ->addCss('text-nowrap')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
@@ -101,37 +106,9 @@ class Manager extends ControllerAdmin
         $this->table->getForm()->appendField(new Select('active', $list))->setValue('y');
 
         // Add Table actions
-        $this->table->appendAction(\Tk\Table\Action\Select::create('Active Status', 'fa fa-fw fa-times')
-            ->setActions(['Active' => 'active', 'Disable' => 'disable'])
-            ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnExecute(function(\Tk\Table\Action\Select $action) use ($rowSelect) {
-                if (!isset($_POST[$action->getRequestKey()])) return;
-                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $id) {
-                    $u = User::find($id);
-                    $a = $u->getAuth();
-                    $a->active = $active;
-                    $a->save();
-                }
-            }));
-
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) use ($rowSelect) {
-                $action->setExcluded(['permissions']);
-                if (!$this->table->getCell(User::getPrimaryProperty())) {
-                    $this->table->prependCell(User::getPrimaryProperty())->setHeader('id');
-                }
-                $selected = $rowSelect->getSelected();
-                $filter = $this->table->getDbFilter();
-                if (count($selected)) {
-                    $filter->set(User::getPrimaryProperty(), $selected);
-                    $rows = User::findFiltered($filter);
-                } else {
-                    $rows = User::findFiltered($filter->resetLimits());
-                }
-                return $rows;
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(\Tk\Table\Action\Select::createActiveSelect(Auth::class, $rowSelect));
+        $this->table->appendAction(Csv::createDefault(User::class, $rowSelect));
 
         // execute table, init filter object
         $this->table->execute();

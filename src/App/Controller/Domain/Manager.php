@@ -4,6 +4,7 @@ namespace App\Controller\Domain;
 use App\Db\Company;
 use App\Db\Domain;
 use App\Db\DomainPing;
+use App\Db\Team;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
@@ -13,6 +14,7 @@ use Tk\Collection;
 use Tk\Date;
 use Tk\FileUtil;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\ColumnSelect;
 use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
@@ -127,16 +129,18 @@ class Manager extends ControllerAdmin
                 return FileUtil::bytes2String($obj->bytes);
             });
 
-        $this->table->appendCell('pingedAt')
-            ->setHeader('Last Online')
-            ->addCss('text-nowrap text-center')
-            ->setSortable(true)
-            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
-
         $this->table->appendCell('active')
+            ->addHeaderCss('text-center')
             ->addCss('text-nowrap text-center')
             ->setSortable(true)
             ->addOnValue('\Tk\Table\Type\Boolean::onValue');
+
+        $this->table->appendCell('pingedAt')
+            ->setHeader('Last Online')
+            ->addHeaderCss('text-end')
+            ->addCss('text-nowrap text-end')
+            ->setSortable(true)
+            ->addOnValue('\Tk\Table\Type\Date::getLongDateTime');
 
 
         // Add Filter Fields
@@ -154,36 +158,11 @@ class Manager extends ControllerAdmin
 
 
         // Add Table actions
-        $this->table->appendAction(Delete::create()
-            ->addOnExecute(function(Delete $action) use ($rowSelect) {
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $domain_id) {
-                    Db::delete('domain', compact('domain_id'));
-                }
-            }));
+        $this->table->appendAction(ColumnSelect::create());
+        $this->table->appendAction(Delete::createDefault(Domain::class, $rowSelect));
+        $this->table->appendAction(\Tk\Table\Action\Select::createActiveSelect(Domain::class, $rowSelect));
+        $this->table->appendAction(Csv::createDefault(Domain::class, $rowSelect));
 
-        $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
-            ->setActions(['Active' => 'active', 'Disable' => 'disable'])
-            ->setConfirmStr('Toggle active/disable on the selected rows?')
-            ->addOnExecute(function(Select $action) use ($rowSelect) {
-                if (!isset($_POST[$action->getRequestKey()])) return;
-                $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
-                $selected = $rowSelect->getSelected();
-                foreach ($selected as $id) {
-                    $obj = Domain::find((int)$id);
-                    $obj->active = $active;
-                    $obj->save();
-                }
-            }));
-
-        $this->table->appendAction(Csv::create()
-            ->addOnExecute(function(Csv $action) {
-                if (!$this->table->getCell(Domain::getPrimaryProperty())) {
-                    $this->table->prependCell(Domain::getPrimaryProperty())->setHeader('id');
-                }
-                $filter = $this->table->getDbFilter()->resetLimits();
-                return Domain::findFiltered($filter);
-            }));
 
         // execute table
         $this->table->execute();
