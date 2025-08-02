@@ -54,7 +54,7 @@ class Nav
         $menu->addLink('Monitor', Uri::create('/domainManager'), 'fas fa-network-wired', (bool)$user?->hasPermission(User::PERM_SYSADMIN),
             [
                 'badge' => function() {
-                    $open = Domain::findFiltered(['status' => DomainPing::STATUS_DOWN]);
+                    $open = Domain::findFiltered(['active' => true, 'status' => DomainPing::STATUS_DOWN]);
                     if (count($open) == 0) return '';
                     return sprintf('<span class="ms-1 badge bg-danger rounded-pill float-end">%d</span>', count($open));
                 },
