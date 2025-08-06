@@ -2,6 +2,7 @@
 namespace App\Db;
 
 use App\Db\Traits\CompanyTrait;
+use Tk\Config;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -46,14 +47,20 @@ class Domain extends Model
     private static function pingDomain(self $domain): bool
     {
         $url = Uri::create($domain->url);
-        $opts = [
-            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-        ];
+
+        $opts = [];
+        if (Config::isDev()) {
+            $opts = [
+                'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
+            ];
+        }
+
         $context = stream_context_create($opts);
         $retries = 0;
         do {
             $data = file_get_contents($url->toString(), false, $context);
             $retries++;
+            sleep(5);
         } while ($retries <= 4 && $data === false);
 
         if ($data === false) {

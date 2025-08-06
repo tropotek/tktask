@@ -62,6 +62,7 @@ class Manager extends ControllerAdmin
             ->addCss('text-center')
             ->addOnHtml(function(Domain $obj, Cell $cell) {
                 $url = Uri::create($obj->url);
+                $url = $url->withPath('/');
                 return <<<HTML
                     <a href="$url" class="btn btn-outline-primary" target="_blank" title="View Site"><span class="fas fa-globe"></span></a>
                 HTML;
@@ -101,9 +102,9 @@ class Manager extends ControllerAdmin
             ->addHeaderCss('text-start')
             ->setSortable(true)
             ->addOnHtml(function(Domain $obj, Cell $cell) {
-                $url = Uri::create('/domainEdit')->set('domainId', $obj->domainId);
+                $edit = Uri::create('/domainEdit')->set('domainId', $obj->domainId);
                 return <<<HTML
-                    <a href="$url" title="Edit">{$obj->url}</a>
+                    <a href="$edit" title="Edit">{$obj->url}</a>
                 HTML;
             });
 
@@ -154,7 +155,6 @@ class Manager extends ControllerAdmin
         $list = Collection::toSelectList($cats, 'companyId', fn($obj) => ($obj->active ? '' : '- ') . $obj->name);
         $this->table->getForm()->appendField((new \Tk\Form\Field\Select('companyId', $list))
             ->prependOption('-- Company --', ''));
-
 
 
         // Add Table actions
