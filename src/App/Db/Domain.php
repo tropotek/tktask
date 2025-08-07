@@ -7,6 +7,7 @@ use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\FileUtil;
+use Tk\Log;
 use Tk\Uri;
 
 class Domain extends Model
@@ -47,21 +48,12 @@ class Domain extends Model
     private static function pingDomain(self $domain): bool
     {
         $url = Uri::create($domain->url);
-
-        $opts = [];
-        if (Config::isDev()) {
-            $opts = [
-                'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-            ];
-        }
-
-        $context = stream_context_create($opts);
         $retries = 0;
         do {
-            $data = file_get_contents($url->toString(), false, $context);
+            $data = self::pingRequest($url);
             $retries++;
-            sleep(5);
-        } while ($retries <= 4 && $data === false);
+            sleep(10);
+        } while ($retries <= 2 && $data === false);
 
         if ($data === false) {
             DomainPing::create($domain->domainId, false);
@@ -69,13 +61,40 @@ class Domain extends Model
         } else {
             if (basename($url->getPath()) == 'tkping') {
                 $data = json_decode($data, true);
-                DomainPing::create($domain->domainId, true, $data);
+                if (is_array($data)) {
+                    DomainPing::create($domain->domainId, true, $data);
+                } else {
+                    // ???
+                    DomainPing::create($domain->domainId, true);
+                }
             } else {
                 // standard host with no data
                 DomainPing::create($domain->domainId, true);
             }
             return true;
         }
+    }
+
+    private static function pingRequest(Uri $url): false|string
+    {
+        $curl = curl_init($url->toString());
+        $opts = [
+            CURLOPT_CUSTOMREQUEST  => 'GET',
+            CURLOPT_RETURNTRANSFER => true,
+        ];
+//        if (Config::isDev()) {
+//            $opts[CURLOPT_SSL_VERIFYHOST] = false;
+//            $opts[CURLOPT_SSL_VERIFYPEER] = false;
+//        }
+        curl_setopt_array($curl, $opts);
+        $response = curl_exec($curl); // Execute the cURL request
+        curl_close($curl); // Close the cURL session
+
+        if(curl_error($curl) || curl_getinfo($curl, CURLINFO_RESPONSE_CODE) != 200) {
+            Log::error("Error pinging ".$url." [" . curl_getinfo($curl, CURLINFO_RESPONSE_CODE) . ']: ' . curl_error($curl));
+            return false;
+        }
+        return $response;
     }
 
     public function save(): void
