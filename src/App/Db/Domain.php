@@ -81,11 +81,8 @@ class Domain extends Model
         $opts = [
             CURLOPT_CUSTOMREQUEST  => 'GET',
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERAGENT      => Uri::USERAGENT,
         ];
-//        if (Config::isDev()) {
-//            $opts[CURLOPT_SSL_VERIFYHOST] = false;
-//            $opts[CURLOPT_SSL_VERIFYPEER] = false;
-//        }
         curl_setopt_array($curl, $opts);
         $response = curl_exec($curl); // Execute the cURL request
         curl_close($curl); // Close the cURL session
