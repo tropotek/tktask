@@ -73,12 +73,6 @@
 
 </IfModule>
 
-# Deny access to /data/private folder
-<IfModule mod_rewrite.c>
-    RewriteCond %{REQUEST_URI} /data/private/?(.*) [NC]
-    RewriteRule ^ %{RewriteBase} [R=301,L]
-</IfModule>
-
 
 # ----------------------------------------------------------------------
 # | Forcing `https://`                                                 |
@@ -604,6 +598,27 @@ AddDefaultCharset utf-8
     </IfModule>
 
 </FilesMatch>
+
+# Deny access to /data/private folder using forbidden error
+<If "%{REQUEST_URI} =~ m#/data/private($|/)#">
+    # Apache < 2.3
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+        Satisfy All
+    </IfModule>
+
+    # Apache ≥ 2.3
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</If>
+
+# (optional) Deny access to /data/private folder using redirect
+#<IfModule mod_rewrite.c>
+#    RewriteCond %{REQUEST_URI} /data/private/?(.*) [NC]
+#    RewriteRule ^ %{RewriteBase} [R=301,L]
+#</IfModule>
 
 # ----------------------------------------------------------------------
 # | HTTP Strict Transport Security (HSTS)                              |
