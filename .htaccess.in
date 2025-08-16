@@ -73,6 +73,73 @@
 
 </IfModule>
 
+# Block access to files that can expose sensitive information.
+#
+# By default, block access to backup and source files that may be
+# left by some text editors and can pose a security risk when anyone
+# has access to them.
+#
+# http://feross.org/cmsploit/
+#
+# (!) Update the `<FilesMatch>` regular expression from below to
+# include any files that might end up on your production server and
+# can expose sensitive information about your website. These files may
+# include: configuration files, files that contain metadata about the
+# project (e.g.: project dependencies), build scripts, etc..
+
+<FilesMatch "(^#.*#|\.(bak|md|conf|dist|fla|in[ci]|in|lock|log|psd|sh|sql|sw[op])|~)$">
+
+    # Apache < 2.3
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+        Satisfy All
+    </IfModule>
+
+    # Apache ≥ 2.3
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+
+</FilesMatch>
+
+<FilesMatch "^config\.php|_prepend\.php$">
+    # Apache < 2.3
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+        Satisfy All
+    </IfModule>
+
+    # Apache ≥ 2.3
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+# Deny access to /data/private folder using forbidden error
+# Use for production sites (check for correct path)
+<If "%{REQUEST_URI} =~ m#^/data/private($|/)#">
+    # Apache < 2.3
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+        Satisfy All
+    </IfModule>
+
+    # Apache ≥ 2.3
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</If>
+
+# (optional) Deny access to /data/private folder using redirect
+# good for sites in a sub directory (recommended for dev sites)
+#<IfModule mod_rewrite.c>
+#    RewriteCond %{REQUEST_URI} /data/private/?(.*) [NC]
+#    RewriteRule ^ %{RewriteBase} [R=301,L]
+#</IfModule>
+
 
 # ----------------------------------------------------------------------
 # | Forcing `https://`                                                 |
@@ -568,57 +635,6 @@ AddDefaultCharset utf-8
 </IfModule>
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Block access to files that can expose sensitive information.
-#
-# By default, block access to backup and source files that may be
-# left by some text editors and can pose a security risk when anyone
-# has access to them.
-#
-# http://feross.org/cmsploit/
-#
-# (!) Update the `<FilesMatch>` regular expression from below to
-# include any files that might end up on your production server and
-# can expose sensitive information about your website. These files may
-# include: configuration files, files that contain metadata about the
-# project (e.g.: project dependencies), build scripts, etc..
-
-<FilesMatch "(^#.*#|\.(bak|md|conf|dist|fla|in[ci]|in|lock|log|psd|sh|sql|sw[op])|~)$">
-
-    # Apache < 2.3
-    <IfModule !mod_authz_core.c>
-        Order allow,deny
-        Deny from all
-        Satisfy All
-    </IfModule>
-
-    # Apache ≥ 2.3
-    <IfModule mod_authz_core.c>
-        Require all denied
-    </IfModule>
-
-</FilesMatch>
-
-# Deny access to /data/private folder using forbidden error
-<If "%{REQUEST_URI} =~ m#/data/private($|/)#">
-    # Apache < 2.3
-    <IfModule !mod_authz_core.c>
-        Order allow,deny
-        Deny from all
-        Satisfy All
-    </IfModule>
-
-    # Apache ≥ 2.3
-    <IfModule mod_authz_core.c>
-        Require all denied
-    </IfModule>
-</If>
-
-# (optional) Deny access to /data/private folder using redirect
-#<IfModule mod_rewrite.c>
-#    RewriteCond %{REQUEST_URI} /data/private/?(.*) [NC]
-#    RewriteRule ^ %{RewriteBase} [R=301,L]
-#</IfModule>
 
 # ----------------------------------------------------------------------
 # | HTTP Strict Transport Security (HSTS)                              |
