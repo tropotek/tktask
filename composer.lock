@@ -2336,12 +2336,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "272ccc5ff7ea1ee9f8b817a8f2f8230854e108ab"
+                "reference": "88321c8b7e6b2d7a83fa665e4d739fe22d3cc1e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/272ccc5ff7ea1ee9f8b817a8f2f8230854e108ab",
-                "reference": "272ccc5ff7ea1ee9f8b817a8f2f8230854e108ab",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/88321c8b7e6b2d7a83fa665e4d739fe22d3cc1e5",
+                "reference": "88321c8b7e6b2d7a83fa665e4d739fe22d3cc1e5",
                 "shasum": ""
             },
             "require": {
@@ -2356,8 +2356,10 @@
                 "ttek/tk-domtemplate": "~8.0.0",
                 "ttek/tk-form": "~8.0.0",
                 "ttek/tk-framework": "~8.0.0",
-                "ttek/tk-installers": "~8.0.0",
                 "ttek/tk-table": "~8.0.0"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0"
             },
             "type": "library",
             "extra": {
@@ -2510,12 +2512,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "910b5c12c5d343027094b75ce72d1e2b3cc2ba8d"
+                "reference": "ad1d66973a8c626648416b11f78acb1f90cf652c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/910b5c12c5d343027094b75ce72d1e2b3cc2ba8d",
-                "reference": "910b5c12c5d343027094b75ce72d1e2b3cc2ba8d",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/ad1d66973a8c626648416b11f78acb1f90cf652c",
+                "reference": "ad1d66973a8c626648416b11f78acb1f90cf652c",
                 "shasum": ""
             },
             "require": {
@@ -2572,64 +2574,6 @@
                 }
             ],
             "time": "2024-10-01T00:00:00+00:00"
-        },
-        {
-            "name": "ttek/tk-installers",
-            "version": "8.0.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tropotek/tk-installers.git",
-                "reference": "a93847bcb3380063f169abe54d8706e5e592570c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-installers/zipball/a93847bcb3380063f169abe54d8706e5e592570c",
-                "reference": "a93847bcb3380063f169abe54d8706e5e592570c",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^2.0",
-                "php": "^8.3"
-            },
-            "require-dev": {
-                "composer/composer": "^2.0"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": [
-                    "Tk\\Composer\\PluginPlugin",
-                    "Tk\\Composer\\ThemePlugin"
-                ],
-                "branch-alias": {
-                    "dev-master": "8.0.x-dev"
-                },
-                "plugin-modifies-install-path": true
-            },
-            "autoload": {
-                "psr-4": {
-                    "Tk\\": "Tk/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Mifsud",
-                    "homepage": "http://www.tropotek.com/"
-                }
-            ],
-            "description": "Tk8 Lib: composer install/update plugin for the Tk Lib framework",
-            "keywords": [
-                "installers",
-                "tropotek"
-            ],
-            "support": {
-                "issues": "https://github.com/tropotek/tk-installers/issues",
-                "source": "https://github.com/tropotek/tk-installers/tree/8.0"
-            },
-            "time": "2025-05-10T00:00:00+00:00"
         },
         {
             "name": "ttek/tk-table",
