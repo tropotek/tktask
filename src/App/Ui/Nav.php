@@ -106,8 +106,10 @@ class Nav
         $menu->addLink('About', null, 'fa fa-info-circle', (bool)$user?->hasPermission(User::PERM_SYSADMIN),
             [
                 'attrs' => [
-                    'data-bs-toggle' => 'modal',
-                    'data-bs-target' => '#about-modal',
+                    'hx-get' => '/component/aboutDialog',
+                    'hx-trigger' => 'click queue:none',
+                    'hx-target' => 'body',
+                    'hx-swap' => 'beforeend',
                 ]
             ]
         );
@@ -115,6 +117,12 @@ class Nav
             [
                 'css' => [
                     'btn-logout',
+                ],
+                'attrs' => [
+                    'hx-get' => '/component/logoutDialog',
+                    'hx-trigger' => 'click queue:none',
+                    'hx-target' => 'body',
+                    'hx-swap' => 'beforeend',
                 ]
             ]
         );

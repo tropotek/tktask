@@ -7,7 +7,6 @@ use App\Db\Payment;
 use App\Factory;
 use App\Pdf\PdfInterface;
 use Bs\Registry;
-use Tk\Db\Session;
 use Tk\Log;
 use Tk\Mail\Mailer;
 use Tk\Uri;

@@ -56,124 +56,8 @@ class Page extends \Bs\Mvc\Page
 
         $this->showCrumbs();
         $this->showAlert();
-        $this->showLogoutDialog();
-        $this->showAbout();
-        //$this->showMaintenanceRibbon();
 
         return $template;
-    }
-
-    /**
-     * Show a logout confirmation dialog
-     */
-    protected function showLogoutDialog(): void
-    {
-        //if (!(Auth::getAuthUser() && isset($_SESSION['_OAUTH']))) return;
-        if (!(Auth::getAuthUser())) return;
-        $oAuth = $_SESSION['_OAUTH'] ?? '';
-
-        $html = <<<HTML
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <form method="get" action="/logout">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="logoutModalLabel">Logout</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Are you sure you want to leave?
-
-          <div class="form-check" choice="ssi">
-            <input class="form-check-input" type="checkbox" name="ssi" value="1" id="fid-ssi-logout">
-            <label class="form-check-label" for="fid-ssi-logout" var="label">
-              Logout from Microsoft
-            </label>
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Logout</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-HTML;
-        $template = $this->loadTemplate($html);
-
-        if ($oAuth && Config::getValue('auth.'.$oAuth.'.endpointLogout', '')) {
-            $template->setText('label', 'Logout from ' . ucwords($oAuth));
-            $template->setVisible('ssi');
-        }
-
-        $js = <<<JS
-jQuery(function($) {
-    $('.btn-logout').on('click', function() {
-        $('#logoutModal').modal('show');
-        return false;
-    });
-});
-JS;
-        $template->appendJs($js);
-
-        $this->getTemplate()->prependTemplate('content', $template);
-    }
-
-    /**
-     * To open the dialog:
-     *     <a href="#" data-bs-toggle="modal" data-bs-target="#about-modal">About</a>
-     */
-    protected function showAbout(): void
-    {
-        $html = <<<HTML
-<div id="about-modal" class="modal fade" tabindex="-1" aria-labelledby="about-modal-title" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fs-5" id="about-modal-title"><span var="site-name"></span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <dl class="row">
-          <dt class="col-sm-3">Version</dt>
-          <dd class="col-sm-9" var="version"></dd>
-
-          <dt class="col-sm-3">Released</dt>
-          <dd class="col-sm-9" var="released"></dd>
-
-          <dt class="col-sm-3">Licence</dt>
-          <dd class="col-sm-9">Registered</dd>
-
-          <dt class="col-sm-3">Author</dt>
-          <dd class="col-sm-9"><a href="https://www.tropotek.com.au/" target="_blank" var="author">tropotek.com.au</a></dd>
-        </dl>
-
-        <p class="float-end mb-0"><small><a href="https://www.tropotek.com/" target="_blank" var="copyright">Tropotek</a></small></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-HTML;
-        $template = $this->loadTemplate($html);
-
-        $template->setText('site-name', Registry::getSiteName());
-        $template->setText('year', date('Y'));
-        $template->setText('version', System::getVersion());
-        $template->setText('released', System::getReleaseDate()->format(Date::FORMAT_LONG_DATETIME));
-
-        $template->setHtml('copyright', 'Copyright &copy; ' . \date('Y') . ' ' . Config::getValue('developer.name', 'Undefined'));
-        $template->setAttr('copyright', 'href', Uri::create(Config::getValue('developer.web', 'Undefined')));
-
-        $template->setHtml('author', Config::getValue('developer.name', 'Undefined'));
-        $template->setAttr('author', 'href', Uri::create(Config::getValue('developer.web', 'Undefined')));
-
-        $this->getTemplate()->appendBodyTemplate($template);
     }
 
     protected function showMintonMarkup(Template $template): void
@@ -248,8 +132,6 @@ HTML;
 HTML;
         $template = $this->loadTemplate($html);
 
-        //$template->setAttr('alertPanel', 'hx-get', Uri::create('/api/htmx/alert'));
-
         foreach (Alert::getAlerts() as $type => $flash) {
             foreach ($flash as $a) {
                 $r = $template->getRepeat('alert');
@@ -272,24 +154,5 @@ HTML;
             $this->getTemplate()->prependTemplate('content', $template);
         }
     }
-
-    // TODO: Show a maintenance ribbon on the site???
-    protected function showMaintenanceRibbon(): void
-    {
-//        if (!Config::getValue('system.maintenance.enabled')) return;
-//        $controller = \Tk\Event\Event::findControllerObject($event);
-//        if ($controller instanceof \Bs\Controller\Iface && !$controller instanceof \Bs\Controller\Maintenance) {
-//            $page = $controller->getPage();
-//            if (!$page) return;
-//            $template = $page->getTemplate();
-//
-//            $html = <<<HTML
-//<div class="tk-ribbon tk-ribbon-danger" style="z-index: 99999"><span>Maintenance</span></div>
-//HTML;
-//            $template->prependHtml($template->getBodyElement(), $html);
-//            $template->addCss($template->getBodyElement() ,'tk-ribbon-box');
-//        }
-    }
-
 
 }

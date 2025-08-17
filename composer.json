@@ -75,9 +75,6 @@
         "composer/composer": "^2.0"
     },
     "config": {
-        "allow-plugins": {
-            "ttek/tk-installers": true
-        },
         "preferred-install": {
             "ttek/*": "source"
         },
