@@ -2,26 +2,23 @@
 namespace App;
 
 use App\Db\Company;
-use App\Db\Product;
 use App\Db\User;
 use Bs\Auth;
 use Bs\Db\UserInterface;
 use Bs\Mvc\PageDomInterface;
 use Bs\Registry;
-use Bs\Ui\Breadcrumbs;
 use Symfony\Component\Console\Application;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Tk\Config;
 use Tk\Path;
-use Tk\Uri;
 
 class Factory extends \Bs\Factory
 {
 
     public function initEventDispatcher(): ?EventDispatcher
     {
-        if ($this->getEventDispatcher()) {
-            new Dispatch($this->getEventDispatcher());
+        if (!$this->has('eventDispatcher')) {
+            new Listeners($this->getEventDispatcher());
         }
         return $this->getEventDispatcher();
     }
