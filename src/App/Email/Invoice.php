@@ -48,11 +48,13 @@ class Invoice
         }
         $message->set('payment.text', $paymentText);
 
+        $ctx = stream_context_create(['ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);
+
         $url = Uri::create('/pdf/invoice', [
             'invoiceId' => $invoice->invoiceId,
             'o' => PdfInterface::OUTPUT_ATTACH,
         ]);
-        $attach = (string)file_get_contents($url);
+        $attach = (string)file_get_contents($url, false, $ctx);
 
         $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
         $message->addStringAttachment($attach, $filename);
@@ -63,7 +65,7 @@ class Invoice
                 'invoiceId' => $inv->invoiceId,
                 'o' => PdfInterface::OUTPUT_ATTACH,
             ]);
-            $a = (string)file_get_contents($url);
+            $a = (string)file_get_contents($url, false, $ctx);
 
             $filename = 'outstanding-invoice-' . $inv->invoiceId.'.pdf';
             $message->addStringAttachment($a, $filename);
@@ -81,7 +83,7 @@ class Invoice
                 'o' => PdfInterface::OUTPUT_ATTACH,
                 'invoiceId' => $invoice->invoiceId,
             ]);
-            $attach = (string)file_get_contents($url);
+            $attach = (string)file_get_contents($url, false, $ctx);
 
             $filename = str_replace([' ', '/', '\\'], '', $invoice->invoiceId . '-TaskList.pdf');
             $message->addStringAttachment($attach, $filename);
@@ -123,11 +125,13 @@ class Invoice
         );
         $message->replace($data);
 
+        $ctx = stream_context_create(['ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);
+
         $url = Uri::create('/pdf/invoice', [
             'invoiceId' => $invoice->invoiceId,
             'o' => PdfInterface::OUTPUT_ATTACH,
         ]);
-        $attach = (string)file_get_contents($url);
+        $attach = (string)file_get_contents($url, false, $ctx);
 
         $filename = 'invoice-' . $invoice->invoiceId.'.pdf';
         if ($invoice->issuedOn instanceof \DateTime) {
