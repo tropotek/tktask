@@ -12,9 +12,20 @@ parameters:
     - vendor/ttek/tk-form/templates
     - vendor/ttek/tk-domtemplate/docs
     - vendor/ttek/tk-base/Bs/Traits/OrderByTrait.php
+    - vendor/ttek/tk-domtemplate/Dom/Modifier/Scss.php
   paths:
     - src
     - bin
     - vendor/ttek
+#    - vendor/ttek/tk-base
+#    - vendor/ttek/tk-domtemplate
+#    - vendor/ttek/tk-form
+#    - vendor/ttek/tk-framework
+#    - vendor/ttek/tk-installers
+#    - vendor/ttek/tk-table
   ignoreErrors:
     - identifier: missingType.iterableValue
+    - identifier: trait.unused
+    -
+        message: '#^Access to an undefined property DOMNameSpaceNode|DOMNode::\$firstChild\.#'
+        identifier: property.notFound

@@ -40,7 +40,7 @@ class UserPermissions extends \Dom\Renderer\Renderer implements ComponentInterfa
         if ($action == 'perms') {
             $auth = $this->user->getAuth();
             $perms = array_map('intval', $perms);
-            $auth->permissions = array_sum($perms ?? []);
+            $auth->permissions = array_sum($perms);
             $auth->save();
         }
 
@@ -66,10 +66,10 @@ class UserPermissions extends \Dom\Renderer\Renderer implements ComponentInterfa
                 $row->addCss('row', 'disabled');
                 $row->setAttr('cb', 'disabled', 'disabled');
             }
-            if (User::PERMISSION_DESCRIPTION_LIST[$perm] ?? false) {
-                $row->setText('notes', User::PERMISSION_DESCRIPTION_LIST[$perm]);
-                $row->setVisible('notes');
-            }
+
+            $row->setText('notes', User::PERMISSION_DESCRIPTION_LIST[$perm]);
+            $row->setVisible('notes');
+
             $row->appendRepeat();
         }
         if ($this->canEdit) {

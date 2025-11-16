@@ -33,7 +33,7 @@ class UserPhoto extends \Dom\Renderer\Renderer implements ComponentInterface
         if ($action == 'upload') {
             $f = $_FILES['file'] ?? null;
             if ($f != null) {
-                $dataPath = $this->user->getDataPath() . '/' . $f['full_path'] ?? '';
+                $dataPath = $this->user->getDataPath() . '/' . $f['full_path'];
                 $filename = Path::createDataPath($dataPath);
 
                 if (empty($f['error'])) {

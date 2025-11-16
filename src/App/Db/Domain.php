@@ -60,7 +60,7 @@ class Domain extends Model
             return false;
         } else {
             if (basename($url->getPath()) == 'tkping') {
-                $data = json_decode($data, true);
+                $data = json_decode(strval($data), true);
                 if (is_array($data)) {
                     DomainPing::create($domain->domainId, true, $data);
                 } else {
@@ -75,7 +75,7 @@ class Domain extends Model
         }
     }
 
-    private static function pingRequest(Uri $url): false|string
+    private static function pingRequest(Uri $url): bool|string
     {
         $curl = curl_init($url->toString());
         $opts = [

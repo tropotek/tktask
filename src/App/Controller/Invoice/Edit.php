@@ -181,7 +181,7 @@ class Edit extends ControllerAdmin
 
         $this->invoice->reload();
 
-        $template->setText('invoiceId', $this->invoice->getId());
+        $template->setText('invoiceId', strval($this->invoice->getId()));
         $template->setText('due-days', strval(Registry::getValue('account.due.days', Invoice::DEFAULT_OVERDUE_DAYS)));
         $template->setText('clientName', $company->name);
         $template->setAttr('clientName', 'href', Uri::create('/companyEdit', ['companyId' => $company->companyId]));
@@ -253,7 +253,7 @@ class Edit extends ControllerAdmin
         foreach ($this->invoice->getItemList() as $item) {
             $row = $template->getRepeat('item');
             $row->setAttr('item', 'data-item-id', $item->invoiceItemId);
-            $row->setText('itemId', $item->invoiceItemId);
+            $row->setText('itemId', strval($item->invoiceItemId));
 
             $del = Uri::create()->set('invoiceItemId', $item->invoiceItemId)->set('act', 'del');
             $row->setAttr('delete', 'hx-delete', $del);
@@ -278,7 +278,7 @@ class Edit extends ControllerAdmin
                 $row->setAttr('qty-input', 'value', $item->qty);
                 $row->setVisible('open');
             } else {
-                $row->setText('qty', $item->qty);
+                $row->setText('qty', strval($item->qty));
             }
             $row->setText('price', $item->price);
             $row->setText('total', $item->total);

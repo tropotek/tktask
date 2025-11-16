@@ -124,7 +124,7 @@ class Task extends Table
             })
             ->addOnHtml(function(\App\Db\Task $obj, Cell $cell) {
                 $cell->getTable()->getRowAttrs()->setAttr('style', 'vertical-align: middle');
-                $pcnt = $cell->getValue($obj);
+                $pcnt = $cell->getValue();
                 return sprintf('
                     <div class="progress" role="progressbar" aria-label="Task Progress" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">
                       <div class="progress-bar" style="width: %s%%">%s%%</div>

@@ -84,7 +84,7 @@ class Expense extends Model
             $filter['lSearch'] = '%' . strtolower($filter['search']) . '%';
             $w  = "a.expense_id = :search ";
             $w .= "OR LOWER(CONCAT_WS(' ', a.description, a.invoice_no)) LIKE :lSearch ";
-            if ($w) $filter->appendWhere('AND (%s)', $w);
+            $filter->appendWhere('AND (%s)', $w);
         }
 
         if (!empty($filter['id'])) {

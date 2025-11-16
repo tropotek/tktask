@@ -88,7 +88,7 @@ class TaskList extends PdfInterface
 
             $row = $template->getRepeat('row');
             $row->addCss('row', $css);
-            $row->setText('taskId', $task->taskId);
+            $row->setText('taskId', strval($task->taskId));
             $row->setText('subject', $task->subject);
 
             $project = $this->project;
@@ -148,14 +148,14 @@ class TaskList extends PdfInterface
         if (count($this->taskList) && truefalse(Registry::getValue('site.invoice.enable', false))) {
             $template->setVisible('is-billable');
         }
-        $template->setText('task-count', count($this->taskList));
+        $template->setText('task-count', strval(count($this->taskList)));
 
         if ($this->project) {
             $template->setText('title', $this->project->name);
             $template->setText('project-name', $this->project->name);
 
             $list = Project::getMembers($this->project->projectId);
-            $template->setText('user-count', count($list));
+            $template->setText('user-count', strval(count($list)));
 
             $template->setText('quote', $this->project->quote);
 
@@ -166,7 +166,7 @@ class TaskList extends PdfInterface
                 ]
             ]);
 
-            $template->setText('tasks-open', count($list));
+            $template->setText('tasks-open', strval(count($list)));
             $template->setText('task-time', Task::secondsToDHM($this->project->getTotalEstTime()));
             $template->setText('est-cost', $this->project->getEstimatedCost());
 
@@ -176,7 +176,7 @@ class TaskList extends PdfInterface
                     Task::STATUS_CLOSED
                 ]
             ]);
-            $template->setText('tasks-complete', count($list));
+            $template->setText('tasks-complete', strval(count($list)));
             $template->setVisible('has-project');
         } else {
             $template->setVisible('not-project');

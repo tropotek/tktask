@@ -61,7 +61,7 @@ class Manager extends ControllerAdmin
             ->addOnHtml(function(\App\Db\Project $obj, Cell $cell) {
                 return sprintf('<span class="badge text-bg-%s">%s</span>',
                     Project::STATUS_CSS[$obj->status],
-                    $cell->getValue($obj)
+                    $cell->getValue()
                 );
             });
 

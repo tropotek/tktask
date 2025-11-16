@@ -66,7 +66,7 @@ class Manager extends ControllerAdmin
             ->addOnHtml(function(Invoice $obj, Cell $cell) {
                 return sprintf('<span class="badge text-bg-%s">%s</span>',
                     Invoice::STATUS_CSS[$obj->status],
-                    $cell->getValue($obj)
+                    $cell->getValue()
                 );
             });
 

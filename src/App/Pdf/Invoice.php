@@ -72,7 +72,7 @@ class Invoice extends PdfInterface
         }
 
         // Render Invoice
-        $template->setText('invoice-id', $this->invoice->invoiceId);
+        $template->setText('invoice-id', strval($this->invoice->invoiceId));
         $template->setText('shop-name', $siteCompany->name);
         $template->setText('shop-phone', $siteCompany->phone);
         $template->setText('shop-email', $siteCompany->email);
@@ -156,9 +156,9 @@ class Invoice extends PdfInterface
         foreach ($this->invoice->getItemList() as $item) {
             $row = $template->getRepeat('item');
             $row->setAttr('item', 'data-item-id', $item->invoiceItemId);
-            $row->setText('itemId', $item->invoiceItemId);
+            $row->setText('itemId', strval($item->invoiceItemId));
             $row->setText('description', $item->description);
-            $row->setText('qty', $item->qty);
+            $row->setText('qty', strval($item->qty));
             $row->setText('productCode', $item->productCode);
             $row->setText('price', $item->price);
             $row->setText('total', $item->total);

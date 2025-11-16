@@ -49,10 +49,11 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Input('name'))
             ->addFieldCss('col-md-6')
             ->setRequired();
-        $this->form->appendField(new Checkbox('active', ['1' => 'Active']))
+        $this->form->appendField((new Checkbox('active', ['1' => 'Active']))
             ->setLabel('&nbsp;')
             ->setSwitch(true)
-            ->addFieldCss('col-md-6');
+            ->addFieldCss('col-md-6')
+        );
         $this->form->appendField(new Textarea('description'));
 
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));

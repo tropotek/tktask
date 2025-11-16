@@ -50,7 +50,7 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
     /**
      * Output the pdf to the browser
      */
-    #[NoReturn] public function getPdf(): string
+    public function getPdf(): void
     {
         if (!$this->filename) {
             $this->filename = basename(\Tk\Uri::create()->getPath()) . '.pdf';

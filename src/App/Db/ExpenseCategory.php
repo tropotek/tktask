@@ -2,6 +2,7 @@
 namespace App\Db;
 
 use Tk\DataMap\DataMap;
+use Tk\DataMap\ModelMapper;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -24,8 +25,11 @@ class ExpenseCategory extends Model
 
     public static function getFormMap(): DataMap
     {
+        if (ModelMapper::instance()->hasFormMap(self::class)) {
+            return ModelMapper::instance()->getFormMap(self::class);
+        }
         $map = parent::getFormMap();
-        $map->addType(DataMap::makeFormType('percent', 'claim'));
+        $map->addType(ModelMapper::instance()->makeType(ModelMapper::MAP_FORM, 'percent', 'claim'));
         return $map;
     }
 
