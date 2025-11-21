@@ -7,15 +7,13 @@ use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Table;
 use Dom\Template;
+use Tk\Db;
 use Tk\Form\Field\Input;
 use Tk\Table\Action\ColumnSelect;
-use Tk\Table\Action\Select;
+use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
-use Tk\Table\Action\Csv;
-use Tk\Table\Action\Delete;
 use Tk\Uri;
-use Tk\Db;
 
 /**
  *

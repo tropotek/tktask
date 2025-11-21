@@ -1,8 +1,6 @@
 <?php
 namespace App\Component;
 
-use App\Db\Invoice;
-use App\Db\Payment;
 use App\Db\User;
 use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Form;
@@ -11,9 +9,6 @@ use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Hidden;
 use Tk\Form\Field\InputGroup;
-use Tk\Form\Field\Select;
-use Tk\Form\Field\Textarea;
-use Tk\Log;
 use Tk\Uri;
 
 class UpdatePricesDialog extends \Dom\Renderer\Renderer implements ComponentInterface

@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\User;
 
-use Bs\Auth;
-use Bs\Mvc\ControllerDomInterface;
 use App\Db\User;
+use Bs\Auth;
 use Bs\Db\GuestToken;
+use Bs\Mvc\ControllerDomInterface;
 use Bs\Mvc\Form;
 use Dom\Template;
 use Tk\Alert;

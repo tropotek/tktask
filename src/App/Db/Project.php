@@ -5,10 +5,9 @@ use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\UserTrait;
 use DateTime;
 use Tk\DataMap\DataMap;
-use Tk\Date;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Db\Model;
 use Tk\Money;
 
 class Project extends Model

@@ -4,7 +4,6 @@ namespace App\Api;
 use App\Db\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Tk\Db\Filter;
 
 class Product
 {

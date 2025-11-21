@@ -4,7 +4,6 @@ namespace App\Controller\Company;
 use App\Db\Company;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
-use Bs\Factory;
 use Bs\Mvc\Form;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
@@ -13,13 +12,12 @@ use Tk\Collection;
 use Tk\Date;
 use Tk\Exception;
 use Tk\Form\Action\Link;
-use Tk\Form\Action\SubmitExit;
 use Tk\Form\Action\Submit;
+use Tk\Form\Action\SubmitExit;
 use Tk\Form\Field\Checkbox;
-use Tk\Form\Field\Textarea;
-use Tk\Form\Field\Hidden;
 use Tk\Form\Field\Input;
 use Tk\Form\Field\Select;
+use Tk\Form\Field\Textarea;
 use Tk\Uri;
 
 class Edit extends ControllerAdmin

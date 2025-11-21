@@ -8,9 +8,9 @@ use App\Form\DataMap\Minutes;
 use Tk\Config;
 use Tk\DataMap\DataMap;
 use Tk\DataMap\Form\Boolean;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Db\Model;
 use Tk\Exception;
 
 class TaskLog extends Model

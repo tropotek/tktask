@@ -3,8 +3,8 @@ namespace App\Email;
 
 use Bs\Db\GuestToken;
 use Bs\Factory;
-use Tk\Config;
 use Bs\Registry;
+use Tk\Config;
 use Tk\Mail\Mailer;
 use Tk\Uri;
 

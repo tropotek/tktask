@@ -1,7 +1,6 @@
 <?php
 namespace App\Form\Field;
 
-use Tk\Config;
 use Tk\Db\Model;
 use Tk\FileUtil;
 use Tk\Path;

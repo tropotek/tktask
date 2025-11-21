@@ -9,7 +9,6 @@ use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Db;
-use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
 use Tk\Uri;
 

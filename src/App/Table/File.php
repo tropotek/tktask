@@ -4,12 +4,12 @@ namespace App\Table;
 use Bs\Mvc\Table;
 use Dom\Template;
 use Tk\Alert;
-use Tk\Uri;
 use Tk\Db;
 use Tk\Table\Action\Csv;
 use Tk\Table\Action\Delete;
 use Tk\Table\Cell;
 use Tk\Table\Cell\RowSelect;
+use Tk\Uri;
 
 /**
  * @deprecated Remove when confident not used

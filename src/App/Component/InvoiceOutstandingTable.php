@@ -2,7 +2,6 @@
 namespace App\Component;
 
 use App\Db\Invoice;
-use App\Db\Payment;
 use App\Db\User;
 use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Table;

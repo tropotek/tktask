@@ -2,8 +2,8 @@
 namespace App;
 
 use App\Db\User;
-use Bs\Listener\RememberHandler;
 use Bs\Listener\MaintenanceHandler;
+use Bs\Listener\RememberHandler;
 
 class Listeners extends \Bs\Listeners
 {

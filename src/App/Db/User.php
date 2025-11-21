@@ -2,16 +2,16 @@
 namespace App\Db;
 
 use Bs\Auth;
-use Bs\Traits\AuthTrait;
 use Bs\Db\UserInterface;
+use Bs\Traits\AuthTrait;
 use Tk\Color;
 use Tk\Config;
-use Tk\Image;
-use Tk\Path;
-use Tk\Uri;
 use Tk\Db;
 use Tk\Db\Filter;
 use Tk\Db\Model;
+use Tk\Image;
+use Tk\Path;
+use Tk\Uri;
 
 class User extends Model implements UserInterface
 {

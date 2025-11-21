@@ -4,14 +4,14 @@ namespace App\Db;
 use Bs\Auth;
 use Bs\Traits\ForeignModelTrait;
 use Tk\Config;
+use Tk\Db;
+use Tk\Db\Filter;
+use Tk\Db\Model;
 use Tk\Exception;
 use Tk\FileUtil;
 use Tk\Log;
 use Tk\Path;
 use Tk\Uri;
-use Tk\Db;
-use Tk\Db\Filter;
-use Tk\Db\Model;
 
 class File extends Model
 {

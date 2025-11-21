@@ -3,7 +3,6 @@ namespace App\Component;
 
 use App\Db\Domain;
 use App\Db\DomainPing;
-use App\Db\File;
 use App\Db\User;
 use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Table;

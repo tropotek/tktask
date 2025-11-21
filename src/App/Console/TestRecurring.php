@@ -1,17 +1,14 @@
 <?php
 namespace App\Console;
 
-use App\Db\Domain;
 use App\Db\Invoice;
-use Symfony\Component\Console\Command\LockableTrait;
+use Bs\Console\Console;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Bs\Console\Console;
 use Tk\Config;
 use Tk\Date;
-use Tk\Log;
 
 /**
  * This script can be run with a date to test what recurring products would be invoiced.

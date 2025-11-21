@@ -2,9 +2,9 @@
 namespace App\Console;
 
 
+use Bs\Console\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Bs\Console\Console;
 use Tk\Config;
 
 class Test extends Console

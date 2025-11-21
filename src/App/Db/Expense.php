@@ -3,9 +3,9 @@ namespace App\Db;
 
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\ExpenseCategoryTrait;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Db\Model;
 use Tk\Money;
 
 class Expense extends Model

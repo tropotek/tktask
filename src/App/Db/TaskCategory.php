@@ -1,9 +1,9 @@
 <?php
 namespace App\Db;
 
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Db\Model;
 
 class TaskCategory extends Model
 {

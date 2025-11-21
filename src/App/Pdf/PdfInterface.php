@@ -3,7 +3,6 @@ namespace App\Pdf;
 
 use Bs\Registry;
 use Dom\Template;
-use JetBrains\PhpStorm\NoReturn;
 use Mpdf\Mpdf;
 use Tk\Config;
 use Tk\Path;

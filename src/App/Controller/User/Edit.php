@@ -5,7 +5,6 @@ use App\Db\User;
 use Bs\Auth;
 use Bs\Db\Masquerade;
 use Bs\Mvc\ControllerAdmin;
-use Bs\Factory;
 use Bs\Mvc\Form;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;

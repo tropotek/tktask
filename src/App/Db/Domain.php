@@ -2,11 +2,9 @@
 namespace App\Db;
 
 use App\Db\Traits\CompanyTrait;
-use Tk\Config;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
-use Tk\FileUtil;
+use Tk\Db\Model;
 use Tk\Log;
 use Tk\Uri;
 

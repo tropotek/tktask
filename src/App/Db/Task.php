@@ -7,10 +7,9 @@ use App\Db\Traits\TaskCategoryTrait;
 use App\Form\DataMap\Minutes;
 use Bs\Registry;
 use Tk\DataMap\DataMap;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
-use Tk\Exception;
+use Tk\Db\Model;
 use Tk\Money;
 
 class Task extends Model

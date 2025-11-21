@@ -2,21 +2,14 @@
 namespace App\Component;
 
 use App\Db\Company;
-use App\Db\ExpenseCategory;
 use App\Db\User;
 use Bs\Mvc\ComponentInterface;
-use Bs\Mvc\Form;
 use Bs\Mvc\Table;
 use Dom\Template;
-use Tk\Collection;
 use Tk\Db;
-use Tk\Db\Filter;
 use Tk\Exception;
-use Tk\Form\Action\Link;
-use Tk\Form\Action\Submit;
 use Tk\Form\Field\Input;
 use Tk\Table\Cell;
-use Tk\Uri;
 
 class CompanySelectDialog extends \Dom\Renderer\Renderer implements ComponentInterface
 {

@@ -3,7 +3,6 @@ namespace App\Controller\Reports;
 
 use App\Db\Company;
 use App\Db\Invoice;
-use App\Db\Payment;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Form;

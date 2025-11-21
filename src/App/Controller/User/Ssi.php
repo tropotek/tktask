@@ -2,8 +2,8 @@
 namespace App\Controller\User;
 
 use App\Db\User;
-use Bs\Mvc\ControllerAdmin;
 use Bs\Factory;
+use Bs\Mvc\ControllerAdmin;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Collection;

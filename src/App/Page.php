@@ -4,15 +4,11 @@ namespace App;
 use App\Db\User;
 use App\Ui\Customizer;
 use App\Ui\Nav;
-use Bs\Auth;
 use Bs\Menu\MintonRenderer;
 use Bs\Registry;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
-use Tk\Config;
-use Tk\Date;
-use Tk\System;
 use Tk\Uri;
 
 class Page extends \Bs\Mvc\Page

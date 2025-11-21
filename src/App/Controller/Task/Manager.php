@@ -1,15 +1,13 @@
 <?php
 namespace App\Controller\Task;
 
-use App\Db\Project;
 use App\Db\Task;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
-use Tk\Alert;
-use Tk\Uri;
 use Tk\Db;
+use Tk\Uri;
 
 class Manager extends ControllerAdmin
 {

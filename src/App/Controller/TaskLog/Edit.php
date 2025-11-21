@@ -9,7 +9,6 @@ use Bs\Ui\Breadcrumbs;
 use Dom\Template;
 use Tk\Alert;
 use Tk\Date;
-use Tk\Uri;
 
 
 /**

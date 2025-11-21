@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 use App\Db\Company;
 use App\Db\Product;
 use App\Db\User;
-use App\Factory;
 use Bs\Auth;
 use Bs\Mvc\ControllerAdmin;
 use Bs\Mvc\Form;

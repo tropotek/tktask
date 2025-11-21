@@ -2,9 +2,9 @@
 namespace App\Db;
 
 use App\Db\Traits\InvoiceTrait;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Db\Model;
 use Tk\Money;
 
 class Payment extends Model

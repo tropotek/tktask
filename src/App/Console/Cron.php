@@ -3,10 +3,10 @@ namespace App\Console;
 
 use App\Db\Domain;
 use App\Db\Invoice;
+use Bs\Console\Console;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Bs\Console\Console;
 use Tk\Log;
 
 /**

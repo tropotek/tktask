@@ -1,7 +1,6 @@
 <?php
 namespace App\Table;
 
-use App\Component\TaskLogEditDialog;
 use App\Db\Company;
 use App\Db\TaskCategory;
 use App\Util\Tools;
@@ -9,12 +8,12 @@ use Bs\Mvc\Table;
 use Bs\Registry;
 use Dom\Template;
 use Tk\Collection;
-use Tk\Table\Action\ColumnSelect;
-use Tk\Uri;
 use Tk\Db;
-use Tk\Table\Action\Csv;
 use Tk\Form\Field\Input;
+use Tk\Table\Action\ColumnSelect;
+use Tk\Table\Action\Csv;
 use Tk\Table\Cell;
+use Tk\Uri;
 
 /**
  * Example Controller:

@@ -3,9 +3,9 @@ namespace App\Db;
 
 use Tk\DataMap\DataMap;
 use Tk\DataMap\ModelMapper;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Db\Model;
 
 class ExpenseCategory extends Model
 {

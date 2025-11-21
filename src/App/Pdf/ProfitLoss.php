@@ -2,19 +2,10 @@
 
 namespace App\Pdf;
 
-use App\Db\Project;
-use App\Db\Task;
-use App\Db\User;
 use App\Factory;
-use Bs\Registry;
-use Bs\Ui\Breadcrumbs;
 use Dom\Template;
-use Tk\Config;
 use Tk\Date;
-use Tk\Db\Filter;
-use Tk\Log;
 use Tk\Path;
-use Tk\Str;
 
 class ProfitLoss extends PdfInterface
 {

@@ -6,7 +6,6 @@ use App\Factory;
 use Bs\Registry;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
-use Tk\Config;
 use Tk\Log;
 use Tk\Path;
 

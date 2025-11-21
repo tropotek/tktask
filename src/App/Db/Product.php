@@ -3,11 +3,9 @@ namespace App\Db;
 
 use App\Db\Traits\ProductCategoryTrait;
 use Bs\Registry;
-use DateTime;
-use Tk\Config;
-use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
+use Tk\Db\Model;
 use Tk\Exception;
 use Tk\Money;
 
