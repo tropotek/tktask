@@ -62,7 +62,7 @@ SELECT
   r.recurring_id,
   r.company_id,
   r.product_id,
-  IFNULL(p.price, r.price) AS price,
+  COALESCE(r.price, p.price, 0) AS price,   -- default to 0 if no price or product set
   r.count,
   r.cycle,
   r.start_on,

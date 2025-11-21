@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS recurring (
   recurring_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   company_id INT UNSIGNED NOT NULL DEFAULT 0,
   product_id INT UNSIGNED NULL DEFAULT NULL,
-  price INT NOT NULL DEFAULT 0,              -- The chargeable amount in cents (what is charged to the invoice if > 0)
+  price INT NULL DEFAULT NULL,               -- The chargeable amount in cents (what is charged to the invoice if > 0)
   count INT UNSIGNED NOT NULL DEFAULT 0,     -- The number of issued invoices
   cycle ENUM('week','fortnight','month','year','biannual') DEFAULT 'year',
   start_on DATE NOT NULL,                    -- date started recurring invoicing

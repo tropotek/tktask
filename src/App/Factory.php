@@ -87,6 +87,7 @@ class Factory extends \Bs\Factory
             $app = parent::getConsole();
 
             $app->add(new \App\Console\Cron());
+            $app->add(new \App\Console\TestRecurring());
             if (Config::isDev()) {
                 //$app->add(new \App\Console\MigrateTis());
                 $app->add(new \App\Console\Test());

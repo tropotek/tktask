@@ -3,8 +3,6 @@ namespace App\Db;
 
 use App\Db\Traits\CompanyTrait;
 use App\Db\Traits\ProductTrait;
-use Tk\DataMap\DataMap;
-use Tk\DataMap\Db\Date;
 use Tk\Db\Model;
 use Tk\Db;
 use Tk\Db\Filter;
@@ -68,7 +66,7 @@ class Recurring extends Model
     }
 
     /**
-     * Invoice this recurring product to the companies current open invoice
+     * Invoice this recurring product to the company's current open invoice
      */
     public function invoice(?\DateTime $now = null): ?Invoice
     {
@@ -230,23 +228,23 @@ class Recurring extends Model
         $errors = [];
 
         if (!$this->companyId) {
-            $errors['companyId'] = 'Invalid value: companyId';
+            $errors['companyId'] = 'Please select a billable company';
         }
 
         if ($this->productId && !$this->getProduct()) {
-            $errors['productId'] = 'Invalid value: productId';
+            $errors['productId'] = 'Invalid product selected';
         }
 
         if (empty($this->productId) && $this->price->getAmount() == 0) {
-            $errors['price'] = 'Invalid value: price';
+            $errors['price'] = 'Price must be set for non-product recurring items';
         }
 
         if (!$this->description) {
-            $errors['description'] = 'Invalid value: description';
+            $errors['description'] = 'Invalid description';
         }
 
         if (!$this->cycle) {
-            $errors['cycle'] = 'Invalid value: cycle';
+            $errors['cycle'] = 'Invalid billing cycle';
         }
 
         return $errors;

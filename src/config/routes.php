@@ -145,7 +145,10 @@ return function (CollectionConfigurator $routes) {
     $routes->add('com-invoice-outstanding-table', '/component/invoiceOutstandingTable')
         ->controller([\App\Component\InvoiceOutstandingTable::class, 'doDefault']);
 
-    $routes->add('com-payment-edit-dialog', '/component/paymentAddDialog')
+    $routes->add('com-product-prices-dialog', '/component/updatePricesDialog')
+        ->controller([\App\Component\UpdatePricesDialog::class, 'doDefault']);
+
+    $routes->add('com-payment-add-dialog', '/component/paymentAddDialog')
         ->controller([\App\Component\PaymentAddDialog::class, 'doDefault']);
 
     $routes->add('com-task-log-edit-dialog', '/component/taskLogEditDialog')

@@ -106,6 +106,18 @@ class Manager extends ControllerAdmin
         $this->table->appendAction(\Tk\Table\Action\Select::createActiveSelect(Product::class, $rowSelect));
         $this->table->appendAction(Csv::createDefault(Product::class, $rowSelect));
 
+        // add a button to update prices by a percentage
+        $button = \Tk\Table\Action\Button::create('Update Prices');
+        $button->setAttr([
+            'type'      => 'button',
+            'disabled'  => 'disabled',
+            'hx-post'   => '/component/updatePricesDialog',
+            'hx-target' => 'body',
+            'hx-swap'   => 'beforeend',
+        ]);
+        $button->addCss('btn btn-sm btn-light tk-action-select');
+        $this->table->appendAction($button);
+
 
         // execute table to init filter object
         $this->table->execute();

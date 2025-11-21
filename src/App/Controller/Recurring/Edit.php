@@ -6,7 +6,6 @@ use App\Db\Product;
 use App\Db\Recurring;
 use App\Db\User;
 use Bs\Mvc\ControllerAdmin;
-use Bs\Factory;
 use Bs\Mvc\Form;
 use Bs\Ui\Breadcrumbs;
 use Dom\Template;
@@ -64,7 +63,7 @@ class Edit extends ControllerAdmin
         $cats = Product::findFiltered(Filter::create([], 'name'));
         $list = Collection::toSelectList($cats, 'productId');
         $this->form->appendField((new Select('productId', $list))
-            ->prependOption('-- Select --', '')
+            ->prependOption('-- None --', '')
             ->addFieldCss('col-md-6')
             ->addOnShowOption(function(\Dom\Template $template, \Tk\Form\Field\Option $option) {
                 $product = Product::find(intval($option->getValue()));
@@ -99,11 +98,14 @@ class Edit extends ControllerAdmin
         $this->form->appendField(new Checkbox('issue'))
             ->setPersistent()
             ->setNotes("Automatically issue invoice after recurring items added")
-            ->addFieldCss('col-md-6');
+            ->addFieldCss('col-md-6')
+            ->setSwitch(true);
+
         $this->form->appendField(new Checkbox('active'))
             ->setPersistent()
             ->setNotes("Inactive recurring items are not added to an invoice, however dates are incremented")
-            ->addFieldCss('col-md-6');
+            ->addFieldCss('col-md-6')
+            ->setSwitch(true);
 
         $this->form->appendField(new Textarea('notes'));
 

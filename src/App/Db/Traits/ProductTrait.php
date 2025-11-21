@@ -9,7 +9,7 @@ trait ProductTrait
 
     public function getProduct(): ?Product
     {
-        if (!$this->_product) $this->_product = Product::find($this->productId);
+        if (!$this->_product && $this->productId) $this->_product = Product::find($this->productId);
         return $this->_product;
     }
 
