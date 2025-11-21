@@ -2,6 +2,13 @@
 
 #CHANGELOG#
 
+Ver 1.0.64 [2025-11-21]:
+-------------------------------
+  - Added product price bulk update
+  - phpstan code cleanup
+  - Remove SSL for invoice PDFs
+
+
 Ver 1.0.62 [2025-09-30]:
 -------------------------------
 

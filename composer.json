@@ -2,61 +2,61 @@
     "name": "ttek/tktask",
     "type": "project",
     "description": "Developer customer management app",
-    "keywords": [
+    "keywords":  [
         "tropotek"
     ],
-    "time": "2024-12-01",
+    "time": "2025-11-21",
     "license": "MIT",
-    "minimum-stability": "dev",
-    "authors": [
-        {
+    "minimum-stability": "stable",
+    "authors":  [
+         {
             "name": "Tropotek",
             "homepage": "http://www.tropotek.com/"
         }
     ],
-    "repositories": [
-        {
+    "repositories":  [
+         {
             "type": "package",
-            "package": {
+            "package":  {
                 "name": "htmx/htmx",
                 "version": "2.0.4",
-                "dist": {
+                "dist":  {
                     "url": "https://unpkg.com/htmx.org/dist/htmx.min.js",
                     "type": "file"
                 }
             }
         },
-        {
+         {
             "type": "package",
-            "package": {
+            "package":  {
                 "name": "jquery/jquery",
                 "version": "3.7.1",
-                "dist": {
+                "dist":  {
                     "url": "https://code.jquery.com/jquery-3.7.1.min.js",
                     "type": "file"
                 }
             }
         }
     ],
-    "autoload": {
-        "psr-4": {
+    "autoload":  {
+        "psr-4":  {
             "App\\": "src/App/"
         }
     },
-    "scripts": {
-        "post-install-cmd": [
+    "scripts":  {
+        "post-install-cmd":  [
             "Bs\\Composer\\Installer::postInstall"
         ],
-        "post-update-cmd": [
+        "post-update-cmd":  [
             "Bs\\Composer\\Installer::postUpdate"
         ]
     },
-    "extra": {
-        "branch-alias": {
+    "extra":  {
+        "branch-alias":  {
             "dev-master": "1.0.x-dev"
         }
     },
-    "require": {
+    "require":  {
         "php": "^8.3",
         "ext-curl": "*",
         "ext-pdo": "*",
@@ -71,11 +71,11 @@
         "studio-42/elfinder": "~2.1.0",
         "mpdf/mpdf": "^8.0"
     },
-    "require-dev": {
+    "require-dev":  {
         "composer/composer": "^2.0"
     },
-    "config": {
-        "preferred-install": {
+    "config":  {
+        "preferred-install":  {
             "ttek/*": "source"
         },
         "component-dir": "vendor/components"
