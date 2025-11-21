@@ -50,7 +50,8 @@ class Manager extends ControllerAdmin
                 return $obj->getCompany()->name;
             });
 
-        $this->table->appendCell('price')
+        $this->table->appendCell('billablePrice')
+            ->setHeader('Billable')
             ->addHeaderCss('text-end')
             ->addCss('text-nowrap text-end')
             ->setSortable(true);

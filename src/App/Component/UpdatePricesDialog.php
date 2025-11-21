@@ -1,6 +1,7 @@
 <?php
 namespace App\Component;
 
+use App\Db\Product;
 use App\Db\User;
 use Bs\Mvc\ComponentInterface;
 use Bs\Mvc\Form;
@@ -9,6 +10,7 @@ use Tk\Form\Action\Link;
 use Tk\Form\Action\Submit;
 use Tk\Form\Field\Hidden;
 use Tk\Form\Field\InputGroup;
+use Tk\Money;
 use Tk\Uri;
 
 class UpdatePricesDialog extends \Dom\Renderer\Renderer implements ComponentInterface
@@ -23,20 +25,18 @@ class UpdatePricesDialog extends \Dom\Renderer\Renderer implements ComponentInte
     {
         if (!User::getAuthUser()->isStaff()) return null;
 
-        vd($_REQUEST);
         $productIds = $_REQUEST['id'] ?? [];
 
         $this->form = new Form(null, 'form-update-prices');
         $this->form->setAction('');
+        $this->form->addCss('mt-0');
         $this->form->setAttr('hx-post', Uri::create());
         $this->form->setAttr('hx-swap', 'outerHTML');
         $this->form->setAttr('hx-target', "#{$this->form->getId()}");
         $this->form->setAttr('hx-select', "#{$this->form->getId()}");
 
-        // TODO: we need to be able to add multiple fields with the same name like this
-        //       Update the Form to allow this, see prev form implementation code as that did work correctly, GGGRRRRR!!!
-        foreach ($productIds as $id) {
-            $this->form->appendField(new Hidden('id[]', $id));
+        foreach ($productIds as $i => $id) {
+            $this->form->prependField(new Hidden('id['.$i.']', $id));
         }
 
         $this->form->appendField(new InputGroup('amount', '%'))
@@ -52,8 +52,6 @@ class UpdatePricesDialog extends \Dom\Renderer\Renderer implements ComponentInte
         $this->form->execute($_POST);
 
         if (!$this->form->isSubmitted()) {
-            // IMPORTANT: This component always sets the htmx target and swap to end of the surrounding page <body>.
-            // That ignores hx-target and hx-swap in the triggering element, which you can omit.
             header('HX-Retarget: body');
             header('HX-Reswap: beforeend');
         }
@@ -69,23 +67,29 @@ class UpdatePricesDialog extends \Dom\Renderer\Renderer implements ComponentInte
     public function onSubmit(Form $form, Submit $action): void
     {
         $amount = $form->getFieldValue('amount');
-
         if ($amount < -100 || $amount > 100) {
             $form->addFieldError('amount', 'The price change must be between -100 and 100.');
         }
 
-        $id = $form->getFieldValue('id');
-
-
-vd($amount, $id);
-
+        // get id array from request not field value (dynamically added fields)
+        $ids = $_REQUEST['id'] ?? [];
+        if (empty($ids)) {
+            $form->addError('No valid products selected');
+        }
 
         if ($form->hasErrors()) {
             $this->hxTriggers['tkForm:onError'] = ['status' => 'err', 'errors' => $form->getAllErrors()];
             return;
         }
 
-        vd('Update product prices');
+        foreach ($ids as $id) {
+            $product = Product::find($id);
+            if ($product instanceof Product) {
+                $add = intval(round($product->price->getAmount() * ($amount / 100)));
+                $product->price = $product->price->add(Money::create($add));
+                $product->save();
+            }
+        }
 
         // Trigger HX events
         $this->hxTriggers['tkForm:afterSubmit'] = ['status' => 'ok'];
@@ -154,6 +158,7 @@ vd($amount, $id);
     // remove the dialog element from the dom when it closes
     $(dialog).on('hidden.bs.modal', function() {
         $(dialog).remove();
+        location.reload();
     });
 
 });

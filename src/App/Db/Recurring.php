@@ -23,29 +23,30 @@ class Recurring extends Model
         Product::CYCLE_BIANNUAL  => 'Biannually',
     ];
 
-    public int         $recurringId = 0;
-    public int         $companyId   = 0;
-    public ?int        $productId   = null;
-    public Money       $price;
-    public int         $count       = 0;
-    public string      $cycle        = Product::CYCLE_YEAR;
+    public int         $recurringId   = 0;
+    public int         $companyId     = 0;
+    public ?int        $productId     = null;
+    public ?Money      $price         = null;
+    public Money       $billablePrice;
+    public int         $count         = 0;
+    public string      $cycle         = Product::CYCLE_YEAR;
     public \DateTime   $startOn;
-    public ?\DateTime  $endOn       = null;
-    public ?\DateTime  $prevOn      = null;
+    public ?\DateTime  $endOn         = null;
+    public ?\DateTime  $prevOn        = null;
     public \DateTime   $nextOn;
-    public bool        $active      = true;
-    public bool        $issue       = true;
-    public string      $description = '';
-    public string      $notes       = '';
-    public ?\DateTime  $modified   = null;
-    public ?\DateTime  $created    = null;
+    public bool        $active        = true;
+    public bool        $issue         = true;
+    public string      $description   = '';
+    public string      $notes         = '';
+    public ?\DateTime  $modified      = null;
+    public ?\DateTime  $created       = null;
 
 
     public function __construct()
     {
         $this->startOn = new \DateTime('tomorrow');
-        $this->nextOn  = new \DateTime('tomorrow');
-        $this->price   = new Money();
+        $this->nextOn = new \DateTime('tomorrow');
+        $this->billablePrice = new Money();
     }
 
     public function save(): void
@@ -90,7 +91,7 @@ class Recurring extends Model
                 $code = $this->getProduct()->code;
             }
 
-            $item = InvoiceItem::create($code, $description, $this->price);
+            $item = InvoiceItem::create($code, $description, $this->billablePrice);
             $invoice->addItem($item);
             $this->count++;
 
@@ -235,7 +236,7 @@ class Recurring extends Model
             $errors['productId'] = 'Invalid product selected';
         }
 
-        if (empty($this->productId) && $this->price->getAmount() == 0) {
+        if (empty($this->productId) && (is_null($this->price) || $this->price->getAmount() == 0)) {
             $errors['price'] = 'Price must be set for non-product recurring items';
         }
 

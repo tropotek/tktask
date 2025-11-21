@@ -73,7 +73,7 @@ class Edit extends ControllerAdmin
                     $option->setAttr('data-cycle', $product->cycle);
                     $option->setName($option->getName() . ' [' . $product->price->toString() . ' - '.ucfirst($product->cycle).']');
                 } else {
-                    $option->setAttr('data-price', $this->recurring->price->toFloatString());
+                    $option->setAttr('data-price', $this->recurring->billablePrice->toFloatString());
                     $option->setAttr('data-name', $this->recurring->description);
                     $option->setAttr('data-cycle', $this->recurring->cycle);
                 }
@@ -81,7 +81,7 @@ class Edit extends ControllerAdmin
         );
 
         $this->form->appendField(new InputGroup('price', '$'))
-            ->setRequired()
+            //->setRequired()
             ->addFieldCss('col-md-6');
 
         $this->form->appendField(new Input('description'))
@@ -167,9 +167,9 @@ jQuery(function ($) {
 
     $('[name=productId]', form).on('change', function() {
         let option = $(':selected', this);
-        if (option.data('price')) {
-            $('[name=price]', form).val(option.data('price'));
-        }
+        // if (option.data('price')) {
+        //     $('[name=price]', form).val(option.data('price'));
+        // }
         if (option.data('name')) {
             $('[name=description]', form).val(option.data('name'));
         }
