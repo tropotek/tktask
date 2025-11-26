@@ -40,6 +40,19 @@ class Profile extends ControllerAdmin
         $this->user = User::getAuthUser();
         $this->form = new Form($this->user);
 
+        // send inactive user activation email
+        if (isset($_GET['pass'])) {
+            if ($_GET['pass'] != $this->user->hash) {
+                throw new \Exception('Invalid user action, please contact your administrator.');
+            }
+            if (\App\Email\User::sendRecovery($this->user)) {
+                Alert::addSuccess('An email has been sent to ' . $this->user->nameShort . ' to create their password.');
+            } else {
+                Alert::addError('Failed to send email to ' . $this->user->nameShort . ' to create their password.');
+            }
+            Uri::create()->remove('pass')->redirect();
+        }
+
         $tab = 'Details';
         $this->form->appendField(new Hidden('userId'))->setReadonly();
 
@@ -81,19 +94,6 @@ class Profile extends ControllerAdmin
             );
         }
 
-        if (Config::instance()->get('auth.profile.password')) {
-            $tab = 'Password';
-            $this->form->appendField(new Password('currentPass'))->setGroup($tab)
-                ->setLabel('Current Password')
-                ->setAttr('autocomplete', 'new-password');
-            $this->form->appendField(new Password('newPass'))->setGroup($tab)
-                ->setLabel('New Password')
-                ->setAttr('autocomplete', 'new-password');
-            $this->form->appendField(new Password('confPass'))->setGroup($tab)
-                ->setLabel('Confirm Password')
-                ->setAttr('autocomplete', 'new-password');
-        }
-
         $this->form->appendField(new SubmitExit('save', [$this, 'onSubmit']));
         $this->form->appendField(new Link('cancel', Breadcrumbs::getBackUrl()));
 
@@ -112,23 +112,6 @@ class Profile extends ControllerAdmin
         $this->user->mapForm($values);
         $this->user->getAuth()->mapForm($values);
 
-        if ($form->getField('currentPass') && $form->getFieldValue('currentPass')) {
-            if (!password_verify($form->getFieldValue('currentPass'), $this->user->getAuth()->password)) {
-                $form->addFieldError('currentPass', 'Invalid current password, password not updated');
-            }
-            if ($form->getField('newPass') && $form->getFieldValue('newPass')) {
-                if ($form->getFieldValue('newPass') != $form->getFieldValue('confPass')) {
-                    $form->addFieldError('newPass', 'Passwords do not match');
-                } else {
-                    if (!$e = Auth::validatePassword($form->getFieldValue('newPass'))) {
-                        $form->addFieldError('newPass', 'Week password: ' . implode(', ', $e));
-                    }
-                }
-            } else {
-                $form->addFieldError('newPass', 'Please supply a new password');
-            }
-        }
-
         $form->addFieldErrors($this->user->validate());
         $form->addFieldErrors($this->user->getAuth()->validate());
 
@@ -136,10 +119,7 @@ class Profile extends ControllerAdmin
             Alert::addError('Form contains errors.');
             return;
         }
-        if ($form->getFieldValue('currentPass')) {
-            $this->user->getAuth()->password = Auth::hashPassword($form->getFieldValue('newPass'));
-            Alert::addSuccess('Your password has been updated, remember to use this on your next login.');
-        }
+
         $this->user->save();
         $this->user->getAuth()->save();
 
@@ -175,35 +155,53 @@ class Profile extends ControllerAdmin
         $this->form->getRenderer()->addFieldCss('mb-3');
         $template->appendTemplate('content', $this->form->show());
 
+        if (Config::instance()->get('auth.profile.password')) {
+            $template->setVisible('password');
+            $url = Uri::create()->set('pass', $this->user->hash);
+            $template->setAttr('pass', 'href', $url);
+        }
+
         return $template;
     }
 
     public function __makeTemplate(): ?Template
     {
         $html = <<<HTML
-<div class="row">
-    <div class="col">
-        <div class="card mb-3">
-            <div class="card-header">
-                <div class="info-dropdown dropdown float-end" title="Details">
-                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
-                        <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
-                    </div>
+<div>
+    <div class="row" choice="password">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header"><i class="fa fa-cogs"></i> Actions</div>
+                <div class="card-body" var="actions">
+                    <a href="/" title="Change Password" data-confirm="Request change password email?" class="btn btn-outline-secondary" var="pass"><i class="fa fa-fw fa-key"></i> Change Password</a>
                 </div>
-                <i var="icon"></i> <span var="title"></span>
             </div>
-            <div class="card-body" var="content"></div>
         </div>
     </div>
-
-    <div class="col-3">
-        <div hx-get="/component/userPermissions" hx-trigger="load" hx-swap="outerHTML" choice="comp-perms">
-            <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+    <div class="row">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="info-dropdown dropdown float-end" title="Details">
+                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-vertical"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <p class="dropdown-item"><span class="d-inline-block">Modified:</span> <span var="modified">...</span></p>
+                            <p class="dropdown-item"><span class="d-inline-block">Created:</span> <span var="created">...</span></p>
+                        </div>
+                    </div>
+                    <i var="icon"></i> <span var="title"></span>
+                </div>
+                <div class="card-body" var="content"></div>
+            </div>
         </div>
-        <div hx-get="/component/userPhoto" hx-trigger="load" hx-swap="outerHTML" var="comp-photo">
-          <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+    
+        <div class="col-3">
+            <div hx-get="/component/userPermissions" hx-trigger="load" hx-swap="outerHTML" choice="comp-perms">
+                <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+            </div>
+            <div hx-get="/component/userPhoto" hx-trigger="load" hx-swap="outerHTML" var="comp-photo">
+              <p class="text-center mt-4"><i class="fa fa-fw fa-spin fa-spinner fa-3x"></i><br>Loading...</p>
+            </div>
         </div>
     </div>
 </div>
