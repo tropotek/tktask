@@ -240,7 +240,6 @@ class Edit extends ControllerAdmin
     </div>
     <div class="row">
         <div class="col">
-
             <div class="card mb-3">
                 <div class="card-header">
                     <div class="info-dropdown dropdown float-end" title="Details" choice="edit">

@@ -42,14 +42,9 @@ class Recover extends ControllerDomInterface
             ->setRequired()
             ->setNotes('Enter your username or email to recover your account.');
 
-        $html = <<<HTML
-            <a href="/login">Login</a>
-        HTML;
+        $html = '<a href="/login">Login</a>';
         if (Config::getValue('auth.registration.enable', false)) {
-            $html = <<<HTML
-                <a href="/register">Register</a> | <a href="/login">Login</a>
-            HTML;
-
+            $html .= ' | <a href="/register">Register</a>';
         }
         $this->form->appendField(new Html('links', $html))->setLabel('')->addFieldCss('text-center');
         $this->form->appendField(new Submit('recover', [$this, 'onDefault']));

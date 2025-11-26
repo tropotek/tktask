@@ -51,13 +51,9 @@ class Login extends ControllerAdmin
         $this->form->appendField(new Checkbox('remember', ['remember' => 'Remember Me']))
             ->setLabel('');
 
-        $html = <<<HTML
-            <a href="/recover">Recover</a>
-        HTML;
+        $html = '<a href="/recover">Recover</a>';
         if (Config::getValue('auth.registration.enable', false)) {
-            $html = <<<HTML
-                <a href="/recover">Recover</a> | <a href="/register">Register</a>
-            HTML;
+            $html .= ' | <a href="/register">Register</a>';
         }
         $this->form->appendField(new Html('links', $html))->setLabel('')->addFieldCss('text-center');
         $this->form->appendField(new Submit('login', [$this, 'onSubmit']));
