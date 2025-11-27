@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS domain_ping
   site_name VARCHAR(256) NULL,
   site_time TIMESTAMP NULL DEFAULT NULL,
   timezone VARCHAR(64) NULL,
-  bytes INT NULL,
+  bytes BIGINT NULL,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_domain_ping__domain_id FOREIGN KEY (domain_id) REFERENCES domain (domain_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

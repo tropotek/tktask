@@ -39,13 +39,13 @@ class Cron extends Console
         // invoice recurring items
         $this->invoiceRecurring();
 
-        // send reminder invoices every 7 days after overdue.
+        // TODO: send reminder invoices every 7 days after overdue.
         //$this->sendInvoiceReminders();
 
         // Closing Expired Recurring Items
         $this->closeExpiredRecurring();
 
-        // Ping all monitored domains
+        // Ping all monitored domains (do last)
         Domain::pingAllDomains();
 
         $this->release();   // release lock
