@@ -747,12 +747,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "32d9216a85709f0f6bb0cf6a66073f18336fe99d"
+                "reference": "18c5fd1168a388a42e79f3ab77334733b2895fb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/32d9216a85709f0f6bb0cf6a66073f18336fe99d",
-                "reference": "32d9216a85709f0f6bb0cf6a66073f18336fe99d",
+                "url": "https://api.github.com/repos/symfony/console/zipball/18c5fd1168a388a42e79f3ab77334733b2895fb9",
+                "reference": "18c5fd1168a388a42e79f3ab77334733b2895fb9",
                 "shasum": ""
             },
             "require": {
@@ -837,7 +837,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-13T08:19:35+00:00"
+            "time": "2025-11-23T21:25:19+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1947,12 +1947,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "ae064a6d9cf39507f9797658465a2ca702965fa8"
+                "reference": "ea50a13c2711eebcbb66b38ef6382e62e3262859"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/ae064a6d9cf39507f9797658465a2ca702965fa8",
-                "reference": "ae064a6d9cf39507f9797658465a2ca702965fa8",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/ea50a13c2711eebcbb66b38ef6382e62e3262859",
+                "reference": "ea50a13c2711eebcbb66b38ef6382e62e3262859",
                 "shasum": ""
             },
             "require": {
@@ -2026,7 +2026,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-31T16:43:05+00:00"
+            "time": "2025-11-22T09:51:35+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -2359,12 +2359,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-base.git",
-                "reference": "cd4dc17c660651db0e8244783bbe73fc5bac07a5"
+                "reference": "fefb42b94189a10ca5b31f7df57cbe9b32abbf1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/cd4dc17c660651db0e8244783bbe73fc5bac07a5",
-                "reference": "cd4dc17c660651db0e8244783bbe73fc5bac07a5",
+                "url": "https://api.github.com/repos/tropotek/tk-base/zipball/fefb42b94189a10ca5b31f7df57cbe9b32abbf1e",
+                "reference": "fefb42b94189a10ca5b31f7df57cbe9b32abbf1e",
                 "shasum": ""
             },
             "require": {
@@ -2539,12 +2539,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tropotek/tk-framework.git",
-                "reference": "0c048ba130fbc0d77efc50b7c4ee1ed58dfec9b3"
+                "reference": "8da8e686af74c40fbff82b20ba14bee6ef7e7488"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/0c048ba130fbc0d77efc50b7c4ee1ed58dfec9b3",
-                "reference": "0c048ba130fbc0d77efc50b7c4ee1ed58dfec9b3",
+                "url": "https://api.github.com/repos/tropotek/tk-framework/zipball/8da8e686af74c40fbff82b20ba14bee6ef7e7488",
+                "reference": "8da8e686af74c40fbff82b20ba14bee6ef7e7488",
                 "shasum": ""
             },
             "require": {
@@ -2858,12 +2858,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "6309594fa95cc6f86aea2fb64943617ed840f4da"
+                "reference": "1aed0a57ae5407446cda2e98a52484b4e8c1490b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/6309594fa95cc6f86aea2fb64943617ed840f4da",
-                "reference": "6309594fa95cc6f86aea2fb64943617ed840f4da",
+                "url": "https://api.github.com/repos/composer/composer/zipball/1aed0a57ae5407446cda2e98a52484b4e8c1490b",
+                "reference": "1aed0a57ae5407446cda2e98a52484b4e8c1490b",
                 "shasum": ""
             },
             "require": {
@@ -2964,7 +2964,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-19T20:57:25+00:00"
+            "time": "2025-11-21T14:14:31+00:00"
         },
         {
             "name": "composer/metadata-minifier",
@@ -3411,12 +3411,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/marc-mabe/php-enum.git",
-                "reference": "bb426fcdd65c60fb3638ef741e8782508fda7eef"
+                "reference": "ad41f0bfbcb32ab13c549265ed91f332694f6433"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/marc-mabe/php-enum/zipball/bb426fcdd65c60fb3638ef741e8782508fda7eef",
-                "reference": "bb426fcdd65c60fb3638ef741e8782508fda7eef",
+                "url": "https://api.github.com/repos/marc-mabe/php-enum/zipball/ad41f0bfbcb32ab13c549265ed91f332694f6433",
+                "reference": "ad41f0bfbcb32ab13c549265ed91f332694f6433",
                 "shasum": ""
             },
             "require": {
@@ -3475,9 +3475,9 @@
             ],
             "support": {
                 "issues": "https://github.com/marc-mabe/php-enum/issues",
-                "source": "https://github.com/marc-mabe/php-enum/tree/v4.7.2"
+                "source": "https://github.com/marc-mabe/php-enum/tree/master"
             },
-            "time": "2025-09-14T11:18:39+00:00"
+            "time": "2025-11-23T17:06:57+00:00"
         },
         {
             "name": "react/promise",
