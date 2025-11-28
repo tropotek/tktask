@@ -12,7 +12,7 @@ use Tk\Date;
 
 /**
  * This script can be run with a date to test what recurring products would be invoiced.
- *
+ * EG: `$ cmd rec -d 2025-12-08`
  */
 class TestRecurring extends Console
 {
@@ -22,7 +22,7 @@ class TestRecurring extends Console
         $this->setName('testRecurring')
             ->setAliases(['rec'])
             ->addArgument('date', InputArgument::REQUIRED, 'A valid date in the format \'yyyy-mm-dd\'.')
-            ->addOption('dryrun', 'd', InputOption::VALUE_NEGATABLE, 'dryrun, do not send or issue any invoices', true)
+            ->addOption('dryrun', 'd', InputOption::VALUE_NEGATABLE, 'dryrun, do not send or issue any invoices', false)
             ->setDescription('Test recurring invoice items with a selected date.');
     }
 
