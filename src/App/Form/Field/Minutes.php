@@ -24,6 +24,7 @@ class Minutes extends FieldInterface implements DisplayInterface, RendererInterf
         parent::__construct($name);
         $this->setMultiple(true);
         $this->setAttr('maxlength', '2');
+        $this->setType('number');
     }
 
     public function show(): ?Template
@@ -60,7 +61,7 @@ class Minutes extends FieldInterface implements DisplayInterface, RendererInterf
 <div var="field" class="tk-minutes">
   <label class="form-label" var="label"></label>
   <div class="input-group">
-    <input type="text" class="form-control hrs" var="hrs" placeholder="Hours" data-bs-toggle="dropdown" aria-expanded="false">
+    <input type="number" class="form-control hrs" var="hrs" placeholder="Hours" data-bs-toggle="dropdown" aria-expanded="false">
     <ul class="dropdown-menu dropdown-menu-start tk-hrs-opts">
       <li><h6 class="dropdown-header">Hours</h6></li>
       <li><a class="dropdown-item" href="#">0</a></li>
@@ -74,9 +75,12 @@ class Minutes extends FieldInterface implements DisplayInterface, RendererInterf
       <li><a class="dropdown-item" href="#">8</a></li>
       <li><a class="dropdown-item" href="#">9</a></li>
       <li><a class="dropdown-item" href="#">10</a></li>
+      <li><a class="dropdown-item" href="#">12</a></li>
+      <li><a class="dropdown-item" href="#">15</a></li>
+      <li><a class="dropdown-item" href="#">24</a></li>
     </ul>
     <span class="input-group-text">:</span>
-    <input type="text" class="form-control mins" var="mins" placeholder="Minutes" data-bs-toggle="dropdown" aria-expanded="false">
+    <input type="number" class="form-control mins" var="mins" placeholder="Minutes" data-bs-toggle="dropdown" aria-expanded="false">
     <ul class="dropdown-menu dropdown-menu-end tk-mins-opts">
       <li><h6 class="dropdown-header">Minutes</h6></li>
       <li><a class="dropdown-item" href="#">0</a></li>
