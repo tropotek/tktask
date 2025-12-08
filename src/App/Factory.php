@@ -23,15 +23,6 @@ class Factory extends \Bs\Factory
         return $this->getEventDispatcher();
     }
 
-//    public function createDomPage(string $templatePath = ''): PageDomInterface
-//    {
-//        // So we can change the mintion template from the settings page
-//        if (str_contains($templatePath, '/minton/')) {
-//            $templatePath = Path::create(Registry::getValue('minton.template', '/html/minton/sn-admin.html'));
-//        }
-//        return new Page($templatePath);
-//    }
-
     public function createDomPage(string $templatePath = ''): PageDomInterface
     {
         // So we can change the mintion template from the settings page
@@ -40,7 +31,11 @@ class Factory extends \Bs\Factory
             if (User::getAuthUser()?->template) {
                 $selected = User::getAuthUser()->template;
             }
-            $templatePath = Path::create(sprintf('/html/minton/%s.html', preg_replace('|[^0-9a-z_-]|i', '', $selected)));
+
+            $templatePath = '';
+            if (!empty($selected)) {
+                $templatePath = Path::create(sprintf('/html/minton/%s.html', preg_replace('|[^0-9a-z_-]|i', '', $selected)));
+            }
             if (!is_file($templatePath)) {
                 $templatePath = Path::create('/html/minton/sn-admin.html');
             }

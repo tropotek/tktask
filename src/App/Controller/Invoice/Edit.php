@@ -81,12 +81,12 @@ class Edit extends ControllerAdmin
                     Uri::create()->remove('act')->redirect();
                 }
                 break;
-            case 'email':
-                if (!\App\Email\Invoice::sendIssueInvoice($this->invoice)) {
-                    Alert::addError("Failed to send invoice id {$this->invoice->invoiceId}");
-                }
-                Uri::create()->remove('act')->redirect();
-                break;
+//            case 'email':
+//                if (!\App\Email\Invoice::sendIssueInvoice($this->invoice)) {
+//                    Alert::addError("Failed to send invoice id {$this->invoice->invoiceId}");
+//                }
+//                Uri::create()->remove('act')->redirect();
+//                break;
             case 'open':
                 $this->invoice->reopen();
                 Uri::create()->remove('act')->redirect();
@@ -117,8 +117,10 @@ class Edit extends ControllerAdmin
         $cancel = Uri::create()->set('act', 'cancel');
         $template->setAttr('btn-cancel', 'href', $cancel);
 
-        $email = Uri::create()->set('act', 'email');
-        $template->setAttr('btn-email', 'href', $email);
+        $url = Uri::create('/component/invoiceEmail', [
+            'invoiceId' => $this->invoice->invoiceId,
+        ]);
+        $template->setAttr('btn-email', 'hx-get', $url);
 
         $issue = Uri::create()->set('act', 'issue');
         $template->setAttr('btn-issue', 'href', $issue);
@@ -340,7 +342,11 @@ class Edit extends ControllerAdmin
                     <i class="fa fa-download"></i>
                     <span>Task List</span>
                 </a>
-                <a href="#" class="btn btn-outline-secondary" title="Email" data-confirm="Are you sure you want to email this invoice to the client?" var="btn-email">
+                <a href="#" class="btn btn-outline-secondary" title="Email Invoice" var="btn-email"
+                    hx-get=""
+                    hx-trigger="click queue:none"
+                    hx-target="body"
+                    hx-swap="beforeend">
                     <i class="fas fa-envelope"></i>
                     <span>Email</span>
                 </a>
@@ -559,6 +565,7 @@ class Edit extends ControllerAdmin
 <script>
     jQuery(function ($) {
         $(document).on('tkForm:afterSubmit', function(e) {
+            if ($(e.target).is('#email-invoice')) return;
             location = location.href;
         });
     });

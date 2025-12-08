@@ -34,18 +34,25 @@ class UserPhoto extends \Dom\Renderer\Renderer implements ComponentInterface
             $f = $_FILES['file'] ?? null;
             if ($f != null) {
                 $dataPath = $this->user->getDataPath() . '/' . $f['full_path'];
-                $filename = Path::createDataPath($dataPath);
+                $filename = '';
+                try {
+                    $filename = Path::createDataPath($dataPath);
+                } catch (\Exception $e) {
+                    $this->uploadError = 'Invalid filename';
+                }
 
-                if (empty($f['error'])) {
-                    FileUtil::mkdir(dirname($filename));
-                    // overwrite an existing file without creating a new file record
-                    move_uploaded_file($f['tmp_name'] ?? '', $filename);
-                    $this->user->deleteImage();
-                    $this->user->image = $dataPath;
-                    $this->user->save();
-                } else {
-                    $this->uploadError = \Tk\Form\Field\File::ERROR_MSG[$f['error']] ?? 'Failed to upload file.';
-                    Log::error($this->uploadError);
+                if (empty($this->uploadError)) {
+                    if (empty($f['error'])) {
+                        FileUtil::mkdir(dirname($filename));
+                        // overwrite an existing file without creating a new file record
+                        move_uploaded_file($f['tmp_name'] ?? '', $filename);
+                        $this->user->deleteImage();
+                        $this->user->image = $dataPath;
+                        $this->user->save();
+                    } else {
+                        $this->uploadError = \Tk\Form\Field\File::ERROR_MSG[$f['error']] ?? 'Failed to upload file.';
+                        Log::error($this->uploadError);
+                    }
                 }
             }
         } elseif ($action == 'delete') {
@@ -68,6 +75,7 @@ class UserPhoto extends \Dom\Renderer\Renderer implements ComponentInterface
         $template->setAttr('container', 'id', self::CONTAINER_ID);
 
         if ($this->uploadError) {
+            $template->addCss('file', 'is-invalid');
             $template->setText('error', $this->uploadError);
             $template->setVisible('error');
         }

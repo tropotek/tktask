@@ -14,14 +14,10 @@ use Tk\Uri;
 class Invoice
 {
 
-    public static function sendIssueInvoice(\App\Db\Invoice $invoice): bool
+    public static function sendIssueInvoice(\App\Db\Invoice $invoice, string $userMsg = ''): bool
     {
         $company = $invoice->getCompany();
         if (!($company instanceof Company)) return false;
-//        if ($invoice->unpaidTotal->getAmount() <= 0) {
-//            Log::warning("invoice {$invoice->invoiceId} is already paid");
-//            return false;
-//        }
 
         $siteCompany = Factory::instance()->getOwnerCompany();
 
@@ -41,6 +37,7 @@ class Invoice
         $message->setFrom($siteCompany->email);
         $message->setSubject($siteCompany->name . ' - Invoice ' . $invoice->invoiceId);
         $message->set('company.name', $company->name);
+        $message->set('user.message', $userMsg);
 
         $paymentText = Registry::getValue('site.invoice.payment');
         if (empty($paymentText)) {

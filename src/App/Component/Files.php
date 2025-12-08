@@ -146,12 +146,19 @@ class Files extends \Dom\Renderer\Renderer implements ComponentInterface
             $form->addFieldError('file', "File upload error");
         }
 
+        $path = null;
+        try {
+            $path = Path::createDataPath($this->model->getDataPath() . '/' . $upload['name']);
+        } catch (\Exception $e) {
+            $form->addFieldError('file', "Invalid filename");
+        }
+
         if ($form->hasErrors()) {
             return;
         }
 
-        if ($fileField->move(Path::createDataPath($this->model->getDataPath()))) {
-            $path = Path::createDataPath($this->model->getDataPath() . '/' . $upload['name']);
+        if ($path instanceof Path) {
+            $fileField->move(dirname($path));
             $file = File::create($path->toRelativeString(), $this->model, User::getAuthUser()->userId);
             $file->save();
 
