@@ -2,6 +2,12 @@
 
 #CHANGELOG#
 
+Ver 1.0.68 [2025-12-08]:
+-------------------------------
+  - Add email invoice message
+  - Fix domain ping bytes DB column size
+
+
 Ver 1.0.66 [2025-11-27]:
 -------------------------------
 
