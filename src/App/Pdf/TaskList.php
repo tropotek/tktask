@@ -72,11 +72,12 @@ class TaskList extends PdfInterface
         $this->setFilename('TaskList_' . $dateStr . '.pdf');
 
         $this->mpdf->WriteHTML($this->show()->toString());
-        return match ($output) {
-            PdfInterface::OUTPUT_PDF => $this->getPdf(),
-            PdfInterface::OUTPUT_ATTACH => $this->getPdfAttachment(),
-            default => $this->getTemplate()->toString()
-        };
+        if ($output == PdfInterface::OUTPUT_PDF) {
+            $this->getPdf();
+        } elseif ($output == PdfInterface::OUTPUT_ATTACH) {
+            return $this->getPdfAttachment();
+        }
+        return $this->getTemplate()->toString();
     }
 
     function show(): ?Template

@@ -31,11 +31,12 @@ class ProfitLoss extends PdfInterface
         $this->setFilename('ProfitReport-' . $dateStr . '.pdf');
 
         $this->mpdf->WriteHTML($this->show()->toString());
-        return match ($output) {
-            PdfInterface::OUTPUT_PDF => $this->getPdf(),
-            PdfInterface::OUTPUT_ATTACH => $this->getPdfAttachment(),
-            default => $this->getTemplate()->toString()
-        };
+        if ($output == PdfInterface::OUTPUT_PDF) {
+            $this->getPdf();
+        } elseif ($output == PdfInterface::OUTPUT_ATTACH) {
+            return $this->getPdfAttachment();
+        }
+        return $this->getTemplate()->toString();
     }
 
     function show(): ?Template

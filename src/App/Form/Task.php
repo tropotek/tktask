@@ -91,7 +91,6 @@ class Task extends Form
 
         $users = User::findFiltered(Filter::create(['active' => true, 'type' => User::TYPE_STAFF], 'name_short'));
         $list = Collection::toSelectList($users, 'userId', 'nameShort');
-        vd($this->getTask()->assignedName, $this->getTask()->assignedUserId);
         $this->appendField((new Select('assignedUserId', $list))
             ->prependOption('-- Select --', '')
             ->addFieldCss('col-md-6')
