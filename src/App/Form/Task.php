@@ -80,7 +80,6 @@ class Task extends Form
         $list = Collection::toSelectList($companies, 'companyId');
         $fld = $this->appendField((new Select('companyId', $list))
             ->setLabel('Client')
-            ->prependOption($this->getTask()->companyName, $this->getTask()->companyId, true)
             ->prependOption('-- Select --', '')
             ->addFieldCss('col-md-6')
             ->setRequired()
@@ -92,8 +91,8 @@ class Task extends Form
 
         $users = User::findFiltered(Filter::create(['active' => true, 'type' => User::TYPE_STAFF], 'name_short'));
         $list = Collection::toSelectList($users, 'userId', 'nameShort');
+        vd($this->getTask()->assignedName, $this->getTask()->assignedUserId);
         $this->appendField((new Select('assignedUserId', $list))
-            ->prependOption($this->getTask()->assignedName, $this->getTask()->assignedUserId, true)
             ->prependOption('-- Select --', '')
             ->addFieldCss('col-md-6')
             ->setRequired()

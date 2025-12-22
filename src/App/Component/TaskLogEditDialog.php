@@ -65,7 +65,6 @@ class TaskLogEditDialog extends \Dom\Renderer\Renderer implements ComponentInter
             $products = Product::findFiltered(Db\Filter::create(['active' => true, 'productCategoryId' => Product::LABOR_CAT_ID]));
             $list = Collection::toSelectList($products, 'productId');
             $this->form->appendField((new Select('productId', $list))
-                ->prependOption($this->log->productName, $this->log->productId, true)
                 ->prependOption('-- Select --', ''));
         }
 

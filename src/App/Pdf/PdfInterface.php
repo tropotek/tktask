@@ -36,9 +36,7 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
         $this->mpdf->SetTitle($this->title);
         $this->mpdf->SetAuthor(Registry::getValue('site.name', 'Unknown'));
         $this->mpdf->curlAllowUnsafeSslRequests = true;
-        //$this->mpdf->showImageErrors = true;
 
-        $this->mpdf->showWatermarkText = true;
         $this->mpdf->watermark_font = 'DejaVuSansCondensed';
         $this->mpdf->watermarkTextAlpha = 0.08;
 
@@ -78,11 +76,11 @@ abstract class PdfInterface extends \Dom\Renderer\Renderer
         return $this->mpdf->watermarkText;
     }
 
-    public function setWatermark(string $watermark): PdfInterface
+    public function setWatermark(string $watermark): self
     {
         $this->mpdf->SetWatermarkText($watermark);
 
-        if (!empty($this->getWatermark())) {
+        if (!empty($watermark)) {
             $this->mpdf->showWatermarkText = true;
         } else {
             $this->mpdf->showWatermarkText = false;
