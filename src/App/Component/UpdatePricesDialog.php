@@ -66,8 +66,8 @@ class UpdatePricesDialog extends \Dom\Renderer\Renderer implements ComponentInte
 
     public function onSubmit(Form $form, Submit $action): void
     {
-        $amount = $form->getFieldValue('amount');
-        if ($amount < -100 || $amount > 100) {
+        $percent = $form->getFieldValue('amount');
+        if ($percent < -100 || $percent > 100) {
             $form->addFieldError('amount', 'The price change must be between -100 and 100.');
         }
 
@@ -85,8 +85,13 @@ class UpdatePricesDialog extends \Dom\Renderer\Renderer implements ComponentInte
         foreach ($ids as $id) {
             $product = Product::find($id);
             if ($product instanceof Product) {
-                $add = intval(round($product->price->getAmount() * ($amount / 100)));
-                $product->price = $product->price->add(Money::create($add));
+                if ($percent > 0) {
+                    $add = intval(round($product->price->getAmount() * (abs($percent) / 100)));
+                    $product->price = $product->price->add(Money::create($add));
+                } else {
+                    $amount = round($product->price->getAmount() / (1 + (abs($percent) / 100)));
+                    $product->price = Money::create($amount);
+                }
                 $product->save();
             }
         }
