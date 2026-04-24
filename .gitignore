@@ -7,16 +7,20 @@
 .phpunit.result.cache
 /*.bak
 /*.sql
+/.env
+/.env.*
+!/.env.example
 
 # Project directories
 /_*
 /vendor
 /data
 node_modules
+/public
 
 # Project Files
 /config.php
 /.htaccess
 /robots.txt
-/error_log
+/*log
 
